@@ -1,0 +1,10 @@
+<#if licenseFirst??>
+${licenseFirst}
+</#if>
+${licensePrefix}University of L'Aquila 2015/2016
+${licensePrefix}BiblioManager project
+${licensePrefix}Authors: Vincenzo Lanzieri, Angelo Iezzi
+${licensePrefix}Professor: Giuseppe Della Penna
+<#if licenseLast??>
+${licenseLast}
+</#if>
