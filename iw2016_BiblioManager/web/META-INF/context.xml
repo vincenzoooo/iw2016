@@ -1,2 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Context path="/bibliomanager"/>
+<Context antiJARLocking="true" path="/bibliomanager">
+    <Resource
+        name="jdbc/iw2016" 
+        type="javax.sql.DataSource"
+        auth="Container"
+        driverClassName="com.mysql.jdbc.Driver"
+        url="jdbc:mysql://localhost/iw2016"
+        username="website"
+        password="webpass"
+        maxActive="10"
+        maxIdle="5"
+        maxWait="10000"
+    />
+</Context>
