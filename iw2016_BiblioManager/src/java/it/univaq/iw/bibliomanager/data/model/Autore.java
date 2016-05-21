@@ -18,13 +18,13 @@ public interface Autore {
     
     List<Pubblicazione> getPublications() throws DataLayerException;
 
-    void setPublication(List<Pubblicazione> publication);
+    void setPublication(List<Pubblicazione> publications);
     
-    String getName() throws DataLayerException;
+    String getName();
     
     void setName(String name);
     
-    String getSurname() throws DataLayerException;
+    String getSurname();
     
     void setSurname(String surname);
 }

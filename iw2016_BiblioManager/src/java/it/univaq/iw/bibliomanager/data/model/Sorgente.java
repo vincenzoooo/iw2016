@@ -15,21 +15,21 @@ import it.univaq.iw.framework.data.DataLayerException;
 public interface Sorgente {
     int getKey();
     
-    String getType() throws DataLayerException;
+    String getType();
     
-    void setType(String name);
+    void setType(String type);
     
-    String getURI() throws DataLayerException;
+    String getURI();
     
     void setURI(String uri);
     
-    String getFormat() throws DataLayerException;
+    String getFormat();
     
     void setFormat(String format);
     
-    String getDescription() throws DataLayerException;
+    String getDescription();
     
-    void setDescription(String Description);
+    void setDescription(String description);
     
     Pubblicazione getPublication() throws DataLayerException;
     

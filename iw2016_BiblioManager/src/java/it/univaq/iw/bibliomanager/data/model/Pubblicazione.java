@@ -18,7 +18,7 @@ public interface Pubblicazione {
 
     List<Autore> getAuthors() throws DataLayerException;
 
-    void setAuthor(List<Autore> author);
+    void setAuthor(List<Autore> authors);
 
     String getTitle();
 
@@ -32,11 +32,11 @@ public interface Pubblicazione {
     
     void setEditor(Editore editor);
     
-    List<String> getIndex() throws DataLayerException;
+    List<String> getIndex();
     
     void setIndex(List<String> index);
     
-    int getNumberOfLikes() throws DataLayerException;
+    int getNumberOfLikes();
     
     void setNumberOfLikes();
 

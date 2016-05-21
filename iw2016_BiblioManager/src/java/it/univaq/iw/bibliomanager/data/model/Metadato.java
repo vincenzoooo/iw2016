@@ -17,23 +17,23 @@ import java.util.List;
 public interface Metadato {
     int getKey();
 
-    int getISBN() throws DataLayerException;
+    int getISBN();
 
     void setISBN(int isbn);
     
-    int getPages() throws DataLayerException;
+    int getPages();
 
     void setPages(int pages);
     
-    String getLanguage() throws DataLayerException;
+    String getLanguage();
 
     void setLanguage(String language);
     
-    Date getPublicationDate() throws DataLayerException;
+    Date getPublicationDate();
 
     void setPublicationDate(Date date);
     
-    List<String> getKeywords() throws DataLayerException;
+    List<String> getKeywords();
 
     void setKeywords(List<String> keywords);
     

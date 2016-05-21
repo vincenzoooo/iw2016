@@ -15,13 +15,13 @@ import it.univaq.iw.framework.data.DataLayerException;
 public interface Recensione {
     int getKey();
     
-    String getText() throws DataLayerException;
+    String getText();
 
     void setText(String text);
     
-    Boolean getState() throws DataLayerException;
+    Boolean getStatus();
     
-    void setState(Boolean state);
+    void setStatus(Boolean status);
     
     Utente getAuthor() throws DataLayerException;
     

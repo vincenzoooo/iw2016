@@ -16,15 +16,15 @@ import java.sql.Timestamp;
 public interface Storico {
     int getKey();
     
-    String getEntry() throws DataLayerException;
+    String getEntry();
 
     void setEntry(String entry);
     
-    int getType() throws DataLayerException;
+    int getType();
 
     void setType(int type);
     
-    Timestamp getTimestamp() throws DataLayerException;
+    Timestamp getTimestamp();
     
     void setTimestamp(Timestamp timestamp);
     
@@ -32,8 +32,8 @@ public interface Storico {
     
     void setPublication(Pubblicazione publication);
     
-    int getUser() throws DataLayerException;
+    Utente getUser() throws DataLayerException;
 
-    void setUser(int user);
+    void setUser(Utente user);
     
 }

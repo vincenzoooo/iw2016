@@ -16,11 +16,11 @@ import java.sql.Date;
 public interface Ristampa {
     int getKey();
     
-    int getNumber() throws DataLayerException;
+    int getNumber();
 
     void setNumber(int number);
     
-    Date getDate() throws DataLayerException;
+    Date getDate();
 
     void setDate(Date date);
     

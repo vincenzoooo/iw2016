@@ -6,7 +6,6 @@
  */
 package it.univaq.iw.bibliomanager.data.model;
 
-import it.univaq.iw.framework.data.DataLayerException;
 
 /**
  *
@@ -15,7 +14,7 @@ import it.univaq.iw.framework.data.DataLayerException;
 public interface Editore {
     int getKey();
     
-    String getName() throws DataLayerException;
+    String getName();
     
     void setName(String name);
 }

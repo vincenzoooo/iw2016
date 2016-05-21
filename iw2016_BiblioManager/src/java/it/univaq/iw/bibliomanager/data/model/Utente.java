@@ -15,23 +15,23 @@ import it.univaq.iw.framework.data.DataLayerException;
 public interface Utente {
     int getKey();
 
-    String getName() throws DataLayerException;
+    String getName();
     
     void setName(String name);
     
-    String getSurname() throws DataLayerException;
+    String getSurname();
     
     void setSurname(String surname);
     
-    String getEmail() throws DataLayerException;
+    String getEmail();
 
     void setEmail(String email);
     
-    String getPassword() throws DataLayerException;
+    String getPassword();
 
     void setPassword(String password);
     
-    String getState() throws DataLayerException;
+    String getState();
 
     void setState(String state);
 }
