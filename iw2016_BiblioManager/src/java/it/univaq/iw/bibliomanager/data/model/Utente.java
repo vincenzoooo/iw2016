@@ -31,7 +31,7 @@ public interface Utente {
 
     void setPassword(String password);
     
-    String getState();
+    int getState();
 
-    void setState(String state);
+    void setState(int state);
 }

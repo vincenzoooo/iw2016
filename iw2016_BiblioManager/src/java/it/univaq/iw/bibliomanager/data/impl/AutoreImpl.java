@@ -16,8 +16,7 @@ import java.util.List;
  *
  * @author Vincenzo Lanzieri
  */
-public class AutoreImpl implements Autore{
-    private int key;
+public class AutoreImpl extends BeanImpl implements Autore{    
     private String name;
     private String surname;
     private List<Pubblicazione> publications;
@@ -25,16 +24,11 @@ public class AutoreImpl implements Autore{
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public AutoreImpl(BiblioManagerDataLayer ownerDataLayer) {
-        this.ownerDataLayer = ownerDataLayer;
-        this.key = 0;
+        super();
+        this.ownerDataLayer = ownerDataLayer;        
         this.name = "";
         this.surname = "";
         this.publications = null;
-    }
-
-    @Override
-    public int getKey() {
-        return key;
     }
 
     @Override

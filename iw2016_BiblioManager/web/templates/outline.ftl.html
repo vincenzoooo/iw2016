@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <title>Biblio</title>        
+    </head>
+    <body>
+        <h1>${page_title!"Untitled page"?html}</h1>
+        <#include content_tpl>
+        <footer>
+            <div >Copyright &copy; 2014 ${defaults.author}. Page compiled on ${compiled_on?datetime}</div>
+        </footer>       
+    </body>
+</html>

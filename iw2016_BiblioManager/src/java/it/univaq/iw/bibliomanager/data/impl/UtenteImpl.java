@@ -13,28 +13,22 @@ import it.univaq.iw.bibliomanager.data.model.Utente;
  *
  * @author Vincenzo Lanzieri
  */
-public class UtenteImpl implements Utente{
-    private int key;
+public class UtenteImpl extends BeanImpl implements Utente{    
     private String name;
     private String surname;
     private String password;
     private String email;
-    private String state;
+    private int state;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public UtenteImpl(BiblioManagerDataLayer ownerDataLayer) {
-        this.ownerDataLayer = ownerDataLayer;
-        key = 0;
+        super();
+        this.ownerDataLayer = ownerDataLayer;        
         name = "";
         surname = "";
         password = "";
         email = "";
-        state = "";              
-    }
-
-    @Override
-    public int getKey() {
-        return key;
+        state = 2;              
     }
 
     @Override
@@ -78,12 +72,12 @@ public class UtenteImpl implements Utente{
     }
 
     @Override
-    public String getState() {
+    public int getState() {
         return state;
     }
 
     @Override
-    public void setState(String state) {
+    public void setState(int state) {
         this.state = state;
     }
     

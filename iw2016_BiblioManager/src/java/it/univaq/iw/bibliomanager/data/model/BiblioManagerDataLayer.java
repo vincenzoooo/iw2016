@@ -22,7 +22,7 @@ public interface BiblioManagerDataLayer extends DataLayer{
     Recensione createReview();
     Ristampa createReprint();
     Sorgente createSource();
-    Storico createHistoria();
+    Storico createArchive();
     Utente createUser();
     
     Autore getAuthor(int author_key) throws DataLayerException;
@@ -39,9 +39,11 @@ public interface BiblioManagerDataLayer extends DataLayer{
     List<Ristampa> getReprints() throws DataLayerException;
     Sorgente getSource(int source_key) throws DataLayerException;
     List<Sorgente> getSource() throws DataLayerException;
-    Storico getHistoria(int historia_key) throws DataLayerException;
-    List<Storico> getHistorias() throws DataLayerException;
+    Storico getArchive(int historia_key) throws DataLayerException;
+    List<Storico> getArchives() throws DataLayerException;
     Utente getUser(int user_key) throws DataLayerException;
+    Utente getUser(String email) throws DataLayerException;
+    Utente getUser(String email, String password) throws DataLayerException;
     List<Utente> getUsers() throws DataLayerException;
     
     void storeAuthor(Autore author) throws DataLayerException;
@@ -51,6 +53,6 @@ public interface BiblioManagerDataLayer extends DataLayer{
     void storeReview(Recensione review) throws DataLayerException;
     void storeReprint(Ristampa reprint) throws DataLayerException;
     void storeSource(Sorgente source) throws DataLayerException;
-    void storeHistoria(Storico historia) throws DataLayerException;
+    void storeArchive(Storico historia) throws DataLayerException;
     void storeUser(Utente user) throws DataLayerException;
 }

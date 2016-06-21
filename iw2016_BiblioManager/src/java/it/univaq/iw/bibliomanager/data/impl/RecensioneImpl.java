@@ -70,7 +70,7 @@ public class RecensioneImpl implements Recensione{
     @Override
     public Storico getArchive() throws DataLayerException {
         if (archive == null && archive_key > 0) {
-            archive = ownerDataLayer.getHistoria(archive_key);
+            archive = ownerDataLayer.getArchive(archive_key);
         }
         return archive;
     }
