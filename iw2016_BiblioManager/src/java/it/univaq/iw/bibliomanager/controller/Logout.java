@@ -7,9 +7,9 @@
 package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.framework.result.TemplateResult;
+import it.univaq.iw.framework.security.SecurityLayer;
 import java.io.IOException;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -17,14 +17,19 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Vincenzo Lanzieri
  */
-public class Logout extends HttpServlet {
+public class Logout extends BiblioManagerBaseController {
+
+    private void action_logout(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        SecurityLayer.disposeSession(request);
+        action_default(request, response);
+    }
 
     private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setAttribute("page_title", "Login to Biblio");
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("login.ftl.html", request, response);
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -32,11 +37,19 @@ public class Logout extends HttpServlet {
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
      */
+    @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        //TODO: session check e se c'è action logout else action default
+            throws ServletException {
+        try {
+            if (SecurityLayer.checkSession(request) != null) {
+                action_logout(request, response);
+            } else {
+                action_default(request, response);
+            }
+        } catch (Exception ex) {
+            action_error(request, response, "Error: " + ex.getMessage());
+        }
     }
 
     /**

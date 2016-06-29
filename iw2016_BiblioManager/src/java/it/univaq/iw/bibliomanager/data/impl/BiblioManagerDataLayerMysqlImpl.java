@@ -21,6 +21,7 @@ import it.univaq.iw.framework.data.DataLayerMysqlImpl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
@@ -33,6 +34,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
     //Statements declaration
     private PreparedStatement sUserByEmail, sUserByEmailPassword;
+    private PreparedStatement uUser, iUser;
 
     public BiblioManagerDataLayerMysqlImpl(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
@@ -45,6 +47,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             //Statement inizializzazione
             this.sUserByEmail = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE email = ?");
             this.sUserByEmailPassword = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE email = ? AND password = ?");
+            this.uUser = connection.prepareStatement("UPDATE iw2016.utente SET nome = ?, cognome = ?, password = ?, email = ?, stato = ? WHERE idutente = ?");
+            this.iUser = connection.prepareStatement("INSERT INTO iw2016.utente (nome, cognome, password, email, stato) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         }
@@ -106,7 +110,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             return user;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
-        }        
+        }
     }
 
     @Override
@@ -219,7 +223,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public Utente getUser(String email, String password) throws DataLayerException{
+    public Utente getUser(String email, String password) throws DataLayerException {
         Utente result = null;
         ResultSet rs = null;
         try {
@@ -242,6 +246,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
+
     @Override
     public List<Utente> getUsers() throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -289,7 +294,70 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
     @Override
     public void storeUser(Utente user) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet keys = null;
+        int key = user.getKey();
+        try {
+            if (user.getKey() > 0) { //update
+                //non facciamo nulla se l'oggetto non ha subito modifiche
+                //do not store the object if it was not modified
+//                if (!article.isDirty()) {
+//                    return;
+//                }
+                uUser.setString(1, user.getName());
+                uUser.setString(2, user.getSurname());
+                uUser.setString(3, user.getEmail());
+                uUser.setInt(4, user.getState());
+
+                uUser.executeUpdate();
+            } else { //insert
+                iUser.setString(1, user.getName());
+                iUser.setString(2, user.getSurname());
+                iUser.setString(3, user.getEmail());
+                iUser.setInt(4, user.getState());
+
+                if (iUser.executeUpdate() == 1) {
+                    //per leggere la chiave generata dal database
+                    //per il record appena inserito, usiamo il metodo
+                    //getGeneratedKeys sullo statement.
+                    //to read the generated record key from the database
+                    //we use the getGeneratedKeys method on the same statement
+                    keys = iUser.getGeneratedKeys();
+                    //il valore restituito è un ResultSet con un record
+                    //per ciascuna chiave generata (uno solo nel nostro caso)
+                    //the returned value is a ResultSet with a distinct record for
+                    //each generated key (only one in our case)
+                    if (keys.next()) {
+                        //i campi del record sono le componenti della chiave
+                        //(nel nostro caso, un solo intero)
+                        //the record fields are the key componenets
+                        //(a single integer in our case)
+                        key = keys.getInt(1);
+                    }
+                }
+            }
+            //restituiamo l'oggetto appena inserito RICARICATO
+            //dal database tramite le API del modello. In tal
+            //modo terremo conto di ogni modifica apportata
+            //durante la fase di inserimento
+            //we return the just-inserted object RELOADED from the
+            //database through our API. In this way, the resulting
+            //object will ambed any data correction performed by
+            //the DBMS
+//            if (key > 0) {
+//                user.copyFrom(getArticle(key));
+//            }
+//            article.setDirty(false);
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to store user", ex);
+        } finally {
+            try {
+                if (keys != null) {
+                    keys.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
 }

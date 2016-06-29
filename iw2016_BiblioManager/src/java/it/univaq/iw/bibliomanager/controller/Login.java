@@ -45,7 +45,6 @@ public class Login extends BiblioManagerBaseController {
                 request.setAttribute("user", user);
                 res.activate("index.html", request, response);//TODO: Definire la home page
             }
-
         }
     }
 
