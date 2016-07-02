@@ -36,42 +36,8 @@ public class Register extends BiblioManagerBaseController {
             String name = Utils.checkString(request.getParameter("name"));
             String surname = Utils.checkString(request.getParameter("surname"));
             String password = Utils.checkString(request.getParameter("password"));
-            String rePassword = Utils.checkString(request.getParameter("re-password"));
             String email = Utils.checkString(request.getParameter("email"));
-            String reEmail = Utils.checkString(request.getParameter("re-email"));
-            String privacy = Utils.checkString(request.getParameter("privacy"));
-            boolean error = false;
-            if (name == null) {
-                request.setAttribute("errorName", "Nome non valorizzato");
-                error = true;
-            }
-            if (surname == null) {
-                request.setAttribute("errorSurname", "Cognome non valorizzato");
-                error = true;
-            }
-            if (password == null || rePassword == null) {
-                request.setAttribute("errorPassword", "Password o Repassword non valorizzato");
-                error = true;
-            } else if (!password.equals(rePassword)) {
-                request.setAttribute("errorPassword", "I campi Password e Repassword non sono uguali");
-                error = true;
-            }
-            if (email == null || reEmail == null) {
-                request.setAttribute("errorEmail", "Email non valorizzata");
-                error = true;
-            } else if (!email.equals(reEmail)) {
-                request.setAttribute("errorEmail", "I campi email e Reemail non sono uguali");
-                error = true;
-            }
-            if(privacy == null){
-                request.setAttribute("errorPrivacy", "Bisogna accettare i termini di legge sulla privacy");
-                error = true;
-            }
-            if (!Utils.checkEmail(email)) {
-                request.setAttribute("errorEmail", "L'Email passata non è valida");
-                error = true;
-            } 
-            if(!error){
+            if (!this.validator(request, response)) {
                 User newUser = getDataLayer().createUser();
                 newUser.setName(name);
                 newUser.setSurname(surname);
@@ -82,13 +48,56 @@ public class Register extends BiblioManagerBaseController {
                 //String text = "Benvenuto su BiblioManager!";
                 //Utils.sendEmail(email, text);
                 res.activate("index.html", request, response);
-            }
-            else{
+            } else {
+                request.setAttribute("name", name);
+                request.setAttribute("surname", surname);
                 res.activate("registration.ftl.html", request, response);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
+    }
+
+    private boolean validator(HttpServletRequest request, HttpServletResponse response) {
+        boolean error = false;
+        String name = Utils.checkString(request.getParameter("name"));
+        String surname = Utils.checkString(request.getParameter("surname"));
+        String password = Utils.checkString(request.getParameter("password"));
+        String rePassword = Utils.checkString(request.getParameter("re-password"));
+        String email = Utils.checkString(request.getParameter("email"));
+        String reEmail = Utils.checkString(request.getParameter("re-email"));
+        String privacy = Utils.checkString(request.getParameter("privacy"));
+        if (name == null) {
+            request.setAttribute("errorName", "Nome non valorizzato");
+            error = true;
+        }
+        if (surname == null) {
+            request.setAttribute("errorSurname", "Cognome non valorizzato");
+            error = true;
+        }
+        if (password == null || rePassword == null) {
+            request.setAttribute("errorPassword", "Password o Repassword non valorizzato");
+            error = true;
+        } else if (!password.equals(rePassword)) {
+            request.setAttribute("errorPassword", "I campi Password e Repassword non sono uguali");
+            error = true;
+        }
+        if (email == null || reEmail == null) {
+            request.setAttribute("errorEmail", "Email non valorizzata");
+            error = true;
+        } else if (!email.equals(reEmail)) {
+            request.setAttribute("errorEmail", "I campi email e Reemail non sono uguali");
+            error = true;
+        }
+        if (privacy == null) {
+            request.setAttribute("errorPrivacy", "Bisogna accettare i termini di legge sulla privacy");
+            error = true;
+        }
+        if (!Utils.checkEmail(email)) {
+            request.setAttribute("errorEmail", "L'Email passata non è valida");
+            error = true;
+        }
+        return error;
     }
 
     /**
@@ -103,7 +112,7 @@ public class Register extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            if (request.getParameterNames() != null) {
+            if (request.getParameter("submitRegistration") != null) {
                 action_register(request, response);
             } else {
                 action_default(request, response);

@@ -353,8 +353,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             } else { //insert
                 iUser.setString(1, user.getName());
                 iUser.setString(2, user.getSurname());
-                iUser.setString(3, user.getEmail());
-                iUser.setInt(4, user.getState());
+                iUser.setString(3, user.getPassword());
+                iUser.setString(4, user.getEmail());
+                iUser.setInt(5, user.getState());
 
                 if (iUser.executeUpdate() == 1) {
                     //per leggere la chiave generata dal database
