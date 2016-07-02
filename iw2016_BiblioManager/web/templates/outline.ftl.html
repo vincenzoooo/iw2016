@@ -9,57 +9,56 @@
         
     </head>
     <body>
-        <div class="container">
-            <div class="row">
-		<div class="col-lg-12">
-                    <header>
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-4"> 
-                                    <div class="col-lg-2"> 
-                                    <img src="img/libro.png" class="logo" alt="logo di BiblioManager"/>
-                                    </div>
-                                    <div class="col-lg-10">
-                                    <h1 class="title-site">BiblioManager</h1>
-                                    </div>
-                                </div>
 
-                                <div id="user-menu" class="col-lg-offset-4 col-lg-4">
-                                    <#if sessionId??>
-                                        <div class="col-lg-6">
-                                            <span id="sign-in" class="padding10"><a class="nodecoration" href="logout">Logout</a> </span>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <span id="sign-up" class="padding10">Benvenuto <span id="namelogged">${strip_slashes(nameLogged)?html}</span></span>
-                                        </div>
-                                    <#else>
-                                        <div class="col-lg-6">
-                                            <span id="sign-in" class="padding10" ><a class="nodecoration" href="login">Login</a> </span>
-                                        </div>
-                                        <div class="col-lg-6">
-                                            <span id="sign-up" class="padding10"><a class="nodecoration" href="registration">Registrati</a></span>
-                                        </div>
-                                    </#if>
-                                </div>
-                            </div> 
+        <header>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4"> 
+                        <div class="col-lg-2"> 
+                        <img src="img/libro.png" class="logo" alt="logo di BiblioManager"/>
                         </div>
-                    </header>
-
-                    <div class="pageContent">  
-                        <#include content_tpl>
+                        <div class="col-lg-10">
+                        <h1 class="title-site">BiblioManager</h1>
+                        </div>
                     </div>
-                    <footer>
-                        <div class="container">
-                            <div class="row">
-                                <div class="col-lg-12">
-                                    <div >Copyright &copy; 2014 ${defaults.author}. Page compiled on ${compiled_on?datetime}</div>
-                                </div>
+
+                    <div id="user-menu" class="col-lg-offset-4 col-lg-4">
+                        <#if sessionId??>
+                            <div class="col-lg-6">
+                                <span id="sign-in" class="padding10"><a class="nodecoration" href="logout">Logout</a> </span>
                             </div>
-                        </div>
-                    </footer>
+                            <div class="col-lg-6">
+                                <span id="sign-up" class="padding10">Benvenuto <span id="namelogged">${strip_slashes(nameLogged)?html}</span></span>
+                            </div>
+                        <#else>
+                            <div class="col-lg-4">
+                                <span id="sign-in" class="padding10" ><a class="nodecoration" href="login">Login</a> </span>
+                            </div>
+                            <div class="col-lg-4">
+                                <span id="sign-up" class="padding10"><a class="nodecoration" href="registration">Registrati</a></span>
+                            </div>
+                            <div class="col-lg-4">
+                                <span id="sign-up" class="padding10"><a class="nodecoration" href="profile">Profilo</a></span>
+                            </div>
+                        </#if>
+                    </div>
+                </div> 
+            </div>
+        </header>
+
+        <div class="pageContent">  
+            <#include content_tpl>
+        </div>
+        <footer>
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div >Copyright &copy; 2014 ${defaults.author}. Page compiled on ${compiled_on?datetime}</div>
+                    </div>
                 </div>
             </div>
-        </div> 
+        </footer>
+        
         
         <script type="text/javascript" src="lib/bootstrap/dist/js/bootstrap.min.js">
         </script>

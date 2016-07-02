@@ -1,0 +1,149 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="center">Scheda utente
+                <#if (profile?? && profile)>
+                    <span>
+                        <a href="manageProfile">
+                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                        </a>
+                    </span>
+                </#if>
+            </h1>
+            <#if user??>
+            <div class="row">
+                <div class="col-lg-3">
+                    <span class="profile">
+                        <img src="img/user.png" alt="Foto profilo utente" class="profile">
+                    </span>
+                </div>
+                <div>
+                    <div class="paddingbottom10">
+                        <span class="bold">
+                            Nome:
+                        </span>
+                        <span class="">
+                            ${strip_slashes(user.name)?html}
+                        </span>
+                    </div>
+                    <div class="paddingbottom10">
+                        <span class="bold">
+                            Cognome:
+                        </span>
+                        <span class="">
+                            ${strip_slashes(user.surname)?html}
+                        </span>
+                    </div>
+                    <div class="paddingbottom10">
+                        <span class="bold">
+                            Ruolo:
+                        </span>
+                        <span class="" id="userrole">
+                            <#switch user.role>
+                                <#case 0>
+                                    Amministratore
+                                <#break>
+                                <#case 1>
+                                    Utente attivo
+                                <#break>
+                                <#default>
+                                    Utente passivo
+                            </#switch>
+                        </span>
+                    </div>
+                    <div class="">
+                    <#if (role?? && role && !user.role)>
+                        <span class="center">
+                            <button><a id="promote" href="?promote&userId=${user.id}" >Promuovi ad utente attivo</a></button>
+                        </span>
+                    </#if>
+                    </div>
+                </div>
+            </div>
+               
+            <!--
+            <h2 id="link">Pubblicazioni inserite dall'utente</h2>
+            <#if (userPublications?? && userPublications?size>0) >
+                <div id="listPublicationUser" class="row">
+                <#list userPublications as item>
+                    <div class="col-lg-4 homepublication">
+                        <a href="publicationDetails?publicationId=${item.id}" class="publicationDetailsHome">
+                        <figure class="imageProfile">
+                            <#if item.cover??>
+                                <img  src= "<#if item.cover.uploaded>img?file=${item.cover.fileSource.id}<#else>${strip_slashes(item.cover.uri)?html}</#if>" alt="${strip_slashes(item.cover.description)!'Copertina Defualt'?html}" />
+                            <#else>
+                                <img  src= "img/book2.png" alt="Copertina Defualt" />
+                            </#if>
+                            <figcaption class="caption">
+                            <#if (item.title?length>38)>
+                                ${item.title[0..34]?html}...<#else>${item.title?html}
+                            </#if>
+                            </figcaption>
+                        </figure>
+                        </a>
+                    </div>
+                </#list>
+                </div>
+
+                <#if (totpages?? && totpages>1)>
+                    <div class="row clear padding10">Vai alla pagina:         
+                        <span id="paging">
+                            <#list 1..totpages as page>
+                            <#if (page == curpage)>
+                            <span class="pagerCurrent">${page}</span>
+                            <#else>
+                            <a class="pagerLink" href="?page=${page}&userId=${user.id}#link">${page}</a>
+                            </#if>       
+                            </#list>
+                        </span>
+                    </div>
+                </#if> 
+                <#else>
+                <div>
+                   L'utente non ha inserito nessuna pubblicazione.
+                </div>
+            </#if>
+            <h2>Ultime azioni effettuate</h2>
+            <#if (historyUser?? && historyUser?size>0)>
+                <table >
+                    <thead>
+                        <tr>
+                            <th>
+                                Timestamp
+                            </th>
+
+                            <th>
+                                Descrizione
+                            </th>
+                            <th>
+                                Pubblicazione
+                            </th>
+                        </tr>
+                    </thead>
+                        <tbody>
+                        <#list historyUser as item>
+                            <tr>
+                                <td>
+                                    ${item.date?datetime}
+                                </td>
+
+                                <td>
+                                    ${item.description?html}
+                                </td>
+                                <td>
+                                    <#if item.publication??><a href="publicationDetails?publicationId=${item.publication.id}">${item.publication.title}</a></#if>
+                                </td>
+                            </tr>
+                        </#list>
+                        </tbody>
+                    </table>
+                <#else>
+                    L'utente non ha effettuato alcuna azione sulle pubblicazioni.
+                </#if>
+            <#else>
+                Profilo utente non disponibile
+            </#if>
+            -->
+        </div>
+    </div>
+</div>

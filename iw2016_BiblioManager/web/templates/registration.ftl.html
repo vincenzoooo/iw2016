@@ -1,81 +1,87 @@
-<h1>Registrazione</h1>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1>Registrazione</h1>
 
-<form method="post" action="registration">
-    <div class="row">
-        <div class="col-lg-3">Nome:</div> 
-        <input class="col-lg-5" name='name' value="${name!''?html}" required='required' placeholder="Inserisci il nome" />
-    </div>
-    <#if errorName??>
-    <div class="error">
-        ${errorName?html}
-    </div>
-    </#if>
-    <div class="row">
-        <div class="col-lg-3">Cognome:</div> 
-        <input class="col-lg-5" name='surname' value="${surname!''?html}" required='required' placeholder="Inserisci il cognome" />
-    </div>
-    <#if errorSurname??>
-    <div class="error">
-        ${errorSurname?html}
-    </div>
-    </#if>
-    <div class="row">
-        <div class="col-lg-3">Email:</div> 
-        <input class="col-lg-5" type='email' name='email' value="${email!''?html}" required='required' placeholder="user@mail.it" />
-    </div>
-    <#if errorEmail??>
-    <div class="error">
-        ${errorEmail?html}
-    </div>
-    </#if>
-    <div class="row">
-        <div class="col-lg-3">Reinserire email:</div> 
-        <input class="col-lg-5" type='email' name='re-email' value="${repeatemail!''?html}" required='required' placeholder="user@mail.it" />
-    </div>
-    <#if errorEmail??>
-    <div class="error">
-        ${errorEmail?html}
-    </div>
-    </#if>
-    <div class="row">
-        <div class="col-lg-3">Password:</div> 
-        <input class="col-lg-5" name='password' type='password' value="${pass!''?html}" required="required" placeholder="Inserisci password" />
-    </div>
-    <#if errorPassword??>
-    <div class="error">
-        ${errorPassword?html}
-    </div>
-    </#if>
-    <div class="row">
-        <div class="col-lg-3">Reinserire Password:</div> 
-        <input class="col-lg-5" name='re-password' type='password' value="${repeatPass!''?html}" required='required' placeholder="Ripeti password" />
-    </div>
-    <#if errorPassword??>
-    <div class="error">
-        ${errorPassword?html}
-    </div>
-    </#if>
-    <div class="row">
-        <div class="col-lg-12">
-            <input  type="checkbox" name="privacy" value="privacy" required='required'>  
-            Con l'invio del presente modulo acconsento al trattamento dei dati unicamente per la richiesta in oggetto. Consenso esplicito secondo il D.Lgs 196/2003.<br>
+            <form method="post" action="registration">
+                <div class="row">
+                    <div class="col-lg-3 bold">Nome:</div> 
+                    <input class="col-lg-5" name='name' value="${name!''?html}" required='required' placeholder="Inserisci il nome" />
+                </div>
+                <#if errorName??>
+                <div class="error">
+                    ${errorName?html}
+                </div>
+                </#if>
+                <div class="row">
+                    <div class="col-lg-3 bold">Cognome:</div> 
+                    <input class="col-lg-5" name='surname' value="${surname!''?html}" required='required' placeholder="Inserisci il cognome" />
+                </div>
+                <#if errorSurname??>
+                <div class="error">
+                    ${errorSurname?html}
+                </div>
+                </#if>
+                <div class="row">
+                    <div class="col-lg-3 bold">Email:</div> 
+                    <input class="col-lg-5" type='email' name='email' value="${email!''?html}" required='required' placeholder="user@mail.it" />
+                </div>
+                <#if errorEmail??>
+                <div class="error">
+                    ${errorEmail?html}
+                </div>
+                </#if>
+                <div class="row">
+                    <div class="col-lg-3 bold">Reinserire email:</div> 
+                    <input class="col-lg-5" type='email' name='re-email' value="${repeatemail!''?html}" required='required' placeholder="user@mail.it" />
+                </div>
+                <#if errorEmail??>
+                <div class="error">
+                    ${errorEmail?html}
+                </div>
+                </#if>
+                <div class="row">
+                    <div class="col-lg-3 bold">Password:</div> 
+                    <input class="col-lg-5" name='password' type='password' value="${pass!''?html}" required="required" placeholder="Inserisci password" />
+                </div>
+                <#if errorPassword??>
+                <div class="error">
+                    ${errorPassword?html}
+                </div>
+                </#if>
+                <div class="row">
+                    <div class="col-lg-3 bold">Reinserire Password:</div> 
+                    <input class="col-lg-5" name='re-password' type='password' value="${repeatPass!''?html}" required='required' placeholder="Ripeti password" />
+                </div>
+                <#if errorPassword??>
+                <div class="error">
+                    ${errorPassword?html}
+                </div>
+                </#if>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <input  type="checkbox" name="privacy" value="privacy" required='required'>  
+                        Con l'invio del presente modulo acconsento al trattamento dei dati unicamente per la richiesta in oggetto. Consenso esplicito secondo il D.Lgs 196/2003.<br>
+                    </div>
+                </div>
+                <#if error??>
+                    <div class="error">
+                        ${errorPrivacy?html}
+                    </div>
+                </#if>
+                <div class="row">
+                    <div class="col-lg-12">
+                        <input class="marginleft1" value='Registrati' name='submitRegistration' type='submit' />
+                    </div>
+                </div>
+                <!--
+                <#if dataRegError??>
+                <div class="error">
+                    ${dataRegError?html}
+                </div>
+                </#if>
+                -->
+            </form>
         </div>
     </div>
-    <#if error??>
-        <div class="error">
-            ${errorPrivacy?html}
-        </div>
-    </#if>
-    <div class="row">
-        <div class="col-lg-12">
-            <input class="marginleft1" value='Registrati' name='submitRegistration' type='submit' />
-        </div>
-    </div>
-    <!--
-    <#if dataRegError??>
-    <div class="error">
-        ${dataRegError?html}
-    </div>
-    </#if>
-    -->
-</form>
+</div>
