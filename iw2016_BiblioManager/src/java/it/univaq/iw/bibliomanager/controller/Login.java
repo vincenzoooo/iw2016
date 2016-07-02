@@ -16,6 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import it.univaq.iw.bibliomanager.data.model.User;
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
 
 /**
  *
@@ -33,10 +35,10 @@ public class Login extends BiblioManagerBaseController {
             throws IOException, ServletException, NoSuchAlgorithmException, DataLayerException {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
-            String email = Utils.checkString(request.getParameter("username"));
+            String email = Utils.checkString(request.getParameter("email"));
             String password = Utils.checkString(request.getParameter("password"));
             if (!this.validator(request, response)) {
-                String passEncrypted = Utils.encryptPassword(password);
+                String passEncrypted = Utils.SHA1(password);
                 User user = getDataLayer().getUser(email, passEncrypted);
                 if (user != null) {
                     SecurityLayer.createSession(request, email, user.getKey());
@@ -59,7 +61,7 @@ public class Login extends BiblioManagerBaseController {
 
     private boolean validator(HttpServletRequest request, HttpServletResponse response) {
         boolean error = false;
-        String email = Utils.checkString(request.getParameter("username"));
+        String email = Utils.checkString(request.getParameter("email"));
         String password = Utils.checkString(request.getParameter("password"));
         if (email == null) {
             request.setAttribute("errorEmail", "Email non valorizzato");

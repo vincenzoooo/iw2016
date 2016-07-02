@@ -39,7 +39,7 @@ public class Reset extends BiblioManagerBaseController {
             String newPassword = Utils.checkString(request.getParameter("new-password"));
             User user = getDataLayer().getUser((int) session.getAttribute("userID"));
             if (user != null) {
-                user.setPassword(Utils.encryptPassword(newPassword));
+                user.setPassword(Utils.SHA1(newPassword));
                 getDataLayer().storeUser(user);
             }
             res.activate("login.html", request, response); //TODO: redirect to login

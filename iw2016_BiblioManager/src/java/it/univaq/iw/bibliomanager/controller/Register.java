@@ -16,6 +16,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import it.univaq.iw.bibliomanager.data.model.User;
+import java.io.UnsupportedEncodingException;
 
 /**
  *
@@ -35,13 +36,13 @@ public class Register extends BiblioManagerBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             String name = Utils.checkString(request.getParameter("name"));
             String surname = Utils.checkString(request.getParameter("surname"));
-            String password = Utils.checkString(request.getParameter("password"));
+            String password = Utils.SHA1(request.getParameter("password"));
             String email = Utils.checkString(request.getParameter("email"));
             if (!this.validator(request, response)) {
                 User newUser = getDataLayer().createUser();
                 newUser.setName(name);
                 newUser.setSurname(surname);
-                newUser.setPassword(Utils.encryptPassword(password));
+                newUser.setPassword(password);
                 newUser.setEmail(email);
                 getDataLayer().storeUser(newUser);
                 //TODO: Controllare l'invio email
@@ -58,12 +59,12 @@ public class Register extends BiblioManagerBaseController {
         }
     }
 
-    private boolean validator(HttpServletRequest request, HttpServletResponse response) {
+    private boolean validator(HttpServletRequest request, HttpServletResponse response) throws NoSuchAlgorithmException, UnsupportedEncodingException{
         boolean error = false;
         String name = Utils.checkString(request.getParameter("name"));
         String surname = Utils.checkString(request.getParameter("surname"));
-        String password = Utils.checkString(request.getParameter("password"));
-        String rePassword = Utils.checkString(request.getParameter("re-password"));
+        String password = Utils.SHA1(request.getParameter("password"));
+        String rePassword = Utils.SHA1(request.getParameter("re-password"));
         String email = Utils.checkString(request.getParameter("email"));
         String reEmail = Utils.checkString(request.getParameter("re-email"));
         String privacy = Utils.checkString(request.getParameter("privacy"));
