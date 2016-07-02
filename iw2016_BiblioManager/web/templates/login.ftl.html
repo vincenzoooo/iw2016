@@ -4,7 +4,46 @@ BiblioManager project
 Authors: Vincenzo Lanzieri, Angelo Iezzi
 Professor: Giuseppe Della Penna
 -->
+<!-- 
 <form method="post" action="signin">
     <input type="text" name="username" value=""/>
     <input type="submit" value="sign-in"/>
 </form>
+-->
+
+<div class="row">
+    <div class="col-lg-6">
+            <span class="login">Login</span>
+            <a href="registration" class="registrati">registrati</a>
+    </div>
+</div> 
+
+
+<form method="post" action="login">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="col-lg-6">Username:</div> 
+                <input class="col-lg-offset-1 col-lg-5 email" name='u' type='email' value="${username!''?html}" placeholder="Inserisci indirizzo email"  />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <div class="col-lg-6 bold">Password:</div> 
+                <input  class="col-lg-offset-1 col-lg-5" name="p" type="password" value="${password!''?html}"  placeholder="Inserisci password" />
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <span>
+                    <input type="submit" value="sign-in" name="submitLogin" />
+                </span>
+            </div>
+        </div>
+    </div>
+</form>
+<#if errorLogin??>
+<div class="error">
+    ${errorLogin?html}
+</div>
+</#if>

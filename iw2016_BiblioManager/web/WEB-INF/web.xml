@@ -44,40 +44,40 @@
         <servlet-class>it.univaq.iw.bibliomanager.controller.Login</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Register</servlet-name>
+        <servlet-name>register</servlet-name>
         <servlet-class>it.univaq.iw.bibliomanager.controller.Register</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Reset</servlet-name>
+        <servlet-name>reset</servlet-name>
         <servlet-class>it.univaq.iw.bibliomanager.controller.Reset</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Logout</servlet-name>
+        <servlet-name>logout</servlet-name>
         <servlet-class>it.univaq.iw.bibliomanager.controller.Logout</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>Profile</servlet-name>
+        <servlet-name>profile</servlet-name>
         <servlet-class>it.univaq.iw.bibliomanager.controller.Profile</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>login</servlet-name>
-        <url-pattern>/signin</url-pattern>
+        <url-pattern>/login</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Register</servlet-name>
-        <url-pattern>/register</url-pattern>
+        <servlet-name>register</servlet-name>
+        <url-pattern>/registration</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Reset</servlet-name>
+        <servlet-name>reset</servlet-name>
         <url-pattern>/reset</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Logout</servlet-name>
-        <url-pattern>/Logout</url-pattern>
+        <servlet-name>logout</servlet-name>
+        <url-pattern>/logout</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>Profile</servlet-name>
-        <url-pattern>/Profile</url-pattern>
+        <servlet-name>profile</servlet-name>
+        <url-pattern>/profile</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>
@@ -85,8 +85,12 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>signin</welcome-file>
+        <welcome-file>login</welcome-file>
     </welcome-file-list>
+    <error-page>
+        <error-code>404</error-code>
+        <location>/pageNotFound</location>
+    </error-page>
     <resource-ref>
         <res-ref-name>jdbc/iw2016</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>
