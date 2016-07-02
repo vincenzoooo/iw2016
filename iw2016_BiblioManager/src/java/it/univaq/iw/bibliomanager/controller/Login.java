@@ -35,9 +35,7 @@ public class Login extends BiblioManagerBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             String email = Utils.checkString(request.getParameter("username"));
             String password = Utils.checkString(request.getParameter("password"));
-            if (!Utils.checkEmail(email)) {
-                throw new IOException("Input error: [" + email + "] is not a correct email"); //TODO: Brutale da cambiare
-            } else {
+            if (!this.validator(request, response)) {
                 String passEncrypted = Utils.encryptPassword(password);
                 User user = getDataLayer().getUser(email, passEncrypted);
                 if (user != null) {
@@ -46,10 +44,36 @@ public class Login extends BiblioManagerBaseController {
                     request.setAttribute("user", user);
                     res.activate("index.html", request, response);//TODO: Definire la home page
                 }
+                else{
+                    request.setAttribute("message", "Credenziali errate, si invita a riprovare o ad iscriversi");
+                    res.activate("login.ftl.html", request, response);
+                }
+            }
+            else{
+                res.activate("login.ftl.html", request, response);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel trovare l'utente: " + ex.getMessage());
         }
+    }
+
+    private boolean validator(HttpServletRequest request, HttpServletResponse response) {
+        boolean error = false;
+        String email = Utils.checkString(request.getParameter("username"));
+        String password = Utils.checkString(request.getParameter("password"));
+        if (email == null) {
+            request.setAttribute("errorEmail", "Email non valorizzato");
+            error = true;
+        }
+        if (password == null) {
+            request.setAttribute("errorPassword", "Password non valorizzato");
+            error = true;
+        }
+        if (!Utils.checkEmail(email)) {
+            request.setAttribute("errorEmail", "L'Email non è nel formato corretto");
+            error = true;
+        }
+        return error;
     }
 
     /**
@@ -64,7 +88,7 @@ public class Login extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            if (request.getParameterNames() != null && request.getParameter("username") != null && request.getParameter("password") != null && SecurityLayer.checkSession(request) == null) {
+            if (request.getParameter("submitLogin") != null && SecurityLayer.checkSession(request) == null) {
                 action_login(request, response);
             } else {
                 action_default(request, response);
