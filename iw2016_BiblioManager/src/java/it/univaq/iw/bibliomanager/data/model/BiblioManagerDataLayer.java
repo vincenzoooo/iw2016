@@ -32,7 +32,7 @@ public interface BiblioManagerDataLayer extends DataLayer{
     Metadata getMetadata(int metadata_key) throws DataLayerException;
     List<Metadata> getMetadatas() throws DataLayerException;
     Publication getPublication(int publication_key) throws DataLayerException;
-    List<Publication> getPublication() throws DataLayerException;
+    List<Publication> getPublications() throws DataLayerException;
     Review getReview(int review_key) throws DataLayerException;
     List<Review> getReviews() throws DataLayerException;
     Reprint getReprint(int reprint_key) throws DataLayerException;

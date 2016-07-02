@@ -54,7 +54,7 @@ public class AuthorImpl extends BeanImpl implements Author{
     @Override
     public List<Publication> getPublications() throws DataLayerException {
         if(publications == null){
-            publications = this.ownerDataLayer.getPublication();
+            publications = this.ownerDataLayer.getPublications();
         }
         return publications;
     }
