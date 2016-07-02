@@ -6,29 +6,29 @@
  */
 package it.univaq.iw.bibliomanager.data.impl;
 
-import it.univaq.iw.bibliomanager.data.model.Autore;
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
-import it.univaq.iw.bibliomanager.data.model.Pubblicazione;
-import it.univaq.iw.framework.data.DataLayerException;
-import java.util.List;
+import it.univaq.iw.bibliomanager.data.model.User;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public class AutoreImpl extends BeanImpl implements Autore{    
+public class UserImpl extends BeanImpl implements User{    
     private String name;
     private String surname;
-    private List<Pubblicazione> publications;
-    
+    private String password;
+    private String email;
+    private int state;
     protected BiblioManagerDataLayer ownerDataLayer;
 
-    public AutoreImpl(BiblioManagerDataLayer ownerDataLayer) {
+    public UserImpl(BiblioManagerDataLayer ownerDataLayer) {
         super();
         this.ownerDataLayer = ownerDataLayer;        
-        this.name = "";
-        this.surname = "";
-        this.publications = null;
+        name = "";
+        surname = "";
+        password = "";
+        email = "";
+        state = 2;              
     }
 
     @Override
@@ -52,16 +52,34 @@ public class AutoreImpl extends BeanImpl implements Autore{
     }
 
     @Override
-    public List<Pubblicazione> getPublications() throws DataLayerException {
-        if(publications == null){
-            publications = this.ownerDataLayer.getPublication();
-        }
-        return publications;
+    public String getPassword() {
+        return password;
     }
 
     @Override
-    public void setPublication(List<Pubblicazione> publications) {
-        this.publications = publications;
+    public void setPassword(String password) {
+        this.password = password;
     }
-        
+
+    @Override
+    public String getEmail() {
+        return email;      
+    }
+
+    @Override
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    @Override
+    public int getState() {
+        return state;
+    }
+
+    @Override
+    public void setState(int state) {
+        this.state = state;
+    }
+    
+    
 }

@@ -7,28 +7,28 @@
 package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
-import it.univaq.iw.bibliomanager.data.model.Storico;
-import it.univaq.iw.bibliomanager.data.model.Utente;
-import it.univaq.iw.bibliomanager.data.model.Pubblicazione;
 import it.univaq.iw.framework.data.DataLayerException;
 import java.sql.Timestamp;
+import it.univaq.iw.bibliomanager.data.model.Publication;
+import it.univaq.iw.bibliomanager.data.model.History;
+import it.univaq.iw.bibliomanager.data.model.User;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public class StoricoImpl implements Storico{
+public class HistoryImpl implements History{
     private int key;
     private String entry;
     private int type;
     private Timestamp timestamp;
     private int publication_key;
-    private Pubblicazione publication;
+    private Publication publication;
     private int user_key;
-    private Utente user;
+    private User user;
     protected BiblioManagerDataLayer ownerDataLayer;
 
-    public StoricoImpl(BiblioManagerDataLayer ownerDataLayer) {
+    public HistoryImpl(BiblioManagerDataLayer ownerDataLayer) {
         this.ownerDataLayer = ownerDataLayer;
         key = 0;
         entry = "";
@@ -76,7 +76,7 @@ public class StoricoImpl implements Storico{
     }
 
     @Override
-    public Pubblicazione getPublication() throws DataLayerException {
+    public Publication getPublication() throws DataLayerException {
         if (publication == null && publication_key > 0) {
             publication = ownerDataLayer.getPublication(publication_key);
         }
@@ -84,12 +84,12 @@ public class StoricoImpl implements Storico{
     }
 
     @Override
-    public void setPublication(Pubblicazione publication) {
+    public void setPublication(Publication publication) {
         this.publication = publication;
     }
 
     @Override
-    public Utente getUser() throws DataLayerException {
+    public User getUser() throws DataLayerException {
         if (user == null && user_key > 0) {
             user = ownerDataLayer.getUser(user_key);
         }
@@ -97,7 +97,7 @@ public class StoricoImpl implements Storico{
     }
 
     @Override
-    public void setUser(Utente user) {
+    public void setUser(User user) {
         this.user = user;
     }
     

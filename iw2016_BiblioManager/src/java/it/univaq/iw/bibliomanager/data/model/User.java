@@ -12,7 +12,7 @@ import it.univaq.iw.framework.data.DataLayerException;
  *
  * @author Vincenzo Lanzieri
  */
-public interface Utente {
+public interface User {
     int getKey();
 
     String getName();

@@ -7,17 +7,17 @@
 package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
-import it.univaq.iw.bibliomanager.data.model.Metadato;
-import it.univaq.iw.bibliomanager.data.model.Pubblicazione;
 import it.univaq.iw.framework.data.DataLayerException;
 import java.sql.Date;
 import java.util.List;
+import it.univaq.iw.bibliomanager.data.model.Metadata;
+import it.univaq.iw.bibliomanager.data.model.Publication;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public class MetadatoImpl implements Metadato{
+public class MetadataImpl implements Metadata{
     private int key;
     private int isbn;
     private int pageNumber;
@@ -25,10 +25,10 @@ public class MetadatoImpl implements Metadato{
     private Date publicationDate;
     private List<String> keywords;
     private int publication_key;
-    private Pubblicazione publication;
+    private Publication publication;
     protected BiblioManagerDataLayer ownerDataLayer;
 
-    public MetadatoImpl(BiblioManagerDataLayer ownerDataLayer) {
+    public MetadataImpl(BiblioManagerDataLayer ownerDataLayer) {
         this.ownerDataLayer = ownerDataLayer;
         key = 0;
         isbn = 0;
@@ -96,7 +96,7 @@ public class MetadatoImpl implements Metadato{
     }
 
     @Override
-    public Pubblicazione getPublication() throws DataLayerException {
+    public Publication getPublication() throws DataLayerException {
         if (publication == null && publication_key > 0) {
             publication = ownerDataLayer.getPublication(publication_key);
         }
@@ -104,7 +104,7 @@ public class MetadatoImpl implements Metadato{
     }
 
     @Override
-    public void setPublication(Pubblicazione publication) {
+    public void setPublication(Publication publication) {
         this.publication = publication;
     }
     

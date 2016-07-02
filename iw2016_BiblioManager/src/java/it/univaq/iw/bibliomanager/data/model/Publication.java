@@ -13,12 +13,12 @@ import java.util.List;
  *
  * @author Vincenzo Lanzieri
  */
-public interface Pubblicazione {
+public interface Publication {
     int getKey();
 
-    List<Autore> getAuthors() throws DataLayerException;
+    List<Author> getAuthors() throws DataLayerException;
 
-    void setAuthor(List<Autore> authors);
+    void setAuthor(List<Author> authors);
 
     String getTitle();
 
@@ -28,9 +28,9 @@ public interface Pubblicazione {
 
     void setDescription(String description);
     
-    Editore getEditor() throws DataLayerException;
+    Editor getEditor() throws DataLayerException;
     
-    void setEditor(Editore editor);
+    void setEditor(Editor editor);
     
     List<String> getIndex();
     
@@ -40,20 +40,20 @@ public interface Pubblicazione {
     
     void setNumberOfLikes();
 
-    List<Sorgente> getSources() throws DataLayerException;
+    List<Source> getSources() throws DataLayerException;
     
-    void setSources(List<Sorgente> sources);
+    void setSources(List<Source> sources);
     
-    List<Metadato> getMetadatas() throws DataLayerException;
+    List<Metadata> getMetadatas() throws DataLayerException;
     
-    void setMetadatas(List<Metadato> metadatas);
+    void setMetadatas(List<Metadata> metadatas);
     
-    List<Ristampa> getReprints() throws DataLayerException;
+    List<Reprint> getReprints() throws DataLayerException;
     
-    void setReprints(List<Ristampa> reprints);
+    void setReprints(List<Reprint> reprints);
     
     //--
-    void copyFrom(Pubblicazione publication) throws DataLayerException;
+    void copyFrom(Publication publication) throws DataLayerException;
 
     void setDirty(boolean dirty);
 

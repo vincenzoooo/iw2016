@@ -6,19 +6,17 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
-import it.univaq.iw.bibliomanager.data.impl.UtenteImpl;
-import it.univaq.iw.bibliomanager.data.model.Utente;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.security.NoSuchAlgorithmException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import it.univaq.iw.bibliomanager.data.model.User;
 
 /**
  *
@@ -27,26 +25,48 @@ import javax.servlet.http.HttpSession;
 public class Profile extends BiblioManagerBaseController {
 
     private void action_profile(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException {
-        HttpSession session = SecurityLayer.checkSession(request);
-        int userKey = (int) session.getAttribute("userid");
-        Utente user = getDataLayer().getUser(userKey);
-        request.setAttribute("user", user);
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("profile.ftl.html", request, response);
+        try{
+            HttpSession session = SecurityLayer.checkSession(request);
+            int userKey = 0;
+            if(request.getParameter("userkey") != null){
+                userKey = Integer.parseInt(request.getParameter("userkey"));
+                //TODO: Gestire la modifica in caso non si è il proprietario del profilo
+            }
+            else{
+                userKey = (int) session.getAttribute("userid");
+            }
+            User user = getDataLayer().getUser(userKey);
+            request.setAttribute("user", user);
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("profile.ftl.html", request, response);
+        }
+        catch(DataLayerException ex){
+            action_error(request, response, "Error: " + ex.getMessage());
+        }
     }
 
     private void action_save(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException, NoSuchAlgorithmException {
-        HttpSession session = SecurityLayer.checkSession(request);
-        int userKey = (int) session.getAttribute("userid");
-        Utente user = getDataLayer().getUser(userKey);
-        String password = Utils.encryptPassword(request.getParameter("password"));
-        if (!password.equals(user.getPassword())) {
-            user.setPassword(password);
+        try {
+            HttpSession session = SecurityLayer.checkSession(request);
+            int userKey = 0;
+            if(request.getParameter("userkey") != null){
+                userKey = Integer.parseInt(request.getParameter("userkey"));
+            }
+            else{
+                userKey = (int) session.getAttribute("userid");
+            }
+            User user = getDataLayer().getUser(userKey);
+            String password = Utils.encryptPassword(request.getParameter("password"));
+            if (!password.equals(user.getPassword())) {
+                user.setPassword(password);
+            }
+            getDataLayer().storeUser(user);
+            request.setAttribute("user", user);
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("profile.ftl.html", request, response);
+        } catch (DataLayerException ex) {
+            action_error(request, response, "Error: " + ex.getMessage());
         }
-        getDataLayer().storeUser(user);
-        request.setAttribute("user", user);
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("profile.ftl.html", request, response);
     }
 
     private void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

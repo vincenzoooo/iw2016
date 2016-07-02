@@ -11,7 +11,7 @@ package it.univaq.iw.bibliomanager.data.model;
  *
  * @author Vincenzo Lanzieri
  */
-public interface Editore {
+public interface Editor {
     int getKey();
     
     String getName();

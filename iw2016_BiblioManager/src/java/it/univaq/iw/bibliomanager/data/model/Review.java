@@ -12,7 +12,7 @@ import it.univaq.iw.framework.data.DataLayerException;
  *
  * @author Vincenzo Lanzieri
  */
-public interface Recensione {
+public interface Review {
     int getKey();
     
     String getText();
@@ -23,15 +23,15 @@ public interface Recensione {
     
     void setStatus(Boolean status);
     
-    Utente getAuthor() throws DataLayerException;
+    User getAuthor() throws DataLayerException;
     
-    void setAuthor(Utente author);
+    void setAuthor(User author);
     
-    Pubblicazione getPubblication() throws DataLayerException;
+    Publication getPubblication() throws DataLayerException;
     
-    void setPublication(Pubblicazione publication);
+    void setPublication(Publication publication);
     
-    Storico getArchive() throws DataLayerException;
+    History getArchive() throws DataLayerException;
     
-    void setArchive(Storico archive);
+    void setArchive(History archive);
 }

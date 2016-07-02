@@ -7,29 +7,29 @@
 package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
-import it.univaq.iw.bibliomanager.data.model.Recensione;
-import it.univaq.iw.bibliomanager.data.model.Storico;
-import it.univaq.iw.bibliomanager.data.model.Utente;
-import it.univaq.iw.bibliomanager.data.model.Pubblicazione;
 import it.univaq.iw.framework.data.DataLayerException;
+import it.univaq.iw.bibliomanager.data.model.Publication;
+import it.univaq.iw.bibliomanager.data.model.Review;
+import it.univaq.iw.bibliomanager.data.model.History;
+import it.univaq.iw.bibliomanager.data.model.User;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public class RecensioneImpl implements Recensione{
+public class ReviewImpl implements Review{
     private int key;
     private String text;
     private boolean status;
     private int archive_key;
-    private Storico archive;
+    private History archive;
     private int user_key;
-    private Utente author;
+    private User author;
     private int publication_key;
-    private Pubblicazione publication;
+    private Publication publication;
     protected BiblioManagerDataLayer ownerDataLayer;
 
-    public RecensioneImpl(BiblioManagerDataLayer ownerDataLayer) {
+    public ReviewImpl(BiblioManagerDataLayer ownerDataLayer) {
         this.ownerDataLayer = ownerDataLayer;
         key = 0;
         text = "";        
@@ -68,7 +68,7 @@ public class RecensioneImpl implements Recensione{
     }
 
     @Override
-    public Storico getArchive() throws DataLayerException {
+    public History getArchive() throws DataLayerException {
         if (archive == null && archive_key > 0) {
             archive = ownerDataLayer.getArchive(archive_key);
         }
@@ -76,12 +76,12 @@ public class RecensioneImpl implements Recensione{
     }
 
     @Override
-    public void setArchive(Storico archive) {
+    public void setArchive(History archive) {
         this.archive = archive;
     }
 
     @Override
-    public Utente getAuthor() throws DataLayerException {
+    public User getAuthor() throws DataLayerException {
         if (author == null && user_key > 0) {
             author = ownerDataLayer.getUser(user_key);
         }
@@ -89,12 +89,12 @@ public class RecensioneImpl implements Recensione{
     }
 
     @Override
-    public void setAuthor(Utente author) {
+    public void setAuthor(User author) {
         this.author = author;
     }
 
     @Override
-    public Pubblicazione getPubblication() throws DataLayerException {
+    public Publication getPubblication() throws DataLayerException {
         if (publication == null && publication_key > 0) {
             publication = ownerDataLayer.getPublication(publication_key);
         }
@@ -102,7 +102,7 @@ public class RecensioneImpl implements Recensione{
     }
 
     @Override
-    public void setPublication(Pubblicazione publication) {
+    public void setPublication(Publication publication) {
         this.publication = publication;
     }
         

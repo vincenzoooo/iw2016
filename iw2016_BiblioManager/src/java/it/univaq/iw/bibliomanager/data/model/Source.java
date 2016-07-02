@@ -12,7 +12,7 @@ import it.univaq.iw.framework.data.DataLayerException;
  *
  * @author Vincenzo Lanzieri
  */
-public interface Sorgente {
+public interface Source {
     int getKey();
     
     String getType();
@@ -31,7 +31,7 @@ public interface Sorgente {
     
     void setDescription(String description);
     
-    Pubblicazione getPublication() throws DataLayerException;
+    Publication getPublication() throws DataLayerException;
     
-    void setPublication(Pubblicazione publication);
+    void setPublication(Publication publication);
 }

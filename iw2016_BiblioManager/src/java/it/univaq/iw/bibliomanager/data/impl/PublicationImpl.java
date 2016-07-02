@@ -6,36 +6,36 @@
  */
 package it.univaq.iw.bibliomanager.data.impl;
 
-import it.univaq.iw.bibliomanager.data.model.Pubblicazione;
-import it.univaq.iw.bibliomanager.data.model.Editore;
-import it.univaq.iw.bibliomanager.data.model.Autore;
-import it.univaq.iw.bibliomanager.data.model.Metadato;
-import it.univaq.iw.bibliomanager.data.model.Ristampa;
-import it.univaq.iw.bibliomanager.data.model.Sorgente;
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.framework.data.DataLayerException;
 import java.util.List;
+import it.univaq.iw.bibliomanager.data.model.Author;
+import it.univaq.iw.bibliomanager.data.model.Editor;
+import it.univaq.iw.bibliomanager.data.model.Metadata;
+import it.univaq.iw.bibliomanager.data.model.Publication;
+import it.univaq.iw.bibliomanager.data.model.Reprint;
+import it.univaq.iw.bibliomanager.data.model.Source;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public class PubblicazioneImpl implements Pubblicazione{
+public class PublicationImpl implements Publication{
     private int key;
     private String title;
     private String description;
     private List<String> index;
     private int like;
     private int editor_key;
-    private Editore editor;
-    private List<Autore> authors;
-    private List<Sorgente> sources;
-    private List<Metadato> metadatas;
-    private List<Ristampa> reprints;
+    private Editor editor;
+    private List<Author> authors;
+    private List<Source> sources;
+    private List<Metadata> metadatas;
+    private List<Reprint> reprints;
     protected BiblioManagerDataLayer ownerDataLayer;
     protected boolean dirty;    
 
-    public PubblicazioneImpl(BiblioManagerDataLayer ownerDataLayer) {
+    public PublicationImpl(BiblioManagerDataLayer ownerDataLayer) {
         this.ownerDataLayer = ownerDataLayer;
         key = 0;
         title = "";
@@ -97,7 +97,7 @@ public class PubblicazioneImpl implements Pubblicazione{
     }
 
     @Override
-    public Editore getEditor() throws DataLayerException {
+    public Editor getEditor() throws DataLayerException {
         if (editor == null && editor_key > 0) {
             editor = ownerDataLayer.getEditor(editor_key);
         }
@@ -105,12 +105,12 @@ public class PubblicazioneImpl implements Pubblicazione{
     }
 
     @Override
-    public void setEditor(Editore editor) {
+    public void setEditor(Editor editor) {
         this.editor = editor;
     }
 
     @Override
-    public List<Autore> getAuthors() throws DataLayerException {
+    public List<Author> getAuthors() throws DataLayerException {
         if (authors == null) {
             authors = ownerDataLayer.getAuthors();
         }
@@ -118,12 +118,12 @@ public class PubblicazioneImpl implements Pubblicazione{
     }
 
     @Override
-    public void setAuthor(List<Autore> authors) {
+    public void setAuthor(List<Author> authors) {
         this.authors = authors;
     }
 
     @Override
-    public List<Sorgente> getSources() throws DataLayerException {
+    public List<Source> getSources() throws DataLayerException {
         if (sources == null) {
             sources = ownerDataLayer.getSource();
         }
@@ -131,12 +131,12 @@ public class PubblicazioneImpl implements Pubblicazione{
     }
 
     @Override
-    public void setSources(List<Sorgente> sources) {
+    public void setSources(List<Source> sources) {
         this.sources = sources;
     }
 
     @Override
-    public List<Metadato> getMetadatas() throws DataLayerException {
+    public List<Metadata> getMetadatas() throws DataLayerException {
         if (metadatas == null) {
             metadatas = ownerDataLayer.getMetadatas();
         }
@@ -144,12 +144,12 @@ public class PubblicazioneImpl implements Pubblicazione{
     }
 
     @Override
-    public void setMetadatas(List<Metadato> metadatas) {
+    public void setMetadatas(List<Metadata> metadatas) {
         this.metadatas = metadatas;
     }
 
     @Override
-    public List<Ristampa> getReprints() throws DataLayerException {
+    public List<Reprint> getReprints() throws DataLayerException {
         if (reprints == null) {
             reprints = ownerDataLayer.getReprints();
         }
@@ -157,7 +157,7 @@ public class PubblicazioneImpl implements Pubblicazione{
     }
 
     @Override
-    public void setReprints(List<Ristampa> reprints) {
+    public void setReprints(List<Reprint> reprints) {
         this.reprints = reprints;
     }
 
@@ -172,7 +172,7 @@ public class PubblicazioneImpl implements Pubblicazione{
     }
 
     @Override
-    public void copyFrom(Pubblicazione publication) throws DataLayerException {
+    public void copyFrom(Publication publication) throws DataLayerException {
         key = publication.getKey();
         title = publication.getTitle();
         description = publication.getDescription();

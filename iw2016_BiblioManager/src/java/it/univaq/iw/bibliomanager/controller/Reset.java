@@ -6,7 +6,6 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
-import it.univaq.iw.bibliomanager.data.model.Utente;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
@@ -18,6 +17,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import it.univaq.iw.bibliomanager.data.model.User;
 
 /**
  *
@@ -37,7 +37,7 @@ public class Reset extends BiblioManagerBaseController {
         if (request.getAttribute("rs") == session.getAttribute("rs")) {
             TemplateResult res = new TemplateResult(getServletContext());
             String newPassword = Utils.checkString(request.getParameter("new-password"));
-            Utente user = getDataLayer().getUser((int) session.getAttribute("userID"));
+            User user = getDataLayer().getUser((int) session.getAttribute("userID"));
             if (user != null) {
                 user.setPassword(Utils.encryptPassword(newPassword));
                 getDataLayer().storeUser(user);
@@ -53,7 +53,7 @@ public class Reset extends BiblioManagerBaseController {
         HttpSession session = SecurityLayer.checkSession(request);
         session.setAttribute("rs", (int) (Math.random() * 1000));
         String email = Utils.checkString("email");
-        Utente user = getDataLayer().getUser(email);
+        User user = getDataLayer().getUser(email);
         if (user != null) {
             String text = "Here the link to reset your password: http://localhost:8084/bibliomanager/reset?rs=" + session.getAttribute("rs");
             Utils.sendEmail(email, text);

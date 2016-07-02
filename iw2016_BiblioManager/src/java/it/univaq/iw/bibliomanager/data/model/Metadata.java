@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Vincenzo Lanzieri
  */
-public interface Metadato {
+public interface Metadata {
     int getKey();
 
     int getISBN();
@@ -37,7 +37,7 @@ public interface Metadato {
 
     void setKeywords(List<String> keywords);
     
-    Pubblicazione getPublication() throws DataLayerException;
+    Publication getPublication() throws DataLayerException;
     
-    void setPublication(Pubblicazione publication);
+    void setPublication(Publication publication);
 }

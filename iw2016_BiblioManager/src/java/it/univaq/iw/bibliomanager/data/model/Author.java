@@ -7,24 +7,24 @@
 package it.univaq.iw.bibliomanager.data.model;
 
 import it.univaq.iw.framework.data.DataLayerException;
-import java.sql.Date;
+import java.util.List;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public interface Ristampa {
+public interface Author {
     int getKey();
     
-    int getNumber();
+    List<Publication> getPublications() throws DataLayerException;
 
-    void setNumber(int number);
+    void setPublication(List<Publication> publications);
     
-    Date getDate();
-
-    void setDate(Date date);
+    String getName();
     
-    Pubblicazione getPublication() throws DataLayerException;
+    void setName(String name);
     
-    void setPublication(Pubblicazione publication);
+    String getSurname();
+    
+    void setSurname(String surname);
 }

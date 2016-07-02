@@ -6,25 +6,26 @@
  */
 package it.univaq.iw.bibliomanager.data.impl;
 
-import it.univaq.iw.bibliomanager.data.model.Autore;
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
-import it.univaq.iw.bibliomanager.data.model.Editore;
-import it.univaq.iw.bibliomanager.data.model.Metadato;
-import it.univaq.iw.bibliomanager.data.model.Pubblicazione;
-import it.univaq.iw.bibliomanager.data.model.Recensione;
-import it.univaq.iw.bibliomanager.data.model.Ristampa;
-import it.univaq.iw.bibliomanager.data.model.Sorgente;
-import it.univaq.iw.bibliomanager.data.model.Storico;
-import it.univaq.iw.bibliomanager.data.model.Utente;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.data.DataLayerMysqlImpl;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
+import it.univaq.iw.bibliomanager.data.model.Author;
+import it.univaq.iw.bibliomanager.data.model.Editor;
+import it.univaq.iw.bibliomanager.data.model.Metadata;
+import it.univaq.iw.bibliomanager.data.model.Publication;
+import it.univaq.iw.bibliomanager.data.model.Review;
+import it.univaq.iw.bibliomanager.data.model.Reprint;
+import it.univaq.iw.bibliomanager.data.model.Source;
+import it.univaq.iw.bibliomanager.data.model.History;
+import it.univaq.iw.bibliomanager.data.model.User;
 
 /**
  *
@@ -33,7 +34,7 @@ import javax.sql.DataSource;
 public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implements BiblioManagerDataLayer {
 
     //Statements declaration
-    private PreparedStatement sUserByEmail, sUserByEmailPassword;
+    private PreparedStatement sUsers, sUserByEmail, sUserByEmailPassword, sUserById;
     private PreparedStatement uUser, iUser;
 
     public BiblioManagerDataLayerMysqlImpl(DataSource datasource) throws SQLException, NamingException {
@@ -45,8 +46,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             super.init();
             //Statement inizializzazione
+            this.sUsers = connection.prepareStatement("SELECT * FROM iw2016.utente");
             this.sUserByEmail = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE email = ?");
             this.sUserByEmailPassword = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE email = ? AND password = ?");
+            this.sUserById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idutente = ?");
             this.uUser = connection.prepareStatement("UPDATE iw2016.utente SET nome = ?, cognome = ?, password = ?, email = ?, stato = ? WHERE idutente = ?");
             this.iUser = connection.prepareStatement("INSERT INTO iw2016.utente (nome, cognome, password, email, stato) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         } catch (SQLException ex) {
@@ -56,53 +59,53 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     //Implemented methods
 
     @Override
-    public Autore createAuthor() {
+    public Author createAuthor() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Editore createEditor() {
+    public Editor createEditor() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Metadato createMetadata() {
+    public Metadata createMetadata() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Pubblicazione createPubblicazione() {
+    public Publication createPubblicazione() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Recensione createReview() {
+    public Review createReview() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Ristampa createReprint() {
+    public Reprint createReprint() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Sorgente createSource() {
+    public Source createSource() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Storico createArchive() {
+    public History createArchive() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Utente createUser() {
-        return new UtenteImpl(this);
+    public User createUser() {
+        return new UserImpl(this);
     }
 
-    public Utente createUser(ResultSet rs) throws DataLayerException {
+    public User createUser(ResultSet rs) throws DataLayerException {
         try {
-            UtenteImpl user = new UtenteImpl(this);
+            UserImpl user = new UserImpl(this);
             user.setKey(rs.getInt("idutente"));
             user.setName(rs.getString("nome"));
             user.setSurname(rs.getString("cognome"));
@@ -114,93 +117,112 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public Autore getAuthor(int author_key) throws DataLayerException {
+    public Author getAuthor(int author_key) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Autore> getAuthors() throws DataLayerException {
+    public List<Author> getAuthors() throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Editore getEditor(int editor_key) throws DataLayerException {
+    public Editor getEditor(int editor_key) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Editore> getEditors() throws DataLayerException {
+    public List<Editor> getEditors() throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Metadato getMetadata(int metadata_key) throws DataLayerException {
+    public Metadata getMetadata(int metadata_key) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Metadato> getMetadatas() throws DataLayerException {
+    public List<Metadata> getMetadatas() throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Pubblicazione getPublication(int publication_key) throws DataLayerException {
+    public Publication getPublication(int publication_key) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Pubblicazione> getPublication() throws DataLayerException {
+    public List<Publication> getPublication() throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Recensione getReview(int review_key) throws DataLayerException {
+    public Review getReview(int review_key) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Recensione> getReviews() throws DataLayerException {
+    public List<Review> getReviews() throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Ristampa getReprint(int reprint_key) throws DataLayerException {
+    public Reprint getReprint(int reprint_key) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Ristampa> getReprints() throws DataLayerException {
+    public List<Reprint> getReprints() throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Sorgente getSource(int source_key) throws DataLayerException {
+    public Source getSource(int source_key) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Sorgente> getSource() throws DataLayerException {
+    public List<Source> getSource() throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Storico getArchive(int historia_key) throws DataLayerException {
+    public History getArchive(int historia_key) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public List<Storico> getArchives() throws DataLayerException {
+    public List<History> getArchives() throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public Utente getUser(int user_key) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public User getUser(int user_key) throws DataLayerException {
+        User result = null;
+        ResultSet rs = null;
+        try {
+            sUserById.setInt(1, user_key);
+            rs = sUserById.executeQuery();
+            if (rs.next()) {
+                result = createUser(rs);
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load user by id", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
     }
 
     @Override
-    public Utente getUser(String email) throws DataLayerException {
-        Utente result = null;
+    public User getUser(String email) throws DataLayerException {
+        User result = null;
         ResultSet rs = null;
         try {
             sUserByEmail.setString(1, email);
@@ -223,8 +245,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public Utente getUser(String email, String password) throws DataLayerException {
-        Utente result = null;
+    public User getUser(String email, String password) throws DataLayerException {
+        User result = null;
         ResultSet rs = null;
         try {
             sUserByEmailPassword.setString(1, email);
@@ -234,7 +256,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 result = createUser(rs);
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load user by Email", ex);
+            throw new DataLayerException("Unable to load user for login", ex);
         } finally {
             try {
                 if (rs != null) {
@@ -248,52 +270,71 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<Utente> getUsers() throws DataLayerException {
+    public List<User> getUsers() throws DataLayerException {
+        List<User> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            rs = sUsers.executeQuery();
+            while (rs.next()) {
+                result.add(getUser(rs.getInt("idutente")));
+
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load users", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public void storeAuthor(Author author) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void storeAuthor(Autore author) throws DataLayerException {
+    public void storeEditor(Editor editor) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void storeEditor(Editore editor) throws DataLayerException {
+    public void storeMetadata(Metadata metadata) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void storeMetadata(Metadato metadata) throws DataLayerException {
+    public void storePublication(Publication publication) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void storePublication(Pubblicazione publication) throws DataLayerException {
+    public void storeReview(Review review) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void storeReview(Recensione review) throws DataLayerException {
+    public void storeReprint(Reprint reprint) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void storeReprint(Ristampa reprint) throws DataLayerException {
+    public void storeSource(Source source) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void storeSource(Sorgente source) throws DataLayerException {
+    public void storeArchive(History historia) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void storeArchive(Storico historia) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    @Override
-    public void storeUser(Utente user) throws DataLayerException {
+    public void storeUser(User user) throws DataLayerException {
         ResultSet keys = null;
         int key = user.getKey();
         try {

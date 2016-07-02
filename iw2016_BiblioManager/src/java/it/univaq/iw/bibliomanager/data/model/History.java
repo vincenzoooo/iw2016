@@ -13,7 +13,7 @@ import java.sql.Timestamp;
  *
  * @author Vincenzo Lanzieri
  */
-public interface Storico {
+public interface History {
     int getKey();
     
     String getEntry();
@@ -28,12 +28,12 @@ public interface Storico {
     
     void setTimestamp(Timestamp timestamp);
     
-    Pubblicazione getPublication() throws DataLayerException;
+    Publication getPublication() throws DataLayerException;
     
-    void setPublication(Pubblicazione publication);
+    void setPublication(Publication publication);
     
-    Utente getUser() throws DataLayerException;
+    User getUser() throws DataLayerException;
 
-    void setUser(Utente user);
+    void setUser(User user);
     
 }

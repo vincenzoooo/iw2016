@@ -7,24 +7,24 @@
 package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
-import it.univaq.iw.bibliomanager.data.model.Ristampa;
-import it.univaq.iw.bibliomanager.data.model.Pubblicazione;
 import it.univaq.iw.framework.data.DataLayerException;
 import java.sql.Date;
+import it.univaq.iw.bibliomanager.data.model.Publication;
+import it.univaq.iw.bibliomanager.data.model.Reprint;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public class RistampaImpl implements Ristampa{
+public class ReprintImpl implements Reprint{
     private int key;
     private int number;
     private Date date;
     private int publication_key;
-    private Pubblicazione publication;
+    private Publication publication;
     protected BiblioManagerDataLayer ownerDataLayer;
 
-    public RistampaImpl(BiblioManagerDataLayer ownerDataLayer) {
+    public ReprintImpl(BiblioManagerDataLayer ownerDataLayer) {
         this.ownerDataLayer = ownerDataLayer;
         key = 0;
         number = 0;
@@ -59,7 +59,7 @@ public class RistampaImpl implements Ristampa{
     }
 
     @Override
-    public Pubblicazione getPublication() throws DataLayerException {
+    public Publication getPublication() throws DataLayerException {
         if (publication == null && publication_key > 0) {
             publication = ownerDataLayer.getPublication(publication_key);
         }
@@ -67,7 +67,7 @@ public class RistampaImpl implements Ristampa{
     }
 
     @Override
-    public void setPublication(Pubblicazione publication) {
+    public void setPublication(Publication publication) {
         this.publication = publication;
     }
     

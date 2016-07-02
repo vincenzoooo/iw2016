@@ -7,25 +7,25 @@
 package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
-import it.univaq.iw.bibliomanager.data.model.Sorgente;
-import it.univaq.iw.bibliomanager.data.model.Pubblicazione;
 import it.univaq.iw.framework.data.DataLayerException;
+import it.univaq.iw.bibliomanager.data.model.Publication;
+import it.univaq.iw.bibliomanager.data.model.Source;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public class SorgenteImpl implements Sorgente{
+public class SourceImpl implements Source{
     private int key;
     private String type;
     private String uri;
     private String format;
     private String description;
     private int publication_key;
-    private Pubblicazione publication;
+    private Publication publication;
     protected BiblioManagerDataLayer ownerDataLayer;
 
-    public SorgenteImpl(BiblioManagerDataLayer ownerDataLayer) {
+    public SourceImpl(BiblioManagerDataLayer ownerDataLayer) {
         this.ownerDataLayer = ownerDataLayer;
         key = 0;
         type = "";
@@ -82,7 +82,7 @@ public class SorgenteImpl implements Sorgente{
     }
 
     @Override
-    public Pubblicazione getPublication() throws DataLayerException {
+    public Publication getPublication() throws DataLayerException {
         if (publication == null && publication_key > 0) {
             publication = ownerDataLayer.getPublication(publication_key);
         }
@@ -90,7 +90,7 @@ public class SorgenteImpl implements Sorgente{
     }
 
     @Override
-    public void setPublication(Pubblicazione publication) {
+    public void setPublication(Publication publication) {
         this.publication = publication;
     }
         

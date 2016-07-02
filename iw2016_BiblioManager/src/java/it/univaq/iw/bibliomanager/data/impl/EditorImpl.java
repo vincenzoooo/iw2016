@@ -7,18 +7,18 @@
 package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
-import it.univaq.iw.bibliomanager.data.model.Editore;
+import it.univaq.iw.bibliomanager.data.model.Editor;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public class EditoreImpl implements Editore{
+public class EditorImpl implements Editor{
     private int key;
     private String name;    
     protected BiblioManagerDataLayer ownerDataLayer;
 
-    public EditoreImpl(BiblioManagerDataLayer ownerDataLayer) {        
+    public EditorImpl(BiblioManagerDataLayer ownerDataLayer) {        
         this.ownerDataLayer = ownerDataLayer;
         key = 0;
         name = "";        

@@ -9,13 +9,13 @@ package it.univaq.iw.bibliomanager.controller;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
-import it.univaq.iw.bibliomanager.data.model.Utente;
 import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import it.univaq.iw.bibliomanager.data.model.User;
 
 /**
  *
@@ -31,20 +31,24 @@ public class Login extends BiblioManagerBaseController {
 
     private void action_login(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, NoSuchAlgorithmException, DataLayerException {
-        TemplateResult res = new TemplateResult(getServletContext());
-        String email = Utils.checkString(request.getParameter("username"));
-        String password = Utils.checkString(request.getParameter("password"));
-        if (!Utils.checkEmail(email)) {
-            throw new IOException("Input error: [" + email + "] is not a correct email"); //TODO: Brutale da cambiare
-        } else {
-            String passEncrypted = Utils.encryptPassword(password);
-            Utente user = getDataLayer().getUser(email, passEncrypted);
-            if (user != null) {
-                SecurityLayer.createSession(request, email, user.getKey());
-                request.setAttribute("page_title", "Benvenuto");
-                request.setAttribute("user", user);
-                res.activate("index.html", request, response);//TODO: Definire la home page
+        try {
+            TemplateResult res = new TemplateResult(getServletContext());
+            String email = Utils.checkString(request.getParameter("username"));
+            String password = Utils.checkString(request.getParameter("password"));
+            if (!Utils.checkEmail(email)) {
+                throw new IOException("Input error: [" + email + "] is not a correct email"); //TODO: Brutale da cambiare
+            } else {
+                String passEncrypted = Utils.encryptPassword(password);
+                User user = getDataLayer().getUser(email, passEncrypted);
+                if (user != null) {
+                    SecurityLayer.createSession(request, email, user.getKey());
+                    request.setAttribute("page_title", "Benvenuto");
+                    request.setAttribute("user", user);
+                    res.activate("index.html", request, response);//TODO: Definire la home page
+                }
             }
+        } catch (DataLayerException ex) {
+            action_error(request, response, "Errore nel trovare l'utente: " + ex.getMessage());
         }
     }
 
@@ -78,7 +82,6 @@ public class Login extends BiblioManagerBaseController {
      */
     @Override
     public String getServletInfo() {
-        return "Short description";
+        return "Servlet di gestione del login";
     }
-
 }

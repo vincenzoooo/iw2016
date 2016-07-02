@@ -7,28 +7,28 @@
 package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
-import it.univaq.iw.bibliomanager.data.model.Utente;
+import it.univaq.iw.framework.data.DataLayerException;
+import java.util.List;
+import it.univaq.iw.bibliomanager.data.model.Author;
+import it.univaq.iw.bibliomanager.data.model.Publication;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public class UtenteImpl extends BeanImpl implements Utente{    
+public class AuthorImpl extends BeanImpl implements Author{    
     private String name;
     private String surname;
-    private String password;
-    private String email;
-    private int state;
+    private List<Publication> publications;
+    
     protected BiblioManagerDataLayer ownerDataLayer;
 
-    public UtenteImpl(BiblioManagerDataLayer ownerDataLayer) {
+    public AuthorImpl(BiblioManagerDataLayer ownerDataLayer) {
         super();
         this.ownerDataLayer = ownerDataLayer;        
-        name = "";
-        surname = "";
-        password = "";
-        email = "";
-        state = 2;              
+        this.name = "";
+        this.surname = "";
+        this.publications = null;
     }
 
     @Override
@@ -52,34 +52,16 @@ public class UtenteImpl extends BeanImpl implements Utente{
     }
 
     @Override
-    public String getPassword() {
-        return password;
+    public List<Publication> getPublications() throws DataLayerException {
+        if(publications == null){
+            publications = this.ownerDataLayer.getPublication();
+        }
+        return publications;
     }
 
     @Override
-    public void setPassword(String password) {
-        this.password = password;
+    public void setPublication(List<Publication> publications) {
+        this.publications = publications;
     }
-
-    @Override
-    public String getEmail() {
-        return email;      
-    }
-
-    @Override
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    @Override
-    public int getState() {
-        return state;
-    }
-
-    @Override
-    public void setState(int state) {
-        this.state = state;
-    }
-    
-    
+        
 }
