@@ -18,11 +18,11 @@ public interface BiblioManagerDataLayer extends DataLayer{
     Author createAuthor();
     Editor createEditor();
     Metadata createMetadata();
-    Publication createPubblicazione();
+    Publication createPublication();
     Review createReview();
     Reprint createReprint();
     Source createSource();
-    History createArchive();
+    History createHistory();
     User createUser();
     
     Author getAuthor(int author_key) throws DataLayerException;
@@ -39,8 +39,9 @@ public interface BiblioManagerDataLayer extends DataLayer{
     List<Reprint> getReprints() throws DataLayerException;
     Source getSource(int source_key) throws DataLayerException;
     List<Source> getSource() throws DataLayerException;
-    History getArchive(int historia_key) throws DataLayerException;
-    List<History> getArchives() throws DataLayerException;
+    History getHistory(int historia_key) throws DataLayerException;
+    List<History> getHistories() throws DataLayerException;
+    List<History> getHistories(User user) throws DataLayerException;
     User getUser(int user_key) throws DataLayerException;
     User getUser(String email) throws DataLayerException;
     User getUser(String email, String password) throws DataLayerException;
@@ -53,6 +54,6 @@ public interface BiblioManagerDataLayer extends DataLayer{
     void storeReview(Review review) throws DataLayerException;
     void storeReprint(Reprint reprint) throws DataLayerException;
     void storeSource(Source source) throws DataLayerException;
-    void storeArchive(History historia) throws DataLayerException;
+    void storeHistory(History historia) throws DataLayerException;
     void storeUser(User user) throws DataLayerException;
 }

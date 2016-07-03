@@ -36,7 +36,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     //Statements declaration
     private PreparedStatement sUsers, sUserByEmail, sUserByEmailPassword, sUserById;
     private PreparedStatement uUser, iUser;
-
+    private PreparedStatement sHistories, sHistoriesByUser, sHistoryById;
+    private PreparedStatement uHistory, iHistory;
+    
     public BiblioManagerDataLayerMysqlImpl(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
     }
@@ -52,6 +54,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sUserById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idutente = ?");
             this.uUser = connection.prepareStatement("UPDATE iw2016.utente SET nome = ?, cognome = ?, password = ?, email = ?, stato = ? WHERE idutente = ?");
             this.iUser = connection.prepareStatement("INSERT INTO iw2016.utente (nome, cognome, password, email, stato) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.sHistories = connection.prepareStatement("SELECT * FROM iw2016.storico");
+            this.sHistoriesByUser = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE utente = ?");
+            this.sHistoryById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idstorico = ?");
+            
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         }
@@ -74,10 +80,21 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public Publication createPubblicazione() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public Publication createPublication() {
+        return new PublicationImpl(this);
     }
 
+    public Publication createPublication(ResultSet rs) throws DataLayerException{
+        try {
+            PublicationImpl publication = new PublicationImpl(this);
+            publication.setKey(rs.getInt("idpubblicazione"));
+            //TODO
+            return publication;
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to create user object form ResultSet", ex);
+        }
+    }
+    
     @Override
     public Review createReview() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -94,10 +111,25 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public History createArchive() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public History createHistory() {
+        return new HistoryImpl(this);
     }
 
+    public History createHistory(ResultSet rs) throws DataLayerException{
+        try {
+            HistoryImpl history = new HistoryImpl(this);
+            history.setKey(rs.getInt("idstorico"));
+            history.setEntry(rs.getString("entry"));
+            history.setType(rs.getInt("tipo"));
+            history.setTimestamp(rs.getTimestamp("timestamp"));
+            history.setPublication(getPublication(rs.getInt("pubblicazione")));
+            history.setUser(getUser(rs.getInt("utente")));
+            return history;
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to create user object form ResultSet", ex);
+        }
+    }
+    
     @Override
     public User createUser() {
         return new UserImpl(this);
@@ -187,15 +219,78 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public History getArchive(int historia_key) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public History getHistory(int historia_key) throws DataLayerException {
+        History result = null;
+        ResultSet rs = null;
+        try {
+            sHistoryById.setInt(1, historia_key);
+            rs = sHistoryById.executeQuery();
+            if (rs.next()) {
+                result = createHistory(rs);
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load history by id", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
     }
 
     @Override
-    public List<History> getArchives() throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<History> getHistories() throws DataLayerException {
+        List<History> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            rs = sHistories.executeQuery();
+            while (rs.next()) {
+                result.add(getHistory(rs.getInt("idstorico")));
+
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load histories", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
     }
 
+    @Override
+    public List<History> getHistories(User user) throws DataLayerException {
+        List<History> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sHistoriesByUser.setInt(1, user.getKey());
+            rs = sHistoriesByUser.executeQuery();
+            while (rs.next()) {
+                result.add(getHistory(rs.getInt("idstorico")));
+
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load histories", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+    
     @Override
     public User getUser(int user_key) throws DataLayerException {
         User result = null;
@@ -329,7 +424,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public void storeArchive(History historia) throws DataLayerException {
+    public void storeHistory(History historia) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 

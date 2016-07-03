@@ -42,6 +42,11 @@ public class SourceImpl implements Source{
     }
 
     @Override
+    public void setKey(int key) {
+        this.key = key;
+    }
+    
+    @Override
     public String getType() {
         return type;
     }

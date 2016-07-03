@@ -16,6 +16,8 @@ import java.sql.Timestamp;
 public interface History {
     int getKey();
     
+    void setKey(int key);
+    
     String getEntry();
 
     void setEntry(String entry);

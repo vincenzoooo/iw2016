@@ -16,7 +16,8 @@ import it.univaq.iw.bibliomanager.data.model.Publication;
  *
  * @author Vincenzo Lanzieri
  */
-public class AuthorImpl extends BeanImpl implements Author{    
+public class AuthorImpl implements Author{    
+    private int key;
     private String name;
     private String surname;
     private List<Publication> publications;
@@ -24,13 +25,23 @@ public class AuthorImpl extends BeanImpl implements Author{
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public AuthorImpl(BiblioManagerDataLayer ownerDataLayer) {
-        super();
-        this.ownerDataLayer = ownerDataLayer;        
+        this.ownerDataLayer = ownerDataLayer;
+        this.key = 0;
         this.name = "";
         this.surname = "";
         this.publications = null;
     }
 
+    @Override
+    public int getKey() {
+        return key;
+    }
+
+    @Override
+    public void setKey(int key) {
+        this.key = key;
+    }
+    
     @Override
     public String getName() {
         return name;

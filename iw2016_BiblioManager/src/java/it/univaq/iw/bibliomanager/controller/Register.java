@@ -59,7 +59,7 @@ public class Register extends BiblioManagerBaseController {
         }
     }
 
-    private boolean validator(HttpServletRequest request, HttpServletResponse response) throws NoSuchAlgorithmException, UnsupportedEncodingException{
+    private boolean validator(HttpServletRequest request, HttpServletResponse response) throws NoSuchAlgorithmException, UnsupportedEncodingException, DataLayerException{
         boolean error = false;
         String name = Utils.checkString(request.getParameter("name"));
         String surname = Utils.checkString(request.getParameter("surname"));
@@ -68,6 +68,7 @@ public class Register extends BiblioManagerBaseController {
         String email = Utils.checkString(request.getParameter("email"));
         String reEmail = Utils.checkString(request.getParameter("re-email"));
         String privacy = Utils.checkString(request.getParameter("privacy"));
+        User user = null;
         if (name == null) {
             request.setAttribute("errorName", "Nome non valorizzato");
             error = true;
@@ -90,12 +91,19 @@ public class Register extends BiblioManagerBaseController {
             request.setAttribute("errorEmail", "I campi email e Reemail non sono uguali");
             error = true;
         }
+        else{
+            user = getDataLayer().getUser(email);
+        }
         if (privacy == null) {
             request.setAttribute("errorPrivacy", "Bisogna accettare i termini di legge sulla privacy");
             error = true;
         }
         if (!Utils.checkEmail(email)) {
             request.setAttribute("errorEmail", "L'Email passata non è valida");
+            error = true;
+        }
+        if(user != null){
+            request.setAttribute("errorEmail", "Questa email è già registrata");
             error = true;
         }
         return error;

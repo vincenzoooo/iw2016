@@ -15,6 +15,8 @@ import it.univaq.iw.framework.data.DataLayerException;
 public interface Review {
     int getKey();
     
+    void setKey(int key);
+    
     String getText();
 
     void setText(String text);
@@ -31,7 +33,7 @@ public interface Review {
     
     void setPublication(Publication publication);
     
-    History getArchive() throws DataLayerException;
+    History getHistory() throws DataLayerException;
     
-    void setArchive(History archive);
+    void setHistory(History archive);
 }

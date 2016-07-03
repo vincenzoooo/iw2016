@@ -13,7 +13,8 @@ import it.univaq.iw.bibliomanager.data.model.User;
  *
  * @author Vincenzo Lanzieri
  */
-public class UserImpl extends BeanImpl implements User{    
+public class UserImpl implements User{    
+    private int key;
     private String name;
     private String surname;
     private String password;
@@ -22,8 +23,8 @@ public class UserImpl extends BeanImpl implements User{
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public UserImpl(BiblioManagerDataLayer ownerDataLayer) {
-        super();
-        this.ownerDataLayer = ownerDataLayer;        
+        this.ownerDataLayer = ownerDataLayer;
+        key = 0;
         name = "";
         surname = "";
         password = "";
@@ -31,6 +32,16 @@ public class UserImpl extends BeanImpl implements User{
         state = 2;              
     }
 
+    @Override
+    public int getKey() {
+        return key;
+    }
+
+    @Override
+    public void setKey(int key) {
+        this.key = key;
+    }
+    
     @Override
     public String getName() {
         return name;

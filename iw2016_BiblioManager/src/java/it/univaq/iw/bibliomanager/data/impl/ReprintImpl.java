@@ -39,6 +39,11 @@ public class ReprintImpl implements Reprint{
     }
 
     @Override
+    public void setKey(int key) {
+        this.key = key;
+    }
+    
+    @Override
     public int getNumber() {
         return number;
     }

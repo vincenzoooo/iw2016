@@ -17,6 +17,8 @@ import java.util.List;
 public interface Metadata {
     int getKey();
 
+    void setKey(int key);
+    
     int getISBN();
 
     void setISBN(int isbn);

@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import it.univaq.iw.bibliomanager.data.model.User;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -40,8 +41,17 @@ public class Profile extends BiblioManagerBaseController {
                 userKey = (int) session.getAttribute("userid");
             }
             User user = getDataLayer().getUser(userKey);
-//            List<History> histories;
-//            List<Publication> publications = getDataLayer().getPublications();
+            List<Publication> publications = new ArrayList();
+            List<History> histories = getDataLayer().getHistories(user);
+            for (History history : histories) {
+                //Type 0 == Insert
+                if(history.getType() == 0){
+                    publications.add(history.getPublication());
+                }
+            }
+            if(!publications.isEmpty()){
+                request.setAttribute("publications", publications);
+            }
             request.setAttribute("user", user);
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("profile.ftl.html", request, response);

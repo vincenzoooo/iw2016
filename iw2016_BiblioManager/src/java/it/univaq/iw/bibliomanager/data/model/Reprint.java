@@ -16,6 +16,8 @@ import java.sql.Date;
 public interface Reprint {
     int getKey();
     
+    void setKey(int key);
+    
     int getNumber();
 
     void setNumber(int number);

@@ -16,6 +16,8 @@ import java.util.List;
 public interface Author {
     int getKey();
     
+    void setKey(int key);
+    
     List<Publication> getPublications() throws DataLayerException;
 
     void setPublication(List<Publication> publications);

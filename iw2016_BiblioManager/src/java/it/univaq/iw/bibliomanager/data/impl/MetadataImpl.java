@@ -46,6 +46,11 @@ public class MetadataImpl implements Metadata{
     }
 
     @Override
+    public void setKey(int key) {
+        this.key = key;
+    }
+    
+    @Override
     public int getISBN(){
         return isbn;
     }

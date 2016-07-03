@@ -16,8 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import it.univaq.iw.bibliomanager.data.model.User;
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
 
 /**
  *

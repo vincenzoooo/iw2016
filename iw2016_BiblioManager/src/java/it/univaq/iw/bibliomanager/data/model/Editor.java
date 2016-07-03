@@ -14,6 +14,8 @@ package it.univaq.iw.bibliomanager.data.model;
 public interface Editor {
     int getKey();
     
+    void setKey(int key);
+    
     String getName();
     
     void setName(String name);

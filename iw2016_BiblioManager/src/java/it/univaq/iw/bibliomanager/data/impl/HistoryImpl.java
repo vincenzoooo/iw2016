@@ -46,6 +46,11 @@ public class HistoryImpl implements History{
     }
 
     @Override
+    public void setKey(int key) {
+        this.key = key;
+    }
+    
+    @Override
     public String getEntry() {
         return entry;
     }

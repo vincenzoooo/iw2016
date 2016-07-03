@@ -21,8 +21,8 @@ public class ReviewImpl implements Review{
     private int key;
     private String text;
     private boolean status;
-    private int archive_key;
-    private History archive;
+    private int history_key;
+    private History history;
     private int user_key;
     private User author;
     private int publication_key;
@@ -34,8 +34,8 @@ public class ReviewImpl implements Review{
         key = 0;
         text = "";        
         status = false;
-        archive_key = 0;
-        archive = null;
+        history_key = 0;
+        history = null;
         user_key = 0;
         author = null;
         publication_key = 0;
@@ -47,6 +47,11 @@ public class ReviewImpl implements Review{
         return key;
     }
 
+    @Override
+    public void setKey(int key) {
+        this.key = key;
+    }
+    
     @Override
     public String getText() {
         return text;
@@ -68,16 +73,16 @@ public class ReviewImpl implements Review{
     }
 
     @Override
-    public History getArchive() throws DataLayerException {
-        if (archive == null && archive_key > 0) {
-            archive = ownerDataLayer.getArchive(archive_key);
+    public History getHistory() throws DataLayerException {
+        if (history == null && history_key > 0) {
+            history = ownerDataLayer.getHistory(history_key);
         }
-        return archive;
+        return history;
     }
 
     @Override
-    public void setArchive(History archive) {
-        this.archive = archive;
+    public void setHistory(History history) {
+        this.history = history;
     }
 
     @Override

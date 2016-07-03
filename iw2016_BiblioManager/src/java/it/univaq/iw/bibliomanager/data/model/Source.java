@@ -15,6 +15,8 @@ import it.univaq.iw.framework.data.DataLayerException;
 public interface Source {
     int getKey();
     
+    void setKey(int key);
+    
     String getType();
     
     void setType(String type);

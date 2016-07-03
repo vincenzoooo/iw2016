@@ -57,6 +57,11 @@ public class PublicationImpl implements Publication{
     }
 
     @Override
+    public void setKey(int key) {
+        this.key = key;
+    }
+    
+    @Override
     public String getTitle() {
         return title;
     }

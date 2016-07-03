@@ -6,8 +6,6 @@
  */
 package it.univaq.iw.bibliomanager.data.model;
 
-import it.univaq.iw.framework.data.DataLayerException;
-
 /**
  *
  * @author Vincenzo Lanzieri
@@ -15,6 +13,8 @@ import it.univaq.iw.framework.data.DataLayerException;
 public interface User {
     int getKey();
 
+    void setKey(int key);
+    
     String getName();
     
     void setName(String name);

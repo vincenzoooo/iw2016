@@ -30,6 +30,11 @@ public class EditorImpl implements Editor{
     }
 
     @Override
+    public void setKey(int key) {
+        this.key = key;
+    }
+    
+    @Override
     public String getName(){
         return name;
     }
