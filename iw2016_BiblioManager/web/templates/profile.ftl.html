@@ -12,34 +12,40 @@
             </h1>
             <#if user??>
             <div class="row">
-                <div class="col-lg-3">
-                    <span class="profile">
-                        <img src="img/user.png" alt="Foto profilo utente" class="profile">
-                    </span>
+                <div class="col-lg-2">
+                    <img src="img/user.png" alt="Foto profilo utente" class="imgprofile">
                 </div>
-                <div>
-                    <div class="paddingbottom10">
+                <div class="col-lg-3">
+                    <div class="padding-bottom-10">
                         <span class="bold">
                             Nome:
                         </span>
                         <span class="">
-                            ${strip_slashes(user.name)?html}
+                            ${(user.name?html)?capitalize}
                         </span>
                     </div>
-                    <div class="paddingbottom10">
+                    <div class="padding-bottom-10">
                         <span class="bold">
                             Cognome:
                         </span>
                         <span class="">
-                            ${strip_slashes(user.surname)?html}
+                            ${(user.surname?html)?capitalize}
                         </span>
                     </div>
-                    <div class="paddingbottom10">
+                     <div class="padding-bottom-10">
+                        <span class="bold">
+                            Email:
+                        </span>
+                        <span class="">
+                            ${user.email?html}
+                        </span>
+                    </div>
+                    <div class="padding-bottom-10">
                         <span class="bold">
                             Ruolo:
                         </span>
                         <span class="" id="userrole">
-                            <#switch user.role>
+                            <#switch user.state>
                                 <#case 0>
                                     Amministratore
                                 <#break>
@@ -52,7 +58,7 @@
                         </span>
                     </div>
                     <div class="">
-                    <#if (role?? && role && !user.role)>
+                    <#if (role?? && role && !user.state)>
                         <span class="center">
                             <button><a id="promote" href="?promote&userId=${user.id}" >Promuovi ad utente attivo</a></button>
                         </span>

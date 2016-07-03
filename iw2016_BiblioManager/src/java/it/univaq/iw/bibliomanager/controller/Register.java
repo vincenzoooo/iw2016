@@ -48,7 +48,7 @@ public class Register extends BiblioManagerBaseController {
                 //TODO: Controllare l'invio email
                 //String text = "Benvenuto su BiblioManager!";
                 //Utils.sendEmail(email, text);
-                res.activate("index.html", request, response);
+                res.activate("home.ftl.html", request, response);
             } else {
                 request.setAttribute("name", name);
                 request.setAttribute("surname", surname);
