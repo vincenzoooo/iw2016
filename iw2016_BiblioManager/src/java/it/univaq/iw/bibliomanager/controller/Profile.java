@@ -35,7 +35,7 @@ public class Profile extends BiblioManagerBaseController {
             if(request.getParameter("userkey") != null){
                 userKey = Integer.parseInt(request.getParameter("userkey"));
                 //TODO: Gestire la modifica in caso non si è il proprietario del profilo
-                request.setAttribute("display-none", "display:none");
+                request.setAttribute("displaynone", "display:none");
             }
             else{
                 userKey = (int) session.getAttribute("userid");

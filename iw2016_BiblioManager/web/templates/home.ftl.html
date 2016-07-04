@@ -1,1 +1,38 @@
-TO DO
+<div class="container">
+    <div class="row ">
+        <div class="col-lg-8">
+        <#if pageNotFound??>
+            <div> La pagina richiesta non esiste </div>
+        <#else>
+            <div id="last-insert" >
+                <h1 class="center">Ultime pubblicazioni inserite </h1>
+                <div>
+
+                </div>
+            </div>
+            <div id="last-update" class="clear" >
+                <h1 class="center">Ultime pubblicazioni modificate</h1>
+                <div >
+
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4" id='columnHome'>
+            <div id="active-user" class="right">
+                <h2>Utenti pi&ugrave; attivi</h2>
+                
+            </div>
+        </div>
+    </div>
+    
+    <#if passiveUser??>
+        <div class="confirm">
+            Registrati al sito per visualizzare gli altri contenuti o effettua il login
+            <div class="margintop10">
+                <a href="login">Login</a>
+                <a href="registration">Registrati</a>
+                <a href="status">Chiudi</a>
+            </div>
+        </div>
+    </#if>
+</div>

@@ -2,12 +2,12 @@
     <div class="row">
         <div class="col-lg-12">
             <h1 class="center">Scheda utente
-                <#if (profile?? && profile)>
-                    <span>
-                        <a href="manageProfile">
-                            <i class="fa fa-pencil" aria-hidden="true"></i>
-                        </a>
-                    </span>
+                <#if !displaynone??>
+                <span>
+                    <a href="manageProfile">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </a>
+                </span>
                 </#if>
             </h1>
             <#if user??>
@@ -57,6 +57,7 @@
                             </#switch>
                         </span>
                     </div>
+                    <!--
                     <div class="">
                     <#if (role?? && role && !user.state)>
                         <span class="center">
@@ -64,6 +65,7 @@
                         </span>
                     </#if>
                     </div>
+                    -->
                 </div>
             </div>
                
