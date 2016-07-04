@@ -24,7 +24,7 @@ public class PublicationImpl implements Publication{
     private int key;
     private String title;
     private String description;
-    private List<String> index;
+    private String index;
     private int like;
     private int editor_key;
     private Editor editor;
@@ -40,7 +40,7 @@ public class PublicationImpl implements Publication{
         key = 0;
         title = "";
         description = "";
-        index = null;
+        index = "";
         like = 0;
         editor_key = 0;
         editor = null;
@@ -82,12 +82,12 @@ public class PublicationImpl implements Publication{
     }
 
     @Override
-    public List<String> getIndex() {
+    public String getIndex() {
         return index;
     }
 
     @Override
-    public void setIndex(List<String> index) {
+    public void setIndex(String index) {
         this.index = index;
     }
 

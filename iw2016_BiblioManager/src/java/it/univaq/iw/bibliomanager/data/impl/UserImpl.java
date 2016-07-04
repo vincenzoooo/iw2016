@@ -8,6 +8,7 @@ package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.bibliomanager.data.model.User;
+import it.univaq.iw.framework.data.DataLayerException;
 
 /**
  *
@@ -92,5 +93,13 @@ public class UserImpl implements User{
         this.state = state;
     }
     
-    
+    @Override
+    public void copyFrom(User user) throws DataLayerException {
+        key = user.getKey();
+        email = user.getEmail();
+        name = user.getName();
+        password = user.getPassword();
+        state = user.getState();
+        surname = user.getSurname();
+    }
 }

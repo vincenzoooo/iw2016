@@ -99,7 +99,7 @@ public class ReviewImpl implements Review{
     }
 
     @Override
-    public Publication getPubblication() throws DataLayerException {
+    public Publication getPublication() throws DataLayerException {
         if (publication == null && publication_key > 0) {
             publication = ownerDataLayer.getPublication(publication_key);
         }
@@ -110,5 +110,14 @@ public class ReviewImpl implements Review{
     public void setPublication(Publication publication) {
         this.publication = publication;
     }
-        
+
+    @Override
+    public void copyFrom(Review review) throws DataLayerException {
+        key = review.getKey();
+        history_key = review.getHistory().getKey();
+        publication_key = review.getPublication().getKey();
+        status = review.getStatus();
+        text = review.getText();
+        user_key = review.getAuthor().getKey();
+    }
 }

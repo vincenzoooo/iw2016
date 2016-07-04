@@ -8,6 +8,7 @@ package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.bibliomanager.data.model.Editor;
+import it.univaq.iw.framework.data.DataLayerException;
 
 /**
  *
@@ -44,4 +45,9 @@ public class EditorImpl implements Editor{
         this.name = name;
     }
     
+    @Override
+    public void copyFrom(Editor editor) throws DataLayerException {
+        key = editor.getKey();
+        name = editor.getName();
+    }
 }

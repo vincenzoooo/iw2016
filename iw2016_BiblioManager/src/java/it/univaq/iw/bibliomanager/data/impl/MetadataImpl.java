@@ -113,5 +113,14 @@ public class MetadataImpl implements Metadata{
         this.publication = publication;
     }
     
-    
+    @Override
+    public void copyFrom(Metadata metadata) throws DataLayerException {
+        key = metadata.getKey();
+        isbn = metadata.getISBN();
+        keywords = metadata.getKeywords();
+        language = metadata.getLanguage();
+        pageNumber = metadata.getPages();
+        publicationDate = metadata.getPublicationDate();
+        publication_key = metadata.getPublication().getKey();
+    }
 }

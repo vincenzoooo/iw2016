@@ -74,5 +74,12 @@ public class AuthorImpl implements Author{
     public void setPublication(List<Publication> publications) {
         this.publications = publications;
     }
-        
+
+    @Override
+    public void copyFrom(Author author) throws DataLayerException {
+        key = author.getKey();
+        name = author.getName();
+        surname = author.getSurname();
+        publications = author.getPublications();
+    }
 }

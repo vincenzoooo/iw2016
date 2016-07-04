@@ -105,6 +105,14 @@ public class HistoryImpl implements History{
     public void setUser(User user) {
         this.user = user;
     }
-    
-    
+
+    @Override
+    public void copyFrom(History history) throws DataLayerException {
+        key=history.getKey();
+        entry=history.getEntry();
+        type=history.getType();
+        timestamp=history.getTimestamp();
+        publication_key = history.getPublication().getKey();
+        user_key = history.getUser().getKey();
+    }
 }

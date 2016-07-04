@@ -76,5 +76,11 @@ public class ReprintImpl implements Reprint{
         this.publication = publication;
     }
     
-    
+    @Override
+    public void copyFrom(Reprint reprint) throws DataLayerException {
+        key = reprint.getKey();
+        date = reprint.getDate();
+        number = reprint.getNumber();
+        publication_key = reprint.getPublication().getKey();
+    }
 }

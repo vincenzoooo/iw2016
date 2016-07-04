@@ -98,5 +98,14 @@ public class SourceImpl implements Source{
     public void setPublication(Publication publication) {
         this.publication = publication;
     }
-        
+ 
+    @Override
+    public void copyFrom(Source source) throws DataLayerException {
+        key = source.getKey();
+        description = source.getDescription();
+        format = source.getFormat();
+        publication_key = source.getPublication().getKey();
+        uri = source.getURI();
+        type = source.getType();
+    }
 }

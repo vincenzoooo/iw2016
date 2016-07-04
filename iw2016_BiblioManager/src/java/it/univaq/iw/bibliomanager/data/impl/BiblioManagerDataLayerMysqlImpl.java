@@ -480,10 +480,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             //database through our API. In this way, the resulting
             //object will ambed any data correction performed by
             //the DBMS
-//            if (key > 0) {
-//                user.copyFrom(getArticle(key));
-//            }
-//            article.setDirty(false);
+            if (key > 0) {
+                user.copyFrom(getUser(key));
+            }
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to store user", ex);
         } finally {
