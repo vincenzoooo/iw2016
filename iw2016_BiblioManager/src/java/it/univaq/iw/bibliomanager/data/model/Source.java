@@ -36,4 +36,6 @@ public interface Source {
     Publication getPublication() throws DataLayerException;
     
     void setPublication(Publication publication);
+    
+    void copyFrom(Source source) throws DataLayerException;
 }

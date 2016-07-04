@@ -6,6 +6,8 @@
  */
 package it.univaq.iw.bibliomanager.data.model;
 
+import it.univaq.iw.framework.data.DataLayerException;
+
 
 /**
  *
@@ -19,4 +21,6 @@ public interface Editor {
     String getName();
     
     void setName(String name);
+    
+    void copyFrom(Editor editor) throws DataLayerException;
 }

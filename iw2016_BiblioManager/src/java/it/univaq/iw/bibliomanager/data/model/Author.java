@@ -29,4 +29,6 @@ public interface Author {
     String getSurname();
     
     void setSurname(String surname);
+    
+    void copyFrom(Author author) throws DataLayerException;
 }

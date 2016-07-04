@@ -29,11 +29,13 @@ public interface Review {
     
     void setAuthor(User author);
     
-    Publication getPubblication() throws DataLayerException;
+    Publication getPublication() throws DataLayerException;
     
     void setPublication(Publication publication);
     
     History getHistory() throws DataLayerException;
     
     void setHistory(History archive);
+    
+    void copyFrom(Review review) throws DataLayerException;
 }

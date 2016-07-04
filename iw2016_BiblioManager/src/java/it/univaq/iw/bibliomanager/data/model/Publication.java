@@ -34,9 +34,9 @@ public interface Publication {
     
     void setEditor(Editor editor);
     
-    List<String> getIndex();
+    String getIndex();
     
-    void setIndex(List<String> index);
+    void setIndex(String index);
     
     int getNumberOfLikes();
     

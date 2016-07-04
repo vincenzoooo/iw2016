@@ -42,4 +42,6 @@ public interface Metadata {
     Publication getPublication() throws DataLayerException;
     
     void setPublication(Publication publication);
+    
+    void copyFrom(Metadata metadata) throws DataLayerException;
 }

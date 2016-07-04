@@ -6,6 +6,8 @@
  */
 package it.univaq.iw.bibliomanager.data.model;
 
+import it.univaq.iw.framework.data.DataLayerException;
+
 /**
  *
  * @author Vincenzo Lanzieri
@@ -34,4 +36,6 @@ public interface User {
     int getState();
 
     void setState(int state);
+    
+    void copyFrom(User user) throws DataLayerException;
 }

@@ -38,4 +38,5 @@ public interface History {
 
     void setUser(User user);
     
+    void copyFrom(History history) throws DataLayerException;
 }

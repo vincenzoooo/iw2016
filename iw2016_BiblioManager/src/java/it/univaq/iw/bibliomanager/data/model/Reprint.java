@@ -29,4 +29,6 @@ public interface Reprint {
     Publication getPublication() throws DataLayerException;
     
     void setPublication(Publication publication);
+    
+    void copyFrom(Reprint reprint) throws DataLayerException;
 }
