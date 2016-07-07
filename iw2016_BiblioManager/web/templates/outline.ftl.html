@@ -2,8 +2,10 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="it" xml:lang="it">
     <head>
         <title>${page_title!"Untitled page"?html}</title> 
+        <!-- META -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" type="text/css" />
+        <!-- LINK -->
+        <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" type="text/css" />
         <link rel="stylesheet" href="style/custom.css" type="text/css" />
         <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" media="screen"/>
         
@@ -45,10 +47,41 @@
                 </div> 
             </div>
         </header>
+        
+        <nav class="navbar navbar-default">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                </div>
+
+                <!-- Collect the nav links, forms, and other content for toggling -->
+                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                    <ul class="nav navbar-nav">
+                        
+                        <#list menu as item>
+                            <li class=""><a class="" href="${item.link}">${item.label}</a></li>
+                        </#list>
+                    
+                  </ul>
+                    
+                  <form class="navbar-right" role="search">
+                   
+                    <button type="submit" class="btn btn-default">Submit</button>
+                  </form>
+                  
+                </div><!-- /.navbar-collapse -->
+            </div><!-- /.container-fluid -->
+        </nav>
 
         <div class="pageContent">  
             <#include content_tpl>
         </div>
+        
         <footer>
             <div class="container">
                 <div class="row">
@@ -59,8 +92,9 @@
             </div>
         </footer>
         
-        
-        <script type="text/javascript" src="lib/bootstrap/dist/js/bootstrap.min.js">
+        <!-- SCRIPT -->
+        <script type="text/javascript" src="script/jquery.min.js"></script>
+        <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js">
         </script>
     </body>
 </html>

@@ -1,67 +1,84 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <h1>Registrazione</h1>
+            <h1 class="center">Registrazione</h1>
 
-            <form method="post" action="registration">
-                <div class="row">
-                    <div class="col-lg-3 bold">Nome:</div> 
-                    <input class="col-lg-5" name='name' value="${name!''?html}" required='required' placeholder="Inserisci il nome" />
+            <form method="post" action="registration" class="form-horizontal">
+                <div class="form-group">
+                    <label for="inputNome" class="col-sm-2 control-label bold">Nome</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name='name' value="${name!''?html}" required='required' placeholder="Inserisci il nome" />
+                    </div>
                 </div>
                 <#if errorName??>
                 <div class="error">
                     ${errorName?html}
                 </div>
                 </#if>
-                <div class="row">
-                    <div class="col-lg-3 bold">Cognome:</div> 
-                    <input class="col-lg-5" name='surname' value="${surname!''?html}" required='required' placeholder="Inserisci il cognome" />
+                <div class="form-group">
+                    <label class="col-sm-2 control-label bold">Cognome</label> 
+                    <div class="col-sm-10">
+                        <input class="form-control" name='surname' value="${surname!''?html}" required='required' placeholder="Inserisci il cognome" />
+                    </div>
                 </div>
                 <#if errorSurname??>
                 <div class="error">
                     ${errorSurname?html}
                 </div>
                 </#if>
-                <div class="row">
-                    <div class="col-lg-3 bold">Email:</div> 
-                    <input class="col-lg-5" type='email' name='email' value="${email!''?html}" required='required' placeholder="user@mail.it" />
+                <div class="form-group">
+                    <label class="col-sm-2 control-label bold">Email</label> 
+                    <div class="col-sm-10">
+                        <input class="form-control" type='email' name='email' value="${email!''?html}" required='required' placeholder="user@mail.it" />
+                    </div>
                 </div>
                 <#if errorEmail??>
                 <div class="error">
                     ${errorEmail?html}
                 </div>
                 </#if>
-                <div class="row">
-                    <div class="col-lg-3 bold">Reinserire email:</div> 
-                    <input class="col-lg-5" type='email' name='re-email' value="${repeatemail!''?html}" required='required' placeholder="user@mail.it" />
+                <div class="form-group">
+                    <label class="col-sm-2 control-label bold">Reinserire Email</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" type='email' name='re-email' value="${repeatemail!''?html}" required='required' placeholder="user@mail.it" />
+                    </div>
                 </div>
                 <#if errorEmail??>
                 <div class="error">
                     ${errorEmail?html}
                 </div>
                 </#if>
-                <div class="row">
-                    <div class="col-lg-3 bold">Password:</div> 
-                    <input class="col-lg-5" name='password' type='password' value="${pass!''?html}" required="required" placeholder="Inserisci password" />
+                <div class="form-group">
+                    <label class="col-sm-2 control-label bold">Password</label> 
+                    <div class="col-sm-10">
+                        <input class="form-control" name='password' type='password' value="${pass!''?html}" required="required" placeholder="Inserisci password" />
+                    </div>
                 </div>
                 <#if errorPassword??>
                 <div class="error">
                     ${errorPassword?html}
                 </div>
                 </#if>
-                <div class="row">
-                    <div class="col-lg-3 bold">Reinserire Password:</div> 
-                    <input class="col-lg-5" name='re-password' type='password' value="${repeatPass!''?html}" required='required' placeholder="Ripeti password" />
+                <div class="form-group">
+                    <label class="col-sm-2 control-label bold">Reinserire Password</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name='re-password' type='password' value="${repeatPass!''?html}" required='required' placeholder="Ripeti password" />
+                    </div>
                 </div>
                 <#if errorPassword??>
                 <div class="error">
                     ${errorPassword?html}
                 </div>
                 </#if>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <input  type="checkbox" name="privacy" value="privacy" required='required'>  
-                        Con l'invio del presente modulo acconsento al trattamento dei dati unicamente per la richiesta in oggetto. Consenso esplicito secondo il D.Lgs 196/2003.<br>
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox"/> 
+                                Con l'invio del presente modulo acconsento al trattamento dei dati unicamente per la richiesta in oggetto. Consenso esplicito secondo il D.Lgs 196/2003.
+                                <br/>
+                            </label>
+                        </div>
                     </div>
                 </div>
                 <#if error??>
@@ -69,11 +86,14 @@
                         ${errorPrivacy?html}
                     </div>
                 </#if>
-                <div class="row">
-                    <div class="col-lg-12">
-                        <input class="marginleft1" value='Registrati' name='submitRegistration' type='submit' />
-                    </div>
+                <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                    <span>
+                        <input type="submit" value="sign-up" name="submitRegistration" class="btn btn-default">
+                    </span>
                 </div>
+              </div>
+               
                 <!--
                 <#if dataRegError??>
                 <div class="error">

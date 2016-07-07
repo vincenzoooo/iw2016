@@ -29,10 +29,12 @@ import java.util.Calendar;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.logging.Logger;
 
 /**
  *
@@ -42,6 +44,7 @@ public class TemplateResult {
 
     protected ServletContext context;
     protected Configuration cfg;
+    protected DataModelFiller filler;
 
     public TemplateResult(ServletContext context) {
         this.context = context;
@@ -75,6 +78,21 @@ public class TemplateResult {
         if (context.getInitParameter("view.date_format") != null) {
             cfg.setDateTimeFormat(context.getInitParameter("view.date_format"));
         }
+        
+        //classe opzionale che permette di riempire ogni data model con dati generati dinamicamente
+        //optional class to automatically fill every data model with dynamically generated data
+        filler = null;
+        if (context.getInitParameter("view.model_filler") != null) {
+            try {
+                filler = (DataModelFiller) Class.forName(context.getInitParameter("view.model_filler")).newInstance();
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(TemplateResult.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (InstantiationException ex) {
+                Logger.getLogger(TemplateResult.class.getName()).log(Level.SEVERE, null, ex);
+            } catch (IllegalAccessException ex) {
+                Logger.getLogger(TemplateResult.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
         //impostiamo il gestore degli oggetti - trasformer� in hash i Java beans
         //set the object handler that allows us to "view" Java beans as hashes
         cfg.setObjectWrapper(ObjectWrapper.BEANS_WRAPPER);
@@ -88,8 +106,18 @@ public class TemplateResult {
         //inizializziamo il contenitore per i dati di deafult        
         //initialize the container for default data
         Map default_data_model = new HashMap();
+        
+        //se è stata specificata una classe filler, facciamole riempire il default data model
+        //if a filler class has been specified, let it fill the default data model
+        if (filler != null) {
+            filler.fillDataModel(default_data_model);
+        }
+
+        //iniettiamo alcuni dati di default nel data model
+        //inject some default data in the data model
         default_data_model.put("compiled_on", Calendar.getInstance().getTime()); //data di compilazione del template
         default_data_model.put("outline_tpl", context.getInitParameter("view.outline_template")); //eventuale template di outline
+        default_data_model.put("strip_slashes", new SplitSlashesFmkExt());
         //aggiungiamo altri dati di inizializzazione presi dal web.xml
         //add other data taken from web.xml
         Map init_tpl_data = new HashMap();
