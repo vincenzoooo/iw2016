@@ -34,9 +34,5 @@ public interface Source {
     
     void setDescription(String description);
     
-    List<Publication> getPublications() throws DataLayerException;
-
-    void setPublications(List<Publication> publications);
-    
     void copyFrom(Source source) throws DataLayerException;
 }

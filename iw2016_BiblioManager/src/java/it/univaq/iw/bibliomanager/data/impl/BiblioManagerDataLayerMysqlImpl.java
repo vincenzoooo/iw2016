@@ -38,11 +38,11 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement uUser, iUser;
     private PreparedStatement sHistories, sHistoriesByUser, sHistoryById;
     private PreparedStatement uHistory, iHistory;
-    private PreparedStatement sPublications, sPublicationById; // TODO: Select con altri parametri
+    private PreparedStatement sPublications, sPublicationById, sPublicationAuthors, sPublicationSources; // TODO: Select con altri parametri
     private PreparedStatement uPublication, iPublication;
     private PreparedStatement sSources, sSourceById, sSourceByPublication;
     private PreparedStatement uSource, iSource;
-    private PreparedStatement sReprints, sReprintById;
+    private PreparedStatement sReprintsByPublication, sReprintById;
     private PreparedStatement uReprint, iReprint;
     private PreparedStatement sEditors, sEditorById;
     private PreparedStatement uEditor, iEditor;
@@ -80,19 +80,58 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
     @Override
     public Author createAuthor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new AuthorImpl(this);
     }
 
+    public Author createAuthor(ResultSet rs) throws DataLayerException{
+        try {
+            AuthorImpl author = new AuthorImpl(this);
+            author.setKey(rs.getInt("idautore"));
+            author.setName(rs.getString("nome"));
+            author.setSurname(rs.getString("cognome"));
+            return author;
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to create user object form ResultSet", ex);
+        }
+    }
+    
     @Override
     public Editor createEditor() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new EditorImpl(this);
     }
 
+    public Editor createEditor(ResultSet rs) throws DataLayerException{
+        try {
+            EditorImpl editor = new EditorImpl(this);
+            editor.setKey(rs.getInt("ideditore"));
+            editor.setName(rs.getString("nome"));
+            return editor;
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to create user object form ResultSet", ex);
+        }
+    }
+    
     @Override
     public Metadata createMetadata() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new MetadataImpl(this);
     }
 
+    public Metadata createMetadata(ResultSet rs) throws DataLayerException{
+        try {
+            MetadataImpl metadata = new MetadataImpl(this);
+            metadata.setKey(rs.getInt("idmetadato"));
+            metadata.setISBN(rs.getInt("isbn"));
+            metadata.setPages(rs.getInt("n_pagine"));
+            metadata.setLanguage(rs.getString("lingua"));
+            metadata.setPublicationDate(rs.getDate("data_pubblicazione"));
+            metadata.setKeywords(rs.getString("chiavi"));
+            metadata.setPublication(getPublication(rs.getInt("pubblicazione")));
+            return metadata;
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to create user object form ResultSet", ex);
+        }
+    }
+    
     @Override
     public Publication createPublication() {
         return new PublicationImpl(this);
@@ -102,7 +141,13 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             PublicationImpl publication = new PublicationImpl(this);
             publication.setKey(rs.getInt("idpubblicazione"));
-            //TODO
+            publication.setTitle(rs.getString("titolo"));
+            publication.setDescription(rs.getString("descrizione"));
+            publication.setEditor(getEditor(rs.getInt("editore")));
+            publication.setIndex(rs.getString("indice"));
+            publication.setNumberOfLikes(rs.getInt("n_consigli"));
+            publication.setAuthor(getPublicationAuthors(rs.getInt("idpubblicazione")));
+            publication.setSources(getPublicationSources(rs.getInt("idpubblicazione")));
             return publication;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
@@ -111,19 +156,64 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     
     @Override
     public Review createReview() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new ReviewImpl(this);
     }
 
+    public Review createReview(ResultSet rs) throws DataLayerException{
+        try{
+            ReviewImpl review = new ReviewImpl(this);
+            review.setKey(rs.getInt("idrecensione"));
+            review.setText(rs.getString("testo"));
+            review.setStatus(rs.getBoolean("moderata"));
+            review.setAuthor(getUser(rs.getInt("utente_autore")));
+            review.setPublication(getPublication(rs.getInt("pubblicazione")));
+            review.setHistory(getHistory(rs.getInt("storico")));
+            return review;
+        }
+        catch(SQLException ex){
+            throw new DataLayerException("Unable to create user object form ResultSet", ex);
+        }
+    }
+    
     @Override
     public Reprint createReprint() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new ReprintImpl(this);
     }
 
+    public Reprint createReprint(ResultSet rs) throws DataLayerException{
+        try{
+            ReprintImpl reprint = new ReprintImpl(this);
+            reprint.setKey(rs.getInt("idristampa"));
+            reprint.setNumber(rs.getInt("numero"));
+            reprint.setDate(rs.getDate("data"));
+            reprint.setPublication(getPublication(rs.getInt("pubblicazione")));
+            return reprint;
+        }
+        catch(SQLException ex){
+            throw new DataLayerException("Unable to create user object form ResultSet", ex);
+        }
+    }
+    
     @Override
     public Source createSource() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        return new SourceImpl(this);
     }
 
+    public Source createSource(ResultSet rs) throws DataLayerException{
+        try{
+            SourceImpl source = new SourceImpl(this);
+            source.setKey(rs.getInt("idsorgente"));
+            source.setType(rs.getString("tipo"));
+            source.setURI(rs.getString("URI"));
+            source.setFormat(rs.getString("formato"));
+            source.setDescription(rs.getString("descrizione"));
+            return source;
+        }
+        catch(SQLException ex){
+            throw new DataLayerException("Unable to create user object form ResultSet", ex);
+        }
+    }
+    
     @Override
     public History createHistory() {
         return new HistoryImpl(this);
@@ -164,72 +254,380 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
     @Override
     public Author getAuthor(int author_key) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Author result = null;
+        ResultSet rs = null;
+        try {
+            sAuthorById.setInt(1, author_key);
+            rs = sAuthorById.executeQuery();
+            if (rs.next()) {
+                result = createAuthor(rs);
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load author by id", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
     }
 
     @Override
     public List<Author> getAuthors() throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Author> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            rs = sAuthors.executeQuery();
+            while (rs.next()) {
+                result.add(getAuthor(rs.getInt("idautore")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load autors", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
     }
 
     @Override
     public Editor getEditor(int editor_key) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Editor result = null;
+        ResultSet rs = null;
+        try {
+            sEditorById.setInt(1, editor_key);
+            rs = sEditorById.executeQuery();
+            if (rs.next()) {
+                result = createEditor(rs);
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load editor by id", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
     }
 
     @Override
     public List<Editor> getEditors() throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Editor> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            rs = sEditors.executeQuery();
+            while (rs.next()) {
+                result.add(getEditor(rs.getInt("ideditore")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load editors", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
     }
 
     @Override
     public Metadata getMetadata(int metadata_key) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Metadata result = null;
+        ResultSet rs = null;
+        try {
+            sMetadataById.setInt(1, metadata_key);
+            rs = sMetadataById.executeQuery();
+            if (rs.next()) {
+                result = createMetadata(rs);
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load metadata by id", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
     }
 
     @Override
-    public List<Metadata> getMetadatas() throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Metadata> getMetadatas(int publication_key) throws DataLayerException {
+        List<Metadata> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sMetadatasByPublication.setInt(1, publication_key);
+            rs = sMetadatasByPublication.executeQuery();
+            while (rs.next()) {
+                result.add(getMetadata(rs.getInt("idmetadata")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load metadatas", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
     }
 
     @Override
     public Publication getPublication(int publication_key) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Publication result = null;
+        ResultSet rs = null;
+        try {
+            sPublicationById.setInt(1, publication_key);
+            rs = sPublicationById.executeQuery();
+            if (rs.next()) {
+                result = createPublication(rs);
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load publication by id", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
     }
 
     @Override
     public List<Publication> getPublications() throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Publication> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            rs = sPublications.executeQuery();
+            while (rs.next()) {
+                result.add(getPublication(rs.getInt("idpubblicazione")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load publications", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
     }
 
+    public List<Author> getPublicationAuthors(int publication_key) throws DataLayerException {
+        List<Author> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sPublicationAuthors.setInt(1, publication_key);
+            rs = sPublicationAuthors.executeQuery();
+            while (rs.next()) {
+                result.add(getAuthor(rs.getInt("autore_idautore")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load authors of publication", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+    
+    public List<Source> getPublicationSources(int publication_key) throws DataLayerException {
+        List<Source> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sPublicationSources.setInt(1, publication_key);
+            rs = sPublicationSources.executeQuery();
+            while (rs.next()) {
+                result.add(getSource(rs.getInt("sorgente_idsorgente")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load sources of publication", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+    
     @Override
     public Review getReview(int review_key) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Review result = null;
+        ResultSet rs = null;
+        try {
+            sReviewById.setInt(1, review_key);
+            rs = sReviewById.executeQuery();
+            if (rs.next()) {
+                result = createReview(rs);
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load review by id", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
     }
 
     @Override
-    public List<Review> getReviews() throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Review> getReviews(int publication_key) throws DataLayerException {
+        List<Review> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sReviewsByPublication.setInt(1, publication_key);
+            rs = sReviewsByPublication.executeQuery();
+            while (rs.next()) {
+                result.add(getReview(rs.getInt("pubblicazione")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load review of publication", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
     }
 
     @Override
     public Reprint getReprint(int reprint_key) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Reprint result = null;
+        ResultSet rs = null;
+        try {
+            sReprintById.setInt(1, reprint_key);
+            rs = sReprintById.executeQuery();
+            if (rs.next()) {
+                result = createReprint(rs);
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load reprint by id", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
     }
 
     @Override
-    public List<Reprint> getReprints() throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public List<Reprint> getReprints(int publication_key) throws DataLayerException {
+        List<Reprint> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sReprintsByPublication.setInt(1, publication_key);
+            rs = sReprintsByPublication.executeQuery();
+            while (rs.next()) {
+                result.add(getReprint(rs.getInt("pubblicazione")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load reprints of publication", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
     }
 
     @Override
     public Source getSource(int source_key) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        Source result = null;
+        ResultSet rs = null;
+        try {
+            sSourceById.setInt(1, source_key);
+            rs = sSourceById.executeQuery();
+            if (rs.next()) {
+                result = createSource(rs);
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load source by id", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
     }
 
     @Override
     public List<Source> getSource() throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<Source> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            rs = sSources.executeQuery();
+            while (rs.next()) {
+                result.add(getSource(rs.getInt("idsorgente")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load sources", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
     }
 
     @Override

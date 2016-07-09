@@ -40,7 +40,7 @@ public interface Publication {
     
     int getNumberOfLikes();
     
-    void setNumberOfLikes();
+    void setNumberOfLikes(int likes);
 
     List<Source> getSources() throws DataLayerException;
     

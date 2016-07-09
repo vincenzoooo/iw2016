@@ -20,7 +20,6 @@ public class AuthorImpl implements Author{
     private int key;
     private String name;
     private String surname;
-    private List<Publication> publications;
     
     protected BiblioManagerDataLayer ownerDataLayer;
 
@@ -29,7 +28,6 @@ public class AuthorImpl implements Author{
         this.key = 0;
         this.name = "";
         this.surname = "";
-        this.publications = null;
     }
 
     @Override
@@ -63,23 +61,9 @@ public class AuthorImpl implements Author{
     }
 
     @Override
-    public List<Publication> getPublications() throws DataLayerException {
-        if(publications == null){
-            publications = this.ownerDataLayer.getPublications();
-        }
-        return publications;
-    }
-
-    @Override
-    public void setPublications(List<Publication> publications) {
-        this.publications = publications;
-    }
-
-    @Override
     public void copyFrom(Author author) throws DataLayerException {
         key = author.getKey();
         name = author.getName();
         surname = author.getSurname();
-        publications = author.getPublications();
     }
 }

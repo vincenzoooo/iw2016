@@ -18,10 +18,6 @@ public interface Author {
     
     void setKey(int key);
     
-    List<Publication> getPublications() throws DataLayerException;
-
-    void setPublications(List<Publication> publications);
-    
     String getName();
     
     void setName(String name);

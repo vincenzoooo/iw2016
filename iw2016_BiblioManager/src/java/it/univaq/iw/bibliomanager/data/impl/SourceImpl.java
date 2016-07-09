@@ -22,7 +22,6 @@ public class SourceImpl implements Source{
     private String uri;
     private String format;
     private String description;
-    private List<Publication> publications;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public SourceImpl(BiblioManagerDataLayer ownerDataLayer) {
@@ -32,7 +31,6 @@ public class SourceImpl implements Source{
         uri = "";
         format = "";
         description = "";
-        publications = null;
     }
 
     @Override
@@ -84,19 +82,6 @@ public class SourceImpl implements Source{
     public void setDescription(String description) {
         this.description = description;
     }
-
-    @Override
-    public List<Publication> getPublications() throws DataLayerException {
-        if(publications == null){
-            publications = this.ownerDataLayer.getPublications();
-        }
-        return publications;
-    }
-
-    @Override
-    public void setPublications(List<Publication> publications) {
-        this.publications = publications;
-    }
  
     @Override
     public void copyFrom(Source source) throws DataLayerException {
@@ -105,6 +90,5 @@ public class SourceImpl implements Source{
         format = source.getFormat();
         uri = source.getURI();
         type = source.getType();
-        publications = source.getPublications();
     }
 }

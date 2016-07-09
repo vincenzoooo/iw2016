@@ -30,13 +30,13 @@ public interface BiblioManagerDataLayer extends DataLayer{
     Editor getEditor(int editor_key) throws DataLayerException;
     List<Editor> getEditors() throws DataLayerException;
     Metadata getMetadata(int metadata_key) throws DataLayerException;
-    List<Metadata> getMetadatas() throws DataLayerException;
+    List<Metadata> getMetadatas(int publication_key) throws DataLayerException;
     Publication getPublication(int publication_key) throws DataLayerException;
     List<Publication> getPublications() throws DataLayerException;
     Review getReview(int review_key) throws DataLayerException;
-    List<Review> getReviews() throws DataLayerException;
+    List<Review> getReviews(int publication_key) throws DataLayerException;
     Reprint getReprint(int reprint_key) throws DataLayerException;
-    List<Reprint> getReprints() throws DataLayerException;
+    List<Reprint> getReprints(int publication_key) throws DataLayerException;
     Source getSource(int source_key) throws DataLayerException;
     List<Source> getSource() throws DataLayerException;
     History getHistory(int historia_key) throws DataLayerException;

@@ -97,8 +97,8 @@ public class PublicationImpl implements Publication{
     }
 
     @Override
-    public void setNumberOfLikes() {
-        this.like++;
+    public void setNumberOfLikes(int likes) {
+        this.like+=likes;
     }
 
     @Override
@@ -143,7 +143,7 @@ public class PublicationImpl implements Publication{
     @Override
     public List<Metadata> getMetadatas() throws DataLayerException {
         if (metadatas == null) {
-            metadatas = ownerDataLayer.getMetadatas();
+            metadatas = ownerDataLayer.getMetadatas(key);
         }
         return metadatas;
     }
@@ -156,7 +156,7 @@ public class PublicationImpl implements Publication{
     @Override
     public List<Reprint> getReprints() throws DataLayerException {
         if (reprints == null) {
-            reprints = ownerDataLayer.getReprints();
+            reprints = ownerDataLayer.getReprints(key);
         }
         return reprints;
     }
