@@ -71,7 +71,7 @@ public class AuthorImpl implements Author{
     }
 
     @Override
-    public void setPublication(List<Publication> publications) {
+    public void setPublications(List<Publication> publications) {
         this.publications = publications;
     }
 

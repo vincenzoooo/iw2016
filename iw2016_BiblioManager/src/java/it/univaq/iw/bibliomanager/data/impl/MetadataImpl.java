@@ -23,7 +23,7 @@ public class MetadataImpl implements Metadata{
     private int pageNumber;
     private String language;
     private Date publicationDate;
-    private List<String> keywords;
+    private String keywords;
     private int publication_key;
     private Publication publication;
     protected BiblioManagerDataLayer ownerDataLayer;
@@ -91,12 +91,12 @@ public class MetadataImpl implements Metadata{
     }
 
     @Override
-    public List<String> getKeywords() {
+    public String getKeywords() {
         return keywords;
     }
 
     @Override
-    public void setKeywords(List<String> keywords) {
+    public void setKeywords(String keywords) {
         this.keywords = keywords;
     }
 

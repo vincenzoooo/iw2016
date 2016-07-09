@@ -38,6 +38,20 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement uUser, iUser;
     private PreparedStatement sHistories, sHistoriesByUser, sHistoryById;
     private PreparedStatement uHistory, iHistory;
+    private PreparedStatement sPublications, sPublicationById; // TODO: Select con altri parametri
+    private PreparedStatement uPublication, iPublication;
+    private PreparedStatement sSources, sSourceById, sSourceByPublication;
+    private PreparedStatement uSource, iSource;
+    private PreparedStatement sReprints, sReprintById;
+    private PreparedStatement uReprint, iReprint;
+    private PreparedStatement sEditors, sEditorById;
+    private PreparedStatement uEditor, iEditor;
+    private PreparedStatement sAuthors, sAuthorById;
+    private PreparedStatement uAuthor, iAuthor;
+    private PreparedStatement sReviewsByPublication, sReviewById, sReviewByAuthor;
+    private PreparedStatement uReview, iReview;
+    private PreparedStatement sMetadatasByPublication, sMetadataById;
+    private PreparedStatement uMetadata, iMetadata;
     
     public BiblioManagerDataLayerMysqlImpl(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
@@ -390,42 +404,370 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
     @Override
     public void storeAuthor(Author author) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet keys = null;
+        int key = author.getKey();
+        try {
+            if (author.getKey() > 0) { //update
+                //non facciamo nulla se l'oggetto non ha subito modifiche
+                //do not store the object if it was not modified
+//                if (!article.isDirty()) {
+//                    return;
+//                }
+                //TODO: Salvataggio anche per la tabella autore_has_pubblicazione
+                uAuthor.setString(1, author.getName());
+                uAuthor.setString(2, author.getSurname());
+                
+                uAuthor.executeUpdate();
+            } else { //insert
+                iAuthor.setString(1, author.getName());
+                iAuthor.setString(2, author.getSurname());
+                
+                if (iAuthor.executeUpdate() == 1) {
+                    keys = iAuthor.getGeneratedKeys();
+                    if (keys.next()) {
+                        key = keys.getInt(1);
+                    }
+                }
+            }
+            if (key > 0) {
+                author.copyFrom(getAuthor(key));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to store editor", ex);
+        } finally {
+            try {
+                if (keys != null) {
+                    keys.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
     public void storeEditor(Editor editor) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet keys = null;
+        int key = editor.getKey();
+        try {
+            if (editor.getKey() > 0) { //update
+                //non facciamo nulla se l'oggetto non ha subito modifiche
+                //do not store the object if it was not modified
+//                if (!article.isDirty()) {
+//                    return;
+//                }
+                uEditor.setString(1, editor.getName());
+                
+                uEditor.executeUpdate();
+            } else { //insert
+                iEditor.setString(1, editor.getName());
+                
+                if (iEditor.executeUpdate() == 1) {
+                    keys = iEditor.getGeneratedKeys();
+                    if (keys.next()) {
+                        key = keys.getInt(1);
+                    }
+                }
+            }
+            if (key > 0) {
+                editor.copyFrom(getEditor(key));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to store editor", ex);
+        } finally {
+            try {
+                if (keys != null) {
+                    keys.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
     public void storeMetadata(Metadata metadata) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet keys = null;
+        int key = metadata.getKey();
+        try {
+            if (metadata.getKey() > 0) { //update
+                //non facciamo nulla se l'oggetto non ha subito modifiche
+                //do not store the object if it was not modified
+//                if (!article.isDirty()) {
+//                    return;
+//                }
+                uMetadata.setInt(1, metadata.getISBN());
+                uMetadata.setInt(2, metadata.getPages());
+                uMetadata.setString(3, metadata.getLanguage());
+                uMetadata.setDate(4, metadata.getPublicationDate());
+                uMetadata.setString(5, metadata.getKeywords());
+                uMetadata.setInt(6, metadata.getPublication().getKey());
+
+                uMetadata.executeUpdate();
+            } else { //insert
+                iMetadata.setInt(1, metadata.getISBN());
+                iMetadata.setInt(2, metadata.getPages());
+                iMetadata.setString(3, metadata.getLanguage());
+                iMetadata.setDate(4, metadata.getPublicationDate());
+                iMetadata.setString(5, metadata.getKeywords());
+                iMetadata.setInt(6, metadata.getPublication().getKey());
+
+                if (iMetadata.executeUpdate() == 1) {
+                    keys = iMetadata.getGeneratedKeys();
+                    if (keys.next()) {
+                        key = keys.getInt(1);
+                    }
+                }
+            }
+            if (key > 0) {
+                metadata.copyFrom(getMetadata(key));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to store metadata", ex);
+        } finally {
+            try {
+                if (keys != null) {
+                    keys.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
     public void storePublication(Publication publication) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet keys = null;
+        int key = publication.getKey();
+        try {
+            if (publication.getKey() > 0) { //update
+                //non facciamo nulla se l'oggetto non ha subito modifiche
+                //do not store the object if it was not modified
+//                if (!article.isDirty()) {
+//                    return;
+//                }
+                uPublication.setString(1, publication.getTitle());
+                uPublication.setString(2, publication.getDescription());
+                uPublication.setInt(3, publication.getEditor().getKey());
+                uPublication.setString(4, publication.getIndex());
+                uPublication.setInt(5, publication.getNumberOfLikes());
+
+                uPublication.executeUpdate();
+            } else { //insert
+                iPublication.setString(1, publication.getTitle());
+                iPublication.setString(2, publication.getDescription());
+                iPublication.setInt(3, publication.getEditor().getKey());
+                iPublication.setString(4, publication.getIndex());
+                iPublication.setInt(5, publication.getNumberOfLikes());
+
+                if (iPublication.executeUpdate() == 1) {
+                    keys = iPublication.getGeneratedKeys();
+                    if (keys.next()) {
+                        key = keys.getInt(1);
+                    }
+                }
+            }
+            if (key > 0) {
+                publication.copyFrom(getPublication(key));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to store review", ex);
+        } finally {
+            try {
+                if (keys != null) {
+                    keys.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
     public void storeReview(Review review) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet keys = null;
+        int key = review.getKey();
+        try {
+            if (review.getKey() > 0) { //update
+                //non facciamo nulla se l'oggetto non ha subito modifiche
+                //do not store the object if it was not modified
+//                if (!article.isDirty()) {
+//                    return;
+//                }
+                uReview.setString(1, review.getText());
+                uReview.setBoolean(2, review.getStatus());
+                uReview.setInt(3, review.getAuthor().getKey());
+                uReview.setInt(4, review.getPublication().getKey());
+                uReview.setInt(5, review.getHistory().getKey());
+
+                uReview.executeUpdate();
+            } else { //insert
+                iReview.setString(1, review.getText());
+                iReview.setBoolean(2, review.getStatus());
+                iReview.setInt(3, review.getAuthor().getKey());
+                iReview.setInt(4, review.getPublication().getKey());
+                iReview.setInt(5, review.getHistory().getKey());
+
+                if (iReview.executeUpdate() == 1) {
+                    keys = iReview.getGeneratedKeys();
+                    if (keys.next()) {
+                        key = keys.getInt(1);
+                    }
+                }
+            }
+            if (key > 0) {
+                review.copyFrom(getReview(key));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to store review", ex);
+        } finally {
+            try {
+                if (keys != null) {
+                    keys.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
     public void storeReprint(Reprint reprint) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet keys = null;
+        int key = reprint.getKey();
+        try {
+            if (reprint.getKey() > 0) { //update
+                //non facciamo nulla se l'oggetto non ha subito modifiche
+                //do not store the object if it was not modified
+//                if (!article.isDirty()) {
+//                    return;
+//                }
+                uReprint.setInt(1, reprint.getNumber());
+                uReprint.setDate(2, reprint.getDate());
+                uReprint.setInt(3, reprint.getPublication().getKey());
+
+                uReprint.executeUpdate();
+            } else { //insert
+                iReprint.setInt(1, reprint.getNumber());
+                iReprint.setDate(2, reprint.getDate());
+                iReprint.setInt(3, reprint.getPublication().getKey());
+
+                if (iReprint.executeUpdate() == 1) {
+                    keys = iReprint.getGeneratedKeys();
+                    if (keys.next()) {
+                        key = keys.getInt(1);
+                    }
+                }
+            }
+            if (key > 0) {
+                reprint.copyFrom(getReprint(key));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to store reprint", ex);
+        } finally {
+            try {
+                if (keys != null) {
+                    keys.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
     public void storeSource(Source source) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet keys = null;
+        int key = source.getKey();
+        try {
+            if (source.getKey() > 0) { //update
+                //non facciamo nulla se l'oggetto non ha subito modifiche
+                //do not store the object if it was not modified
+//                if (!article.isDirty()) {
+//                    return;
+//                }
+                //TODO: Salvataggio anche per la tabella pubblicazione_has_sorgente
+                uSource.setString(1, source.getType());
+                uSource.setString(2, source.getURI());
+                uSource.setString(3, source.getFormat());
+                uSource.setString(4, source.getDescription());
+
+                uSource.executeUpdate();
+            } else { //insert
+                iSource.setString(1, source.getType());
+                iSource.setString(2, source.getURI());
+                iSource.setString(3, source.getFormat());
+                iSource.setString(4, source.getDescription());
+
+                if (iSource.executeUpdate() == 1) {
+                    keys = iSource.getGeneratedKeys();
+                    if (keys.next()) {
+                        key = keys.getInt(1);
+                    }
+                }
+            }
+            if (key > 0) {
+                source.copyFrom(getSource(key));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to store source", ex);
+        } finally {
+            try {
+                if (keys != null) {
+                    keys.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
     public void storeHistory(History historia) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet keys = null;
+        int key = historia.getKey();
+        try {
+            if (historia.getKey() > 0) { //update
+                //non facciamo nulla se l'oggetto non ha subito modifiche
+                //do not store the object if it was not modified
+//                if (!article.isDirty()) {
+//                    return;
+//                }
+                uHistory.setString(1, historia.getEntry());
+                uHistory.setInt(2, historia.getType());
+                uHistory.setTimestamp(3, historia.getTimestamp());
+                uHistory.setInt(4, historia.getPublication().getKey());
+                uHistory.setInt(5, historia.getUser().getKey());
+
+                uHistory.executeUpdate();
+            } else { //insert
+                iHistory.setString(1, historia.getEntry());
+                iHistory.setInt(2, historia.getType());
+                iHistory.setTimestamp(3, historia.getTimestamp());
+                iHistory.setInt(4, historia.getPublication().getKey());
+                iHistory.setInt(5, historia.getUser().getKey());
+
+                if (iHistory.executeUpdate() == 1) {
+                    keys = iHistory.getGeneratedKeys();
+                    if (keys.next()) {
+                        key = keys.getInt(1);
+                    }
+                }
+            }
+            if (key > 0) {
+                historia.copyFrom(getHistory(key));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to store history", ex);
+        } finally {
+            try {
+                if (keys != null) {
+                    keys.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
@@ -441,8 +783,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                }
                 uUser.setString(1, user.getName());
                 uUser.setString(2, user.getSurname());
-                uUser.setString(3, user.getEmail());
-                uUser.setInt(4, user.getState());
+                uUser.setString(3, user.getPassword());
+                uUser.setString(4, user.getEmail());
+                uUser.setInt(5, user.getState());
 
                 uUser.executeUpdate();
             } else { //insert
@@ -453,33 +796,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 iUser.setInt(5, user.getState());
 
                 if (iUser.executeUpdate() == 1) {
-                    //per leggere la chiave generata dal database
-                    //per il record appena inserito, usiamo il metodo
-                    //getGeneratedKeys sullo statement.
-                    //to read the generated record key from the database
-                    //we use the getGeneratedKeys method on the same statement
                     keys = iUser.getGeneratedKeys();
-                    //il valore restituito è un ResultSet con un record
-                    //per ciascuna chiave generata (uno solo nel nostro caso)
-                    //the returned value is a ResultSet with a distinct record for
-                    //each generated key (only one in our case)
                     if (keys.next()) {
-                        //i campi del record sono le componenti della chiave
-                        //(nel nostro caso, un solo intero)
-                        //the record fields are the key componenets
-                        //(a single integer in our case)
                         key = keys.getInt(1);
                     }
                 }
             }
-            //restituiamo l'oggetto appena inserito RICARICATO
-            //dal database tramite le API del modello. In tal
-            //modo terremo conto di ogni modifica apportata
-            //durante la fase di inserimento
-            //we return the just-inserted object RELOADED from the
-            //database through our API. In this way, the resulting
-            //object will ambed any data correction performed by
-            //the DBMS
             if (key > 0) {
                 user.copyFrom(getUser(key));
             }

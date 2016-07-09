@@ -7,6 +7,7 @@
 package it.univaq.iw.bibliomanager.data.model;
 
 import it.univaq.iw.framework.data.DataLayerException;
+import java.util.List;
 
 /**
  *
@@ -33,9 +34,9 @@ public interface Source {
     
     void setDescription(String description);
     
-    Publication getPublication() throws DataLayerException;
-    
-    void setPublication(Publication publication);
+    List<Publication> getPublications() throws DataLayerException;
+
+    void setPublications(List<Publication> publications);
     
     void copyFrom(Source source) throws DataLayerException;
 }

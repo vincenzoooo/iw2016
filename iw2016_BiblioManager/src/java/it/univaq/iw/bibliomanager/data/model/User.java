@@ -37,5 +37,9 @@ public interface User {
 
     void setState(int state);
     
+    User getUtente() throws DataLayerException;
+    
+    void setUtente(User user);
+    
     void copyFrom(User user) throws DataLayerException;
 }

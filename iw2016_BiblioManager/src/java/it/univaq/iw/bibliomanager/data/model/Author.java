@@ -20,7 +20,7 @@ public interface Author {
     
     List<Publication> getPublications() throws DataLayerException;
 
-    void setPublication(List<Publication> publications);
+    void setPublications(List<Publication> publications);
     
     String getName();
     

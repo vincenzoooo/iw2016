@@ -14,13 +14,16 @@ import it.univaq.iw.framework.data.DataLayerException;
  *
  * @author Vincenzo Lanzieri
  */
-public class UserImpl implements User{    
+public class UserImpl implements User {
+
     private int key;
     private String name;
     private String surname;
     private String password;
     private String email;
     private int state;
+    private int user_key;
+    private User user;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public UserImpl(BiblioManagerDataLayer ownerDataLayer) {
@@ -30,7 +33,9 @@ public class UserImpl implements User{
         surname = "";
         password = "";
         email = "";
-        state = 2;              
+        state = 2;
+        user_key = 0;
+        user = null;
     }
 
     @Override
@@ -42,7 +47,7 @@ public class UserImpl implements User{
     public void setKey(int key) {
         this.key = key;
     }
-    
+
     @Override
     public String getName() {
         return name;
@@ -75,7 +80,7 @@ public class UserImpl implements User{
 
     @Override
     public String getEmail() {
-        return email;      
+        return email;
     }
 
     @Override
@@ -92,7 +97,20 @@ public class UserImpl implements User{
     public void setState(int state) {
         this.state = state;
     }
-    
+
+    @Override
+    public User getUtente() throws DataLayerException {
+        if (user == null && user_key > 0) {
+            user = ownerDataLayer.getUser(user_key);
+        }
+        return user;
+    }
+
+    @Override
+    public void setUtente(User user) {
+        this.user = user;
+    }
+
     @Override
     public void copyFrom(User user) throws DataLayerException {
         key = user.getKey();

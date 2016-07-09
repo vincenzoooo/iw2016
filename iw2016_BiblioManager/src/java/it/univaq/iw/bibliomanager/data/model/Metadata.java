@@ -35,9 +35,9 @@ public interface Metadata {
 
     void setPublicationDate(Date date);
     
-    List<String> getKeywords();
+    String getKeywords();
 
-    void setKeywords(List<String> keywords);
+    void setKeywords(String keywords);
     
     Publication getPublication() throws DataLayerException;
     

@@ -10,6 +10,7 @@ import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.Source;
+import java.util.List;
 
 /**
  *
@@ -21,8 +22,7 @@ public class SourceImpl implements Source{
     private String uri;
     private String format;
     private String description;
-    private int publication_key;
-    private Publication publication;
+    private List<Publication> publications;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public SourceImpl(BiblioManagerDataLayer ownerDataLayer) {
@@ -32,8 +32,7 @@ public class SourceImpl implements Source{
         uri = "";
         format = "";
         description = "";
-        publication_key = 0;
-        publication = null;        
+        publications = null;
     }
 
     @Override
@@ -87,16 +86,16 @@ public class SourceImpl implements Source{
     }
 
     @Override
-    public Publication getPublication() throws DataLayerException {
-        if (publication == null && publication_key > 0) {
-            publication = ownerDataLayer.getPublication(publication_key);
+    public List<Publication> getPublications() throws DataLayerException {
+        if(publications == null){
+            publications = this.ownerDataLayer.getPublications();
         }
-        return publication;
+        return publications;
     }
 
     @Override
-    public void setPublication(Publication publication) {
-        this.publication = publication;
+    public void setPublications(List<Publication> publications) {
+        this.publications = publications;
     }
  
     @Override
@@ -104,8 +103,8 @@ public class SourceImpl implements Source{
         key = source.getKey();
         description = source.getDescription();
         format = source.getFormat();
-        publication_key = source.getPublication().getKey();
         uri = source.getURI();
         type = source.getType();
+        publications = source.getPublications();
     }
 }
