@@ -4,24 +4,152 @@
         <#if pageNotFound??>
             <div> La pagina richiesta non esiste </div>
         <#else>
-            <div id="last-insert" >
-                <h1 class="center">Ultime pubblicazioni inserite </h1>
-                <div>
-                    
-                </div>
-            </div>
-            <div id="last-update" class="clear" >
-                <h1 class="center">Ultime pubblicazioni modificate</h1>
-                <div >
 
+            <div  id="last-insert">
+                <div class="row">  
+                    <h1 class="center">Ultime pubblicazioni inserite</h1>
+                    <div class="col-lg-4">
+                        <figure class="cover-pubb">
+                            <img  src="img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
+                            <figcaption>
+                                Testo di prova
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-lg-4">
+                        <figure class="cover-pubb">
+                            <img  src="img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
+                            <figcaption>
+                                Testo di prova
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-lg-4">
+                        <figure class="cover-pubb">
+                            <img  src="img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
+                            <figcaption>
+                                Testo di prova
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-lg-4">
+                        <figure class="cover-pubb">
+                            <img  src="img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
+                            <figcaption>
+                                Testo di prova
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-lg-4">
+                        <figure class="cover-pubb">
+                            <img  src="img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
+                            <figcaption>
+                                Testo di prova
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-lg-4">
+                        <figure class="cover-pubb">
+                            <img  src="img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
+                            <figcaption>
+                                Testo di prova
+                            </figcaption>
+                        </figure>
+                    </div>
+                </div>
+            </div>
+
+            <div id="last-edit">
+                <div class="row">
+                    <h1 class="center">Ultime pubblicazioni modificate</h1>
+                    <div class="col-lg-4">
+                        <figure class="cover-pubb">
+                            <img  src="img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
+                            <figcaption>
+                                Testo di prova
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-lg-4">
+                        <figure class="cover-pubb">
+                            <img  src="img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
+                            <figcaption>
+                                Testo di prova
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-lg-4">
+                        <figure class="cover-pubb">
+                            <img  src="img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
+                            <figcaption>
+                                Testo di prova
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-lg-4">
+                        <figure class="cover-pubb">
+                            <img  src="img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
+                            <figcaption>
+                                Testo di prova
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-lg-4">
+                        <figure class="cover-pubb">
+                            <img  src="img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
+                            <figcaption>
+                                Testo di prova
+                            </figcaption>
+                        </figure>
+                    </div>
+                    <div class="col-lg-4">
+                        <figure class="cover-pubb">
+                            <img  src="img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
+                            <figcaption>
+                                Testo di prova
+                            </figcaption>
+                        </figure>
+                    </div>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4" id='columnHome'>
-            <div id="active-user" class="right">
-                <h2>Utenti pi&ugrave; attivi</h2>
-                
+        <div class="col-lg-offset-1 col-lg-3 search-box" id="columnHome">
+            <div>
+                <form method="post" action="catalog">
+                    <div id="active-user" class="right">
+                        <h2>Ricerca pubblicazioni</h2>
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputEmail1">Autore</label>
+                        <input type="email" class="form-control" name="author" placeholder="Inserisci un autore">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Titolo</label>
+                        <input type="password" class="form-control" name="title" placeholder="Inserisci un titolo">
+                    </div>
+                    <div class="form-group">
+                        <label for="exampleInputFile">Keywords / ISBN</label>
+                        <input type="password" class="form-control" name="Keywords" placeholder="PInserisci una Kewords/ISBN">
+                    </div>
+                    <span>
+                        <input type="submit" value="Ricerca" name="submitRegistration" class="btn btn-default">
+                    </span>
+                </form>
             </div>
         </div>
+        <div class="col-lg-offset-1 col-lg-3 search-box" id="columnHome">
+            <div>
+                <div id="active-user" class="right">
+                    <h2>Utenti pi&ugrave; attivi</h2>
+                    <div class="moreactive">Utente1</div>
+                    <div class="moreactive">Utente2</div>
+                    <div class="moreactive">Utente1</div>
+                    <div class="moreactive">Utente2</div>
+                    <div class="moreactive">Utente1</div>
+                    <div class="moreactive">Utente1</div>
+                </div>
+            </div>
+        </div>
+    </#if>
     </div>
 </div>
