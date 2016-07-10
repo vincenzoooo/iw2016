@@ -38,7 +38,7 @@ public class Register extends BiblioManagerBaseController {
             String surname = Utils.checkString(request.getParameter("surname"));
             String password = Utils.SHA1(request.getParameter("password"));
             String email = Utils.checkString(request.getParameter("email"));
-            if (!this.validator(request, response)) {
+            if (!validator(request, response)) {
                 User newUser = getDataLayer().createUser();
                 newUser.setName(name);
                 newUser.setSurname(surname);

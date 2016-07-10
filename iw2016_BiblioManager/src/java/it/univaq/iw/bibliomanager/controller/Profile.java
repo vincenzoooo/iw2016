@@ -66,14 +66,20 @@ public class Profile extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             int userKey =  (int) session.getAttribute("userid");
             User user = getDataLayer().getUser(userKey);
-            String password = Utils.SHA1(request.getParameter("password"));
-            if (!password.equals(user.getPassword())) {
+            TemplateResult res = new TemplateResult(getServletContext());
+            if (!validator(request, response)) {
+                String password = Utils.SHA1(request.getParameter("password"));
+                user.setName(request.getParameter("name"));
+                user.setSurname(request.getParameter("surname"));
                 user.setPassword(password);
-            }
             getDataLayer().storeUser(user);
             request.setAttribute("user", user);
-            TemplateResult res = new TemplateResult(getServletContext());
             res.activate("profile.ftl.html", request, response);
+            }
+            else {
+                request.setAttribute("user", user);
+                res.activate("registration.ftl.html", request, response);
+            }
         } catch (DataLayerException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }

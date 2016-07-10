@@ -19,7 +19,6 @@ import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
-import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -200,7 +199,7 @@ public class ComposePublication extends BiblioManagerBaseController {
         history.setType(0);
         history.setUser(user);
         history.setPublication((Publication) request.getAttribute("publication"));
-        history.setTimestamp(new Timestamp(System.currentTimeMillis()));
+        history.setDate(new java.sql.Date(System.currentTimeMillis()));
         getDataLayer().storeHistory(history);
     }
     
