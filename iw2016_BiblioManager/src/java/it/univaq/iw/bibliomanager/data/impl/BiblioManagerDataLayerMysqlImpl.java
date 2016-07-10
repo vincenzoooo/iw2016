@@ -26,6 +26,9 @@ import it.univaq.iw.bibliomanager.data.model.Reprint;
 import it.univaq.iw.bibliomanager.data.model.Source;
 import it.univaq.iw.bibliomanager.data.model.History;
 import it.univaq.iw.bibliomanager.data.model.User;
+import java.sql.Date;
+import java.util.Calendar;
+
 
 /**
  *
@@ -34,13 +37,13 @@ import it.univaq.iw.bibliomanager.data.model.User;
 public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implements BiblioManagerDataLayer {
 
     //Statements declaration
-    private PreparedStatement sUsers, sUserByEmail, sUserByEmailPassword, sUserById;
+    private PreparedStatement sUsers, sUserByEmail, sUserByEmailPassword, sUserById, sUserByNumberOfPublications;
     private PreparedStatement uUser, iUser;
     private PreparedStatement sHistories, sHistoriesByUser, sHistoryById;
     private PreparedStatement uHistory, iHistory;
-    private PreparedStatement sPublications, sPublicationById, sPublicationAuthors, sPublicationSources; // TODO: Select con altri parametri
+    private PreparedStatement sPublications, sPublicationById, sPublicationAuthors, sPublicationSources, sPublicationsByInsertDate, sPublicationsByUpdateDate; // TODO: Select con altri parametri
     private PreparedStatement uPublication, iPublication;
-    private PreparedStatement sSources, sSourceById, sSourceByPublication;
+    private PreparedStatement sSources, sSourceById;
     private PreparedStatement uSource, iSource;
     private PreparedStatement sReprintsByPublication, sReprintById;
     private PreparedStatement uReprint, iReprint;
@@ -48,11 +51,11 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement uEditor, iEditor;
     private PreparedStatement sAuthors, sAuthorById;
     private PreparedStatement uAuthor, iAuthor;
-    private PreparedStatement sReviewsByPublication, sReviewById, sReviewByAuthor;
+    private PreparedStatement sReviewsByPublication, sReviewById;
     private PreparedStatement uReview, iReview;
     private PreparedStatement sMetadatasByPublication, sMetadataById;
     private PreparedStatement uMetadata, iMetadata;
-    
+
     public BiblioManagerDataLayerMysqlImpl(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
     }
@@ -66,12 +69,46 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sUserByEmail = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE email = ?");
             this.sUserByEmailPassword = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE email = ? AND password = ?");
             this.sUserById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idutente = ?");
+            this.sUserByNumberOfPublications = connection.prepareStatement("SELECT utente, COUNT(*) AS operazioni FROM storico GROUP BY utente HAVING operazioni > 1 ORDER BY operazioni");
             this.uUser = connection.prepareStatement("UPDATE iw2016.utente SET nome = ?, cognome = ?, password = ?, email = ?, stato = ? WHERE idutente = ?");
             this.iUser = connection.prepareStatement("INSERT INTO iw2016.utente (nome, cognome, password, email, stato) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sHistories = connection.prepareStatement("SELECT * FROM iw2016.storico");
             this.sHistoriesByUser = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE utente = ?");
             this.sHistoryById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idstorico = ?");
-            
+            this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET idstorico = ?, entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");
+            this.iHistory = connection.prepareStatement("INSERT INTO iw2016.storico (entry, tipo, data_operazione, pubblicazione, utente) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.sPublications = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione");
+            this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
+            this.sPublicationAuthors = connection.prepareStatement("SELECT * FROM autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ?");
+            this.sPublicationSources = connection.prepareStatement("SELECT * FROM pubblicazione_has_sorgente WHERE pubblicazione_idpubblicazione = ?");
+            this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 0");
+            this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 1");
+            this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET idpubblicazione = ?, titolo = ?, descrizione = ?, editore = ?, indice = ?, n_consigli = ? WHERE idpubblicazione = ?");
+            this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, indice, n_consigli) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
+            this.sSourceById = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE idsorgente = ?");
+            this.uSource = connection.prepareStatement("UPDATE iw2016.sorgente SET idsorgente = ?, tipo = ?, URI = ?, formato = ?, descrizione = ? WHERE idsorgente = ?");
+            this.iSource = connection.prepareStatement("INSERT INTO iw2016.sorgente (tipo, URI, formato, descrizione) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.sReprintsByPublication = connection.prepareStatement("SELECT * FROM iw2016.ristampa WHERE pubblicazione = ?");
+            this.sReprintById = connection.prepareStatement("SELECT * FROM iw2016.ristampa WHERE idristampa = ?");
+            this.uReprint = connection.prepareStatement("UPDATE iw2016.ristampa SET idristampa = ?, numero = ?, data = ?, pubblicazione = ? WHERE idristampa = ?");
+            this.iReprint = connection.prepareStatement("INSERT INTO iw2016.ristampa (numero, data, pubblicazione) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.sEditors = connection.prepareStatement("SELECT * FROM iw2016.editore");
+            this.sEditorById = connection.prepareStatement("SELECT * FROM iw2016.editore WHERE ideditore = ?");
+            this.uEditor = connection.prepareStatement("UPDATE iw2016.editore SET ideditore = ?, nome = ? WHERE ideditore = ?");
+            this.iEditor = connection.prepareStatement("INSERT INTO iw2016.editore (nome) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+            this.sAuthors = connection.prepareStatement("SELECT * FROM iw2016.autore");
+            this.sAuthorById = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE idautore = ?");
+            this.uAuthor = connection.prepareStatement("UPDATE iw2016.autore SET idautore = ?, nome = ?, cognome = ? WHERE idautore = ?");
+            this.iAuthor = connection.prepareStatement("INSERT INTO iw2016.autore (nome, cognome) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.sReviewsByPublication = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ?");
+            this.sReviewById = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE idrecensione = ?");
+            this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET idrecensione = ?, testo = ?, moderata = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
+            this.iReview = connection.prepareStatement("INSERT INTO iw2016.recensione (testo, moderata, utente_autore, pubblicazione, storico) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.sMetadatasByPublication = connection.prepareStatement("SELECT * FROM iw2016.metadato WHERE pubblicazione = ?");
+            this.sMetadataById = connection.prepareStatement("SELECT * FROM iw2016.metadato WHERE idmetadato = ?");
+            this.uMetadata = connection.prepareStatement("UPDATE iw2016.metadato SET idmetadato = ?, isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, chiavi = ?, pubblicazione = ? WHERE idmetadato = ?");
+            this.iMetadata = connection.prepareStatement("INSERT INTO iw2016.metadato (isbn, n_pagine, lingua, data_pubblicazione, chiavi, pubblicazione) VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         }
@@ -83,7 +120,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         return new AuthorImpl(this);
     }
 
-    public Author createAuthor(ResultSet rs) throws DataLayerException{
+    public Author createAuthor(ResultSet rs) throws DataLayerException {
         try {
             AuthorImpl author = new AuthorImpl(this);
             author.setKey(rs.getInt("idautore"));
@@ -94,13 +131,13 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
         }
     }
-    
+
     @Override
     public Editor createEditor() {
         return new EditorImpl(this);
     }
 
-    public Editor createEditor(ResultSet rs) throws DataLayerException{
+    public Editor createEditor(ResultSet rs) throws DataLayerException {
         try {
             EditorImpl editor = new EditorImpl(this);
             editor.setKey(rs.getInt("ideditore"));
@@ -110,13 +147,13 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
         }
     }
-    
+
     @Override
     public Metadata createMetadata() {
         return new MetadataImpl(this);
     }
 
-    public Metadata createMetadata(ResultSet rs) throws DataLayerException{
+    public Metadata createMetadata(ResultSet rs) throws DataLayerException {
         try {
             MetadataImpl metadata = new MetadataImpl(this);
             metadata.setKey(rs.getInt("idmetadato"));
@@ -131,13 +168,13 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
         }
     }
-    
+
     @Override
     public Publication createPublication() {
         return new PublicationImpl(this);
     }
 
-    public Publication createPublication(ResultSet rs) throws DataLayerException{
+    public Publication createPublication(ResultSet rs) throws DataLayerException {
         try {
             PublicationImpl publication = new PublicationImpl(this);
             publication.setKey(rs.getInt("idpubblicazione"));
@@ -153,14 +190,14 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
         }
     }
-    
+
     @Override
     public Review createReview() {
         return new ReviewImpl(this);
     }
 
-    public Review createReview(ResultSet rs) throws DataLayerException{
-        try{
+    public Review createReview(ResultSet rs) throws DataLayerException {
+        try {
             ReviewImpl review = new ReviewImpl(this);
             review.setKey(rs.getInt("idrecensione"));
             review.setText(rs.getString("testo"));
@@ -169,38 +206,36 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             review.setPublication(getPublication(rs.getInt("pubblicazione")));
             review.setHistory(getHistory(rs.getInt("storico")));
             return review;
-        }
-        catch(SQLException ex){
+        } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
         }
     }
-    
+
     @Override
     public Reprint createReprint() {
         return new ReprintImpl(this);
     }
 
-    public Reprint createReprint(ResultSet rs) throws DataLayerException{
-        try{
+    public Reprint createReprint(ResultSet rs) throws DataLayerException {
+        try {
             ReprintImpl reprint = new ReprintImpl(this);
             reprint.setKey(rs.getInt("idristampa"));
             reprint.setNumber(rs.getInt("numero"));
             reprint.setDate(rs.getDate("data"));
             reprint.setPublication(getPublication(rs.getInt("pubblicazione")));
             return reprint;
-        }
-        catch(SQLException ex){
+        } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
         }
     }
-    
+
     @Override
     public Source createSource() {
         return new SourceImpl(this);
     }
 
-    public Source createSource(ResultSet rs) throws DataLayerException{
-        try{
+    public Source createSource(ResultSet rs) throws DataLayerException {
+        try {
             SourceImpl source = new SourceImpl(this);
             source.setKey(rs.getInt("idsorgente"));
             source.setType(rs.getString("tipo"));
@@ -208,24 +243,23 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             source.setFormat(rs.getString("formato"));
             source.setDescription(rs.getString("descrizione"));
             return source;
-        }
-        catch(SQLException ex){
+        } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
         }
     }
-    
+
     @Override
     public History createHistory() {
         return new HistoryImpl(this);
     }
 
-    public History createHistory(ResultSet rs) throws DataLayerException{
+    public History createHistory(ResultSet rs) throws DataLayerException {
         try {
             HistoryImpl history = new HistoryImpl(this);
             history.setKey(rs.getInt("idstorico"));
             history.setEntry(rs.getString("entry"));
             history.setType(rs.getInt("tipo"));
-            history.setTimestamp(rs.getTimestamp("timestamp"));
+            history.setDate(rs.getDate("data_operazione"));
             history.setPublication(getPublication(rs.getInt("pubblicazione")));
             history.setUser(getUser(rs.getInt("utente")));
             return history;
@@ -233,7 +267,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
         }
     }
-    
+
     @Override
     public User createUser() {
         return new UserImpl(this);
@@ -441,6 +475,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         return result;
     }
 
+    @Override
     public List<Author> getPublicationAuthors(int publication_key) throws DataLayerException {
         List<Author> result = new ArrayList();
         ResultSet rs = null;
@@ -463,7 +498,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
+
+    @Override
     public List<Source> getPublicationSources(int publication_key) throws DataLayerException {
         List<Source> result = new ArrayList();
         ResultSet rs = null;
@@ -486,7 +522,88 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
+
+    @Override
+    public List<Publication> getLastInsertedPublication() throws DataLayerException {
+        List<Publication> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            Date today = new Date(System.currentTimeMillis());
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(today);
+            cal.add(Calendar.DATE, -7);
+            sPublicationsByInsertDate.setDate(1, new Date(cal.getTimeInMillis()));
+            sPublicationsByInsertDate.setDate(2, today);
+            rs = sPublicationsByInsertDate.executeQuery();
+            while (rs.next()) {
+                result.add(getPublication(rs.getInt("idpubblicazione")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load last inserted publications", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<Publication> getLastModifiedPublication() throws DataLayerException {
+        List<Publication> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            Date today = new Date(System.currentTimeMillis());
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(today);
+            cal.add(Calendar.DATE, -7);
+            sPublicationsByUpdateDate.setDate(1, new Date(cal.getTimeInMillis()));
+            sPublicationsByUpdateDate.setDate(2, today);
+            rs = sPublicationsByUpdateDate.executeQuery();
+            while (rs.next()) {
+                result.add(getPublication(rs.getInt("idpubblicazione")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load last modified publications", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<User> getMoreActiveUsers() throws DataLayerException {
+        List<User> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            rs = sUserByNumberOfPublications.executeQuery();
+            while (rs.next()) {
+                result.add(getUser(rs.getInt("utente")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load more active users", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+
     @Override
     public Review getReview(int review_key) throws DataLayerException {
         Review result = null;
@@ -702,7 +819,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
+
     @Override
     public User getUser(int user_key) throws DataLayerException {
         User result = null;
@@ -814,12 +931,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 //TODO: Salvataggio anche per la tabella autore_has_pubblicazione
                 uAuthor.setString(1, author.getName());
                 uAuthor.setString(2, author.getSurname());
-                
+
                 uAuthor.executeUpdate();
             } else { //insert
                 iAuthor.setString(1, author.getName());
                 iAuthor.setString(2, author.getSurname());
-                
+
                 if (iAuthor.executeUpdate() == 1) {
                     keys = iAuthor.getGeneratedKeys();
                     if (keys.next()) {
@@ -855,11 +972,11 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                    return;
 //                }
                 uEditor.setString(1, editor.getName());
-                
+
                 uEditor.executeUpdate();
             } else { //insert
                 iEditor.setString(1, editor.getName());
-                
+
                 if (iEditor.executeUpdate() == 1) {
                     keys = iEditor.getGeneratedKeys();
                     if (keys.next()) {
@@ -1133,7 +1250,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                }
                 uHistory.setString(1, historia.getEntry());
                 uHistory.setInt(2, historia.getType());
-                uHistory.setTimestamp(3, historia.getTimestamp());
+                uHistory.setDate(3, historia.getDate());
                 uHistory.setInt(4, historia.getPublication().getKey());
                 uHistory.setInt(5, historia.getUser().getKey());
 
@@ -1141,7 +1258,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             } else { //insert
                 iHistory.setString(1, historia.getEntry());
                 iHistory.setInt(2, historia.getType());
-                iHistory.setTimestamp(3, historia.getTimestamp());
+                iHistory.setDate(3, historia.getDate());
                 iHistory.setInt(4, historia.getPublication().getKey());
                 iHistory.setInt(5, historia.getUser().getKey());
 
