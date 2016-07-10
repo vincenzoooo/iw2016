@@ -8,10 +8,10 @@ package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.framework.data.DataLayerException;
-import java.sql.Timestamp;
 import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.History;
 import it.univaq.iw.bibliomanager.data.model.User;
+import java.sql.Date;
 
 /**
  *
@@ -21,7 +21,7 @@ public class HistoryImpl implements History{
     private int key;
     private String entry;
     private int type;
-    private Timestamp timestamp;
+    private Date date;
     private int publication_key;
     private Publication publication;
     private int user_key;
@@ -33,7 +33,7 @@ public class HistoryImpl implements History{
         key = 0;
         entry = "";
         type = 0;
-        timestamp = null;
+        date = null;
         publication_key = 0;
         publication = null;
         user_key = 0;
@@ -71,13 +71,13 @@ public class HistoryImpl implements History{
     }
 
     @Override
-    public Timestamp getTimestamp() {
-        return timestamp;
+    public Date getDate() {
+        return date;
     }
 
     @Override
-    public void setTimestamp(Timestamp timestamp) {
-        this.timestamp = timestamp;
+    public void setDate(Date date) {
+        this.date = date;
     }
 
     @Override
@@ -111,7 +111,7 @@ public class HistoryImpl implements History{
         key=history.getKey();
         entry=history.getEntry();
         type=history.getType();
-        timestamp=history.getTimestamp();
+        date=history.getDate();
         publication_key = history.getPublication().getKey();
         user_key = history.getUser().getKey();
     }
