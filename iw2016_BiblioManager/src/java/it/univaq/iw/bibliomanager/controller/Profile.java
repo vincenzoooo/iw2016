@@ -42,7 +42,7 @@ public class Profile extends BiblioManagerBaseController {
             }
             User user = getDataLayer().getUser(userKey);
             List<Publication> publications = new ArrayList();
-            List<History> histories = getDataLayer().getHistories(user);
+            List<History> histories = getDataLayer().getHistoriesByUser(user.getKey());
             for (History history : histories) {
                 //Type 0 == Insert
                 if(history.getType() == 0){

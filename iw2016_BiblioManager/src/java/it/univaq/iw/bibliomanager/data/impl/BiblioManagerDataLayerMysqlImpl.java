@@ -29,7 +29,6 @@ import it.univaq.iw.bibliomanager.data.model.User;
 import java.sql.Date;
 import java.util.Calendar;
 
-
 /**
  *
  * @author Vincenzo Lanzieri
@@ -39,7 +38,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     //Statements declaration
     private PreparedStatement sUsers, sUserByEmail, sUserByEmailPassword, sUserById, sUserByNumberOfPublications;
     private PreparedStatement uUser, iUser;
-    private PreparedStatement sHistories, sHistoriesByUser, sHistoryById;
+    private PreparedStatement sHistories, sHistoriesByUser, sHistoriesByPublication, sHistoryById;
     private PreparedStatement uHistory, iHistory;
     private PreparedStatement sPublications, sPublicationById, sPublicationAuthors, sPublicationSources, sPublicationsByInsertDate, sPublicationsByUpdateDate; // TODO: Select con altri parametri
     private PreparedStatement uPublication, iPublication;
@@ -74,6 +73,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.iUser = connection.prepareStatement("INSERT INTO iw2016.utente (nome, cognome, password, email, stato) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sHistories = connection.prepareStatement("SELECT * FROM iw2016.storico");
             this.sHistoriesByUser = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE utente = ?");
+            this.sHistoriesByUser = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE pubblicazione = ?");
             this.sHistoryById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idstorico = ?");
             this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET idstorico = ?, entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");
             this.iHistory = connection.prepareStatement("INSERT INTO iw2016.storico (entry, tipo, data_operazione, pubblicazione, utente) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -796,12 +796,37 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<History> getHistories(User user) throws DataLayerException {
+    public List<History> getHistoriesByUser(int user_key) throws DataLayerException {
         List<History> result = new ArrayList();
         ResultSet rs = null;
         try {
-            sHistoriesByUser.setInt(1, user.getKey());
+            sHistoriesByUser.setInt(1, user_key);
             rs = sHistoriesByUser.executeQuery();
+            while (rs.next()) {
+                result.add(getHistory(rs.getInt("idstorico")));
+
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load histories", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<History> getHistoriesByPublication(int publication_key) throws DataLayerException {
+        List<History> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sHistoriesByPublication.setInt(1, publication_key);
+            rs = sHistoriesByPublication.executeQuery();
             while (rs.next()) {
                 result.add(getHistory(rs.getInt("idstorico")));
 

@@ -41,7 +41,7 @@ public interface BiblioManagerDataLayer extends DataLayer{
     List<Source> getSource() throws DataLayerException;
     History getHistory(int historia_key) throws DataLayerException;
     List<History> getHistories() throws DataLayerException;
-    List<History> getHistories(User user) throws DataLayerException;
+    List<History> getHistoriesByUser(int user_key) throws DataLayerException;
     User getUser(int user_key) throws DataLayerException;
     User getUser(String email) throws DataLayerException;
     User getUser(String email, String password) throws DataLayerException;
@@ -51,6 +51,7 @@ public interface BiblioManagerDataLayer extends DataLayer{
     List<Publication> getLastInsertedPublication () throws DataLayerException;
     List<Publication> getLastModifiedPublication () throws DataLayerException;
     List<User> getMoreActiveUsers () throws DataLayerException;
+    List<History> getHistoriesByPublication (int publication_key) throws DataLayerException;
     
     void storeAuthor(Author author) throws DataLayerException;
     void storeEditor(Editor editor) throws DataLayerException;
