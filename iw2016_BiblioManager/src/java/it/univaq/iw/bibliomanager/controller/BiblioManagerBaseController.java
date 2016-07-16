@@ -5,6 +5,7 @@ import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.FailureResult;
 import java.io.IOException;
+import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.servlet.ServletException;
@@ -44,6 +45,18 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
 
     protected void action_error(HttpServletRequest request, HttpServletResponse response, String message) {
         (new FailureResult(getServletContext())).activate(message, request, response);
+    }
+    
+    protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
+        boolean error = false;
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            if (entry.getValue() == null) {
+                String fieldName = Character.toUpperCase(entry.getKey().charAt(0)) + entry.getKey().substring(1);
+                request.setAttribute("error" + fieldName, "Non valorizzato");
+                error = true;
+            }
+        }
+        return error;
     }
     
     public BiblioManagerDataLayer getDataLayer() {

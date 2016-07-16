@@ -24,6 +24,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -34,58 +35,42 @@ import javax.servlet.http.HttpSession;
  *
  * @author Vincenzo Lanzieri
  */
-public class ComposePublication extends BiblioManagerBaseController {
+public class UpdatePublication extends BiblioManagerBaseController {
 
-    private void action_composePublication(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
-        try {
-            //TODO: Inserimento multiplo di autore risorse ristampe metadata
-            Publication publication = null;
-            Editor editor = null;
-            Source source = null;
-            Author author = null;
-            Reprint reprint = this.action_composeReprint(request, response);
-            Metadata metadata = this.action_composeMetadata(request, response);
+    private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.setAttribute("page_title", "Register to Biblio");
+        TemplateResult res = new TemplateResult(getServletContext());
+        res.activate("registration.ftl.html", request, response);
+    }
+
+    private void action_update(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, IOException, NumberFormatException, ServletException {
+        //TODO: Gestire la modifica dei dati correlati alla pubblicazione, modifica ed inserimento di nuovi
+        if (request.getParameter("idPublication") != null) {
+            Publication publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("idPublication")));
+            Editor editor = publication.getEditor();
+            List<Source> sources = publication.getSources();
+            List<Author> authors = publication.getAuthors();
+            List<Reprint> reprint = publication.getReprints();
+            List<Metadata> metadata = publication.getMetadatas();
             Map<String, String> params = new HashMap<String, String>();
             params.put("title", Utils.checkString(request.getParameter("publicationTitle")));
             params.put("description", Utils.checkString(request.getParameter("publicationDescription")));
             params.put("editor", Utils.checkString(request.getParameter("publicationEditor")));
             params.put("index", Utils.checkString(request.getParameter("publicationIndex")));
-            if (request.getParameter("editorId").isEmpty()) {
-                editor = this.action_composeEditor(request, response);
-            } else {
-                editor = getDataLayer().getEditor(Integer.parseInt(request.getParameter("editorId")));
-            }
-            if (request.getParameter("sourceId").isEmpty()) {
-                source = this.action_composeSource(request, response);
-            } else {
-                source = getDataLayer().getSource(Integer.parseInt(request.getParameter("sourceId")));
-            }
-            if (request.getParameter("authorId").isEmpty()) {
-                author = this.action_composeAuthor(request, response);
-            } else {
-                author = getDataLayer().getAuthor(Integer.parseInt(request.getParameter("authorId")));
-            }
             if (!validator(params, request, response)) {
                 publication.setTitle(params.get("title"));
                 publication.setDescription(params.get("description"));
                 publication.setIndex(params.get("index"));
                 publication.setEditor(editor);
             }
-            getDataLayer().storePublication(publication);
-            reprint.setPublication(publication);
-            getDataLayer().storeReprint(reprint);
-            metadata.setPublication(publication);
-            getDataLayer().storeMetadata(metadata);
             request.setAttribute("publication", publication);
-            this.action_composeHistory(request, response);
+            this.action_updateHistory(request, response);
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("publication.ftl.html", request, response);
-        } catch (DataLayerException | ParseException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 
-    private Source action_composeSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
+    private Source action_updateSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         Source newSource = null;
         try {
             Map<String, String> params = new HashMap<String, String>();
@@ -107,7 +92,7 @@ public class ComposePublication extends BiblioManagerBaseController {
         return newSource;
     }
 
-    private Reprint action_composeReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
+    private Reprint action_updateReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
         Reprint newReprint = null;
         try {
             Map<String, String> params = new HashMap<String, String>();
@@ -126,7 +111,7 @@ public class ComposePublication extends BiblioManagerBaseController {
         return newReprint;
     }
 
-    private Editor action_composeEditor(HttpServletRequest request, HttpServletResponse response) {
+    private Editor action_updateEditor(HttpServletRequest request, HttpServletResponse response) {
         Editor editor = null;
         try {
             Map<String, String> params = new HashMap<String, String>();
@@ -143,7 +128,7 @@ public class ComposePublication extends BiblioManagerBaseController {
         return editor;
     }
 
-    private Author action_composeAuthor(HttpServletRequest request, HttpServletResponse response) {
+    private Author action_updateAuthor(HttpServletRequest request, HttpServletResponse response) {
         Author author = null;
         Map<String, String> params = new HashMap<String, String>();
         params.put("name", Utils.checkString(request.getParameter("authorName")));
@@ -156,7 +141,7 @@ public class ComposePublication extends BiblioManagerBaseController {
         return author;
     }
 
-    private Metadata action_composeMetadata(HttpServletRequest request, HttpServletResponse response) throws ParseException {
+    private Metadata action_updateMetadata(HttpServletRequest request, HttpServletResponse response) throws ParseException {
         Metadata metadata = null;
         Map<String, String> params = new HashMap<String, String>();
         params.put("isbn", Utils.checkString(request.getParameter("metadataIsbn")));
@@ -177,22 +162,22 @@ public class ComposePublication extends BiblioManagerBaseController {
         return metadata;
     }
 
-    private void action_composeHistory(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
+    private void action_updateHistory(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         HttpSession session = SecurityLayer.checkSession(request);
         User user = getDataLayer().getUser((int) session.getAttribute("userid"));
         History history = getDataLayer().createHistory();
-        history.setEntry("Insert");
-        history.setType(0);
+        history.setEntry("Update");
+        history.setType(1);
         history.setUser(user);
         history.setPublication((Publication) request.getAttribute("publication"));
         history.setDate(new java.sql.Date(System.currentTimeMillis()));
         getDataLayer().storeHistory(history);
     }
 
-    private void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("page_title", "Login to Biblio");
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("login.ftl.html", request, response);
+    private boolean validator(HttpServletRequest request, HttpServletResponse response) {
+        boolean error = false;
+        //TODO: Difficile XD
+        return error;
     }
 
     /**
@@ -207,11 +192,9 @@ public class ComposePublication extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            request.setAttribute("page_title", "Nuova Pubblicazione");
-            if (SecurityLayer.checkSession(request) != null) {
-                if (request.getParameter("submitPublication") != null) {
-                    action_composePublication(request, response);
-                }
+            request.setAttribute("page_title", "Update Publication");
+            if (SecurityLayer.checkSession(request) != null && request.getParameter("submitUpdate") != null) {
+                action_update(request, response);
             } else {
                 action_default(request, response);
             }
@@ -229,4 +212,5 @@ public class ComposePublication extends BiblioManagerBaseController {
     public String getServletInfo() {
         return "Short description";
     }
+
 }

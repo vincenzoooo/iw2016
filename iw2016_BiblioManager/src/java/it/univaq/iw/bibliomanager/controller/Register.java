@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import it.univaq.iw.bibliomanager.data.model.User;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -34,24 +36,28 @@ public class Register extends BiblioManagerBaseController {
             throws IOException, ServletException, DataLayerException, NoSuchAlgorithmException, MessagingException {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
-            String name = Utils.checkString(request.getParameter("name"));
-            String surname = Utils.checkString(request.getParameter("surname"));
-            String password = Utils.SHA1(request.getParameter("password"));
-            String email = Utils.checkString(request.getParameter("email"));
-            if (!validator(request, response)) {
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("name", Utils.checkString(request.getParameter("name")));
+            params.put("surname", Utils.checkString(request.getParameter("surname")));
+            params.put("password", Utils.SHA1(request.getParameter("password")));
+            params.put("re-password", Utils.SHA1(request.getParameter("re-password")));
+            params.put("email", Utils.checkString(request.getParameter("email")));
+            params.put("re-email", Utils.checkString(request.getParameter("re-email")));
+            params.put("privacy", Utils.checkString(request.getParameter("privacy")));
+            if (!validator(params, request, response)) {
                 User newUser = getDataLayer().createUser();
-                newUser.setName(name);
-                newUser.setSurname(surname);
-                newUser.setPassword(password);
-                newUser.setEmail(email);
+                newUser.setName(params.get("name"));
+                newUser.setSurname(params.get("surname"));
+                newUser.setPassword(params.get("password"));
+                newUser.setEmail(params.get("email"));
                 getDataLayer().storeUser(newUser);
                 //TODO: Controllare l'invio email
                 //String text = "Benvenuto su BiblioManager!";
                 //Utils.sendEmail(email, text);
                 res.activate("home.ftl.html", request, response);
             } else {
-                request.setAttribute("name", name);
-                request.setAttribute("surname", surname);
+                request.setAttribute("name", params.get("name"));
+                request.setAttribute("surname", params.get("surname"));
                 res.activate("registration.ftl.html", request, response);
             }
         } catch (DataLayerException ex) {
@@ -59,52 +65,56 @@ public class Register extends BiblioManagerBaseController {
         }
     }
 
-    private boolean validator(HttpServletRequest request, HttpServletResponse response) throws NoSuchAlgorithmException, UnsupportedEncodingException, DataLayerException{
+    @Override
+    protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = false;
-        String name = Utils.checkString(request.getParameter("name"));
-        String surname = Utils.checkString(request.getParameter("surname"));
-        String password = Utils.SHA1(request.getParameter("password"));
-        String rePassword = Utils.SHA1(request.getParameter("re-password"));
-        String email = Utils.checkString(request.getParameter("email"));
-        String reEmail = Utils.checkString(request.getParameter("re-email"));
-        String privacy = Utils.checkString(request.getParameter("privacy"));
         User user = null;
-        if (name == null) {
-            request.setAttribute("errorName", "Nome non valorizzato");
-            error = true;
-        }
-        if (surname == null) {
-            request.setAttribute("errorSurname", "Cognome non valorizzato");
-            error = true;
-        }
-        if (password == null || rePassword == null) {
-            request.setAttribute("errorPassword", "Password o Repassword non valorizzato");
-            error = true;
-        } else if (!password.equals(rePassword)) {
-            request.setAttribute("errorPassword", "I campi Password e Repassword non sono uguali");
-            error = true;
-        }
-        if (email == null || reEmail == null) {
-            request.setAttribute("errorEmail", "Email non valorizzata");
-            error = true;
-        } else if (!email.equals(reEmail)) {
-            request.setAttribute("errorEmail", "I campi email e Reemail non sono uguali");
-            error = true;
-        }
-        else{
-            user = getDataLayer().getUser(email);
-        }
-        if (privacy == null) {
-            request.setAttribute("errorPrivacy", "Bisogna accettare i termini di legge sulla privacy");
-            error = true;
-        }
-        if (!Utils.checkEmail(email)) {
-            request.setAttribute("errorEmail", "L'Email passata non è valida");
-            error = true;
-        }
-        if(user != null){
-            request.setAttribute("errorEmail", "Questa email è già registrata");
-            error = true;
+        try {
+            String password = params.get("password");
+            String rePassword = params.get("re-password");
+            String email = params.get("email");
+            String reEmail = params.get("re-email");
+            if (params.get("name") == null) {
+                request.setAttribute("errorName", "Nome non valorizzato");
+                error = true;
+            }
+            if (params.get("surname") == null) {
+                request.setAttribute("errorSurname", "Cognome non valorizzato");
+                error = true;
+            }
+            
+            if (password == null || rePassword == null) {
+                request.setAttribute("errorPassword", "Password o Repassword non valorizzato");
+                error = true;
+            } else if (!password.equals(rePassword)) {
+                request.setAttribute("errorPassword", "I campi Password e Repassword non sono uguali");
+                error = true;
+            }
+
+            if (email == null || reEmail == null) {
+                request.setAttribute("errorEmail", "Email non valorizzata");
+                error = true;
+            } else if (!email.equals(reEmail)) {
+                request.setAttribute("errorEmail", "I campi email e Reemail non sono uguali");
+                error = true;
+            } else {
+                user = getDataLayer().getUser(email);
+            }
+            if (params.get("privacy") == null) {
+                request.setAttribute("errorPrivacy", "Bisogna accettare i termini di legge sulla privacy");
+                error = true;
+            }
+            if (!Utils.checkEmail(email)) {
+                request.setAttribute("errorEmail", "L'Email passata non è valida");
+                error = true;
+            }
+            if (user != null) {
+                request.setAttribute("errorEmail", "Questa email è già registrata");
+                error = true;
+            }
+
+        } catch (DataLayerException ex) {
+            action_error(request, response, "Data layer exception: " + ex.getMessage());;
         }
         return error;
     }

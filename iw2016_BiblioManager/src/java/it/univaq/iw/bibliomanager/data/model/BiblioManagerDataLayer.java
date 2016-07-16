@@ -52,6 +52,8 @@ public interface BiblioManagerDataLayer extends DataLayer{
     List<Publication> getLastModifiedPublication () throws DataLayerException;
     List<User> getMoreActiveUsers () throws DataLayerException;
     List<History> getHistoriesByPublication (int publication_key) throws DataLayerException;
+    List<Author> getAuthorsByName(String name) throws DataLayerException ;
+    List<Editor> getEditorsByName(String name) throws DataLayerException ;
     
     void storeAuthor(Author author) throws DataLayerException;
     void storeEditor(Editor editor) throws DataLayerException;

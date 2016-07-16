@@ -46,9 +46,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement uSource, iSource;
     private PreparedStatement sReprintsByPublication, sReprintById;
     private PreparedStatement uReprint, iReprint;
-    private PreparedStatement sEditors, sEditorById;
+    private PreparedStatement sEditors, sEditorsByName, sEditorById;
     private PreparedStatement uEditor, iEditor;
-    private PreparedStatement sAuthors, sAuthorById;
+    private PreparedStatement sAuthors, sAuthorsByName, sAuthorById;
     private PreparedStatement uAuthor, iAuthor;
     private PreparedStatement sReviewsByPublication, sReviewById;
     private PreparedStatement uReview, iReview;
@@ -94,10 +94,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.uReprint = connection.prepareStatement("UPDATE iw2016.ristampa SET idristampa = ?, numero = ?, data = ?, pubblicazione = ? WHERE idristampa = ?");
             this.iReprint = connection.prepareStatement("INSERT INTO iw2016.ristampa (numero, data, pubblicazione) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sEditors = connection.prepareStatement("SELECT * FROM iw2016.editore");
+            this.sEditorsByName = connection.prepareStatement("SELECT * FROM iw2016.editor WHERE nome LIKE '%?%'");
             this.sEditorById = connection.prepareStatement("SELECT * FROM iw2016.editore WHERE ideditore = ?");
             this.uEditor = connection.prepareStatement("UPDATE iw2016.editore SET ideditore = ?, nome = ? WHERE ideditore = ?");
             this.iEditor = connection.prepareStatement("INSERT INTO iw2016.editore (nome) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
             this.sAuthors = connection.prepareStatement("SELECT * FROM iw2016.autore");
+            this.sAuthorsByName = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE nome LIKE '%?%'");
             this.sAuthorById = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE idautore = ?");
             this.uAuthor = connection.prepareStatement("UPDATE iw2016.autore SET idautore = ?, nome = ?, cognome = ? WHERE idautore = ?");
             this.iAuthor = connection.prepareStatement("INSERT INTO iw2016.autore (nome, cognome) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -334,6 +336,30 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
+    public List<Author> getAuthorsByName(String name) throws DataLayerException {
+        List<Author> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sAuthorsByName.setString(1, name);
+            rs = sAuthorsByName.executeQuery();
+            while (rs.next()) {
+                result.add(getAuthor(rs.getInt("idautore")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load autors", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+    
+    @Override
     public Editor getEditor(int editor_key) throws DataLayerException {
         Editor result = null;
         ResultSet rs = null;
@@ -380,6 +406,30 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         return result;
     }
 
+    @Override
+    public List<Editor> getEditorsByName(String name) throws DataLayerException {
+        List<Editor> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sEditorsByName.setString(1, name);
+            rs = sEditorsByName.executeQuery();
+            while (rs.next()) {
+                result.add(getEditor(rs.getInt("ideditore")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load editors", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+    
     @Override
     public Metadata getMetadata(int metadata_key) throws DataLayerException {
         Metadata result = null;

@@ -29,15 +29,14 @@ import java.util.List;
 public class Profile extends BiblioManagerBaseController {
 
     private void action_profile(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException {
-        try{
+        try {
             HttpSession session = SecurityLayer.checkSession(request);
             int userKey = 0;
-            if(request.getParameter("userkey") != null){
+            if (request.getParameter("userkey") != null) {
                 userKey = Integer.parseInt(request.getParameter("userkey"));
                 //TODO: Gestire la modifica in caso non si è il proprietario del profilo
                 request.setAttribute("displaynone", "display:none");
-            }
-            else{
+            } else {
                 userKey = (int) session.getAttribute("userid");
             }
             User user = getDataLayer().getUser(userKey);
@@ -45,18 +44,17 @@ public class Profile extends BiblioManagerBaseController {
             List<History> histories = getDataLayer().getHistoriesByUser(user.getKey());
             for (History history : histories) {
                 //Type 0 == Insert
-                if(history.getType() == 0){
+                if (history.getType() == 0) {
                     publications.add(history.getPublication());
                 }
             }
-            if(!publications.isEmpty()){
+            if (!publications.isEmpty()) {
                 request.setAttribute("publications", publications);
             }
             request.setAttribute("user", user);
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("profile.ftl.html", request, response);
-        }
-        catch(DataLayerException ex){
+        } catch (DataLayerException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
     }
@@ -64,7 +62,7 @@ public class Profile extends BiblioManagerBaseController {
     private void action_save(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException, NoSuchAlgorithmException {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
-            int userKey =  (int) session.getAttribute("userid");
+            int userKey = (int) session.getAttribute("userid");
             User user = getDataLayer().getUser(userKey);
             TemplateResult res = new TemplateResult(getServletContext());
             if (!validator(request, response)) {
@@ -72,11 +70,10 @@ public class Profile extends BiblioManagerBaseController {
                 user.setName(request.getParameter("name"));
                 user.setSurname(request.getParameter("surname"));
                 user.setPassword(password);
-            getDataLayer().storeUser(user);
-            request.setAttribute("user", user);
-            res.activate("profile.ftl.html", request, response);
-            }
-            else {
+                getDataLayer().storeUser(user);
+                request.setAttribute("user", user);
+                res.activate("profile.ftl.html", request, response);
+            } else {
                 request.setAttribute("user", user);
                 res.activate("registration.ftl.html", request, response);
             }
@@ -91,7 +88,7 @@ public class Profile extends BiblioManagerBaseController {
         res.activate("login.ftl.html", request, response);
     }
 
-    private boolean validator(HttpServletRequest request, HttpServletResponse response) throws NoSuchAlgorithmException{
+    private boolean validator(HttpServletRequest request, HttpServletResponse response) throws NoSuchAlgorithmException {
         boolean error = false;
         String name = Utils.checkString(request.getParameter("name"));
         String surname = Utils.checkString(request.getParameter("surname"));
@@ -108,13 +105,14 @@ public class Profile extends BiblioManagerBaseController {
         if (password == null) {
             request.setAttribute("errorPassword", "Password o Repassword non valorizzato");
             error = true;
-        } 
+        }
         if (newPassword == null) {
             request.setAttribute("errorPassword", "Newpassword non valorizzato");
             error = true;
-        } 
+        }
         return error;
     }
+
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         try {
