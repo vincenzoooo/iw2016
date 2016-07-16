@@ -72,7 +72,7 @@ public class Home extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (Exception ex) {
-            action_error(request, response, "OPS");
+            action_error(request, response, "OPS: " + ex.getMessage());
         }
     }
 
