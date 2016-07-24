@@ -82,7 +82,7 @@ public class Register extends BiblioManagerBaseController {
                 request.setAttribute("errorSurname", "Cognome non valorizzato");
                 error = true;
             }
-            
+
             if (password == null || rePassword == null) {
                 request.setAttribute("errorPassword", "Password o Repassword non valorizzato");
                 error = true;

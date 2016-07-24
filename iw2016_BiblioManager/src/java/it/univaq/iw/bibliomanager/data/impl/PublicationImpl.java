@@ -11,29 +11,35 @@ import it.univaq.iw.framework.data.DataLayerException;
 import java.util.List;
 import it.univaq.iw.bibliomanager.data.model.Author;
 import it.univaq.iw.bibliomanager.data.model.Editor;
-import it.univaq.iw.bibliomanager.data.model.Metadata;
 import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.Reprint;
 import it.univaq.iw.bibliomanager.data.model.Source;
+import it.univaq.iw.bibliomanager.data.model.Keyword;
+import java.sql.Date;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public class PublicationImpl implements Publication{
+public class PublicationImpl implements Publication {
+
     private int key;
     private String title;
     private String description;
     private String index;
     private int like;
     private int editor_key;
+    private int isbn;
+    private int pageNumber;
+    private String language;
+    private Date publicationDate;
     private Editor editor;
     private List<Author> authors;
     private List<Source> sources;
-    private List<Metadata> metadatas;
+    private List<Keyword> keywords;
     private List<Reprint> reprints;
     protected BiblioManagerDataLayer ownerDataLayer;
-    protected boolean dirty;    
+    protected boolean dirty;
 
     public PublicationImpl(BiblioManagerDataLayer ownerDataLayer) {
         this.ownerDataLayer = ownerDataLayer;
@@ -42,12 +48,16 @@ public class PublicationImpl implements Publication{
         description = "";
         index = "";
         like = 0;
+        isbn = 0;
+        pageNumber = 0;
+        language = "";
+        publicationDate = null;
         editor_key = 0;
         editor = null;
         authors = null;
         sources = null;
-        metadatas = null;
-        reprints = null;        
+        keywords = null;
+        reprints = null;
         dirty = false;
     }
 
@@ -60,7 +70,7 @@ public class PublicationImpl implements Publication{
     public void setKey(int key) {
         this.key = key;
     }
-    
+
     @Override
     public String getTitle() {
         return title;
@@ -98,7 +108,47 @@ public class PublicationImpl implements Publication{
 
     @Override
     public void setNumberOfLikes(int likes) {
-        this.like+=likes;
+        this.like += likes;
+    }
+
+    @Override
+    public int getISBN() {
+        return isbn;
+    }
+
+    @Override
+    public void setISBN(int isbn) {
+        this.isbn = isbn;
+    }
+
+    @Override
+    public int getPages() {
+        return pageNumber;
+    }
+
+    @Override
+    public void setPages(int pages) {
+        pageNumber = pages;
+    }
+
+    @Override
+    public String getLanguage() {
+        return language;
+    }
+
+    @Override
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
+    @Override
+    public Date getPublicationDate() {
+        return publicationDate;
+    }
+
+    @Override
+    public void setPublicationDate(Date date) {
+        publicationDate = date;
     }
 
     @Override
@@ -130,7 +180,7 @@ public class PublicationImpl implements Publication{
     @Override
     public List<Source> getSources() throws DataLayerException {
         if (sources == null) {
-            sources = ownerDataLayer.getSource();
+            sources = ownerDataLayer.getSources();
         }
         return sources;
     }
@@ -141,16 +191,16 @@ public class PublicationImpl implements Publication{
     }
 
     @Override
-    public List<Metadata> getMetadatas() throws DataLayerException {
-        if (metadatas == null) {
-            metadatas = ownerDataLayer.getMetadatas(key);
+    public List<Keyword> getKeywords() throws DataLayerException {
+        if (keywords == null) {
+            keywords = ownerDataLayer.getKeywords(key);
         }
-        return metadatas;
+        return keywords;
     }
 
     @Override
-    public void setMetadatas(List<Metadata> metadatas) {
-        this.metadatas = metadatas;
+    public void setKeywords(List<Keyword> keywords) {
+        this.keywords = keywords;
     }
 
     @Override
@@ -186,10 +236,9 @@ public class PublicationImpl implements Publication{
         editor = publication.getEditor();
         authors = publication.getAuthors();
         sources = publication.getSources();
-        metadatas = publication.getMetadatas();
+        keywords = publication.getKeywords();
         reprints = publication.getReprints();
         this.dirty = true;
     }
-    
-    
+
 }

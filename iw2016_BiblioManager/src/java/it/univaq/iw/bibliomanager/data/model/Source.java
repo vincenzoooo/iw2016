@@ -14,25 +14,26 @@ import java.util.List;
  * @author Vincenzo Lanzieri
  */
 public interface Source {
+
     int getKey();
-    
+
     void setKey(int key);
-    
+
     String getType();
-    
+
     void setType(String type);
-    
+
     String getURI();
-    
+
     void setURI(String uri);
-    
+
     String getFormat();
-    
+
     void setFormat(String format);
-    
+
     String getDescription();
-    
+
     void setDescription(String description);
-    
+
     void copyFrom(Source source) throws DataLayerException;
 }

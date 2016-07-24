@@ -20,13 +20,13 @@ import javax.sql.DataSource;
  */
 public abstract class BiblioManagerBaseController extends HttpServlet {
 
-    public BiblioManagerDataLayer datalayer;    
+    private BiblioManagerDataLayer datalayer;
 
     protected abstract void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException;
 
     private void processBaseRequest(HttpServletRequest request, HttpServletResponse response) {
         try {
-            datalayer = new BiblioManagerDataLayerMysqlImpl((DataSource) getServletContext().getAttribute("datasource"));            
+            datalayer = new BiblioManagerDataLayerMysqlImpl((DataSource) getServletContext().getAttribute("datasource"));
             datalayer.init();
             processRequest(request, response);
         } catch (Exception ex) {
@@ -46,7 +46,7 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
     protected void action_error(HttpServletRequest request, HttpServletResponse response, String message) {
         (new FailureResult(getServletContext())).activate(message, request, response);
     }
-    
+
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = false;
         for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -58,7 +58,7 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         }
         return error;
     }
-    
+
     public BiblioManagerDataLayer getDataLayer() {
         return datalayer;
     }

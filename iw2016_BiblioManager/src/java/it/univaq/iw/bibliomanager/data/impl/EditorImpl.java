@@ -14,15 +14,16 @@ import it.univaq.iw.framework.data.DataLayerException;
  *
  * @author Vincenzo Lanzieri
  */
-public class EditorImpl implements Editor{
+public class EditorImpl implements Editor {
+
     private int key;
-    private String name;    
+    private String name;
     protected BiblioManagerDataLayer ownerDataLayer;
 
-    public EditorImpl(BiblioManagerDataLayer ownerDataLayer) {        
+    public EditorImpl(BiblioManagerDataLayer ownerDataLayer) {
         this.ownerDataLayer = ownerDataLayer;
         key = 0;
-        name = "";        
+        name = "";
     }
 
     @Override
@@ -34,9 +35,9 @@ public class EditorImpl implements Editor{
     public void setKey(int key) {
         this.key = key;
     }
-    
+
     @Override
-    public String getName(){
+    public String getName() {
         return name;
     }
 
@@ -44,7 +45,7 @@ public class EditorImpl implements Editor{
     public void setName(String name) {
         this.name = name;
     }
-    
+
     @Override
     public void copyFrom(Editor editor) throws DataLayerException {
         key = editor.getKey();

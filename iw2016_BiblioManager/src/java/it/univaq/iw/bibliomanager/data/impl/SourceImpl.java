@@ -16,7 +16,8 @@ import java.util.List;
  *
  * @author Vincenzo Lanzieri
  */
-public class SourceImpl implements Source{
+public class SourceImpl implements Source {
+
     private int key;
     private String type;
     private String uri;
@@ -42,7 +43,7 @@ public class SourceImpl implements Source{
     public void setKey(int key) {
         this.key = key;
     }
-    
+
     @Override
     public String getType() {
         return type;
@@ -82,7 +83,7 @@ public class SourceImpl implements Source{
     public void setDescription(String description) {
         this.description = description;
     }
- 
+
     @Override
     public void copyFrom(Source source) throws DataLayerException {
         key = source.getKey();

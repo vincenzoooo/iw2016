@@ -16,7 +16,8 @@ import it.univaq.iw.bibliomanager.data.model.Reprint;
  *
  * @author Vincenzo Lanzieri
  */
-public class ReprintImpl implements Reprint{
+public class ReprintImpl implements Reprint {
+
     private int key;
     private int number;
     private Date date;
@@ -30,7 +31,7 @@ public class ReprintImpl implements Reprint{
         number = 0;
         date = null;
         publication_key = 0;
-        publication = null;        
+        publication = null;
     }
 
     @Override
@@ -42,7 +43,7 @@ public class ReprintImpl implements Reprint{
     public void setKey(int key) {
         this.key = key;
     }
-    
+
     @Override
     public int getNumber() {
         return number;
@@ -75,7 +76,7 @@ public class ReprintImpl implements Reprint{
     public void setPublication(Publication publication) {
         this.publication = publication;
     }
-    
+
     @Override
     public void copyFrom(Reprint reprint) throws DataLayerException {
         key = reprint.getKey();

@@ -8,27 +8,22 @@ package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.framework.data.DataLayerException;
-import java.util.List;
-import it.univaq.iw.bibliomanager.data.model.Author;
-import it.univaq.iw.bibliomanager.data.model.Publication;
+import it.univaq.iw.bibliomanager.data.model.Keyword;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public class AuthorImpl implements Author {
+public class KeywordImpl implements Keyword {
 
     private int key;
     private String name;
-    private String surname;
-
     protected BiblioManagerDataLayer ownerDataLayer;
 
-    public AuthorImpl(BiblioManagerDataLayer ownerDataLayer) {
+    public KeywordImpl(BiblioManagerDataLayer ownerDataLayer) {
         this.ownerDataLayer = ownerDataLayer;
-        this.key = 0;
-        this.name = "";
-        this.surname = "";
+        key = 0;
+        name = "";
     }
 
     @Override
@@ -52,19 +47,8 @@ public class AuthorImpl implements Author {
     }
 
     @Override
-    public String getSurname() {
-        return surname;
-    }
-
-    @Override
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    @Override
-    public void copyFrom(Author author) throws DataLayerException {
-        key = author.getKey();
-        name = author.getName();
-        surname = author.getSurname();
+    public void copyFrom(Keyword keyword) throws DataLayerException {
+        key = keyword.getKey();
+        name = keyword.getName();
     }
 }

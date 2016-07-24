@@ -13,33 +13,34 @@ import it.univaq.iw.framework.data.DataLayerException;
  * @author Vincenzo Lanzieri
  */
 public interface User {
+
     int getKey();
 
     void setKey(int key);
-    
+
     String getName();
-    
+
     void setName(String name);
-    
+
     String getSurname();
-    
+
     void setSurname(String surname);
-    
+
     String getEmail();
 
     void setEmail(String email);
-    
+
     String getPassword();
 
     void setPassword(String password);
-    
+
     int getState();
 
     void setState(int state);
-    
+
     User getUtente() throws DataLayerException;
-    
+
     void setUtente(User user);
-    
+
     void copyFrom(User user) throws DataLayerException;
 }

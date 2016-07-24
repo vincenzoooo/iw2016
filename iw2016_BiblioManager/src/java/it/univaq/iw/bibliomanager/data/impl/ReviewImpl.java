@@ -17,7 +17,8 @@ import it.univaq.iw.bibliomanager.data.model.User;
  *
  * @author Vincenzo Lanzieri
  */
-public class ReviewImpl implements Review{
+public class ReviewImpl implements Review {
+
     private int key;
     private String text;
     private boolean status;
@@ -32,14 +33,14 @@ public class ReviewImpl implements Review{
     public ReviewImpl(BiblioManagerDataLayer ownerDataLayer) {
         this.ownerDataLayer = ownerDataLayer;
         key = 0;
-        text = "";        
+        text = "";
         status = false;
         history_key = 0;
         history = null;
         user_key = 0;
         author = null;
         publication_key = 0;
-        publication = null;        
+        publication = null;
     }
 
     @Override
@@ -51,7 +52,7 @@ public class ReviewImpl implements Review{
     public void setKey(int key) {
         this.key = key;
     }
-    
+
     @Override
     public String getText() {
         return text;

@@ -27,14 +27,14 @@ public class PageNotFound extends BiblioManagerBaseController {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-   
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
-        /**response.sendRedirect("status?pageNotFound");**/
+        /**
+         * response.sendRedirect("status?pageNotFound");*
+         */
     }
 
-    
     /**
      * Returns a short description of the servlet.
      *

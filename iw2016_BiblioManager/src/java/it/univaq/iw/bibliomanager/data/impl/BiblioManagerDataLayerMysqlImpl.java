@@ -19,7 +19,6 @@ import javax.naming.NamingException;
 import javax.sql.DataSource;
 import it.univaq.iw.bibliomanager.data.model.Author;
 import it.univaq.iw.bibliomanager.data.model.Editor;
-import it.univaq.iw.bibliomanager.data.model.Metadata;
 import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.Review;
 import it.univaq.iw.bibliomanager.data.model.Reprint;
@@ -28,6 +27,7 @@ import it.univaq.iw.bibliomanager.data.model.History;
 import it.univaq.iw.bibliomanager.data.model.User;
 import java.sql.Date;
 import java.util.Calendar;
+import it.univaq.iw.bibliomanager.data.model.Keyword;
 
 /**
  *
@@ -52,8 +52,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement uAuthor, iAuthor;
     private PreparedStatement sReviewsByPublication, sReviewById;
     private PreparedStatement uReview, iReview;
-    private PreparedStatement sMetadatasByPublication, sMetadataById;
-    private PreparedStatement uMetadata, iMetadata;
+    private PreparedStatement sKeywords, sKeywordsByPublication, sKeywordById;
+    private PreparedStatement uKeyword, iKeyword;
 
     public BiblioManagerDataLayerMysqlImpl(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
@@ -107,10 +107,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sReviewById = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE idrecensione = ?");
             this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET idrecensione = ?, testo = ?, moderata = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
             this.iReview = connection.prepareStatement("INSERT INTO iw2016.recensione (testo, moderata, utente_autore, pubblicazione, storico) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            this.sMetadatasByPublication = connection.prepareStatement("SELECT * FROM iw2016.metadato WHERE pubblicazione = ?");
-            this.sMetadataById = connection.prepareStatement("SELECT * FROM iw2016.metadato WHERE idmetadato = ?");
-            this.uMetadata = connection.prepareStatement("UPDATE iw2016.metadato SET idmetadato = ?, isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, chiavi = ?, pubblicazione = ? WHERE idmetadato = ?");
-            this.iMetadata = connection.prepareStatement("INSERT INTO iw2016.metadato (isbn, n_pagine, lingua, data_pubblicazione, chiavi, pubblicazione) VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            //TODO
+            this.sKeywords = null;
+            this.sKeywordsByPublication = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE pubblicazione = ?");
+            this.sKeywordById = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE idmetadato = ?");
+            this.uKeyword = connection.prepareStatement("UPDATE iw2016.keyword SET idmetadato = ?, isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, chiavi = ?, pubblicazione = ? WHERE idmetadato = ?");
+            this.iKeyword = connection.prepareStatement("INSERT INTO iw2016.keyword (isbn, n_pagine, lingua, data_pubblicazione, chiavi, pubblicazione) VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         }
@@ -151,21 +153,16 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public Metadata createMetadata() {
-        return new MetadataImpl(this);
+    public Keyword createKeyword() {
+        return new KeywordImpl(this);
     }
 
-    public Metadata createMetadata(ResultSet rs) throws DataLayerException {
+    public Keyword createKeyword(ResultSet rs) throws DataLayerException {
         try {
-            MetadataImpl metadata = new MetadataImpl(this);
-            metadata.setKey(rs.getInt("idmetadato"));
-            metadata.setISBN(rs.getInt("isbn"));
-            metadata.setPages(rs.getInt("n_pagine"));
-            metadata.setLanguage(rs.getString("lingua"));
-            metadata.setPublicationDate(rs.getDate("data_pubblicazione"));
-            metadata.setKeywords(rs.getString("chiavi"));
-            metadata.setPublication(getPublication(rs.getInt("pubblicazione")));
-            return metadata;
+            KeywordImpl keyword = new KeywordImpl(this);
+            keyword.setKey(rs.getInt("idmetadato"));
+            keyword.setName(rs.getString("nome"));
+            return keyword;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
         }
@@ -358,7 +355,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
+
     @Override
     public Editor getEditor(int editor_key) throws DataLayerException {
         Editor result = null;
@@ -429,19 +426,19 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
+
     @Override
-    public Metadata getMetadata(int metadata_key) throws DataLayerException {
-        Metadata result = null;
+    public Keyword getKeyword(int keyword_key) throws DataLayerException {
+        Keyword result = null;
         ResultSet rs = null;
         try {
-            sMetadataById.setInt(1, metadata_key);
-            rs = sMetadataById.executeQuery();
+            sKeywordById.setInt(1, keyword_key);
+            rs = sKeywordById.executeQuery();
             if (rs.next()) {
-                result = createMetadata(rs);
+                result = createKeyword(rs);
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load metadata by id", ex);
+            throw new DataLayerException("Unable to load keyword by id", ex);
         } finally {
             try {
                 if (rs != null) {
@@ -455,17 +452,40 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<Metadata> getMetadatas(int publication_key) throws DataLayerException {
-        List<Metadata> result = new ArrayList();
+    public List<Keyword> getKeywords() throws DataLayerException {
+        List<Keyword> result = new ArrayList();
         ResultSet rs = null;
         try {
-            sMetadatasByPublication.setInt(1, publication_key);
-            rs = sMetadatasByPublication.executeQuery();
+            rs = sKeywords.executeQuery();
             while (rs.next()) {
-                result.add(getMetadata(rs.getInt("idmetadata")));
+                result.add(getKeyword(rs.getInt("idkeyword")));
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load metadatas", ex);
+            throw new DataLayerException("Unable to load keywords", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<Keyword> getKeywords(int publication_key) throws DataLayerException {
+        List<Keyword> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sKeywordsByPublication.setInt(1, publication_key);
+            rs = sKeywordsByPublication.executeQuery();
+            while (rs.next()) {
+                result.add(getKeyword(rs.getInt("idkeyword")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load keywords", ex);
         } finally {
             try {
                 if (rs != null) {
@@ -775,7 +795,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<Source> getSource() throws DataLayerException {
+    public List<Source> getSources() throws DataLayerException {
         List<Source> result = new ArrayList();
         ResultSet rs = null;
         try {
@@ -1076,44 +1096,34 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public void storeMetadata(Metadata metadata) throws DataLayerException {
+    public void storeKeyword(Keyword keyword) throws DataLayerException {
         ResultSet keys = null;
-        int key = metadata.getKey();
+        int key = keyword.getKey();
         try {
-            if (metadata.getKey() > 0) { //update
+            if (keyword.getKey() > 0) { //update
                 //non facciamo nulla se l'oggetto non ha subito modifiche
                 //do not store the object if it was not modified
 //                if (!article.isDirty()) {
 //                    return;
 //                }
-                uMetadata.setInt(1, metadata.getISBN());
-                uMetadata.setInt(2, metadata.getPages());
-                uMetadata.setString(3, metadata.getLanguage());
-                uMetadata.setDate(4, metadata.getPublicationDate());
-                uMetadata.setString(5, metadata.getKeywords());
-                uMetadata.setInt(6, metadata.getPublication().getKey());
+                uKeyword.setString(1, keyword.getName());
 
-                uMetadata.executeUpdate();
+                uKeyword.executeUpdate();
             } else { //insert
-                iMetadata.setInt(1, metadata.getISBN());
-                iMetadata.setInt(2, metadata.getPages());
-                iMetadata.setString(3, metadata.getLanguage());
-                iMetadata.setDate(4, metadata.getPublicationDate());
-                iMetadata.setString(5, metadata.getKeywords());
-                iMetadata.setInt(6, metadata.getPublication().getKey());
+                iKeyword.setString(1, keyword.getName());
 
-                if (iMetadata.executeUpdate() == 1) {
-                    keys = iMetadata.getGeneratedKeys();
+                if (iKeyword.executeUpdate() == 1) {
+                    keys = iKeyword.getGeneratedKeys();
                     if (keys.next()) {
                         key = keys.getInt(1);
                     }
                 }
             }
             if (key > 0) {
-                metadata.copyFrom(getMetadata(key));
+                keyword.copyFrom(getKeyword(key));
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to store metadata", ex);
+            throw new DataLayerException("Unable to store keyword", ex);
         } finally {
             try {
                 if (keys != null) {
@@ -1127,6 +1137,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
     @Override
     public void storePublication(Publication publication) throws DataLayerException {
+        //TODO: Gestione dell'inserimento e update delle tabelle nan autore, sorgente e keyword
         ResultSet keys = null;
         int key = publication.getKey();
         try {

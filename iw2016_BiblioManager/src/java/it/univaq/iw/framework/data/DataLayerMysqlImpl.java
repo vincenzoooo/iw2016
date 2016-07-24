@@ -21,10 +21,10 @@ public class DataLayerMysqlImpl implements DataLayer {
 
     @Override
     public void init() throws DataLayerException {
-        try {            
+        try {
             //connessione al database locale
             //database connection
-            connection = datasource.getConnection();       
+            connection = datasource.getConnection();
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing data layer", ex);
         }

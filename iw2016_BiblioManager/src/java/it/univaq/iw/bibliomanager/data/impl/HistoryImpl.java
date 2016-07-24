@@ -17,7 +17,8 @@ import java.sql.Date;
  *
  * @author Vincenzo Lanzieri
  */
-public class HistoryImpl implements History{
+public class HistoryImpl implements History {
+
     private int key;
     private String entry;
     private int type;
@@ -37,7 +38,7 @@ public class HistoryImpl implements History{
         publication_key = 0;
         publication = null;
         user_key = 0;
-        user = null;        
+        user = null;
     }
 
     @Override
@@ -49,7 +50,7 @@ public class HistoryImpl implements History{
     public void setKey(int key) {
         this.key = key;
     }
-    
+
     @Override
     public String getEntry() {
         return entry;
@@ -108,10 +109,10 @@ public class HistoryImpl implements History{
 
     @Override
     public void copyFrom(History history) throws DataLayerException {
-        key=history.getKey();
-        entry=history.getEntry();
-        type=history.getType();
-        date=history.getDate();
+        key = history.getKey();
+        entry = history.getEntry();
+        type = history.getType();
+        date = history.getDate();
         publication_key = history.getPublication().getKey();
         user_key = history.getUser().getKey();
     }

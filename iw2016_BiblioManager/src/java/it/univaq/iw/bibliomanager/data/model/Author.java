@@ -14,17 +14,18 @@ import java.util.List;
  * @author Vincenzo Lanzieri
  */
 public interface Author {
+
     int getKey();
-    
+
     void setKey(int key);
-    
+
     String getName();
-    
+
     void setName(String name);
-    
+
     String getSurname();
-    
+
     void setSurname(String surname);
-    
+
     void copyFrom(Author author) throws DataLayerException;
 }

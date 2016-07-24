@@ -26,7 +26,7 @@ import javax.servlet.http.HttpServletResponse;
 public class Search extends BiblioManagerBaseController {
 
     //ISBN, titolo, autore, editore, anno di pubblicazione, parole chiave, lingua, presenza di sorgenti di tipo “download” (quindi pubblicazioni gratuite).
-    private void action_search(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException{
+    private void action_search(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException {
         String authors = action_searchAuthor(request.getParameter("authors"));
         String editors = action_searchEditor(request.getParameter("editors"));
         List<Publication> publications = getDataLayer().getPublications();
@@ -34,8 +34,8 @@ public class Search extends BiblioManagerBaseController {
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("catalog.ftl.html", request, response);
     }
-    
-    private String action_searchAuthor(String authors) throws DataLayerException{
+
+    private String action_searchAuthor(String authors) throws DataLayerException {
         List<Author> authorsDB = new ArrayList();
         String res = "";
         String[] params = authors.split("[, |-]");
@@ -47,26 +47,26 @@ public class Search extends BiblioManagerBaseController {
         }
         return res;
     }
-    
-    private String action_searchEditor(String editors) throws DataLayerException{
+
+    private String action_searchEditor(String editors) throws DataLayerException {
         List<Editor> editorsDB = new ArrayList();
         String res = "";
         String[] params = editors.split("[, |-]");
         for (String param : params) {
             editorsDB.addAll(getDataLayer().getEditorsByName(param));
         }
-        for (Editor editor : editorsDB){
+        for (Editor editor : editorsDB) {
             res += editor.getKey();
         }
         return res;
     }
-    
+
     private void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         request.setAttribute("page_title", "Search");
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("login.ftl.html", request, response);
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.

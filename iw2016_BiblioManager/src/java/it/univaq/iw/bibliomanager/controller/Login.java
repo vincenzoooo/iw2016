@@ -43,14 +43,12 @@ public class Login extends BiblioManagerBaseController {
                     request.setAttribute("page_title", "Benvenuto");
                     request.setAttribute("user", user);
                     res.activate("home.ftl.html", request, response);//TODO: Definire la home page
-                }
-                else{
+                } else {
                     request.setAttribute("message", "Credenziali errate, si invita a riprovare o ad iscriversi");
                     //res.activate("login.ftl.html", request, response);
                     res.activate("profile.ftl.html", request, response);
                 }
-            }
-            else{
+            } else {
                 res.activate("login.ftl.html", request, response);
             }
         } catch (DataLayerException ex) {

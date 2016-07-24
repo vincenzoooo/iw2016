@@ -12,7 +12,7 @@ import it.univaq.iw.framework.data.DataLayerException;
  *
  * @author Vincenzo Lanzieri
  */
-public interface Editor {
+public interface Keyword {
 
     int getKey();
 
@@ -22,5 +22,5 @@ public interface Editor {
 
     void setName(String name);
 
-    void copyFrom(Editor editor) throws DataLayerException;
+    void copyFrom(Keyword metadata) throws DataLayerException;
 }

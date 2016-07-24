@@ -20,6 +20,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Vincenzo Lanzieri
  */
 public class PublicationDetails extends BiblioManagerBaseController {
+//TODO: gestione Recensioni
 
     private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setAttribute("page_title", "Login to Biblio");

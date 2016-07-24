@@ -25,47 +25,45 @@ public class UserList extends BiblioManagerBaseController {
 
     private void action_list(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException, IOException, ServletException {
-        List<User> users = datalayer.getUsers();
+        List<User> users = getDataLayer().getUsers();
         request.setAttribute("users", users);
         request.setAttribute("page_title", "Users Manage");
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("users.ftl.html", request, response);
     }
 
-    private void action_upgrade(HttpServletRequest request, HttpServletResponse response) 
-    throws Exception{
-        try{
-        HttpSession session = SecurityLayer.checkSession(request);
-        if(session != null){
-            User active = datalayer.getUser((int) session.getAttribute("userid"));
-            if(active != null && active.getState() < 2 && request.getParameter("user-selected") != null){
-                User user = datalayer.getUser(request.getParameter("user-selected"));
-                if(user.getState() == 2){
-                    user.setState(1);
+    private void action_upgrade(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        try {
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
+                User active = getDataLayer().getUser((int) session.getAttribute("userid"));
+                if (active != null && active.getState() < 2 && request.getParameter("user-selected") != null) {
+                    User user = getDataLayer().getUser(request.getParameter("user-selected"));
+                    if (user.getState() == 2) {
+                        user.setState(1);
+                    }
                 }
             }
-        }
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             throw new Exception("Non puoi promuovere questo utente", ex);
         }
     }
 
-    private void action_downgrade(HttpServletRequest request, HttpServletResponse response) 
-    throws Exception{
-        try{
-        HttpSession session = SecurityLayer.checkSession(request);
-        if(session != null){
-            User admin = datalayer.getUser((int) session.getAttribute("userid"));
-            if(admin != null && admin.getState() == 0 && request.getParameter("user-selected") != null){
-                User user = datalayer.getUser(request.getParameter("user-selected"));
-                if(user.getState() == 1){
-                    user.setState(2);
+    private void action_downgrade(HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
+        try {
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
+                User admin = getDataLayer().getUser((int) session.getAttribute("userid"));
+                if (admin != null && admin.getState() == 0 && request.getParameter("user-selected") != null) {
+                    User user = getDataLayer().getUser(request.getParameter("user-selected"));
+                    if (user.getState() == 1) {
+                        user.setState(2);
+                    }
                 }
             }
-        }
-        }
-        catch(Exception ex){
+        } catch (Exception ex) {
             throw new Exception("Non puoi degradare questo utente", ex);
         }
     }
@@ -91,7 +89,7 @@ public class UserList extends BiblioManagerBaseController {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
-                User user = datalayer.getUser((int) session.getAttribute("userid"));
+                User user = getDataLayer().getUser((int) session.getAttribute("userid"));
                 if (request.getParameter("op") == null) {
                     action_list(request, response);
                 }

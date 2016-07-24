@@ -20,28 +20,28 @@ public class DataModelFillerImpl implements DataModelFiller {
     public void fillDataModel(Map datamodel) {
         List<Map> menuitems = new ArrayList();
         datamodel.put("menu", menuitems);
-        
+
         //un bean sarebbe più appropriato
         //a bean would be more appropriate
         Map menuitem = new HashMap();
         menuitem.put("label", "Home");
         menuitem.put("link", "home");
         menuitems.add(menuitem);
-        
+
         menuitem = new HashMap();
         menuitem.put("label", "Catalogo");
         menuitem.put("link", "catalog");
         menuitems.add(menuitem);
-        
+
         menuitem = new HashMap();
         menuitem.put("label", "Profilo");
         menuitem.put("link", "profile");
         menuitems.add(menuitem);
-        
+
         menuitem = new HashMap();
         menuitem.put("label", "Community");
         menuitem.put("link", "community");
         menuitems.add(menuitem);
     }
-    
+
 }

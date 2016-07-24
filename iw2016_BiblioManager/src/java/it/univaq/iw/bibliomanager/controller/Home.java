@@ -23,17 +23,17 @@ import javax.servlet.http.HttpSession;
  * @author Angelo Iezzi
  */
 public class Home extends BiblioManagerBaseController {
-    
-     private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+
+    private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setAttribute("page_title", "Home");
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("home.ftl.html", request, response);
     }
-     
+
     private void action_logged(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, DataLayerException {
-        
+
         HttpSession session = SecurityLayer.checkSession(request);
-        if(session!=null){
+        if (session != null) {
             request.setAttribute("page_title", "Homepage");
             // recupero lo userId e il nome
             int userId = (int) session.getAttribute("userid");
@@ -47,7 +47,7 @@ public class Home extends BiblioManagerBaseController {
             res.activate("home.ftl.html", request, response);
         }
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -59,7 +59,7 @@ public class Home extends BiblioManagerBaseController {
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
-         try {
+        try {
             List<Publication> publicationsInsert = getDataLayer().getLastInsertedPublication(); //Select BY InsertDate
             List<Publication> publicationsUpdate = getDataLayer().getLastModifiedPublication(); //Select BY LastUpdate
             List<User> activeUsers = getDataLayer().getMoreActiveUsers(); //Select BY Max publication insert

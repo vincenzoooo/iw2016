@@ -1,4 +1,3 @@
-
 package it.univaq.iw.framework.data;
 
 /**
@@ -21,6 +20,6 @@ public class DataLayerException extends Exception {
 
     @Override
     public String getMessage() {
-        return super.getMessage() + (getCause()!=null?" ("+getCause().getMessage()+")":"");                
+        return super.getMessage() + (getCause() != null ? " (" + getCause().getMessage() + ")" : "");
     }
 }

@@ -28,7 +28,7 @@ public class Utils {
 
     public static String checkString(String string) {
         if (string != null && !string.isEmpty()) {
-            
+
             string = string.toLowerCase();
             string = string.trim();
         }
