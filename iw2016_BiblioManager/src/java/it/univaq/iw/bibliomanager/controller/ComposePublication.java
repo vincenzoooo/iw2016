@@ -39,9 +39,7 @@ public class ComposePublication extends BiblioManagerBaseController {
 
     private void action_composePublication(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         try {
-            //TODO: Aggiungere qui i metadati e cambiare gestione degli elementi
             Publication publication = null;
-            Reprint reprint = this.action_composeReprint(request, response);
             Map<String, String> params = new HashMap<String, String>();
             params.put("title", Utils.checkString(request.getParameter("publicationTitle")));
             params.put("description", Utils.checkString(request.getParameter("publicationDescription")));
@@ -58,34 +56,13 @@ public class ComposePublication extends BiblioManagerBaseController {
                 publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editorId"))));
             }
             getDataLayer().storePublication(publication);
-            reprint.setPublication(publication);
-            getDataLayer().storeReprint(reprint);
             request.setAttribute("publication", publication);
             this.action_composeHistory(request, response);
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("publication.ftl.html", request, response);
-        } catch (DataLayerException | ParseException ex) {
+        } catch (DataLayerException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
-    }
-
-    private Reprint action_composeReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
-        Reprint newReprint = null;
-        try {
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("number", Utils.checkString(request.getParameter("reprintNumber")));
-            params.put("date", Utils.checkString(request.getParameter("reprintDate")));
-            if (!validator(params, request, response)) {
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = format.parse(params.get("date"));
-                newReprint = getDataLayer().createReprint();
-                newReprint.setNumber(Integer.parseInt(params.get("number")));
-                newReprint.setDate(new java.sql.Date(date.getTime()));
-            }
-        } catch (NumberFormatException | ParseException ex) {
-            action_error(request, response, "Errore nel parsare i dati: " + ex.getMessage());
-        }
-        return newReprint;
     }
 
     private void action_composeHistory(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {

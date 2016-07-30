@@ -51,7 +51,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
             List<Source> sources = publication.getSources();
             List<Author> authors = publication.getAuthors();
             List<Reprint> reprint = publication.getReprints();
-            List<Keyword> metadata = publication.getKeywords();
+            List<Keyword> keyword = publication.getKeywords();
             Map<String, String> params = new HashMap<String, String>();
             params.put("title", Utils.checkString(request.getParameter("publicationTitle")));
             params.put("description", Utils.checkString(request.getParameter("publicationDescription")));
@@ -70,25 +70,6 @@ public class UpdatePublication extends BiblioManagerBaseController {
         }
     }
 
-    private Reprint action_updateReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
-        Reprint newReprint = null;
-        try {
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("number", Utils.checkString(request.getParameter("reprintNumber")));
-            params.put("date", Utils.checkString(request.getParameter("reprintDate")));
-            if (!validator(params, request, response)) {
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                Date date = format.parse(params.get("date"));
-                newReprint = getDataLayer().createReprint();
-                newReprint.setNumber(Integer.parseInt(params.get("number")));
-                newReprint.setDate(new java.sql.Date(date.getTime()));
-            }
-        } catch (NumberFormatException | ParseException ex) {
-            action_error(request, response, "Errore nel parsare i dati: " + ex.getMessage());
-        }
-        return newReprint;
-    }
-
     private void action_updateHistory(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         HttpSession session = SecurityLayer.checkSession(request);
         User user = getDataLayer().getUser((int) session.getAttribute("userid"));
@@ -99,12 +80,6 @@ public class UpdatePublication extends BiblioManagerBaseController {
         history.setPublication((Publication) request.getAttribute("publication"));
         history.setDate(new java.sql.Date(System.currentTimeMillis()));
         getDataLayer().storeHistory(history);
-    }
-
-    private boolean validator(HttpServletRequest request, HttpServletResponse response) {
-        boolean error = false;
-        //TODO: Difficile XD
-        return error;
     }
 
     /**

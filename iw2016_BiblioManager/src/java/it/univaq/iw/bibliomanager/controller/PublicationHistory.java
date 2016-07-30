@@ -33,7 +33,7 @@ public class PublicationHistory extends BiblioManagerBaseController {
         int publicationKey = Integer.parseInt(request.getParameter("publicationKey"));
         List<History> histories = getDataLayer().getHistoriesByPublication(publicationKey);
         request.setAttribute("histories", histories);
-        res.activate("home.ftl.html", request, response);//TODO: Definire pagina di storico
+        res.activate("history.ftl.html", request, response);//TODO: Definire pagina di storico
     }
 
     /**

@@ -26,15 +26,36 @@ import javax.mail.internet.MimeMessage;
  */
 public class Utils {
 
+    /**
+     * Verifica e sanitizza la stringa passata
+     *
+     * @param string Stringa da veri
+     * @return string
+     */
     public static String checkString(String string) {
-        if (string != null && !string.isEmpty()) {
-
+        if (isNullOrEmpty(string)) {
             string = string.toLowerCase();
             string = string.trim();
         }
         return string;
     }
 
+    /**
+     * Verifica se una stringa è vuota o nulla
+     *
+     * @param var Stringa da verificare
+     * @return boolean
+     */
+    public static boolean isNullOrEmpty(final String var) {
+        return var == null || var.trim().isEmpty();
+    }
+
+    /**
+     * Verifica la correttezza dell'email
+     *
+     * @param email Stringa che rappresenta l'email
+     * @return boolean
+     */
     public static boolean checkEmail(String email) {
         if (email == null || email.isEmpty()) {
             return false;
@@ -45,11 +66,26 @@ public class Utils {
         return matcher.find();
     }
 
+    /**
+     * Cripta le password
+     *
+     * @param password
+     * @return password codificata
+     * @throws NoSuchAlgorithmException
+     */
     public static String encryptPassword(String password) throws NoSuchAlgorithmException {
         byte[] salt = getSalt();
         return get_SHA_256_SecurePassword(password, salt);
     }
 
+    /**
+     * Esegue la criptazione della password
+     *
+     * @param passwordToHash
+     * @param salt
+     * @return
+     * @throws NoSuchAlgorithmException
+     */
     private static String get_SHA_256_SecurePassword(String passwordToHash, byte[] salt) throws NoSuchAlgorithmException {
         String generatedPassword = null;
         MessageDigest md = MessageDigest.getInstance("SHA-256");
@@ -63,6 +99,10 @@ public class Utils {
         return generatedPassword;
     }
 
+    /**
+     *
+     * @return @throws NoSuchAlgorithmException
+     */
     private static byte[] getSalt() throws NoSuchAlgorithmException {
         SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
         byte[] salt = new byte[16];
@@ -70,6 +110,13 @@ public class Utils {
         return salt;
     }
 
+    /**
+     * Funzione per l'invio della email
+     *
+     * @param emailTo
+     * @param text
+     * @throws MessagingException
+     */
     public static void sendEmail(String emailTo, String text) throws MessagingException {
         if (checkEmail(emailTo)) {
 
@@ -116,6 +163,14 @@ public class Utils {
         return buf.toString();
     }
 
+    /**
+     * Algoritmo SHA1
+     *
+     * @param text
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException
+     */
     public static String SHA1(String text)
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
         MessageDigest md;

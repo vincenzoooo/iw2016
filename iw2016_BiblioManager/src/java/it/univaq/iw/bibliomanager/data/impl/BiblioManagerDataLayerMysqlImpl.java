@@ -54,6 +54,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement uReview, iReview;
     private PreparedStatement sKeywords, sKeywordsByPublication, sKeywordById;
     private PreparedStatement uKeyword, iKeyword;
+    private PreparedStatement iPublicationHasAuthor, iPublicationHasSource, iPublicationHasKeyword;
+    private PreparedStatement dPublicationHasAuthor, dPublicationHasSource, dPublicationHasKeyword;
 
     public BiblioManagerDataLayerMysqlImpl(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
@@ -78,7 +80,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET idstorico = ?, entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");
             this.iHistory = connection.prepareStatement("INSERT INTO iw2016.storico (entry, tipo, data_operazione, pubblicazione, utente) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sPublications = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione");
-            this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
+            this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ?"); //TODO
             this.sPublicationAuthors = connection.prepareStatement("SELECT * FROM autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ?");
             this.sPublicationSources = connection.prepareStatement("SELECT * FROM pubblicazione_has_sorgente WHERE pubblicazione_idpubblicazione = ?");
             this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 0");
@@ -103,16 +105,15 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sAuthorById = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE idautore = ?");
             this.uAuthor = connection.prepareStatement("UPDATE iw2016.autore SET idautore = ?, nome = ?, cognome = ? WHERE idautore = ?");
             this.iAuthor = connection.prepareStatement("INSERT INTO iw2016.autore (nome, cognome) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-            this.sReviewsByPublication = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ?");
+            this.sReviewsByPublication = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ? AND moderata = 1");
             this.sReviewById = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE idrecensione = ?");
             this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET idrecensione = ?, testo = ?, moderata = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
             this.iReview = connection.prepareStatement("INSERT INTO iw2016.recensione (testo, moderata, utente_autore, pubblicazione, storico) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            //TODO
             this.sKeywords = null;
             this.sKeywordsByPublication = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE pubblicazione = ?");
             this.sKeywordById = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE idmetadato = ?");
-            this.uKeyword = connection.prepareStatement("UPDATE iw2016.keyword SET idmetadato = ?, isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, chiavi = ?, pubblicazione = ? WHERE idmetadato = ?");
-            this.iKeyword = connection.prepareStatement("INSERT INTO iw2016.keyword (isbn, n_pagine, lingua, data_pubblicazione, chiavi, pubblicazione) VALUES (?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.uKeyword = connection.prepareStatement("UPDATE iw2016.keyword SET nome = ? WHERE idkeyword = ?");
+            this.iKeyword = connection.prepareStatement("INSERT INTO iw2016.keyword (nome) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         }
