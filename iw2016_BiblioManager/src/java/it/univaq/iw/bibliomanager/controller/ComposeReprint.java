@@ -8,10 +8,8 @@ package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.bibliomanager.data.model.Reprint;
 import it.univaq.iw.framework.data.DataLayerException;
-import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -65,12 +63,6 @@ public class ComposeReprint extends BiblioManagerBaseController {
             action_error(request, response, "Errore nell'elaborare i dati: " + ex.getMessage());
         }
         return reprint;
-    }
-
-    private void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("page_title", "Login to Biblio");
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("login.ftl.html", request, response);
     }
 
     /**

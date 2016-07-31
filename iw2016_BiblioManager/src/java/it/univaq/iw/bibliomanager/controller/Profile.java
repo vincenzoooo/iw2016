@@ -31,7 +31,7 @@ public class Profile extends BiblioManagerBaseController {
     private void action_profile(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
-            int userKey = 0;
+            int userKey;
             if (request.getParameter("userkey") != null) {
                 userKey = Integer.parseInt(request.getParameter("userkey"));
                 //TODO: Gestire la modifica in caso non si è il proprietario del profilo
@@ -80,12 +80,6 @@ public class Profile extends BiblioManagerBaseController {
         } catch (DataLayerException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
-    }
-
-    private void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        request.setAttribute("page_title", "Login to Biblio");
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("login.ftl.html", request, response);
     }
 
     private boolean validator(HttpServletRequest request, HttpServletResponse response) throws NoSuchAlgorithmException {

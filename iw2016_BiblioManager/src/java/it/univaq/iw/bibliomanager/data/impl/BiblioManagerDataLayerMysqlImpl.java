@@ -28,6 +28,8 @@ import it.univaq.iw.bibliomanager.data.model.User;
 import java.sql.Date;
 import java.util.Calendar;
 import it.univaq.iw.bibliomanager.data.model.Keyword;
+import it.univaq.iw.framework.utils.Utils;
+import java.util.Map;
 
 /**
  *
@@ -40,7 +42,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement uUser, iUser;
     private PreparedStatement sHistories, sHistoriesByUser, sHistoriesByPublication, sHistoryById;
     private PreparedStatement uHistory, iHistory;
-    private PreparedStatement sPublications, sPublicationById, sPublicationAuthors, sPublicationSources, sPublicationsByInsertDate, sPublicationsByUpdateDate; // TODO: Select con altri parametri
+    private PreparedStatement sPublications, sPublicationById, sPublicationAuthors, sPublicationSources, sPublicationsByInsertDate, sPublicationsByUpdateDate, sPublicationsByFilters; // TODO: Select con altri parametri
     private PreparedStatement uPublication, iPublication;
     private PreparedStatement sSources, sSourceById;
     private PreparedStatement uSource, iSource;
@@ -85,6 +87,11 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sPublicationSources = connection.prepareStatement("SELECT * FROM pubblicazione_has_sorgente WHERE pubblicazione_idpubblicazione = ?");
             this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 0");
             this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 1");
+            this.sPublicationsByFilters = connection.prepareStatement("SELECT * FROM pubblicazione p JOIN ristampa r ON r.pubblicazione = p.idpubblicazione JOIN editore e ON e.ideditore = p.editore " + 
+                    "JOIN autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione JOIN autore a ON a.idautore = ap.autore_idautore JOIN pubblicazione_has_sorgente ps ON ps.pubblicazione_idpubblicazione = p.idpubblicazione " + 
+                    "JOIN sorgente sr ON sr.idsorgente = ps.sorgente_idsorgente JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword " +
+                    "JOIN storico st ON st.pubblicazione = p.idpubblicazione JOIN utente u ON u.idutente = st.utente " + 
+                    "WHERE p.isbn LIKE '%?%' AND p.titolo LIKE '%?%' AND a.nome LIKE '%?%' AND a.cognome LIKE '%?%' AND r.data >= ? AND k.nome IN (?) AND lingua LIKE '%?%'");
             this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET idpubblicazione = ?, titolo = ?, descrizione = ?, editore = ?, indice = ?, n_consigli = ? WHERE idpubblicazione = ?");
             this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, indice, n_consigli) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
@@ -529,6 +536,36 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet rs = null;
         try {
             rs = sPublications.executeQuery();
+            while (rs.next()) {
+                result.add(getPublication(rs.getInt("idpubblicazione")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load publications", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<Publication> getPublicationsByFilters(Map<String,Object> filters) throws DataLayerException {
+        List<Publication> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sPublicationsByFilters.setString(1, (String)Utils.getArrayParameter(filters, "isbn"));
+            sPublicationsByFilters.setString(2, (String)Utils.getArrayParameter(filters, "titolo"));
+            sPublicationsByFilters.setString(3, (String)Utils.getArrayParameter(filters, "autore-nome"));
+            sPublicationsByFilters.setString(4, (String)Utils.getArrayParameter(filters, "autore-cognome"));
+            sPublicationsByFilters.setDate(5, (Date)Utils.getArrayParameter(filters, "data"));
+            sPublicationsByFilters.setString(6, (String)Utils.getArrayParameter(filters, "keyword-nome"));
+            sPublicationsByFilters.setString(7, (String)Utils.getArrayParameter(filters, "lingua"));
+            rs = sPublicationsByFilters.executeQuery();
             while (rs.next()) {
                 result.add(getPublication(rs.getInt("idpubblicazione")));
             }

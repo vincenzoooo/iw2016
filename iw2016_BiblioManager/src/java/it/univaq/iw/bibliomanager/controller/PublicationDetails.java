@@ -24,11 +24,6 @@ import javax.servlet.http.HttpSession;
  * @author Vincenzo Lanzieri
  */
 public class PublicationDetails extends BiblioManagerBaseController {
-    private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.setAttribute("page_title", "Login to Biblio");
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("login.ftl.html", request, response);
-    }
 
     private void action_publication(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException, IOException, NumberFormatException, ServletException {

@@ -10,6 +10,7 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
+import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -50,6 +51,13 @@ public class Utils {
         return var == null || var.trim().isEmpty();
     }
 
+    public static Object getArrayParameter(Map<String, Object> list, String paramName){
+        Object result = null;
+        if(list != null && !isNullOrEmpty(paramName) && !list.isEmpty() && list.containsKey(paramName)){
+            result = list.get(paramName);
+        }
+        return result;
+    }
     /**
      * Verifica la correttezza dell'email
      *

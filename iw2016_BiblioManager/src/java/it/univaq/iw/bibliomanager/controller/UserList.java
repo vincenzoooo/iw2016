@@ -68,13 +68,6 @@ public class UserList extends BiblioManagerBaseController {
         }
     }
 
-    private void action_default(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        request.setAttribute("page_title", "Login to Biblio");
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("login.ftl.html", request, response);
-    }
-
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.

@@ -24,7 +24,8 @@ import javax.servlet.http.HttpSession;
  */
 public class Home extends BiblioManagerBaseController {
 
-    private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    @Override
+    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setAttribute("page_title", "Home");
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("home.ftl.html", request, response);

@@ -22,12 +22,6 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PublicationHistory extends BiblioManagerBaseController {
 
-    private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.setAttribute("page_title", "Login to Biblio");
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("login.ftl.html", request, response);
-    }
-
     private void action_history(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, DataLayerException {
         TemplateResult res = new TemplateResult(getServletContext());
         int publicationKey = Integer.parseInt(request.getParameter("publicationKey"));

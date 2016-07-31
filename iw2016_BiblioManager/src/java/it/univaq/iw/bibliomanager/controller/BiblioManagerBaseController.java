@@ -4,6 +4,7 @@ import it.univaq.iw.bibliomanager.data.impl.BiblioManagerDataLayerMysqlImpl;
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.FailureResult;
+import it.univaq.iw.framework.result.TemplateResult;
 import java.io.IOException;
 import java.util.Map;
 import java.util.logging.Level;
@@ -47,6 +48,12 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         (new FailureResult(getServletContext())).activate(message, request, response);
     }
 
+    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setAttribute("page_title", "Login to Biblio");
+        TemplateResult res = new TemplateResult(getServletContext());
+        res.activate("login.ftl.html", request, response);
+    }
+    
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = false;
         for (Map.Entry<String, String> entry : params.entrySet()) {

@@ -23,12 +23,6 @@ import it.univaq.iw.bibliomanager.data.model.User;
  */
 public class Login extends BiblioManagerBaseController {
 
-    private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.setAttribute("page_title", "Login to Biblio");
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("login.ftl.html", request, response);
-    }
-
     private void action_login(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, NoSuchAlgorithmException, DataLayerException {
         try {

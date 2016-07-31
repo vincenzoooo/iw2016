@@ -84,10 +84,6 @@
         <servlet-class>it.univaq.iw.bibliomanager.controller.UpdatePublication</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>search</servlet-name>
-        <servlet-class>it.univaq.iw.bibliomanager.controller.Search</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>ComposeEditor</servlet-name>
         <servlet-class>it.univaq.iw.bibliomanager.controller.ComposeEditor</servlet-class>
     </servlet>
@@ -102,6 +98,10 @@
     <servlet>
         <servlet-name>ComposeAuthor</servlet-name>
         <servlet-class>it.univaq.iw.bibliomanager.controller.ComposeAuthor</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>PublicationResearch</servlet-name>
+        <servlet-class>it.univaq.iw.bibliomanager.controller.PublicationResearch</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>login</servlet-name>
@@ -144,10 +144,6 @@
         <url-pattern>/UpdatePublication</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>search</servlet-name>
-        <url-pattern>/Search</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>ComposeEditor</servlet-name>
         <url-pattern>/ComposeEditor</url-pattern>
     </servlet-mapping>
@@ -162,6 +158,10 @@
     <servlet-mapping>
         <servlet-name>ComposeAuthor</servlet-name>
         <url-pattern>/ComposeAuthor</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>PublicationResearch</servlet-name>
+        <url-pattern>/PublicationResearch</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

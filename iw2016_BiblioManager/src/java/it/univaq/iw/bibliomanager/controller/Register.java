@@ -16,7 +16,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import it.univaq.iw.bibliomanager.data.model.User;
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -25,12 +24,6 @@ import java.util.Map;
  * @author Vincenzo Lanzieri
  */
 public class Register extends BiblioManagerBaseController {
-
-    private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.setAttribute("page_title", "Register to Biblio");
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("registration.ftl.html", request, response);
-    }
 
     private void action_register(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, DataLayerException, NoSuchAlgorithmException, MessagingException {

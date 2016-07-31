@@ -9,6 +9,7 @@ package it.univaq.iw.bibliomanager.data.model;
 import it.univaq.iw.framework.data.DataLayer;
 import it.univaq.iw.framework.data.DataLayerException;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -38,9 +39,15 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     List<Author> getAuthors() throws DataLayerException;
 
+    List<Author> getPublicationAuthors(int publication_key) throws DataLayerException;
+
+    List<Author> getAuthorsByName(String name) throws DataLayerException;
+
     Editor getEditor(int editor_key) throws DataLayerException;
 
     List<Editor> getEditors() throws DataLayerException;
+
+    List<Editor> getEditorsByName(String name) throws DataLayerException;
 
     Keyword getKeyword(int metadata_key) throws DataLayerException;
 
@@ -51,6 +58,12 @@ public interface BiblioManagerDataLayer extends DataLayer {
     Publication getPublication(int publication_key) throws DataLayerException;
 
     List<Publication> getPublications() throws DataLayerException;
+
+    List<Publication> getLastInsertedPublication() throws DataLayerException;
+
+    List<Publication> getLastModifiedPublication() throws DataLayerException;
+
+    List<Publication> getPublicationsByFilters(Map<String, Object> filters) throws DataLayerException;
 
     Review getReview(int review_key) throws DataLayerException;
 
@@ -64,11 +77,15 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     List<Source> getSources() throws DataLayerException;
 
+    List<Source> getPublicationSources(int publication_key) throws DataLayerException;
+
     History getHistory(int historia_key) throws DataLayerException;
 
     List<History> getHistories() throws DataLayerException;
 
     List<History> getHistoriesByUser(int user_key) throws DataLayerException;
+
+    List<History> getHistoriesByPublication(int publication_key) throws DataLayerException;
 
     User getUser(int user_key) throws DataLayerException;
 
@@ -78,21 +95,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     List<User> getUsers() throws DataLayerException;
 
-    List<Author> getPublicationAuthors(int publication_key) throws DataLayerException;
-
-    List<Source> getPublicationSources(int publication_key) throws DataLayerException;
-
-    List<Publication> getLastInsertedPublication() throws DataLayerException;
-
-    List<Publication> getLastModifiedPublication() throws DataLayerException;
-
     List<User> getMoreActiveUsers() throws DataLayerException;
-
-    List<History> getHistoriesByPublication(int publication_key) throws DataLayerException;
-
-    List<Author> getAuthorsByName(String name) throws DataLayerException;
-
-    List<Editor> getEditorsByName(String name) throws DataLayerException;
 
     void storeAuthor(Author author) throws DataLayerException;
 

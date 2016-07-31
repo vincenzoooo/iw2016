@@ -6,7 +6,6 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
-import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -22,12 +21,6 @@ public class Logout extends BiblioManagerBaseController {
     private void action_logout(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         SecurityLayer.disposeSession(request);
         action_default(request, response);
-    }
-
-    private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.setAttribute("page_title", "Login to Biblio");
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("login.ftl.html", request, response);
     }
 
     /**

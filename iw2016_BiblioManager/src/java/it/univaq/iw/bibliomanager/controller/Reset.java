@@ -25,12 +25,6 @@ import it.univaq.iw.bibliomanager.data.model.User;
  */
 public class Reset extends BiblioManagerBaseController {
 
-    private void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.setAttribute("page_title", "Home Biblio");
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("index.html", request, response);//TODO
-    }
-
     private void action_reset(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, DataLayerException, NoSuchAlgorithmException {
         HttpSession session = SecurityLayer.checkSession(request);
