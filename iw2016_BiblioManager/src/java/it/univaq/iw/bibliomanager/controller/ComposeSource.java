@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ComposeSource extends BiblioManagerBaseController {
 
     private Source action_composeSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
+        int idPublication = Integer.parseInt(request.getParameter("idPublication"));
         Source source = null;
         try {
             Map<String, String> params = new HashMap<String, String>();
@@ -37,6 +38,7 @@ public class ComposeSource extends BiblioManagerBaseController {
                 source.setFormat(params.get("format"));
                 source.setDescription(params.get("description"));
                 getDataLayer().storeSource(source);
+                getDataLayer().storePublicationHasSource(source.getKey(), idPublication);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage());
@@ -45,6 +47,7 @@ public class ComposeSource extends BiblioManagerBaseController {
     }
 
     private Source action_updateSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
+        int idPublication = Integer.parseInt(request.getParameter("idPublication"));
         Source source = null;
         try {
             source = getDataLayer().getSource(Integer.parseInt(request.getParameter("idsource")));
@@ -59,6 +62,7 @@ public class ComposeSource extends BiblioManagerBaseController {
                 source.setFormat(params.get("format"));
                 source.setDescription(params.get("description"));
                 getDataLayer().storeSource(source);
+                getDataLayer().storePublicationHasSource(source.getKey(), idPublication);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage());

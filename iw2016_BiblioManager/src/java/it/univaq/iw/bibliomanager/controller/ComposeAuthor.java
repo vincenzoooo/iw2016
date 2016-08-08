@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 public class ComposeAuthor extends BiblioManagerBaseController {
 
     private Author action_composeAuthor(HttpServletRequest request, HttpServletResponse response) {
+        int idPublication = Integer.parseInt(request.getParameter("idPublication"));
         Author author = null;
         try {
             Map<String, String> params = new HashMap<String, String>();
@@ -33,6 +34,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                 author.setName(params.get("name"));
                 author.setSurname(params.get("name"));
                 getDataLayer().storeAuthor(author);
+                getDataLayer().storePublicationHasAuthor(author.getKey(), idPublication);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare l'autore: " + ex.getMessage());
@@ -41,6 +43,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
     }
 
     private Author action_updateAuthor(HttpServletRequest request, HttpServletResponse response) {
+        int idPublication = Integer.parseInt(request.getParameter("idPublication"));
         Author author = null;
         try {
             author = getDataLayer().getAuthor(Integer.parseInt(request.getParameter("idauthor")));
@@ -51,6 +54,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                 author.setName(params.get("name"));
                 author.setSurname(params.get("name"));
                 getDataLayer().storeAuthor(author);
+                getDataLayer().storePublicationHasAuthor(author.getKey(), idPublication);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare l'autore: " + ex.getMessage());

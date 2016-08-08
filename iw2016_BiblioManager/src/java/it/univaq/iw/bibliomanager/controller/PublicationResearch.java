@@ -6,6 +6,7 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
+import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.security.SecurityLayer;
 import java.sql.Date;
 import java.text.DateFormat;
@@ -13,6 +14,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,37 +26,46 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PublicationResearch extends BiblioManagerBaseController {
 
-    private void action_research(HttpServletRequest request, HttpServletResponse response) throws ParseException {
-        Map<String, Object> filters = new HashMap<String, Object>();
-        String isbn = request.getParameter("isbn");
-        if (isbn != null) {
-            filters.put("isbn", isbn);
+    private void action_research(HttpServletRequest request, HttpServletResponse response){
+        try {
+            Map<String, Object> filters = new HashMap<String, Object>();
+            String isbn = request.getParameter("isbn");
+            if (isbn != null) {
+                filters.put("isbn", isbn);
+            }
+            String title = request.getParameter("title");
+            if (title != null) {
+                filters.put("titolo", title);
+            }
+            String authorName = request.getParameter("authorName");
+            if (authorName != null) {
+                filters.put("autore_nome", authorName);
+            }
+            String authorSurname = request.getParameter("authorSurname");
+            if (authorSurname != null) {
+                filters.put("autore_cognome", authorSurname);
+            }
+            String date = request.getParameter("date");
+            if (date != null) {
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                java.util.Date formatDate = format.parse(date);
+                filters.put("data", new java.sql.Date(formatDate.getTime()));
+            }
+            String keyword = request.getParameter("keyword");
+            if (keyword != null) {
+                filters.put("keyword_nome", keyword);
+            }
+            String language = request.getParameter("language");
+            if (language != null) {
+                filters.put("lingua", language);
+            }
+            filters.put("order_by", "titolo");
+            request.setAttribute("results", getDataLayer().getPublicationsByFilters(filters));
+        }catch(ParseException ex){
+            action_error(request, response, "Unable to parse the date: " + ex.getMessage());
         }
-        String title = request.getParameter("title");
-        if (title != null) {
-            filters.put("titolo", title);
-        }
-        String authorName = request.getParameter("authorName");
-        if (authorName != null) {
-            filters.put("autore-nome", authorName);
-        }
-        String authorSurname = request.getParameter("authorSurname");
-        if (authorSurname != null) {
-            filters.put("autore-cognome", authorSurname);
-        }
-        String date = request.getParameter("date");
-        if (date != null) {
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-            java.util.Date formatDate = format.parse(date);
-            filters.put("data", new java.sql.Date(formatDate.getTime()));
-        }
-        String keyword = request.getParameter("keyword");
-        if (keyword != null) {
-            filters.put("keyword-nome", keyword);
-        }
-        String language = request.getParameter("language");
-        if (language != null) {
-            filters.put("lingua", language);
+        catch (DataLayerException ex) {
+            action_error(request, response, "Unable to do the research: " + ex.getMessage());
         }
     }
 

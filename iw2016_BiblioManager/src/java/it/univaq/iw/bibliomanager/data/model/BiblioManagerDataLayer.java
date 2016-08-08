@@ -57,7 +57,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     Publication getPublication(int publication_key) throws DataLayerException;
 
-    List<Publication> getPublications() throws DataLayerException;
+    List<Publication> getPublications(String orderBy) throws DataLayerException;
 
     List<Publication> getLastInsertedPublication() throws DataLayerException;
 
@@ -114,4 +114,16 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeHistory(History historia) throws DataLayerException;
 
     void storeUser(User user) throws DataLayerException;
+    
+    void storePublicationHasAuthor(int idAuthor, int idPublication) throws DataLayerException;
+    
+    void deletePublicationHasAuthor(int idPublication) throws DataLayerException;
+    
+    void storePublicationHasKeyword(int idKeyword, int idPublication) throws DataLayerException;
+    
+    void deletePublicationHasKeyword(int idPublication) throws DataLayerException;
+    
+    void storePublicationHasSource(int idSource, int idPublication) throws DataLayerException;
+    
+    void deletePublicationHasSource(int idPublication) throws DataLayerException;
 }
