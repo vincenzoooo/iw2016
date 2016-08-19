@@ -111,6 +111,13 @@ public class Register extends BiblioManagerBaseController {
         }
         return error;
     }
+    
+    @Override
+    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        request.setAttribute("page_title", "Register");
+        TemplateResult res = new TemplateResult(getServletContext());
+        res.activate("registration.ftl.html", request, response);
+    }
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
