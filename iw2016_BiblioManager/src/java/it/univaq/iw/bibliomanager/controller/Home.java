@@ -38,7 +38,7 @@ public class Home extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Homepage");
             // recupero lo userId e il nome
             int userId = (int) session.getAttribute("userid");
-            boolean role = (boolean) session.getAttribute("userRole");
+            int role = (int) session.getAttribute("userRole");
             User user = getDataLayer().getUser(userId);
             String nameLogged = SecurityLayer.stripSlashes(user.getName());
             request.setAttribute("nameLogged", nameLogged);

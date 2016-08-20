@@ -56,6 +56,9 @@ public class Register extends BiblioManagerBaseController {
         } catch (DataLayerException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
+        catch (NullPointerException ex){
+            action_error(request, response, "Something goes wrong");
+        }
     }
 
     @Override

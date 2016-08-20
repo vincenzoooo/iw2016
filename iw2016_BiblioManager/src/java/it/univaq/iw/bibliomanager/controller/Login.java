@@ -33,14 +33,14 @@ public class Login extends BiblioManagerBaseController {
                 String passEncrypted = Utils.SHA1(password);
                 User user = getDataLayer().getUser(email, passEncrypted);
                 if (user != null) {
-                    SecurityLayer.createSession(request, email, user.getKey());
+                    SecurityLayer.createSession(request, email, user.getKey(), user.getState());
                     request.setAttribute("page_title", "Benvenuto");
                     request.setAttribute("user", user);
                     res.activate("home.ftl.html", request, response);//TODO: Definire la home page
                 } else {
                     request.setAttribute("message", "Credenziali errate, si invita a riprovare o ad iscriversi");
                     //res.activate("login.ftl.html", request, response);
-                    res.activate("profile.ftl.html", request, response);
+                    res.activate("registration.ftl.html", request, response);
                 }
             } else {
                 res.activate("login.ftl.html", request, response);
