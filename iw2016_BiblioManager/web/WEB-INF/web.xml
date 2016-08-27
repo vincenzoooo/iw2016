@@ -84,32 +84,36 @@
         <servlet-class>it.univaq.iw.bibliomanager.controller.UpdatePublication</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ComposeEditor</servlet-name>
+        <servlet-name>composeEditor</servlet-name>
         <servlet-class>it.univaq.iw.bibliomanager.controller.ComposeEditor</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ComposeSource</servlet-name>
+        <servlet-name>composeSource</servlet-name>
         <servlet-class>it.univaq.iw.bibliomanager.controller.ComposeSource</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ComposeReprint</servlet-name>
+        <servlet-name>composeReprint</servlet-name>
         <servlet-class>it.univaq.iw.bibliomanager.controller.ComposeReprint</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ComposeAuthor</servlet-name>
+        <servlet-name>composeAuthor</servlet-name>
         <servlet-class>it.univaq.iw.bibliomanager.controller.ComposeAuthor</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>PublicationResearch</servlet-name>
+        <servlet-name>publicationResearch</servlet-name>
         <servlet-class>it.univaq.iw.bibliomanager.controller.PublicationResearch</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>PublicationsList</servlet-name>
+        <servlet-name>publicationsList</servlet-name>
         <servlet-class>it.univaq.iw.bibliomanager.controller.PublicationsList</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>ComposeKeyword</servlet-name>
+        <servlet-name>composeKeyword</servlet-name>
         <servlet-class>it.univaq.iw.bibliomanager.controller.ComposeKeyword</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>userList</servlet-name>
+        <servlet-class>it.univaq.iw.bibliomanager.controller.UserList</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>login</servlet-name>
@@ -145,39 +149,43 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>publicationHistory</servlet-name>
-        <url-pattern>/PublicationHistory</url-pattern>
+        <url-pattern>/publicationHistory</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>updatePublication</servlet-name>
-        <url-pattern>/UpdatePublication</url-pattern>
+        <url-pattern>/updatePublication</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ComposeEditor</servlet-name>
-        <url-pattern>/ComposeEditor</url-pattern>
+        <servlet-name>composeEditor</servlet-name>
+        <url-pattern>/composeEditor</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ComposeSource</servlet-name>
-        <url-pattern>/ComposeSource</url-pattern>
+        <servlet-name>composeSource</servlet-name>
+        <url-pattern>/composeSource</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ComposeReprint</servlet-name>
-        <url-pattern>/ComposeReprint</url-pattern>
+        <servlet-name>composeReprint</servlet-name>
+        <url-pattern>/composeReprint</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ComposeAuthor</servlet-name>
-        <url-pattern>/ComposeAuthor</url-pattern>
+        <servlet-name>composeAuthor</servlet-name>
+        <url-pattern>/composeAuthor</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>PublicationResearch</servlet-name>
-        <url-pattern>/PublicationResearch</url-pattern>
+        <servlet-name>publicationResearch</servlet-name>
+        <url-pattern>/publicationResearch</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>PublicationsList</servlet-name>
-        <url-pattern>/PublicationsList</url-pattern>
+        <servlet-name>publicationsList</servlet-name>
+        <url-pattern>/publicationsList</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>ComposeKeyword</servlet-name>
-        <url-pattern>/ComposeKeyword</url-pattern>
+        <servlet-name>composeKeyword</servlet-name>
+        <url-pattern>/composeKeyword</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>userList</servlet-name>
+        <url-pattern>/community</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

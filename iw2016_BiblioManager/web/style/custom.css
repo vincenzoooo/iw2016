@@ -143,6 +143,20 @@ Professor: Giuseppe Della Penna
 .center {text-align: center;}
 .bold{font-weight: bold;}
 
+.oscure{
+    position: fixed;
+    z-index: 1; 
+    padding-top: 100px; 
+    left: 0;
+    top: 0;
+    width: 100%; 
+    height: 100%; 
+    overflow: auto; 
+    background-color: rgb(0,0,0); 
+    
+    opacity: 0.9; 
+}
+
 body {
     background-color: #EFE5D3; 
 }

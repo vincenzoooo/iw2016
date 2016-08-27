@@ -21,7 +21,7 @@
                             Nome:
                         </span>
                         <span class="">
-                            ${(user.name?html)?capitalize}
+                            ${strip_slashes(user.name?html)?capitalize}
                         </span>
                     </div>
                     <div class="padding-bottom-10">
@@ -29,7 +29,7 @@
                             Cognome:
                         </span>
                         <span class="">
-                            ${(user.surname?html)?capitalize}
+                            ${strip_slashes(user.surname?html)?capitalize}
                         </span>
                     </div>
                      <div class="padding-bottom-10">
@@ -37,7 +37,7 @@
                             Email:
                         </span>
                         <span class="">
-                            ${user.email?html}
+                            ${strip_slashes(user.email?html)?capitalize}
                         </span>
                     </div>
                     <div class="padding-bottom-10">
@@ -61,7 +61,7 @@
                     <div class="">
                     <#if (role?? && role && !user.state)>
                         <span class="center">
-                            <button><a id="promote" href="?promote&userId=${user.id}" >Promuovi ad utente attivo</a></button>
+                            <button><a id="promote" href="?promote&userid=${user.id}" >Promuovi ad utente attivo</a></button>
                         </span>
                     </#if>
                     </div>
@@ -77,9 +77,9 @@
                
             <!--
             <h2 id="link">Pubblicazioni inserite dall'utente</h2>
-            <#if (userPublications?? && userPublications?size>0) >
+            <#if (publications?? && publications?size>0) >
                 <div id="listPublicationUser" class="row">
-                <#list userPublications as item>
+                <#list publications as item>
                     <div class="col-lg-4 homepublication">
                         <a href="publicationDetails?publicationId=${item.id}" class="publicationDetailsHome">
                         <figure class="imageProfile">

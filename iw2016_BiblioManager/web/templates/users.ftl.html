@@ -1,0 +1,94 @@
+<div class="container">
+    <div class="row ">
+        <div class="col-lg-12">
+            <form class="row" method="post" action="usersList">
+                <div class="col-lg-3">
+                    <div>Ordina</div>
+                    <!--
+                    <select name="userType" id="typeUser">
+                        <option value='2' <#if userType?? && userType==2> selected='selected'</#if>>
+                            Tutti gli utenti
+                        </option>
+                        <option value='0' <#if userType?? && userType==0> selected='selected'</#if>>
+                            Utenti passivi
+                        </option>
+                        <option value='1' <#if userType?? && userType==1> selected='selected'</#if>>
+                            Utenti attivi
+                        </option>
+                    </select>
+                    -->
+                </div>
+                <div class="col-lg-3">
+                    <div>per:</div> 
+                    <!--
+                    <select name='sortBy' id='userOrdering'>
+                        <option value='0' <#if sortBy?? && sortBy==0> selected='selected'</#if>>
+                            Cognome
+                        </option>
+                        <option value='1' <#if sortBy?? && sortBy==1> selected='selected'</#if>>
+                            Numero azioni effettuate
+                        </option>
+                    </select>
+                    -->
+                </div>
+                <div class="col-lg-3">
+                    <div>in modo:</div>
+                    <!--
+                    <select name='sortType' id='typeUserOrdering'>
+                        <option value='0' <#if sortType?? && sortType==0> selected='selected'</#if>>
+                            Ascendente
+                        </option>
+                        <option value='1' <#if sortType?? && sortType==1> selected='selected'</#if>>
+                            Discendente
+                        </option>
+                    </select>
+                    -->
+                </div>
+                <div class="margin-to-10 row">
+                    <input type="submit" name="ordering" value="Ordina"/>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <#if (users?? && users?size>0)>
+            <table id='allUsers'>
+                <tr>
+                    <th>
+                        Nome
+                    </th>
+                    <th>
+                        Cognome
+                    </th>
+                    <th>
+                        Ruolo
+                    </th>
+                    <th>
+
+                    </th>
+                </tr>
+                <#list users as item>
+                    <tr>
+                        <td>
+                            ${strip_slashes(item.name)!"''"?html}
+                        </td>
+                        <td>
+                            ${strip_slashes(item.surname)!"''"?html}
+                        </td>
+                        <td>
+                           <!-- ${strip_slashes(item.status)!"''"?html}-->
+                        </td>
+                        <td>
+                            <!-- non so come vedere i nomi che hai dato agli elementi!!! come si identifica l'id dell'utente?-->
+                            <a href="profile?userid=${item.id}">Vai alla scheda utente</a>
+                        </td>
+                    </tr>
+                </#list>
+            </table>
+            <#else>
+            <span class="bold">Nessun utente presente.</span>
+            </#if>
+        </div>
+    </div>
+</div>
