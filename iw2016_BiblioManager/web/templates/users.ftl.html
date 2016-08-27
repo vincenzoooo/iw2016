@@ -77,11 +77,11 @@
                             ${strip_slashes(item.surname)!"''"?html}
                         </td>
                         <td>
-                           <!-- ${strip_slashes(item.status)!"''"?html}-->
+                           ${strip_slashes(item.state)!"''"?html}
                         </td>
                         <td>
                             <!-- non so come vedere i nomi che hai dato agli elementi!!! come si identifica l'id dell'utente?-->
-                            <a href="profile?userid=${item.id}">Vai alla scheda utente</a>
+                            <a href="profile?userid=${item.key}">Vai alla scheda utente</a>
                         </td>
                     </tr>
                 </#list>
