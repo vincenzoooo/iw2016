@@ -32,8 +32,8 @@ public class Profile extends BiblioManagerBaseController {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
             int userKey;
-            if (request.getParameter("userkey") != null) {
-                userKey = Integer.parseInt(request.getParameter("userkey"));
+            if (request.getParameter("userid") != null) {
+                userKey = Integer.parseInt(request.getParameter("userid"));
                 //TODO: Gestire la modifica in caso non si è il proprietario del profilo
                 request.setAttribute("displaynone", "display:none");
             } else {
@@ -54,7 +54,7 @@ public class Profile extends BiblioManagerBaseController {
             request.setAttribute("user", user);
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("profile.ftl.html", request, response);
-        } catch (DataLayerException ex) {
+        } catch (DataLayerException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
     }
@@ -120,7 +120,7 @@ public class Profile extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (Exception ex) {
-            action_error(request, response, "OPS");
+            action_error(request, response, "OPS: " + ex.getMessage());
         }
     }
 
