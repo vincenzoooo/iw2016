@@ -117,7 +117,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sReviewById = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE idrecensione = ?");
             this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET idrecensione = ?, testo = ?, moderata = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
             this.iReview = connection.prepareStatement("INSERT INTO iw2016.recensione (testo, moderata, utente_autore, pubblicazione, storico) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            this.sKeywords = null;
+            this.sKeywords = connection.prepareStatement("SELECT * FROM iw2016.keyword");
             this.sKeywordsByPublication = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE pubblicazione = ?");
             this.sKeywordById = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE idmetadato = ?");
             this.uKeyword = connection.prepareStatement("UPDATE iw2016.keyword SET nome = ? WHERE idkeyword = ?");
