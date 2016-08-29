@@ -42,6 +42,11 @@ public class DataModelFillerImpl implements DataModelFiller {
         menuitem.put("label", "Community");
         menuitem.put("link", "community");
         menuitems.add(menuitem);
+        
+        menuitem = new HashMap();
+        menuitem.put("label", "AddP");
+        menuitem.put("link", "publication");
+        menuitems.add(menuitem);
     }
 
 }

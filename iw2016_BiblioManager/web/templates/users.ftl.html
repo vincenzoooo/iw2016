@@ -77,7 +77,17 @@
                             ${strip_slashes(item.surname)!"''"?html}
                         </td>
                         <td>
-                           ${strip_slashes(item.state)!"''"?html}
+                            <#switch strip_slashes(item.state)!"''"?html>
+                                <#case "0">
+                                Amministratore
+                                <#break>
+                                <#case "1">
+                                Utente attivo
+                                <#break>
+                                <#case "2">
+                                Utente passivo
+                                <#break>
+                            </#switch>
                         </td>
                         <td>
                             <!-- non so come vedere i nomi che hai dato agli elementi!!! come si identifica l'id dell'utente?-->
