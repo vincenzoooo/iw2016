@@ -1,0 +1,78 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="center">Aggiungi pubbligazione</h1>
+            <form method="post" action="addPublication" name='insertPublication'>
+                <#if publication.key??> 
+                <input type='hidden' name='publicationId' value="${publication.key?html}" />
+                </#if>
+                <div class="form-group">
+                    <label for="inputTitle" class="col-sm-2 control-label bold">Titolo</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="title" value="${publication.title!''?html}"  required='required' placeholder="Inserisci il titolo" />
+                    </div>
+                </div>
+                <#if errorTitle??>
+                <div class="error">
+                    ${errorTitle?html}
+                </div>
+                </#if>
+                <div class="form-group">
+                    <label for="inputIsbn" class="col-sm-2 control-label bold">ISBN (13 cifre):</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="title" value="${publication.isbn!''?html}"  required='required' placeholder="Inserisci l'isbn" />
+                    </div>
+                </div>
+                <#if errorIsbn??>
+                <div class="error">
+                    ${errorIsbn?html}
+                </div>
+    <           </#if>
+                <div class="form-group">
+                    <label for="inputPageNumber" class="col-sm-2 control-label bold">Numero pagine</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="title" value="${publicazion.pageNumber!''?html}"  required='required' placeholder="Inserisci il numero delle pagine" />
+                    </div>
+                </div>
+                <#if errorPageNumber??>
+                <div class="error">
+                    ${errorPageNumber?html}
+                </div>
+                </#if>
+                <div class="form-group">
+                    <label for="inputDescription" class="col-sm-2 control-label bold">Descrizione</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" name="description" rows="4" placeholder="Inserisci una descrizione">${publication.description!''?html}</textarea>
+                    </div>
+                </div>
+                <#if errorDescription??>
+                <div class="error">    
+                    ${errorDescription?html}    
+                </div>
+                </#if>
+                <div class="form-group">
+                    <label for="inputPublicationDate" class="col-sm-2 control-label bold">Anno di pubblicazione</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="publicationDate" value="${publication.publicationDate!''?html}" placeholder="Inserisci l'anno di pubblicazione" />
+                    </div>
+                </div>
+                <#if errorPublicationDate??>
+                <div class="error">    
+                    ${errorPublicationDate?html}    
+                </div>
+                </#if>
+                <div class="form-group">
+                    <label for="inputLanguage" class="col-sm-2 control-label bold">Lingua</label>
+                    <div class="col-sm-10">
+                        <input class="form-control" name="language" value="${publication.language!''?html}"  required='required' placeholder="Inserisci la lingua" />
+                    </div>
+                </div>
+                <#if errorLanguage??>
+                <div class="error">    
+                    ${errorLanguage?html}    
+                </div>
+                </#if>
+            </form>
+        </div>
+    </div>
+</div>

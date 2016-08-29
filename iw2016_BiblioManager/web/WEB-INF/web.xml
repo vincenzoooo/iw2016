@@ -137,7 +137,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>composePublication</servlet-name>
-        <url-pattern>/composePublication</url-pattern>
+        <url-pattern>/publication</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>home</servlet-name>
