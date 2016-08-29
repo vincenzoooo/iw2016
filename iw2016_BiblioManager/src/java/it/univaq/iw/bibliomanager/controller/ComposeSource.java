@@ -8,8 +8,10 @@ package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.bibliomanager.data.model.Source;
 import it.univaq.iw.framework.data.DataLayerException;
+import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -70,6 +72,19 @@ public class ComposeSource extends BiblioManagerBaseController {
         return source;
     }
 
+    @Override
+    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (SecurityLayer.checkSession(request) == null) {
+            request.setAttribute("page_title", "Login to Biblio");
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("login.ftl.html", request, response);
+        }
+        else{
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("source.ftl.html", request, response);//DA impostare il nome effettivamente usato
+        }
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -83,13 +98,17 @@ public class ComposeSource extends BiblioManagerBaseController {
             throws ServletException {
         try {
             request.setAttribute("page_title", "Gestione Sorgenti");
+            TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
                 if (request.getParameter("idsource") != null) {
                     Source source = getDataLayer().getSource(Integer.parseInt(request.getParameter("idsource")));
                     request.setAttribute("source", source);
+                    res.activate("source.ftl.html", request, response);//DA impostare il nome effettivamente usato
                 }
                 if (request.getParameter("submitSource") != null && request.getParameter("idsource") != null) {
-                    action_updateSource(request, response);
+                    Source source = action_updateSource(request, response);
+                    request.setAttribute("source", source);
+                    res.activate("source.ftl.html", request, response);//DA impostare il nome effettivamente usato
                 }
                 //TODO: Verificarne la correttezza
                 if (request.getParameter("submitSource") != null && request.getParameter("idsource") == null) {

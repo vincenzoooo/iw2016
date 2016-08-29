@@ -8,8 +8,10 @@ package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.bibliomanager.data.model.Keyword;
 import it.univaq.iw.framework.data.DataLayerException;
+import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -58,6 +60,18 @@ public class ComposeKeyword extends BiblioManagerBaseController {
         return keyword;
     }
 
+    @Override
+    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (SecurityLayer.checkSession(request) == null) {
+            request.setAttribute("page_title", "Login to Biblio");
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("login.ftl.html", request, response);
+        }
+        else{
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("key.ftl.html", request, response);//DA impostare il nome effettivamente usato
+        }
+    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -71,13 +85,17 @@ public class ComposeKeyword extends BiblioManagerBaseController {
             throws ServletException {
         try {
             request.setAttribute("page_title", "Gestione Parole Chiave");
+            TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
                 if (request.getParameter("idkeword") != null) {
                     Keyword keyword = getDataLayer().getKeyword(Integer.parseInt(request.getParameter("idkeyword")));
                     request.setAttribute("keyword", keyword);
+                    res.activate("key.ftl.html", request, response);//DA impostare il nome effettivamente usato
                 }
                 if (request.getParameter("submitKeyword") != null && request.getParameter("idkeyword") != null) {
-                    action_updateKeyword(request, response);
+                    Keyword keyword = action_updateKeyword(request, response);
+                    request.setAttribute("keyword", keyword);
+                    res.activate("key.ftl.html", request, response);//DA impostare il nome effettivamente usato
                 }
                 //TODO: Verificarne la correttezza
                 if (request.getParameter("submitKeyword") != null && request.getParameter("idkeyword") == null) {

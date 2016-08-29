@@ -8,8 +8,10 @@ package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.bibliomanager.data.model.Author;
 import it.univaq.iw.framework.data.DataLayerException;
+import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -62,6 +64,18 @@ public class ComposeAuthor extends BiblioManagerBaseController {
         return author;
     }
 
+    @Override
+    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        if (SecurityLayer.checkSession(request) == null) {
+            request.setAttribute("page_title", "Login to Biblio");
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("login.ftl.html", request, response);
+        }
+        else{
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("author.ftl.html", request, response);//DA impostare il nome effettivamente usato
+        }
+    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -75,13 +89,17 @@ public class ComposeAuthor extends BiblioManagerBaseController {
             throws ServletException {
         try {
             request.setAttribute("page_title", "Gestione Autore");
+            TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
                 if (request.getParameter("idauthor") != null) {
                     Author author = getDataLayer().getAuthor(Integer.parseInt(request.getParameter("idauthor")));
                     request.setAttribute("author", author);
+                    res.activate("author.ftl.html", request, response);//Impostare un nome
                 }
                 if (request.getParameter("submitAuthor") != null && request.getParameter("idauthor") != null) {
-                    action_updateAuthor(request, response);
+                    Author author = action_updateAuthor(request, response);
+                    request.setAttribute("author", author);
+                    res.activate("author.ftl.html", request, response);//Impostare un nome
                 }
                 //TODO: Verificarne la correttezza
                 if (request.getParameter("submitAuthor") != null && request.getParameter("idauthor") == null) {
