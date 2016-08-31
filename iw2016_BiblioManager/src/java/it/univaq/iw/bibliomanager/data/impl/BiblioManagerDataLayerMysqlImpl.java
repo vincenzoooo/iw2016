@@ -81,7 +81,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sHistoryById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idstorico = ?");
             this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET idstorico = ?, entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");
             this.iHistory = connection.prepareStatement("INSERT INTO iw2016.storico (entry, tipo, data_operazione, pubblicazione, utente) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            this.sPublications = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione p JOIN iw2016.editore e ON e.ideditore = p.editore JOIN iw2016.autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione JOIN autore a ON a.idautore = ap.autore_idautore ORDER BY ?");
+            this.sPublications = connection.prepareStatement("SELECT p.*, e.nome AS nome_editore, a.nome AS nome_autore, a.cognome AS cognome_autore FROM iw2016.pubblicazione p JOIN iw2016.editore e ON e.ideditore = p.editore JOIN iw2016.autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione JOIN autore a ON a.idautore = ap.autore_idautore ORDER BY ?");
             this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ?"); //TODO
             this.sPublicationAuthors = connection.prepareStatement("SELECT * FROM autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ?");
             this.sPublicationSources = connection.prepareStatement("SELECT * FROM pubblicazione_has_sorgente WHERE pubblicazione_idpubblicazione = ?");
