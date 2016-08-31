@@ -7,7 +7,9 @@
 package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.framework.data.DataLayerException;
+import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
+import java.io.IOException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,16 +20,23 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class PublicationsList extends BiblioManagerBaseController {
 
-    private void action_list(HttpServletRequest request, HttpServletResponse response){
-        if(request.getAttribute("results") != null){
-            try {
-                String orderBy = request.getParameter("orderdBy");
+    private void action_list(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String orderBy = request.getParameter("orderdBy") != null ? request.getParameter("orderdBy") : "titolo";
+        TemplateResult res = new TemplateResult(getServletContext());
+
+        try {
+            if (request.getAttribute("results") != null) {
                 request.setAttribute("results", getDataLayer().getPublications(orderBy));
-            } catch (DataLayerException ex) {
-                action_error(request, response, "Unable to get the publications: " + ex.getMessage());
+                res.activate("registration.ftl.html", request, response);
+            } else {
+                request.setAttribute("results", getDataLayer().getPublications(orderBy));
+                res.activate("registration.ftl.html", request, response);
             }
+        } catch (ServletException | DataLayerException ex) {
+            action_error(request, response, "Unable to get the publications: " + ex.getMessage());
         }
     }
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
