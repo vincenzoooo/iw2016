@@ -149,7 +149,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>publicationHistory</servlet-name>
-        <url-pattern>/publicationHistory</url-pattern>
+        <url-pattern>/history</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>updatePublication</servlet-name>
@@ -177,7 +177,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>publicationsList</servlet-name>
-        <url-pattern>/publicationsList</url-pattern>
+        <url-pattern>/catalog</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>composeKeyword</servlet-name>

@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="center">Aggiungi pubbligazione</h1>
+            <h1 class="center">Aggiungi pubblicazione</h1>
             <form method="post" action="addPublication" name='insertPublication'>
                 <#if publication.key??> 
                 <input type='hidden' name='publicationId' value="${publication.key?html}" />
@@ -27,7 +27,7 @@
                 <div class="error">
                     ${errorIsbn?html}
                 </div>
-    <           </#if>
+                </#if>
                 <div class="form-group">
                     <label for="inputPageNumber" class="col-sm-2 control-label bold">Numero pagine</label>
                     <div class="col-sm-10">

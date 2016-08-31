@@ -1,0 +1,83 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="center">Questo è il catalogo delle pubblicazioni </h1>
+            <form class="row" method="post" action="catalog">
+                <div class="col-lg-4">
+                    <div>Ordina per </div>
+                    <!--
+                    <select name='sortBy' id='ordering'>
+                        <option value='0' <#if sortBy?? && sortBy==0> selected='selected'</#if>>
+                        Titolo
+                        </option>
+                        <option value='1' <#if sortBy?? && sortBy==1> selected='selected'</#if>>
+                        Data di Pubblicazione
+                        </option>
+                        <option value='2' <#if sortBy?? && sortBy==2> selected='selected'</#if>>
+                        Data di Inserimento
+                        </option>
+                        <option value='3' <#if sortBy?? && sortBy==3> selected='selected'</#if>>
+                        Data di Ultima Modifica
+                        </option>
+                        <option value='4' <#if sortBy?? && sortBy==4> selected='selected'</#if>>
+                        Numero Consigli
+                        </option>
+                    </select>
+                    -->
+                </div>
+                
+                <div class="col-lg-3">
+                    <div>in modo:</div>
+                    <!--
+                    <select name='sortType' id='typeOrdering'>
+                        <option value='0' <#if sortType?? && sortType==0> selected='selected'</#if>>
+                        Ascendente
+                        </option>
+                        <option value='1' <#if sortType?? && sortType==1> selected='selected'</#if>>
+                        Discendente
+                        </option>
+                    </select>
+                    -->
+                </div>
+                <div class="margin-to-10 row">
+                    <input type="submit" name="ordering" value="Ordina"/>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-lg-12">
+            <#if catalog??>
+            <#list catalog as item>
+            <div class="row">
+                <div class="col-lg-5">
+                    <a href="publicationDetails?publicationId=${item.key}" class="relative">
+                    <figure class='imageCatalog'>
+                    <#if item.cover??>
+                        <img src= "<#if item.cover.uploaded>img?file=${item.cover.fileSource.id}<#else>${strip_slashes(item.cover.uri)?html}</#if>" alt="${strip_slashes(item.cover.description!'Copertina Default')?html}" />
+                    <#else>
+                        <img src= "img/cover-cs.jpg" alt="Copertina Defualt" />
+                    </#if>
+                    </figure>
+                    </a>
+                </div>
+                <div class="col-lg-7">
+                    <h1 class='title'>${strip_slashes(item.title)?html}</h1>
+                     <!-- come ricavo il nome dell'editore???-->
+                <div class="bold">Editore </div> ${strip_slashes(item.publisher.name)!''?html}
+                <div class="bold">Anno di pubblicazione</div> ${item.publicationDate?c!''}
+                <div class="bold">Descrizione</div> ${strip_slashes(item.description!'Nessuna descrizione.')?html}     
+                <div class="bold">Autori</div>
+                <#list item.authors as item2>
+                    <div class="row">
+                        <div class="four columns inlinemin">${strip_slashes(item2.name!'')?html}</div> 
+                        <div class="twelve columns inlinemin">${strip_slashes(item2.surname!'')?html}</div>
+                    </div>
+                </#list>
+                </div>
+            </div>
+            </#list>
+            </#if>
+        </div>
+    </div>
+</div>

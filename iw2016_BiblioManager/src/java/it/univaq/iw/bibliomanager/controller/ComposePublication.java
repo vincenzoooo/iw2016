@@ -52,7 +52,7 @@ public class ComposePublication extends BiblioManagerBaseController {
             }
             getDataLayer().storePublication(publication);
             request.setAttribute("publication", publication);
-            /**this.action_composeHistory(request, response);*/
+            this.action_composeHistory(request, response);
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("publication.ftl.html", request, response);
         } catch (DataLayerException ex) {
