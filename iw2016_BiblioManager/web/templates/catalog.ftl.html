@@ -47,12 +47,12 @@
     </div>
     <div class="row">
         <div class="col-lg-12">
-            <#if catalog??>
-            <#list catalog as item>
+            <#if results??>
+            <#list results as item>
             <div class="row">
                 <div class="col-lg-5">
                     <a href="publicationDetails?publicationId=${item.key}" class="relative">
-                    <figure class='imageCatalog'>
+                    <figure class="imageCatalog">
                     <#if item.cover??>
                         <img src= "<#if item.cover.uploaded>img?file=${item.cover.fileSource.id}<#else>${strip_slashes(item.cover.uri)?html}</#if>" alt="${strip_slashes(item.cover.description!'Copertina Default')?html}" />
                     <#else>
@@ -64,7 +64,7 @@
                 <div class="col-lg-7">
                     <h1 class='title'>${strip_slashes(item.title)?html}</h1>
                      <!-- come ricavo il nome dell'editore???-->
-                <div class="bold">Editore </div> ${strip_slashes(item.publisher.name)!''?html}
+                <div class="bold">Editore </div> ${strip_slashes(item.nome_editore)!''?html}
                 <div class="bold">Anno di pubblicazione</div> ${item.publicationDate?c!''}
                 <div class="bold">Descrizione</div> ${strip_slashes(item.description!'Nessuna descrizione.')?html}     
                 <div class="bold">Autori</div>

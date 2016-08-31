@@ -27,10 +27,10 @@ public class PublicationsList extends BiblioManagerBaseController {
         try {
             if (request.getAttribute("results") != null) {
                 request.setAttribute("results", getDataLayer().getPublications(orderBy));
-                res.activate("registration.ftl.html", request, response);
+                res.activate("catalog.ftl.html", request, response);
             } else {
                 request.setAttribute("results", getDataLayer().getPublications(orderBy));
-                res.activate("registration.ftl.html", request, response);
+                res.activate("catalog.ftl.html", request, response);
             }
         } catch (ServletException | DataLayerException ex) {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage());
@@ -56,7 +56,7 @@ public class PublicationsList extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (Exception ex) {
-            action_error(request, response, "OPS");
+            action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 
