@@ -97,6 +97,10 @@ public class ComposePublication extends BiblioManagerBaseController {
                 if (request.getParameter("submitPublication") != null) {
                     action_composePublication(request, response);
                 }
+                else{
+                    TemplateResult res = new TemplateResult(getServletContext());
+                    res.activate("publication.ftl.html", request, response);
+                }
             } else {
                 action_default(request, response);
             }
