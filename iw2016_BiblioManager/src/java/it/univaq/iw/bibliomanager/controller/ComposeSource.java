@@ -30,16 +30,16 @@ public class ComposeSource extends BiblioManagerBaseController {
         try {
             Source source = null;
             Map<String, String> params = new HashMap<String, String>();
-            params.put("type", Utils.checkString(request.getParameter("sourceType")));
-            params.put("uri", Utils.checkString(request.getParameter("sourceUri")));
-            params.put("format", Utils.checkString(request.getParameter("sourceFormat")));
-            params.put("description", Utils.checkString(request.getParameter("sourceDescription")));
+            params.put("sourceType", Utils.checkString(request.getParameter("sourceType")));
+            params.put("sourceUri", Utils.checkString(request.getParameter("sourceUri")));
+            params.put("sourceFormat", Utils.checkString(request.getParameter("sourceFormat")));
+            params.put("sourceDescription", Utils.checkString(request.getParameter("sourceDescription")));
             if (!validator(params, request, response)) {
                 source = getDataLayer().createSource();
-                source.setType(params.get("type"));
-                source.setURI(params.get("uri"));
-                source.setFormat(params.get("format"));
-                source.setDescription(params.get("description"));
+                source.setType(params.get("sourceType"));
+                source.setURI(params.get("sourceUri"));
+                source.setFormat(params.get("sourceFormat"));
+                source.setDescription(params.get("sourceDescription"));
                 getDataLayer().storeSource(source);
             }
         } catch (DataLayerException ex) {
@@ -51,15 +51,15 @@ public class ComposeSource extends BiblioManagerBaseController {
         try {
             Source source = getDataLayer().getSource(Integer.parseInt(request.getParameter("idSource")));
             Map<String, String> params = new HashMap<String, String>();
-            params.put("type", Utils.checkString(request.getParameter("sourceType")));
-            params.put("uri", Utils.checkString(request.getParameter("sourceUri")));
-            params.put("format", Utils.checkString(request.getParameter("sourceFormat")));
-            params.put("description", Utils.checkString(request.getParameter("sourceDescription")));
+            params.put("sourceType", Utils.checkString(request.getParameter("sourceType")));
+            params.put("sourceUri", Utils.checkString(request.getParameter("sourceUri")));
+            params.put("sourceFormat", Utils.checkString(request.getParameter("sourceFormat")));
+            params.put("sourceDescription", Utils.checkString(request.getParameter("sourceDescription")));
             if (!validator(params, request, response)) {
-                source.setType(params.get("type"));
-                source.setURI(params.get("uri"));
-                source.setFormat(params.get("format"));
-                source.setDescription(params.get("description"));
+                source.setType(params.get("sourceType"));
+                source.setURI(params.get("sourceUri"));
+                source.setFormat(params.get("sourceFormat"));
+                source.setDescription(params.get("sourceDescription"));
                 getDataLayer().storeSource(source);
             }
         } catch (DataLayerException ex) {
@@ -96,7 +96,7 @@ public class ComposeSource extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (Exception ex) {
-            action_error(request, response, "OPS");
+            action_error(request, response, "Errore: " + ex.getMessage());
         }
     }
 
