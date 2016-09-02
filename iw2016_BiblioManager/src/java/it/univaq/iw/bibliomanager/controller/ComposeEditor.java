@@ -24,9 +24,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ComposeEditor extends BiblioManagerBaseController {
 
-    private Editor action_composeEditor(HttpServletRequest request, HttpServletResponse response) {
-        Editor editor = null;
+    private void action_composeEditor(HttpServletRequest request, HttpServletResponse response) {
         try {
+            Editor editor = null;
             Map<String, String> params = new HashMap<String, String>();
             params.put("editorName", Utils.checkString(request.getParameter("editorName")));
             if (!validator(params, request, response)) {
@@ -37,7 +37,6 @@ public class ComposeEditor extends BiblioManagerBaseController {
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare l'editore: " + ex.getMessage());
         }
-        return editor;
     }
 
     private Editor action_updateEditor(HttpServletRequest request, HttpServletResponse response) {
@@ -59,7 +58,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
     @Override
     protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (SecurityLayer.checkSession(request) == null) {
-            request.setAttribute("page_title", "Login to Biblio");
+            request.setAttribute("page_title", "Gestione ditore");
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("login.ftl.html", request, response);
         }
@@ -84,20 +83,10 @@ public class ComposeEditor extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Gestione Editore");
             TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
-                if (request.getParameter("ideditor") != null) {
-                    Editor editor = getDataLayer().getEditor(Integer.parseInt(request.getParameter("ideditor")));
-                    request.setAttribute("editor", editor);
-                    res.activate("editor.ftl.html", request, response);//DA impostare il nome effettivamente usato
-                }
-                if (request.getParameter("submitEditor") != null && request.getParameter("ideditor") != null) {
-                    Editor editor = action_updateEditor(request, response);
-                    request.setAttribute("editor", editor);
-                    res.activate("editor.ftl.html", request, response);//DA impostare il nome effettivamente usato
-                }
-                //TODO: Verificarne la correttezza
-                if (request.getParameter("submitEditor") != null && request.getParameter("ideditor") == null) {
+                if (request.getParameter("submitEditor") != null) {
                     action_composeEditor(request, response);
                 }
+                res.activate("editor.ftl.html", request, response);
             } else {
                 action_default(request, response);
             }
