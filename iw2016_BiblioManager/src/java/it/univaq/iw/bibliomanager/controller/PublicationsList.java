@@ -6,10 +6,12 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
+import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import java.io.IOException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,13 +27,9 @@ public class PublicationsList extends BiblioManagerBaseController {
         TemplateResult res = new TemplateResult(getServletContext());
 
         try {
-            if (request.getAttribute("results") != null) {
-                request.setAttribute("results", getDataLayer().getPublications(orderBy));
-                res.activate("catalog.ftl.html", request, response);
-            } else {
-                request.setAttribute("results", getDataLayer().getPublications(orderBy));
-                res.activate("catalog.ftl.html", request, response);
-            }
+            List<Publication> publications = getDataLayer().getPublications(orderBy);
+            request.setAttribute("publications", publications);
+            res.activate("catalog.ftl.html", request, response);
         } catch (ServletException | DataLayerException ex) {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage());
         }

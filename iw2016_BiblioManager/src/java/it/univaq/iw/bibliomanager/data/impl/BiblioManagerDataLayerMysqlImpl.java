@@ -209,11 +209,17 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             publication.setEditor(getEditor(rs.getInt("editore")));
             publication.setIndex(rs.getString("indice"));
             publication.setNumberOfLikes(rs.getInt("n_consigli"));
+            publication.setISBN(rs.getInt("isbn"));
+            publication.setLanguage(rs.getString("lingua"));
+            publication.setPublicationDate(rs.getDate("data_pubblicazione"));
+            publication.setEditor(getEditor(rs.getInt("editore")));
             publication.setAuthor(getPublicationAuthors(rs.getInt("idpubblicazione")));
             publication.setSources(getPublicationSources(rs.getInt("idpubblicazione")));
+            publication.setKeywords(getPublicationKeywords(rs.getInt("idpubblicazione")));
+            publication.setReprints(getReprints(rs.getInt("idpubblicazione")));
             return publication;
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to create user object form ResultSet", ex);
+            throw new DataLayerException("Unable to create publication object form ResultSet", ex);
         }
     }
 
