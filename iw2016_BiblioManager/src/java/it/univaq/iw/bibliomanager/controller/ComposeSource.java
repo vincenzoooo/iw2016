@@ -6,6 +6,7 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
+import it.univaq.iw.bibliomanager.data.model.Keyword;
 import it.univaq.iw.bibliomanager.data.model.Source;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
@@ -13,6 +14,7 @@ import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,10 +26,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ComposeSource extends BiblioManagerBaseController {
 
-    private Source action_composeSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
-        int idPublication = Integer.parseInt(request.getParameter("idPublication"));
-        Source source = null;
+    private void action_composeSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
+            Source source = null;
             Map<String, String> params = new HashMap<String, String>();
             params.put("type", Utils.checkString(request.getParameter("sourceType")));
             params.put("uri", Utils.checkString(request.getParameter("sourceUri")));
@@ -40,19 +41,15 @@ public class ComposeSource extends BiblioManagerBaseController {
                 source.setFormat(params.get("format"));
                 source.setDescription(params.get("description"));
                 getDataLayer().storeSource(source);
-                getDataLayer().storePublicationHasSource(source.getKey(), idPublication);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage());
         }
-        return source;
     }
 
-    private Source action_updateSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
-        int idPublication = Integer.parseInt(request.getParameter("idPublication"));
-        Source source = null;
+    private void action_updateSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
-            source = getDataLayer().getSource(Integer.parseInt(request.getParameter("idsource")));
+            Source source = getDataLayer().getSource(Integer.parseInt(request.getParameter("idSource")));
             Map<String, String> params = new HashMap<String, String>();
             params.put("type", Utils.checkString(request.getParameter("sourceType")));
             params.put("uri", Utils.checkString(request.getParameter("sourceUri")));
@@ -64,24 +61,9 @@ public class ComposeSource extends BiblioManagerBaseController {
                 source.setFormat(params.get("format"));
                 source.setDescription(params.get("description"));
                 getDataLayer().storeSource(source);
-                getDataLayer().storePublicationHasSource(source.getKey(), idPublication);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage());
-        }
-        return source;
-    }
-
-    @Override
-    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (SecurityLayer.checkSession(request) == null) {
-            request.setAttribute("page_title", "Login to Biblio");
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("login.ftl.html", request, response);
-        }
-        else{
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("source.ftl.html", request, response);//DA impostare il nome effettivamente usato
         }
     }
     
@@ -100,20 +82,16 @@ public class ComposeSource extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Gestione Sorgenti");
             TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
-                if (request.getParameter("idsource") != null) {
-                    Source source = getDataLayer().getSource(Integer.parseInt(request.getParameter("idsource")));
-                    request.setAttribute("source", source);
-                    res.activate("source.ftl.html", request, response);//DA impostare il nome effettivamente usato
-                }
-                if (request.getParameter("submitSource") != null && request.getParameter("idsource") != null) {
-                    Source source = action_updateSource(request, response);
-                    request.setAttribute("source", source);
-                    res.activate("source.ftl.html", request, response);//DA impostare il nome effettivamente usato
-                }
-                //TODO: Verificarne la correttezza
-                if (request.getParameter("submitSource") != null && request.getParameter("idsource") == null) {
+                if (request.getParameter("submitSource") != null && request.getParameter("idSource") == null) {
                     action_composeSource(request, response);
                 }
+                if (request.getParameter("submitSource") != null && request.getParameter("idSource") != null) {
+                    action_updateSource(request, response);
+                }
+                List<Source> sources = getDataLayer().getSources();
+                request.setAttribute("sources", sources);
+                
+                res.activate("source.ftl.html", request, response);
             } else {
                 action_default(request, response);
             }
