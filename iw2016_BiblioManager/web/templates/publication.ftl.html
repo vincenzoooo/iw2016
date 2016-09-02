@@ -84,7 +84,6 @@
                     </div>
                     <a href="editor" class="btn btn-default"> aggiungi nuovo editore</a>
 
-                    
                 </div>
                 <#if errorEditor??>  
                     <div class="error">
@@ -105,11 +104,30 @@
                     </div>
                     <a href="author" class="btn btn-default"> aggiungi nuovo autore</a>
 
-                    
                 </div>
                 <#if errorAuthor??>  
                     <div class="error">
                         ${errorAuthor?html}      
+                      </div>
+                </#if>
+                
+                <div class="form-group">
+                    <label class="bold col-sm-2 control-label">Keyword</label>
+                    <div class="col-sm-6">
+                        <select class="form-control" name="keywors" >
+                        <#if (keywords?? && keywords?size>0)>
+                            <#list keywords as item>
+                                <option value="${item.key!''?html}" >${item.name!''?html}</option>
+                            </#list>
+                        </#if>
+                        </select>
+                    </div>
+                    <a href="keyword" class="btn btn-default"> aggiungi nuova parola chiave</a>
+
+                </div>
+                <#if errorKeyword??>  
+                    <div class="error">
+                        ${errorKeyword?html}      
                       </div>
                 </#if>
                 

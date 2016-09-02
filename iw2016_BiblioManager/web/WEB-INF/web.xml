@@ -181,7 +181,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>composeKeyword</servlet-name>
-        <url-pattern>/composeKeyword</url-pattern>
+        <url-pattern>/keyword</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>userList</servlet-name>

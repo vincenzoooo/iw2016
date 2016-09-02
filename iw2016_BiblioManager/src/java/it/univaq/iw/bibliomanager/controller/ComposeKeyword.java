@@ -13,6 +13,7 @@ import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,39 +21,35 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class ComposeKeyword extends BiblioManagerBaseController {
 
-    private Keyword action_composeKeyword(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
-        int idPublication = Integer.parseInt(request.getParameter("idPublication"));
-        Keyword keyword = null;
+    private void action_composeKeyword(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
+            Keyword keyword = null;
             Map<String, String> params = new HashMap<String, String>();
-            params.put("name", Utils.checkString(request.getParameter("keyName")));
+            params.put("KeyName", Utils.checkString(request.getParameter("keyName")));
             if (!validator(params, request, response)) {
                 keyword = getDataLayer().createKeyword();
-                keyword.setName(params.get("name"));
+                keyword.setName(params.get("KeyName"));
                 getDataLayer().storeKeyword(keyword);
-                getDataLayer().storePublicationHasKeyword(keyword.getKey(), idPublication);
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare la parola chiave: " + ex.getMessage());
         }
-        return keyword;
     }
 
     private Keyword action_updateKeyword(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
-        int idPublication = Integer.parseInt(request.getParameter("idPublication"));
         Keyword keyword = null;
         try {
-            keyword = getDataLayer().getKeyword(Integer.parseInt(request.getParameter("idkeyword")));
+            keyword = getDataLayer().getKeyword(Integer.parseInt(request.getParameter("keywordId")));
             Map<String, String> params = new HashMap<String, String>();
-            params.put("name", Utils.checkString(request.getParameter("keyName")));
+            params.put("keyName", Utils.checkString(request.getParameter("keyName")));
             if (!validator(params, request, response)) {
-                keyword.setName(params.get("name"));
+                keyword.setName(params.get("keyName"));
                 getDataLayer().storeKeyword(keyword);
-                getDataLayer().storePublicationHasKeyword(keyword.getKey(), idPublication);
+                request.setAttribute("saveResult", "Salvataggio effettuato con successo");
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage());
@@ -63,7 +60,7 @@ public class ComposeKeyword extends BiblioManagerBaseController {
     @Override
     protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (SecurityLayer.checkSession(request) == null) {
-            request.setAttribute("page_title", "Login to Biblio");
+            request.setAttribute("page_title", "Gestione Keyword");
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("login.ftl.html", request, response);
         }
@@ -87,25 +84,27 @@ public class ComposeKeyword extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Gestione Parole Chiave");
             TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
-                if (request.getParameter("idkeword") != null) {
-                    Keyword keyword = getDataLayer().getKeyword(Integer.parseInt(request.getParameter("idkeyword")));
-                    request.setAttribute("keyword", keyword);
-                    res.activate("key.ftl.html", request, response);//DA impostare il nome effettivamente usato
-                }
-                if (request.getParameter("submitKeyword") != null && request.getParameter("idkeyword") != null) {
-                    Keyword keyword = action_updateKeyword(request, response);
-                    request.setAttribute("keyword", keyword);
-                    res.activate("key.ftl.html", request, response);//DA impostare il nome effettivamente usato
-                }
-                //TODO: Verificarne la correttezza
-                if (request.getParameter("submitKeyword") != null && request.getParameter("idkeyword") == null) {
+                
+                if (request.getParameter("submitKeyword") != null && request.getParameter("keywordId") == null) {
                     action_composeKeyword(request, response);
                 }
+                if (request.getParameter("submitKeyword") != null && request.getParameter("keywordId") != null) {
+                    action_updateKeyword(request, response);
+                }
+                if (request.getParameter("keywordId") != null) {
+                    request.setAttribute("currentKeyword", request.getParameter("currentKeyword"));
+                    request.setAttribute("keywordId", request.getParameter("keywordId"));
+                }
+                List<Keyword> keywords = getDataLayer().getKeywords();
+                request.setAttribute("keywords", keywords);
+            
+                res.activate("keyword.ftl.html", request, response);
+ 
             } else {
                 action_default(request, response);
             }
         } catch (Exception ex) {
-            action_error(request, response, "OPS");
+            action_error(request, response, "OPS" + ex.getMessage());
         }
     }
 

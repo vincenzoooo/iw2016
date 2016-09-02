@@ -103,23 +103,6 @@ public class ComposeAuthor extends BiblioManagerBaseController {
             
                 res.activate("author.ftl.html", request, response);
                 
-                /* PRIMA DAGLI UNA CONTROLLATA            
-                if (request.getParameter("idauthor") != null) {
-                    Author author = getDataLayer().getAuthor(Integer.parseInt(request.getParameter("idauthor")));
-                    request.setAttribute("author", author);
-                    res.activate("author.ftl.html", request, response);//Impostare un nome
-                }
-                if (request.getParameter("submitAuthor") != null && request.getParameter("idauthor") != null) {
-                    Author author = action_updateAuthor(request, response);
-                    request.setAttribute("author", author);
-                    res.activate("author.ftl.html", request, response);//Impostare un nome
-                }
-                //TODO: Verificarne la correttezza
-                if (request.getParameter("submitAuthor") != null && request.getParameter("idauthor") == null) {
-                    action_composeAuthor(request, response);
-                }
-                */
-                
             } else {
                 action_default(request, response);
             }
