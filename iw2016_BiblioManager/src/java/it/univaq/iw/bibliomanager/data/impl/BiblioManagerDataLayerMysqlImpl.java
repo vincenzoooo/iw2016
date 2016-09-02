@@ -82,7 +82,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sHistoriesByUser = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE utente = ?");
             this.sHistoriesByUser = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE pubblicazione = ?");
             this.sHistoryById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idstorico = ?");
-            this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET idstorico = ?, entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");
+            this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");
             this.iHistory = connection.prepareStatement("INSERT INTO iw2016.storico (entry, tipo, data_operazione, pubblicazione, utente) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sPublications = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione ORDER BY ?");
             this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ?"); //TODO
@@ -94,16 +94,16 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                     "JOIN storico st ON st.pubblicazione = p.idpubblicazione JOIN utente u ON u.idutente = st.utente " + 
                     "WHERE p.isbn LIKE '%?%' AND p.titolo LIKE '%?%' AND a.nome LIKE '%?%' AND a.cognome LIKE '%?%' AND r.data >= ? AND k.nome IN (?) AND lingua LIKE '%?%'"+
                     "ORDER BY ?");
-            this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET idpubblicazione = ?, titolo = ?, descrizione = ?, editore = ?, indice = ?, n_consigli = ? WHERE idpubblicazione = ?");
+            this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, indice = ?, n_consigli = ? WHERE idpubblicazione = ?");
             this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, indice, n_consigli) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
             this.sSourceById = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE idsorgente = ?");
             this.sSourceByPublication = connection.prepareStatement("SELECT * FROM iw2016.sorgente JOIN pubblicazione_has_sorgente ON idsorgente = sorgente_idsorgente WHERE pubblicazione_idpubblicazione = ?");
-            this.uSource = connection.prepareStatement("UPDATE iw2016.sorgente SET idsorgente = ?, tipo = ?, URI = ?, formato = ?, descrizione = ? WHERE idsorgente = ?");
+            this.uSource = connection.prepareStatement("UPDATE iw2016.sorgente SET tipo = ?, URI = ?, formato = ?, descrizione = ? WHERE idsorgente = ?");
             this.iSource = connection.prepareStatement("INSERT INTO iw2016.sorgente (tipo, URI, formato, descrizione) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sReprintsByPublication = connection.prepareStatement("SELECT * FROM iw2016.ristampa WHERE pubblicazione = ?");
             this.sReprintById = connection.prepareStatement("SELECT * FROM iw2016.ristampa WHERE idristampa = ?");
-            this.uReprint = connection.prepareStatement("UPDATE iw2016.ristampa SET idristampa = ?, numero = ?, data = ?, pubblicazione = ? WHERE idristampa = ?");
+            this.uReprint = connection.prepareStatement("UPDATE iw2016.ristampa SET numero = ?, data = ?, pubblicazione = ? WHERE idristampa = ?");
             this.iReprint = connection.prepareStatement("INSERT INTO iw2016.ristampa (numero, data, pubblicazione) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sEditors = connection.prepareStatement("SELECT * FROM iw2016.editore");
             this.sEditorsByName = connection.prepareStatement("SELECT * FROM iw2016.editor WHERE nome LIKE '%?%'");
@@ -118,7 +118,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.iAuthor = connection.prepareStatement("INSERT INTO iw2016.autore (nome, cognome) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sReviewsByPublication = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ? AND moderata = 1");
             this.sReviewById = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE idrecensione = ?");
-            this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET idrecensione = ?, testo = ?, moderata = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
+            this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET testo = ?, moderata = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
             this.iReview = connection.prepareStatement("INSERT INTO iw2016.recensione (testo, moderata, utente_autore, pubblicazione, storico) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sKeywords = connection.prepareStatement("SELECT * FROM iw2016.keyword");
             this.sKeywordById = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE idkeyword = ?");
@@ -1174,6 +1174,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                    return;
 //                }
                 uKeyword.setString(1, keyword.getName());
+                uKeyword.setInt(2, key);
 
                 uKeyword.executeUpdate();
             } else { //insert
@@ -1219,6 +1220,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uPublication.setInt(3, publication.getEditor().getKey());
                 uPublication.setString(4, publication.getIndex());
                 uPublication.setInt(5, publication.getNumberOfLikes());
+                uPublication.setInt(6, key);
 
                 uPublication.executeUpdate();
             } else { //insert
@@ -1267,6 +1269,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uReview.setInt(3, review.getAuthor().getKey());
                 uReview.setInt(4, review.getPublication().getKey());
                 uReview.setInt(5, review.getHistory().getKey());
+                uReview.setInt(6, key);
 
                 uReview.executeUpdate();
             } else { //insert
@@ -1313,6 +1316,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uReprint.setInt(1, reprint.getNumber());
                 uReprint.setDate(2, reprint.getDate());
                 uReprint.setInt(3, reprint.getPublication().getKey());
+                uReprint.setInt(4, key);
 
                 uReprint.executeUpdate();
             } else { //insert
@@ -1359,6 +1363,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uSource.setString(2, source.getURI());
                 uSource.setString(3, source.getFormat());
                 uSource.setString(4, source.getDescription());
+                uSource.setInt(5, key);
 
                 uSource.executeUpdate();
             } else { //insert
@@ -1406,6 +1411,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uHistory.setDate(3, historia.getDate());
                 uHistory.setInt(4, historia.getPublication().getKey());
                 uHistory.setInt(5, historia.getUser().getKey());
+                uHistory.setInt(6, key);
 
                 uHistory.executeUpdate();
             } else { //insert
@@ -1454,6 +1460,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uUser.setString(3, user.getPassword());
                 uUser.setString(4, user.getEmail());
                 uUser.setInt(5, user.getState());
+                uUser.setInt(6, key);
 
                 uUser.executeUpdate();
             } else { //insert
