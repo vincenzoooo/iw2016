@@ -42,20 +42,23 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement uUser, iUser;
     private PreparedStatement sHistories, sHistoriesByUser, sHistoriesByPublication, sHistoryById;
     private PreparedStatement uHistory, iHistory;
-    private PreparedStatement sPublications, sPublicationById, sPublicationAuthors, sPublicationSources, sPublicationsByInsertDate, sPublicationsByUpdateDate, sPublicationsByFilters; // TODO: Select con altri parametri
+    private PreparedStatement sPublications, sPublicationById, sPublicationsByInsertDate, sPublicationsByUpdateDate, sPublicationsByFilters; // TODO: Select con altri parametri
     private PreparedStatement uPublication, iPublication;
-    private PreparedStatement sSources, sSourceById;
+    private PreparedStatement sSources, sSourceById, sSourceByPublication;
     private PreparedStatement uSource, iSource;
     private PreparedStatement sReprintsByPublication, sReprintById;
     private PreparedStatement uReprint, iReprint;
     private PreparedStatement sEditors, sEditorsByName, sEditorById;
     private PreparedStatement uEditor, iEditor;
-    private PreparedStatement sAuthors, sAuthorsByName, sAuthorById;
+    private PreparedStatement sAuthors, sAuthorsByName, sAuthorById, sAuthorByPublication;
     private PreparedStatement uAuthor, iAuthor;
     private PreparedStatement sReviewsByPublication, sReviewById;
     private PreparedStatement uReview, iReview;
     private PreparedStatement sKeywords, sKeywordsByPublication, sKeywordById;
     private PreparedStatement uKeyword, iKeyword;
+    private PreparedStatement sPublicationHasAuthor, sPublicationHasAuthorByPublication, sPublicationHasAuthorByAuthor;
+    private PreparedStatement sPublicationHasSource, sPublicationHasSourceByPublication, sPublicationHasSourceBySource;
+    private PreparedStatement sPublicationHasKeyword, sPublicationHasKeywordByPublication, sPublicationHasKeywordByKeyword;
     private PreparedStatement iPublicationHasAuthor, iPublicationHasSource, iPublicationHasKeyword;
     private PreparedStatement dPublicationHasAuthor, dPublicationHasSource, dPublicationHasKeyword;
 
@@ -81,10 +84,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sHistoryById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idstorico = ?");
             this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET idstorico = ?, entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");
             this.iHistory = connection.prepareStatement("INSERT INTO iw2016.storico (entry, tipo, data_operazione, pubblicazione, utente) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            this.sPublications = connection.prepareStatement("SELECT p.*, e.nome AS nome_editore, a.nome AS nome_autore, a.cognome AS cognome_autore FROM iw2016.pubblicazione p JOIN iw2016.editore e ON e.ideditore = p.editore LEFT JOIN iw2016.autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN autore a ON a.idautore = ap.autore_idautore ORDER BY ?");
+            this.sPublications = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione ORDER BY ?");
             this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ?"); //TODO
-            this.sPublicationAuthors = connection.prepareStatement("SELECT * FROM autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ?");
-            this.sPublicationSources = connection.prepareStatement("SELECT * FROM pubblicazione_has_sorgente WHERE pubblicazione_idpubblicazione = ?");
             this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 0");
             this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 1");
             this.sPublicationsByFilters = connection.prepareStatement("SELECT * FROM pubblicazione p JOIN ristampa r ON r.pubblicazione = p.idpubblicazione JOIN editore e ON e.ideditore = p.editore " + 
@@ -97,6 +98,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, indice, n_consigli) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
             this.sSourceById = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE idsorgente = ?");
+            this.sSourceByPublication = connection.prepareStatement("SELECT * FROM iw2016.sorgente JOIN pubblicazione_has_sorgente ON idsorgente = sorgente_idsorgente WHERE pubblicazione_idpubblicazione = ?");
             this.uSource = connection.prepareStatement("UPDATE iw2016.sorgente SET idsorgente = ?, tipo = ?, URI = ?, formato = ?, descrizione = ? WHERE idsorgente = ?");
             this.iSource = connection.prepareStatement("INSERT INTO iw2016.sorgente (tipo, URI, formato, descrizione) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sReprintsByPublication = connection.prepareStatement("SELECT * FROM iw2016.ristampa WHERE pubblicazione = ?");
@@ -106,11 +108,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sEditors = connection.prepareStatement("SELECT * FROM iw2016.editore");
             this.sEditorsByName = connection.prepareStatement("SELECT * FROM iw2016.editor WHERE nome LIKE '%?%'");
             this.sEditorById = connection.prepareStatement("SELECT * FROM iw2016.editore WHERE ideditore = ?");
-            this.uEditor = connection.prepareStatement("UPDATE iw2016.editore SET ideditore = ?, nome = ? WHERE ideditore = ?");
+            this.uEditor = connection.prepareStatement("UPDATE iw2016.editore SET nome = ? WHERE ideditore = ?");
             this.iEditor = connection.prepareStatement("INSERT INTO iw2016.editore (nome) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
             this.sAuthors = connection.prepareStatement("SELECT * FROM iw2016.autore");
             this.sAuthorsByName = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE nome LIKE '%?%'");
             this.sAuthorById = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE idautore = ?");
+            this.sAuthorByPublication = connection.prepareStatement("SELECT * FROM iw2016.autore JOIN autore_has_pubblicazione ON idautore = autore_idautore WHERE pubblicazione_idpubblicazione = ?");
             this.uAuthor = connection.prepareStatement("UPDATE iw2016.autore SET idautore = ?, nome = ?, cognome = ? WHERE idautore = ?");
             this.iAuthor = connection.prepareStatement("INSERT INTO iw2016.autore (nome, cognome) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sReviewsByPublication = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ? AND moderata = 1");
@@ -118,17 +121,25 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET idrecensione = ?, testo = ?, moderata = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
             this.iReview = connection.prepareStatement("INSERT INTO iw2016.recensione (testo, moderata, utente_autore, pubblicazione, storico) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sKeywords = connection.prepareStatement("SELECT * FROM iw2016.keyword");
-            this.sKeywordsByPublication = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE pubblicazione = ?");
-            this.sKeywordById = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE idmetadato = ?");
+            this.sKeywordById = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE idkeyword = ?");
+            this.sKeywordsByPublication = connection.prepareStatement("SELECT * FROM iw2016.keyword JOIN pubblicazione_has_keyword ON idkeyword = keyword_idkeyword WHERE pubblicazione_idpubblicazione = ?");
             this.uKeyword = connection.prepareStatement("UPDATE iw2016.keyword SET nome = ? WHERE idkeyword = ?");
             this.iKeyword = connection.prepareStatement("INSERT INTO iw2016.keyword (nome) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+            this.sPublicationHasAuthor = connection.prepareStatement("SELECT * FROM iw2016.autore_has_pubblicazione");
+            this.sPublicationHasAuthorByAuthor = connection.prepareStatement("SELECT * FROM iw2016.autore_has_pubblicazione WHERE autore_idautore = ?");
+            this.sPublicationHasAuthorByPublication = connection.prepareStatement("SELECT * FROM iw2016.autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ?");
+            this.sPublicationHasSource = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione_has_sorgente");
+            this.sPublicationHasSourceByPublication = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione_has_sorgente WHERE pubblicazione_idpubblicazione = ?");
+            this.sPublicationHasSourceBySource = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione_has_sorgente WHERE sorgente_idsorgente = ?");
+            this.sPublicationHasKeyword = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione_has_keyword");
+            this.sPublicationHasKeywordByPublication = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione_has_keyword WHERE pubblicazione_idpubblicazione = ?");
+            this.sPublicationHasKeywordByKeyword = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione_has_keyword WHERE keyword_idkeyword = ?");
             this.iPublicationHasAuthor = connection.prepareStatement("INSERT INTO iw2016.autore_has_pubblicazione(autore_idautore,pubblicazione_idpubblicazione) VALUES (?,?)");
             this.dPublicationHasAuthor = connection.prepareStatement("DELETE FROM iw2016.autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ?");
             this.iPublicationHasKeyword = connection.prepareStatement("INSERT INTO iw2016.pubblicazione_has_keyword (pubblicazione_idpubblicazione, keyword_idkeyword) VALUES (?,?)");
             this.dPublicationHasKeyword = connection.prepareStatement("DELETE FROM iw2016.pubblicazione_has_keyword WHERE pubblicazione_idpubblicazione = ?");
             this.iPublicationHasSource = connection.prepareStatement("INSERT INTO iw2016.pubblicazione_has_sorgente (pubblicazione_idpubblicazione, sorgente_idsorgente) VALUES (?,?)");
             this.dPublicationHasSource = connection.prepareStatement("DELETE FROM iw2016.pubblicazione_has_sorgente WHERE pubblicazione_idpubblicazione = ?");
-            
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         }
@@ -347,7 +358,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-
+    
     @Override
     public List<Author> getAuthorsByName(String name) throws DataLayerException {
         List<Author> result = new ArrayList();
@@ -491,7 +502,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<Keyword> getKeywords(int publication_key) throws DataLayerException {
+    public List<Keyword> getPublicationKeywords(int publication_key) throws DataLayerException {
         List<Keyword> result = new ArrayList();
         ResultSet rs = null;
         try {
@@ -598,8 +609,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         List<Author> result = new ArrayList();
         ResultSet rs = null;
         try {
-            sPublicationAuthors.setInt(1, publication_key);
-            rs = sPublicationAuthors.executeQuery();
+            sAuthorByPublication.setInt(1, publication_key);
+            rs = sAuthorByPublication.executeQuery();
             while (rs.next()) {
                 result.add(getAuthor(rs.getInt("autore_idautore")));
             }
@@ -622,8 +633,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         List<Source> result = new ArrayList();
         ResultSet rs = null;
         try {
-            sPublicationSources.setInt(1, publication_key);
-            rs = sPublicationSources.executeQuery();
+            sSourceByPublication.setInt(1, publication_key);
+            rs = sSourceByPublication.executeQuery();
             while (rs.next()) {
                 result.add(getSource(rs.getInt("sorgente_idsorgente")));
             }
@@ -1115,7 +1126,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                    return;
 //                }
                 uEditor.setString(1, editor.getName());
-
+                uEditor.setInt(2, key);
+                
                 uEditor.executeUpdate();
             } else { //insert
                 iEditor.setString(1, editor.getName());

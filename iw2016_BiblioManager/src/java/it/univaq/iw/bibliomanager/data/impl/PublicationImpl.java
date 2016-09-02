@@ -193,7 +193,7 @@ public class PublicationImpl implements Publication {
     @Override
     public List<Keyword> getKeywords() throws DataLayerException {
         if (keywords == null) {
-            keywords = ownerDataLayer.getKeywords(key);
+            keywords = ownerDataLayer.getPublicationKeywords(key);
         }
         return keywords;
     }

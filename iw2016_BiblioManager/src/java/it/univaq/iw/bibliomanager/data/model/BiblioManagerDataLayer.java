@@ -53,7 +53,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     List<Keyword> getKeywords() throws DataLayerException;
 
-    List<Keyword> getKeywords(int publication_key) throws DataLayerException;
+    List<Keyword> getPublicationKeywords(int publication_key) throws DataLayerException;
 
     Publication getPublication(int publication_key) throws DataLayerException;
 
