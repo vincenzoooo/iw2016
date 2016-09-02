@@ -60,18 +60,6 @@ public class ComposeAuthor extends BiblioManagerBaseController {
         }
     }
 
-    @Override
-    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (SecurityLayer.checkSession(request) == null) {
-            request.setAttribute("page_title", "Gestione Autore");
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("login.ftl.html", request, response);
-        }
-        else{
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("author.ftl.html", request, response);//DA impostare il nome effettivamente usato
-        }
-    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -87,16 +75,17 @@ public class ComposeAuthor extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Gestione Autore");
             TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
-                if (request.getParameter("submitAuthor") != null && request.getParameter("authorId") == null) {
-                    action_composeAuthor(request, response);
-                }
-                if (request.getParameter("submitAuthor") != null && request.getParameter("authorId") != null) {
-                    action_updateAuthor(request, response);
-                }
                 if (request.getParameter("authorId") != null) {
                     request.setAttribute("currentNameAuthor", request.getParameter("currentNameAuthor"));
                     request.setAttribute("currentSurnameAuthor", request.getParameter("currentSurnameAuthor"));
                     request.setAttribute("authorId", request.getParameter("authorId"));
+                }
+                if (request.getParameter("submitAuthor") != null && request.getAttribute("authorId") == null) {
+                    action_composeAuthor(request, response);
+                }
+                if (request.getParameter("submitAuthor") != null && request.getAttribute("authorId") != null) {
+                    action_updateAuthor(request, response);
+                    request.removeAttribute("authorId");
                 }
                 List<Author> authors = getDataLayer().getAuthors();
                 request.setAttribute("authors", authors);

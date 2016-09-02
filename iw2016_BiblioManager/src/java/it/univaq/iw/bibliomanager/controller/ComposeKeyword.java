@@ -57,18 +57,6 @@ public class ComposeKeyword extends BiblioManagerBaseController {
         return keyword;
     }
 
-    @Override
-    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (SecurityLayer.checkSession(request) == null) {
-            request.setAttribute("page_title", "Gestione Keyword");
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("login.ftl.html", request, response);
-        }
-        else{
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("keyword.ftl.html", request, response);//DA impostare il nome effettivamente usato
-        }
-    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -84,16 +72,15 @@ public class ComposeKeyword extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Gestione Parole Chiave");
             TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
-                
-                if (request.getParameter("submitKeyword") != null && request.getParameter("keywordId") == null) {
-                    action_composeKeyword(request, response);
-                }
-                if (request.getParameter("submitKeyword") != null && request.getParameter("keywordId") != null) {
-                    action_updateKeyword(request, response);
-                }
                 if (request.getParameter("keywordId") != null) {
                     request.setAttribute("currentKeyword", request.getParameter("currentKeyword"));
                     request.setAttribute("keywordId", request.getParameter("keywordId"));
+                }
+                if (request.getParameter("submitKeyword") != null && request.getAttribute("keywordId") == null) {
+                    action_composeKeyword(request, response);
+                }
+                if (request.getParameter("submitKeyword") != null && request.getAttribute("keywordId") != null) {
+                    action_updateKeyword(request, response);
                 }
                 List<Keyword> keywords = getDataLayer().getKeywords();
                 request.setAttribute("keywords", keywords);

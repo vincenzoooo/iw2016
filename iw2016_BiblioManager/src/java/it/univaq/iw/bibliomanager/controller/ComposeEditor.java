@@ -56,19 +56,6 @@ public class ComposeEditor extends BiblioManagerBaseController {
         }
         return editor;
     }
-
-    @Override
-    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (SecurityLayer.checkSession(request) == null) {
-            request.setAttribute("page_title", "Gestione Editore");
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("login.ftl.html", request, response);
-        }
-        else{
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("editor.ftl.html", request, response);//DA impostare il nome effettivamente usato
-        }
-    }
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -85,15 +72,15 @@ public class ComposeEditor extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Gestione Editore");
             TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
-                if (request.getParameter("submitEditor") != null && request.getParameter("editorId") == null) {
-                    action_composeEditor(request, response);
-                }
-                if (request.getParameter("submitEditor") != null && request.getParameter("editorId") != null) {
-                    action_updateEditor(request, response);
-                }
                 if (request.getParameter("editorId") != null) {
                     request.setAttribute("currentEditor", request.getParameter("currentEditor"));
                     request.setAttribute("editorId", request.getParameter("editorId"));
+                }
+                if (request.getParameter("submitEditor") != null && request.getAttribute("editorId") == null) {
+                    action_composeEditor(request, response);
+                }
+                if (request.getParameter("submitEditor") != null && request.getAttribute("editorId") != null) {
+                    action_updateEditor(request, response);
                 }
                 List<Editor> editors = getDataLayer().getEditors();
                 request.setAttribute("editors", editors);
