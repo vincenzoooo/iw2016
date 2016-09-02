@@ -161,7 +161,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>composeSource</servlet-name>
-        <url-pattern>/composeSource</url-pattern>
+        <url-pattern>/source</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>composeReprint</servlet-name>

@@ -1,0 +1,79 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="center">Gestione delle risorse</h1>
+            
+            <h3 class="row"> Aggiungi una risorsa</h3>
+            <form method="post" action="source" id="formSource" class="form-horizontal">     
+                
+                <div class="form-group">
+                    <label for="inputType" class="col-sm-2 control-label bold">Tipo</label>
+                    <div class="col-sm-6">
+                        <input id="type" class="form-control" name="type" placeholder="Inserisci il tipo" />
+                    </div>
+                </div>
+                           
+                <#if errorType??>
+                <div class="error">
+                    ${errorType?html}
+                </div>
+                </#if>
+                
+                <div class="form-group">
+                    <label for="inputUri" class="col-sm-2 control-label bold">Indirizzo risorsa</label>
+                    <div class="col-sm-6">
+                        <input id="uri" class="form-control" name="uri" placeholder="Inserisci indirizzo risorsa" />
+                    </div>
+                </div>
+                           
+                <#if errorUri??>
+                <div class="error">
+                    ${errorUri?html}
+                </div>
+                </#if>
+                
+                <div class="form-group">
+                    <label for="inputFormat" class="col-sm-2 control-label bold">Formato</label>
+                    <div class="col-sm-6">
+                        <input id="format" class="form-control" name="format" placeholder="Inserisci il formato" />
+                    </div>
+                </div>
+                           
+                <#if errorFormat??>
+                <div class="error">
+                    ${errorFormat?html}
+                </div>
+                </#if>
+                
+                <div class="form-group">
+                    <label for="inputDescription" class="col-sm-2 control-label bold">Descrizione</label>
+                    <div class="col-sm-10">
+                        <textarea class="form-control" name="description" rows="4" placeholder="Inserisci una descrizione"></textarea>
+                    </div>
+                </div>
+                
+                <#if errorDescription??>
+                <div class="error">    
+                    ${errorDescription?html}    
+                </div>
+                </#if>
+                
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <span>
+                            <input value="Aggiungi" name="submitSource" type="submit" class="btn btn-default"/>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <span>
+                            <input value="Torna indietro" name="submitPublication" type="submit" class="btn btn-default"/>
+                        </span>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
