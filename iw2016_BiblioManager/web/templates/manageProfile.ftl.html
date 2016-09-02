@@ -1,0 +1,40 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="center">Modifica dei dati profilo</h1>
+            <form method="post" action="manageProfile">
+                <div class="row">
+                    <div class="col-lg-3 bold">Nome:</div> 
+                    <input class="col-lg-3" name='n' value="${user.name!''?html}" required="required" placeholder="Inserisci il nome" />
+                </div>
+                <#if nameError??>
+                <div class="error">
+                    ${nameError?html}
+                </div>
+                </#if>
+                <div class="row">
+                    <div class="col-lg-3 bold">Cognome:</div> 
+                    <input class="col-lg-3" name='s' value="${user.surname!''?html}" required="required" placeholder="Inserisci il cognome" />
+                </div>
+                <#if surnameError??>
+                <div class="error">
+                    ${surnameError?html}
+                </div>
+                </#if>
+                <div class="row">
+                    <div class="col-lg-3 bold">Email:</div> 
+                    <input class="col-lg-3" name='e' value="${user.email!''?html}" required="required" placeholder="Inserisci l'email" />
+                </div>
+                <#if surnameError??>
+                <div class="error">
+                    ${surnameError?html}
+                </div>
+                </#if>
+                <div class="row">
+                    <div class="col-lg-3 bold">Password:</div> 
+                    <input class="col-lg-3" name='p' value="${user.password!''?html}" required="required" placeholder="Inserisci la password" />
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

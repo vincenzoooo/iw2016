@@ -92,7 +92,7 @@
                         <ul class="nodecoration">
                         <#list activeUsers as item>
                             <li class="nodecoration">
-                                <a href="userProfile?userId=${item.id}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
+                                <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
                             </li>
                         </#list>
                         </ul>

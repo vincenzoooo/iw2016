@@ -157,7 +157,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>composeEditor</servlet-name>
-        <url-pattern>/composeEditor</url-pattern>
+        <url-pattern>/editor</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>composeSource</servlet-name>

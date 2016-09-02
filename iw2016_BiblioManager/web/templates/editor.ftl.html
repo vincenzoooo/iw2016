@@ -1,0 +1,23 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="center">Aggiungi un editore</h1>
+            <form method="post" action="composeEditor" id="formEditor">    
+                <div id="addEditor">
+                    <div class="row">
+                        <div class="col-sm-2">Nome:</div> 
+                        <input class="col-sm-4" name="editorName" value='' id="edithorName" /> 
+                    </div>
+                    <div class="row">
+                        <div id="errorName" class="">
+                            <#if errorName??>
+                                 ${errorName?html}
+                             </#if>
+                        </div>
+                    </div>
+                </div>
+                <input value='Aggiungi' name='submitEditor' type='submit' />
+            </form>
+        </div>
+    </div>
+</div>

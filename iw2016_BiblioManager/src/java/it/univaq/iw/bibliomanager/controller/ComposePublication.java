@@ -38,6 +38,8 @@ public class ComposePublication extends BiblioManagerBaseController {
             Map<String, String> params = new HashMap<String, String>();
             params.put("title", Utils.checkString(request.getParameter("publicationTitle")));
             params.put("description", Utils.checkString(request.getParameter("publicationDescription")));
+            params.put("language", Utils.checkString(request.getParameter("publicationLanguage")));
+            params.put("date", Utils.checkString(request.getParameter("publicationDate")));
             params.put("editor", Utils.checkString(request.getParameter("publicationEditor")));
             params.put("index", Utils.checkString(request.getParameter("publicationIndex")));
             params.put("editor", Utils.checkString(request.getParameter("editorId")));
