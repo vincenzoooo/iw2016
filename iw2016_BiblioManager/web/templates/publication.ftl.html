@@ -93,6 +93,27 @@
                 </#if>
                 
                 <div class="form-group">
+                    <label class="bold col-sm-2 control-label">Editori</label>
+                    <div class="col-sm-6">
+                        <select class="form-control" name="editors" >
+                        <#if (authors?? && authors?size>0)>
+                            <#list authors as item>
+                            <option value="${item.key!''?html}" >${item.name!''?html}&nbsp;${item.surname!''?html}</option>
+                            </#list>
+                        </#if>
+                        </select>
+                    </div>
+                    <a href="author" class="btn btn-default"> aggiungi nuovo autore</a>
+
+                    
+                </div>
+                <#if errorAuthor??>  
+                    <div class="error">
+                        ${errorAuthor?html}      
+                      </div>
+                </#if>
+                
+                <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <span>
                             <input value='Aggiungi' name='submitPubblication' type='submit' class="btn btn-default"/>
