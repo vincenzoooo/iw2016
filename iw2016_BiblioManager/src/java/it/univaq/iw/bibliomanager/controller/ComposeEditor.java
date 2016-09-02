@@ -13,6 +13,7 @@ import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +43,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
     private Editor action_updateEditor(HttpServletRequest request, HttpServletResponse response) {
         Editor editor = null;
         try {
-            editor = getDataLayer().getEditor(Integer.parseInt(request.getParameter("ideditor")));
+            editor = getDataLayer().getEditor(Integer.parseInt(request.getParameter("editorId")));
             Map<String, String> params = new HashMap<String, String>();
             params.put("editorName", Utils.checkString(request.getParameter("editorName")));
             if (!validator(params, request, response)) {
@@ -87,6 +88,14 @@ public class ComposeEditor extends BiblioManagerBaseController {
                 if (request.getParameter("submitEditor") != null) {
                     action_composeEditor(request, response);
                 }
+                if (request.getParameter("submitEditor") != null && request.getParameter("editorId") != null) {
+                    action_updateEditor(request, response);
+                }
+                if (request.getParameter("editorId") != null) {
+                    request.setAttribute("currentEditor", request.getParameter("editorName"));
+                }
+                List<Editor> editors = getDataLayer().getEditors();
+                request.setAttribute("editors", editors);
                 res.activate("editor.ftl.html", request, response);
             } else {
                 action_default(request, response);
