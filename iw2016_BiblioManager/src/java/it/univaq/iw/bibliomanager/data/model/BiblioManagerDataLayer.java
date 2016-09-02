@@ -49,7 +49,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     List<Editor> getEditorsByName(String name) throws DataLayerException;
 
-    Keyword getKeyword(int metadata_key) throws DataLayerException;
+    Keyword getKeyword(int keyword_key) throws DataLayerException;
 
     List<Keyword> getKeywords() throws DataLayerException;
 
@@ -101,7 +101,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     void storeEditor(Editor editor) throws DataLayerException;
 
-    void storeKeyword(Keyword metadata) throws DataLayerException;
+    void storeKeyword(Keyword keyword) throws DataLayerException;
 
     void storePublication(Publication publication) throws DataLayerException;
 
