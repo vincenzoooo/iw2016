@@ -187,7 +187,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     public Keyword createKeyword(ResultSet rs) throws DataLayerException {
         try {
             KeywordImpl keyword = new KeywordImpl(this);
-            keyword.setKey(rs.getInt("idmetadato"));
+            keyword.setKey(rs.getInt("idkeyword"));
             keyword.setName(rs.getString("nome"));
             return keyword;
         } catch (SQLException ex) {
