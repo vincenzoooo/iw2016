@@ -85,17 +85,19 @@ public class ComposeEditor extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Gestione Editore");
             TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
-                if (request.getParameter("submitEditor") != null) {
+                if (request.getParameter("submitEditor") != null && request.getParameter("editorId") == null) {
                     action_composeEditor(request, response);
                 }
                 if (request.getParameter("submitEditor") != null && request.getParameter("editorId") != null) {
                     action_updateEditor(request, response);
                 }
                 if (request.getParameter("editorId") != null) {
-                    request.setAttribute("currentEditor", request.getParameter("editorName"));
+                    request.setAttribute("currentEditor", request.getParameter("currentEditor"));
+                    request.setAttribute("editorId", request.getParameter("editorId"));
                 }
                 List<Editor> editors = getDataLayer().getEditors();
                 request.setAttribute("editors", editors);
+            
                 res.activate("editor.ftl.html", request, response);
             } else {
                 action_default(request, response);
