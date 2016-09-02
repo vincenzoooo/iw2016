@@ -29,10 +29,10 @@ public class ComposeKeyword extends BiblioManagerBaseController {
         try {
             Keyword keyword = null;
             Map<String, String> params = new HashMap<String, String>();
-            params.put("KeyName", Utils.checkString(request.getParameter("keyName")));
+            params.put("keyName", Utils.checkString(request.getParameter("keyName")));
             if (!validator(params, request, response)) {
                 keyword = getDataLayer().createKeyword();
-                keyword.setName(params.get("KeyName"));
+                keyword.setName(params.get("keyName"));
                 getDataLayer().storeKeyword(keyword);
             }
         } catch (DataLayerException ex) {
@@ -66,7 +66,7 @@ public class ComposeKeyword extends BiblioManagerBaseController {
         }
         else{
             TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("key.ftl.html", request, response);//DA impostare il nome effettivamente usato
+            res.activate("keyword.ftl.html", request, response);//DA impostare il nome effettivamente usato
         }
     }
     /**
