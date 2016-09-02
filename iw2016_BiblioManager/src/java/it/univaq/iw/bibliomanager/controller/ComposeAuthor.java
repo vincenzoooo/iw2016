@@ -7,7 +7,6 @@
 package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.bibliomanager.data.model.Author;
-import it.univaq.iw.bibliomanager.data.model.Editor;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
