@@ -114,7 +114,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sAuthorsByName = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE nome LIKE '%?%'");
             this.sAuthorById = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE idautore = ?");
             this.sAuthorByPublication = connection.prepareStatement("SELECT * FROM iw2016.autore JOIN autore_has_pubblicazione ON idautore = autore_idautore WHERE pubblicazione_idpubblicazione = ?");
-            this.uAuthor = connection.prepareStatement("UPDATE iw2016.autore SET idautore = ?, nome = ?, cognome = ? WHERE idautore = ?");
+            this.uAuthor = connection.prepareStatement("UPDATE iw2016.autore SET nome = ?, cognome = ? WHERE idautore = ?");
             this.iAuthor = connection.prepareStatement("INSERT INTO iw2016.autore (nome, cognome) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sReviewsByPublication = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ? AND moderata = 1");
             this.sReviewById = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE idrecensione = ?");
@@ -1085,6 +1085,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 //TODO: Salvataggio anche per la tabella autore_has_pubblicazione
                 uAuthor.setString(1, author.getName());
                 uAuthor.setString(2, author.getSurname());
+                uAuthor.setInt(3, key);
 
                 uAuthor.executeUpdate();
             } else { //insert
@@ -1102,7 +1103,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 author.copyFrom(getAuthor(key));
             }
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to store editor", ex);
+            throw new DataLayerException("Unable to store author", ex);
         } finally {
             try {
                 if (keys != null) {

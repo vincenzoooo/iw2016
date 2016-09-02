@@ -25,10 +25,9 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ComposeAuthor extends BiblioManagerBaseController {
 
-    private Author action_composeAuthor(HttpServletRequest request, HttpServletResponse response) {
-        int idPublication = Integer.parseInt(request.getParameter("idPublication"));
-        Author author = null;
+    private void action_composeAuthor(HttpServletRequest request, HttpServletResponse response) {
         try {
+            Author author = null;
             Map<String, String> params = new HashMap<String, String>();
             params.put("authorName", Utils.checkString(request.getParameter("authorName")));
             params.put("authorSurname", Utils.checkString(request.getParameter("authorSurname")));
@@ -37,33 +36,28 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                 author.setName(params.get("authorName"));
                 author.setSurname(params.get("authorSurname"));
                 getDataLayer().storeAuthor(author);
-                getDataLayer().storePublicationHasAuthor(author.getKey(), idPublication);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare l'autore: " + ex.getMessage());
         }
-        return author;
     }
 
-    private Author action_updateAuthor(HttpServletRequest request, HttpServletResponse response) {
-        int idPublication = Integer.parseInt(request.getParameter("idPublication"));
-        Author author = null;
+    private void action_updateAuthor(HttpServletRequest request, HttpServletResponse response) {
         try {
+            Author author = null;
             author = getDataLayer().getAuthor(Integer.parseInt(request.getParameter("authorId")));
             Map<String, String> params = new HashMap<String, String>();
             params.put("authorName", Utils.checkString(request.getParameter("authorName")));
             params.put("authorSurname", Utils.checkString(request.getParameter("authorSurname")));
             if (!validator(params, request, response)) {
                 author.setName(params.get("authorName"));
-                author.setSurname(params.get("authorSurmane"));
+                author.setSurname(params.get("authorSurname"));
                 getDataLayer().storeAuthor(author);
-                getDataLayer().storePublicationHasAuthor(author.getKey(), idPublication);
                 request.setAttribute("saveResult", "Salvataggio effettuato con successo");
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare l'autore: " + ex.getMessage());
         }
-        return author;
     }
 
     @Override

@@ -8,7 +8,7 @@
                 <div class="form-group">
                     <label for="inputName" class="col-sm-2 control-label bold">Nome</label>
                     <div class="col-sm-6">
-                        <input id="editorName" class="form-control" name="authorName" value="${name!''?html}" placeholder="Inserisci il mone dell'autore" />
+                        <input id="AuthorName" class="form-control" name="authorName" value="${name!''?html}" placeholder="Inserisci il mone dell'autore" />
                     </div>
                 </div>        
                 <#if errorAuthorName??>
@@ -32,7 +32,7 @@
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <span>
-                            <input value='Aggiungi' name='submitEditor' type='submit' class="btn btn-default"/>
+                            <input value='Aggiungi' name='submitAuthor' type='submit' class="btn btn-default"/>
                         </span>
                     </div>
                 </div>
@@ -50,7 +50,7 @@
             <h3 class="row"> Lista degli autori</h3>
                 <div class="col-lg-12">
                     <#if (authors?? && authors?size>0)>
-                    <table id="allEditors">
+                    <table id="allAuthors">
                         <tr>
                             <th>
                                 Nome
@@ -84,19 +84,18 @@
             
             <#if authorId??>
             <h3 class="row"> Modifica autore</h3>
-            <form method="post" action="author" id="formEditor" class="form-horizontal">     
+            <form method="post" action="author" id="formAuthor" class="form-horizontal">     
                 <div class="form-group">
                     <label for="updateName" class="col-sm-2 control-label bold">Nome</label>
                     <div class="col-sm-6">
-                        <input name="editorId" value="${editorId!''?html}" type="hidden"/>
-                        <input id="editorName" class="form-control" name='authorName' value="${currentNameAuthor!''?html}" placeholder="Modifica nome autore" />
+                        <input name="authorId" value="${authorId!''?html}" type="hidden"/>
+                        <input id="authorName" class="form-control" name='authorName' value="${currentNameAuthor!''?html}" placeholder="Modifica nome autore" />
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="updateSurname" class="col-sm-2 control-label bold">Cognome</label>
                     <div class="col-sm-6">
-                        <input name="editorId" value="${editorId!''?html}" type="hidden"/>
-                        <input id="editorName" class="form-control" name='authorSurname' value="${currentSurnameAuthor!''?html}" placeholder="Modifica cognome autore" />
+                        <input id="authorSurname" class="form-control" name='authorSurname' value="${currentSurnameAuthor!''?html}" placeholder="Modifica cognome autore" />
                     </div>
                 </div>
                 <div class="form-group">
