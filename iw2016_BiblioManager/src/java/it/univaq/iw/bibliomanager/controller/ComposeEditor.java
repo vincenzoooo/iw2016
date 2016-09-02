@@ -31,7 +31,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
             params.put("editorName", Utils.checkString(request.getParameter("editorName")));
             if (!validator(params, request, response)) {
                 editor = getDataLayer().createEditor();
-                editor.setName(params.get("name"));
+                editor.setName(params.get("editorName"));
                 getDataLayer().storeEditor(editor);
             }
         } catch (DataLayerException ex) {
@@ -46,8 +46,9 @@ public class ComposeEditor extends BiblioManagerBaseController {
             Map<String, String> params = new HashMap<String, String>();
             params.put("editorName", Utils.checkString(request.getParameter("editorName")));
             if (!validator(params, request, response)) {
-                editor.setName(params.get("name"));
+                editor.setName(params.get("editorName"));
                 getDataLayer().storeEditor(editor);
+                request.setAttribute("saveResult", "Salvataggio effettuato con successo");
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare l'editore: " + ex.getMessage());

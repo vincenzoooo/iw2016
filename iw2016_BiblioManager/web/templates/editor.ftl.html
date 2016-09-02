@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-lg-12">
             <h1 class="center">Aggiungi un editore</h1>
-            <form method="post" action="composeEditor" id="formEditor">    
+            <form method="post" action="editor" id="formEditor">    
                 <div id="addEditor">
                     <div class="row">
                         <div class="col-sm-2">Nome:</div> 
@@ -10,8 +10,8 @@
                     </div>
                     <div class="row">
                         <div id="errorName" class="">
-                            <#if errorName??>
-                                 ${errorName?html}
+                            <#if errorEditorName??>
+                                 ${errorEditorName?html}
                              </#if>
                         </div>
                     </div>
