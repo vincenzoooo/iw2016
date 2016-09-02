@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row">
         <div class="col-lg-12">
-            <h1 class="center">Gestisci gli editori</h1>
+            <h1 class="center">Gestione degli editori</h1>
             
             <h3 class="row"> Aggiungi un nuovo editore</h3>
             <form method="post" action="editor" id="formEditor" class="form-horizontal">     
@@ -71,6 +71,7 @@
                 <div class="form-group">
                     <label for="updateName" class="col-sm-2 control-label bold">Nome</label>
                     <div class="col-sm-6">
+                        <input name="editorId" value="${editorId!''?html}" type="hidden"/>
                         <input id="editorName" class="form-control" name='editorName' value="${currentEditor!''?html}" placeholder="Modifica l'editore" />
                     </div>
                 </div>

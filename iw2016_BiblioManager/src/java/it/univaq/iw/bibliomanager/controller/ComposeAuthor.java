@@ -7,12 +7,14 @@
 package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.bibliomanager.data.model.Author;
+import it.univaq.iw.bibliomanager.data.model.Editor;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class ComposeAuthor extends BiblioManagerBaseController {
 
@@ -29,12 +31,12 @@ public class ComposeAuthor extends BiblioManagerBaseController {
         Author author = null;
         try {
             Map<String, String> params = new HashMap<String, String>();
-            params.put("name", Utils.checkString(request.getParameter("authorName")));
-            params.put("surname", Utils.checkString(request.getParameter("authorSurname")));
+            params.put("authorName", Utils.checkString(request.getParameter("authorName")));
+            params.put("authorSurname", Utils.checkString(request.getParameter("authorSurname")));
             if (!validator(params, request, response)) {
                 author = getDataLayer().createAuthor();
-                author.setName(params.get("name"));
-                author.setSurname(params.get("name"));
+                author.setName(params.get("authorName"));
+                author.setSurname(params.get("authorSurname"));
                 getDataLayer().storeAuthor(author);
                 getDataLayer().storePublicationHasAuthor(author.getKey(), idPublication);
             }
@@ -48,15 +50,16 @@ public class ComposeAuthor extends BiblioManagerBaseController {
         int idPublication = Integer.parseInt(request.getParameter("idPublication"));
         Author author = null;
         try {
-            author = getDataLayer().getAuthor(Integer.parseInt(request.getParameter("idauthor")));
+            author = getDataLayer().getAuthor(Integer.parseInt(request.getParameter("authorId")));
             Map<String, String> params = new HashMap<String, String>();
-            params.put("name", Utils.checkString(request.getParameter("authorName")));
-            params.put("surname", Utils.checkString(request.getParameter("authorSurname")));
+            params.put("authorName", Utils.checkString(request.getParameter("authorName")));
+            params.put("authorSurname", Utils.checkString(request.getParameter("authorSurname")));
             if (!validator(params, request, response)) {
-                author.setName(params.get("name"));
-                author.setSurname(params.get("name"));
+                author.setName(params.get("authorName"));
+                author.setSurname(params.get("authorSurmane"));
                 getDataLayer().storeAuthor(author);
                 getDataLayer().storePublicationHasAuthor(author.getKey(), idPublication);
+                request.setAttribute("saveResult", "Salvataggio effettuato con successo");
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare l'autore: " + ex.getMessage());
@@ -67,7 +70,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
     @Override
     protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (SecurityLayer.checkSession(request) == null) {
-            request.setAttribute("page_title", "Login to Biblio");
+            request.setAttribute("page_title", "Gestione Autore");
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("login.ftl.html", request, response);
         }
@@ -91,6 +94,23 @@ public class ComposeAuthor extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Gestione Autore");
             TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
+                if (request.getParameter("submitAuthor") != null && request.getParameter("authorId") == null) {
+                    action_composeAuthor(request, response);
+                }
+                if (request.getParameter("submitAuthor") != null && request.getParameter("authorId") != null) {
+                    action_updateAuthor(request, response);
+                }
+                if (request.getParameter("authorId") != null) {
+                    request.setAttribute("currentNameAuthor", request.getParameter("currentNameAuthor"));
+                    request.setAttribute("currentSurnameAuthor", request.getParameter("currentSurnameAuthor"));
+                    request.setAttribute("authorId", request.getParameter("authorId"));
+                }
+                List<Author> authors = getDataLayer().getAuthors();
+                request.setAttribute("authors", authors);
+            
+                res.activate("author.ftl.html", request, response);
+                
+                /* PRIMA DAGLI UNA CONTROLLATA            
                 if (request.getParameter("idauthor") != null) {
                     Author author = getDataLayer().getAuthor(Integer.parseInt(request.getParameter("idauthor")));
                     request.setAttribute("author", author);
@@ -105,11 +125,13 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                 if (request.getParameter("submitAuthor") != null && request.getParameter("idauthor") == null) {
                     action_composeAuthor(request, response);
                 }
+                */
+                
             } else {
                 action_default(request, response);
             }
         } catch (Exception ex) {
-            action_error(request, response, "OPS");
+            action_error(request, response, "OPS" + ex.getMessage());
         }
 
     }

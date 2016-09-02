@@ -60,7 +60,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
     @Override
     protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         if (SecurityLayer.checkSession(request) == null) {
-            request.setAttribute("page_title", "Gestione ditore");
+            request.setAttribute("page_title", "Gestione Editore");
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("login.ftl.html", request, response);
         }
@@ -103,7 +103,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (Exception ex) {
-            action_error(request, response, "OPS");
+            action_error(request, response, "OPS" + ex.getMessage());
         }
     }
 }

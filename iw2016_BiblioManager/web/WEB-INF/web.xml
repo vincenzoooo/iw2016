@@ -169,7 +169,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>composeAuthor</servlet-name>
-        <url-pattern>/composeAuthor</url-pattern>
+        <url-pattern>/author</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>publicationResearch</servlet-name>
