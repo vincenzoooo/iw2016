@@ -1,0 +1,293 @@
+<div class="container">
+    <#if publication?? >
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="title">
+            ${strip_slashes(publication.title!'')?html}
+            <#if (userStatus?? && userStatus)>
+                <span>
+                    <a href="managePublication?generalData&publicationId=${publication.key}">
+                        <i class="fa fa-pencil" aria-hidden="true"></i>
+                    </a>
+                </span>
+            </#if>
+            </h1>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-lg-4">
+            <figure class="imageCard">
+                <#if publication.cover??>
+                <img src="<#if publication.cover.uploaded>img?file=${publication.cover.fileSource.id}<#else> ${strip_slashes(publication.cover.uri)?html}</#if>" alt="${strip_slashes(publication.cover.description)!'Copertina'?html}" />
+                <#else>
+                    <img src= "img/book.png" alt="Copertina Defualt" />
+                </#if>
+            </figure>
+            <div id="advicesPublication">
+                <#if adviced??>
+                     <div class="margin-bottom-10"><a id="addAdvice" href="?addAdvice&publicationId=${publication.key}"> Consiglia!</a></div>
+                <#else> 
+                    <div class="margin-bottom-10"> Hai consigliato questa pubblicazione</div>
+                </#if>
+                <div class="margin-bottom-10 bold"> 
+                    Numero consigli:&nbsp;
+                    <span id="numberAdvices">${publication.like}</span> 
+                </div>
+           </div>
+        </div>
+        <div class="col-lg-8">
+            <div class="row margin-top-10">
+                <span class="bold">Isbn: </span> 
+                <span class='resume'>${publication.isbn?html}</span> 
+            </div>
+            <div class="row">
+                <span class="bold">Numero pagine: </span>
+                <span class="resume">${publication.pageNumber?html}</span> 
+            </div>
+       
+            <div class="row">
+                <span class="bold">Data di pubblicazione: </span>
+                <span class="resume">${publication.publicationDate?html}</span> 
+            </div>
+            <div class="row">
+                <span class="bold">Lingua: </span>
+                <span class="resume">${strip_slashes(publication.language)?html}</span> 
+            </div>
+            <div class="row">
+                <span class="bold">Editore:</span>
+                <span class="resume">${strip_slashes(publication.editor.name)?html}</span> 
+            </div>
+            <div class="row">
+                <span class="bold">Keywords:</span>
+                <span class='resume'>
+                <#if (publication.keywords?? && publication.keywords?size>0)>
+                    <#list publication.keywords as item>
+                        ${strip_slashes(item.name)?html}&nbsp;
+                    </#list>
+                <#else>
+                    Nessuna keywords presente.
+                </#if>
+                </span>
+            </div>
+
+            <div class="bold">Descrizione:</div>
+            <div class="row">
+                <div class="col-lg-12 description">
+                    ${strip_slashes(publication.description!'Nessuna descrizione.')?html}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <h2>Autori: 
+        <#if (userStatus?? && userStatus)>
+            <span>
+                <a href="author?authorData&publicationId=${publication.key}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+            </span>
+        </#if>
+    </h2>
+    <#if (publication.authors?? && publication.authors?size>0)>
+    <table id="allAuthors">
+        <tr>
+            <th>
+                Nome
+            </th>
+            <th>
+                Cognome
+            </th>
+        </tr>      
+        <#list publication.authors as item>
+        <tr>
+            <td>
+                ${strip_slashes(item.name)!"''"?html}
+            </td>
+            <td>
+                ${strip_slashes(item.surname)!"''"?html}
+            </td>
+        </tr>
+        </#list>        
+    </table>
+    <#else> 
+    <span class="bold"> Non sono presenti autori</span>
+    </#if>
+    
+    <h2>Sorgenti:
+    <#if (userStatus?? && userStatus)>
+        <a href="source?sourceData&publicationId=${publication.key}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+    </#if>
+    </h2>
+    <#if (publication.sources?? && publication.sources?size>0)>
+    <div class="row">
+        <table id="allSources">
+            <tr>
+                <th>
+                    Tipo
+                </th>
+                <th>
+                    URI
+                </th>
+                <th class="smallhidden">
+                    Formato
+                </th>
+                <th class="smallhidden">
+                    Descrizione
+                </th>
+            </tr>
+            <#list publication.sources as item>
+            <tr>
+                <td>
+                    ${strip_slashes(item.type)!"''"?html}
+                </td>
+                <td>
+                    ${strip_slashes(item.uri)!"''"?html}
+                </td>
+                <td class="smallhidden">
+                    ${strip_slashes(item.format)!"''"?html}
+                </td>
+                <td class="smallhidden">
+                    ${strip_slashes(item.description)!"''"?html}
+                </td>
+            </tr>
+            </#list>
+        </table>
+    </div>
+    <#else>
+        <span class="bold"> Non sono presenti sorgenti.</span>
+    </#if>
+    
+    <h2>
+    Indice
+    <#if (userRole?? && userRole)>
+        <a href="index?indexData&publicationId=${publication.key}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
+    </#if>
+    </h2>
+    <#if publication.index??>
+        <#if (publication.index.chapters?? && publication.index.chapters?size>0)>
+            <#list publication.index.chapters as item>
+            <ul>
+                <li>
+                    ${item.number!"''"?html}&nbsp;${strip_slashes(item.title)!"''"?html}
+                </li>
+                <#if (item.sections?? && item.sections?size>0) >
+                    <#list item.sections as item2>
+                        <ul>
+                            <li>
+                                ${item2.number!"''"?html}
+                                ${strip_slashes(item2.title)!"''"?html}
+                            </li>
+                        </ul>
+                    </#list>
+                </#if> 
+            </ul>
+            </#list>
+        <#else>
+        <span class='bold'> Nessun indice presente per la pubblicazione</span>
+        </#if>
+    <#else>
+        <span class='bold'> Nessun indice presente per la pubblicazione</span>
+    </#if>
+    
+    <h2>
+    Ristampe:
+    <#if (userRole?? && userRole)>
+        <span><a href="reprint?reprintData&publicationId=${publication.key}"><i class="fa fa-pencil" aria-hidden="true"></i></a></span>
+    </#if>
+    </h2>
+    <#if (publication.reprints?? && publication.reprints?size>0) >
+    <table id="allReprints">
+        <tr>
+            <th>
+                Numero
+            </th>
+            <th>
+                Data
+            </th>
+        </tr>    
+        <#list publication.reprints as item>
+        <tr>
+            <td>
+                ${item.number!"''"?html}
+            </td>
+            <td>
+                ${item.date!"''"?html}
+            </td>
+        </tr>
+        </#list>      
+    </table>
+    <#else>
+    <span class="bold"> Non sono presenti ristampe.</span>
+    </#if>
+    
+    <h2>Gallery</h2>
+    
+    <h2> Ultima recensione </h2>
+    <div id='contentReview'>
+        <#if lastReview??>
+        <div class="review row" id="lastReview">
+        <div class="col-lg-2">
+            <span>
+                <img class="profile" src='img/user2.png' alt="Utente" />
+            </span>
+        </div>
+        <div class="fourteen columns">
+            <div class="row marginleft1"><span class="bold"> ${strip_slashes(lastReview.writer.name)?html} ${strip_slashes(lastReview.writer.surname)?html}</span> &nbsp;${lastReview.dateWrite?datetime}</div>
+            <div class="row">
+                <div class="twelve columns justify">${strip_slashes(lastReview.text)?html}</div>
+            </div>
+        </div>
+        </div>
+        <#else>
+        <div class="row" id="lastReview">
+            Non ci sono ancora recensioni.
+        </div>
+        </#if>
+    </div>
+    
+    <form id="formAddReview" method="post" action="publicationDetails">
+        <div class="row">
+            <textarea class="col-lg-12" id="textReview" name="textReview" rows="4" placeholder="Scrivi una Recensione" ></textarea>
+        </div>
+        <div class="error" id="errorReview">
+        <#if errorReview??>
+            ${errorReview?html}
+        </#if>
+        </div>
+        <input id="publicationId" type="hidden" name="publicationId" value="${publication.key}" />
+        <div class="row">
+            <span class="">
+                <input type="submit" name="addReview" value="Inserisci recensione" />
+            </span>
+        </div>
+    </form>
+    
+    <!--
+    <div id="linkreviews" class="row margin10"> 
+    <#if ((numberReviewsToApprove??) && (numberReviewsToApprove>0)) && userRole >
+
+    <#if (numberReviewsToApprove>1) >
+        Ci sono ${numberReviewsToApprove} recensioni 
+    <#else>
+        C'&egrave; ${numberReviewsToApprove} recensione 
+    </#if>
+    da approvare. Clicca il link di seguito per andare alla pagina di tutte le recensioni ed approvarle&nbsp;
+
+    </#if>
+    <#if ((lastReview??) || (numberReviewsToApprove?? && numberReviewsToApprove>0))>
+    <a href="publicationReviews?publicationId=${publication.id}">Vedi tutte le recensioni</a>
+    </#if>
+    </div>
+    <div class="row">
+    <#if (userRole?? && userRole)>
+
+    <div class="three columns button"><a id="deletePublication" href="?deletePublication&publicationId=${publication.id}">Elimina</a></div>
+
+    <div class="three columns button"><a href="historyPublication?publicationId=${publication.id}">Vai allo storico</a></div>
+
+    </#if>
+    -->
+    
+    </#if>
+    
+    <div class="btn btn-default col-lg-2"><a href="catalog">Torna al catalogo</a></div>
+</div>
