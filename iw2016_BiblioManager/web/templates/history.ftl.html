@@ -1,0 +1,55 @@
+<div class="container">
+    <h1 class="center">Storico pubblicazione</h1>
+    <div class="row">
+        <div class="col-lg-12">
+            <table id="history">
+                <tr>
+                    <th>
+                        Timestamp
+                    </th>
+                    <th>
+                        Utente
+                    </th>
+                    <th>
+                        Descrizione
+                    </th>
+                </tr>
+                <#if histories??>
+                <#list histories as item>
+                <tr>
+                    <td>
+                        ${item.date?datetime}
+                    </td>
+                    <td>
+                        <#if item.user??>
+                        <a href="profile?userId=${item.user.key}">${strip_slashes(item.user.name)?html} ${strip_slashes(item.user.surname)?html}</a>
+                        </#if>
+                    </td>
+                    <td>
+                        ${strip_slashes(item.entry)?html}
+                    </td>
+                </tr>
+                </#list>
+                </#if>
+            </table>
+        </div>
+    </div>
+    
+    <!--
+    <#if (totpages?? && totpages>1)>
+    <div class="row marginleft1 clear">Vai alla pagina:         
+        <span id="paging">
+            <#list 1..totpages as page>
+            <#if (page == curpage)>
+            <span class="pagerCurrent">${page}</span>
+            <#else>
+            <a class="pagerLink" href="?page=${page}&sortBy=${sortBy!0}&sortType=${sortType!0}&userType=${userType!0}">${page}</a>
+            </#if>       
+            </#list>
+        </span>
+    </div>
+    </#if>
+    -->
+    <a href="details"> Torna alla scheda della pubblicazione</a>
+</div>
+            
