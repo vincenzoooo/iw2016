@@ -40,17 +40,17 @@ public interface Publication {
 
     void setIndex(String index);
 
-    int getNumberOfLikes();
+    int getLike();
 
-    void setNumberOfLikes(int likes);
+    void setLike(int likes);
 
-    String getISBN();
+    String getIsbn();
 
-    void setISBN(String isbn);
+    void setIsbn(String isbn);
 
-    int getPages();
+    int getPageNumber();
 
-    void setPages(int pages);
+    void setPageNumber(int pages);
 
     String getLanguage();
 
