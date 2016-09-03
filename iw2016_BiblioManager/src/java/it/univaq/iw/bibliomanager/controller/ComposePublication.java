@@ -29,8 +29,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -143,11 +141,6 @@ public class ComposePublication extends BiblioManagerBaseController {
             if (SecurityLayer.checkSession(request) != null) {
                 if (request.getParameter("submitPublication") != null) {
                     action_composePublication(request, response);
-                }
-                if (request.getParameter("addEditor") != null){
-                    response.sendRedirect("editor");
-                    request.setAttribute("publicationTitle", Utils.checkString(request.getParameter("publicationTitle")));
-                    doPost(request, response);
                 }
                 TemplateResult res = new TemplateResult(getServletContext());
                 res.activate("publication.ftl.html", request, response);
