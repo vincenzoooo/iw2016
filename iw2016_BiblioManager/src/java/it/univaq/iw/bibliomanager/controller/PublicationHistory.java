@@ -27,6 +27,7 @@ public class PublicationHistory extends BiblioManagerBaseController {
         int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
         List<History> histories = getDataLayer().getHistoriesByPublication(publicationKey);
         request.setAttribute("histories", histories);
+        request.setAttribute("publicationId", request.getParameter("publicationId"));
         res.activate("history.ftl.html", request, response);//TODO: Definire pagina di storico
     }
 
