@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import it.univaq.iw.bibliomanager.data.model.User;
 import it.univaq.iw.framework.result.HTMLResult;
-import it.univaq.iw.framework.result.TemplateManagerException;
 import java.util.List;
 import javax.servlet.http.HttpSession;
 
@@ -76,9 +75,9 @@ public class Home extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            List<Publication> publicationsInsert = getDataLayer().getLastInsertedPublication(); //Select BY InsertDate
-            List<Publication> publicationsUpdate = getDataLayer().getLastModifiedPublication(); //Select BY LastUpdate
-            List<User> activeUsers = getDataLayer().getMoreActiveUsers(); //Select BY Max publication insert
+            List<Publication> publicationsInsert = getDataLayer().getLastInsertedPublication();
+            List<Publication> publicationsUpdate = getDataLayer().getLastModifiedPublication();
+            List<User> activeUsers = getDataLayer().getMoreActiveUsers();
             request.setAttribute("lastPublicationsInsert", publicationsInsert);
             request.setAttribute("lastPublicationsUpdate", publicationsUpdate);
             request.setAttribute("activeUsers", activeUsers);

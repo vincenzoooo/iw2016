@@ -6,6 +6,8 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
+import com.mysql.jdbc.StringUtils;
+import freemarker.template.utility.NumberUtil;
 import it.univaq.iw.bibliomanager.data.model.Author;
 import it.univaq.iw.bibliomanager.data.model.Editor;
 import it.univaq.iw.bibliomanager.data.model.History;
@@ -24,7 +26,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import it.univaq.iw.bibliomanager.data.model.Keyword;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
+import java.util.Locale;
 
 /**
  *
@@ -34,7 +40,7 @@ public class ComposePublication extends BiblioManagerBaseController {
 
     private void action_composePublication(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         try {
-            Publication publication = null;
+            Publication publication = getDataLayer().createPublication();
             Map<String, String> params = new HashMap<String, String>();
             params.put("publicationTitle", Utils.checkString(request.getParameter("publicationTitle")));
             params.put("publicationDescription", Utils.checkString(request.getParameter("publicationDescription")));
@@ -43,7 +49,6 @@ public class ComposePublication extends BiblioManagerBaseController {
             //params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
             params.put("publicationIsbn", request.getParameter("publicationIsbn"));
             params.put("publicationPages", request.getParameter("publicationPages"));
-            params.put("publicationLanguage", Utils.checkString(request.getParameter("publicationLanguage")));
             params.put("editors", request.getParameter("editors"));
             params.put("authors", request.getParameter("authors"));
             params.put("keywords", request.getParameter("keywords"));
@@ -51,17 +56,26 @@ public class ComposePublication extends BiblioManagerBaseController {
             if (!validator(params, request, response)) {
                 publication.setTitle(params.get("publicationTitle"));
                 publication.setDescription(params.get("publicationDescription"));
-                publication.setIndex(params.get("publicationIndex"));
-                publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editorId"))));
+                publication.setLanguage(params.get("publicationLanguage"));
+                DateFormat df = new SimpleDateFormat("dd-mm-yyyy", Locale.ITALIAN);
+                java.util.Date date = df.parse(params.get("publicationDate"));
+                java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+                publication.setPublicationDate(sqlDate);
+                publication.setIndex("");
+                //publication.setIndex(params.get("publicationIndex"));
+                publication.setISBN(params.get("publicationIsbn"));
+                publication.setPages(Integer.parseInt(params.get("publicationPages")));
+                publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editors"))));
+                getDataLayer().storePublication(publication);
+                getDataLayer().storePublicationHasAuthor(Integer.parseInt(params.get("authors")), publication.getKey());
+                getDataLayer().storePublicationHasKeyword(Integer.parseInt(params.get("keywords")), publication.getKey());
+                request.setAttribute("publication", publication);
+                this.action_composeHistory(request, response);
             }
-            getDataLayer().storePublication(publication);
-            getDataLayer().storePublicationHasAuthor(Integer.parseInt(params.get("authorId")), publication.getKey());
-            getDataLayer().storePublicationHasKeyword(Integer.parseInt(params.get("keywordId")), publication.getKey());
-            request.setAttribute("publication", publication);
-            this.action_composeHistory(request, response);
+            
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("publication.ftl.html", request, response);
-        } catch (DataLayerException ex) {
+        } catch (DataLayerException | ParseException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
     }
@@ -78,6 +92,21 @@ public class ComposePublication extends BiblioManagerBaseController {
         getDataLayer().storeHistory(history);
     }
 
+    @Override
+    protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response){
+        boolean error = super.validator(params, request, response);
+        if(!error){
+            if(!Utils.isNumeric(params.get("publicationIsbn")) || !Utils.isNumeric(params.get("publicationPages"))){
+                request.setAttribute("errorPublicationIsbn", "Non è un codice valido");
+                error = true;
+            }
+            if(!Utils.isDate(params.get("publicationDate"))){
+                request.setAttribute("errorPublicationDate", "Non è una data valida, si aspetta il formato dd-mm-yyyy");
+                error = true;
+            }
+        }
+        return error;
+    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.

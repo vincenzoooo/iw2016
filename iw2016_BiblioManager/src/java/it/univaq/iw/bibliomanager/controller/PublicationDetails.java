@@ -28,7 +28,7 @@ public class PublicationDetails extends BiblioManagerBaseController {
     private void action_publication(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException, IOException, NumberFormatException, ServletException {
         TemplateResult res = new TemplateResult(getServletContext());
-        int publicationKey = Integer.parseInt(request.getParameter("publicationKey"));
+        int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
         Publication publication = getDataLayer().getPublication(publicationKey);
         this.action_viewReviews(request, response);
         request.setAttribute("publication", publication);
@@ -52,7 +52,7 @@ public class PublicationDetails extends BiblioManagerBaseController {
     }
     
     private void action_viewReviews(HttpServletRequest request, HttpServletResponse response) throws DataLayerException{
-        List<Review> reviews = getDataLayer().getReviews(Integer.parseInt(request.getParameter("publicationKey")));
+        List<Review> reviews = getDataLayer().getReviews(Integer.parseInt(request.getParameter("publicationId")));
         request.setAttribute("reviews", reviews);
     }
     /**

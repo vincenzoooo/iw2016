@@ -75,13 +75,13 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sUserByEmail = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE email = ?");
             this.sUserByEmailPassword = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE email = ? AND password = ?");
             this.sUserById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idutente = ?");
-            this.sUserByNumberOfPublications = connection.prepareStatement("SELECT nome, cognome, COUNT(*) AS operazioni FROM storico JOIN utente ON idutente=utente GROUP BY utente HAVING operazioni > 1 ORDER BY operazioni");
+            this.sUserByNumberOfPublications = connection.prepareStatement("SELECT utente, COUNT(*) AS operazioni FROM storico JOIN utente ON idutente = utente GROUP BY utente HAVING operazioni > 1 ORDER BY operazioni");
             this.uUser = connection.prepareStatement("UPDATE iw2016.utente SET nome = ?, cognome = ?, password = ?, email = ?, stato = ? WHERE idutente = ?");
             this.iUser = connection.prepareStatement("INSERT INTO iw2016.utente (nome, cognome, password, email, stato) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sHistories = connection.prepareStatement("SELECT * FROM iw2016.storico");
             this.sHistoriesByUser = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE utente = ?");
             this.sHistoriesByUser = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE pubblicazione = ?");
-            this.sHistoryById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idstorico = ?");
+            this.sHistoryById = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE idstorico = ?");
             this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");
             this.iHistory = connection.prepareStatement("INSERT INTO iw2016.storico (entry, tipo, data_operazione, pubblicazione, utente) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sPublications = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione ORDER BY ?");
@@ -672,7 +672,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             sPublicationsByInsertDate.setDate(2, today);
             rs = sPublicationsByInsertDate.executeQuery();
             while (rs.next()) {
-                result.add(getPublication(rs.getInt("idpubblicazione")));
+                result.add(getPublication(rs.getInt("pubblicazione")));
             }
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to load last inserted publications", ex);
@@ -701,7 +701,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             sPublicationsByUpdateDate.setDate(2, today);
             rs = sPublicationsByUpdateDate.executeQuery();
             while (rs.next()) {
-                result.add(getPublication(rs.getInt("idpubblicazione")));
+                result.add(getPublication(rs.getInt("pubblicazione")));
             }
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to load last modified publications", ex);
