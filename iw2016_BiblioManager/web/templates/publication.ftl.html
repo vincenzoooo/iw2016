@@ -94,7 +94,7 @@
                 <div class="form-group">
                     <label class="bold col-sm-2 control-label">Autore/i</label>
                     <div class="col-sm-6">
-                        <select class="form-control" name="editors" >
+                        <select class="form-control" name="authors" >
                         <#if (authors?? && authors?size>0)>
                             <#list authors as item>
                             <option value="${item.key!''?html}" >${item.name!''?html}&nbsp;${item.surname!''?html}</option>
@@ -114,7 +114,7 @@
                 <div class="form-group">
                     <label class="bold col-sm-2 control-label">Keyword</label>
                     <div class="col-sm-6">
-                        <select class="form-control" name="keywors" >
+                        <select class="form-control" name="keywords" >
                         <#if (keywords?? && keywords?size>0)>
                             <#list keywords as item>
                                 <option value="${item.key!''?html}" >${item.name!''?html}</option>
@@ -140,7 +140,7 @@
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <span>
-                            <input value='Aggiungi' name='submitPubblication' type='submit' class="btn btn-default"/>
+                            <input value='Aggiungi' name='submitPublication' type='submit' class="btn btn-default"/>
                         </span>
                     </div>
                 </div>

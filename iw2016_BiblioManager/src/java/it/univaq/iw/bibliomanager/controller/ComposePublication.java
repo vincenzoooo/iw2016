@@ -40,15 +40,14 @@ public class ComposePublication extends BiblioManagerBaseController {
             params.put("publicationDescription", Utils.checkString(request.getParameter("publicationDescription")));
             params.put("publicationLanguage", Utils.checkString(request.getParameter("publicationLanguage")));
             params.put("publicationDate", Utils.checkString(request.getParameter("publicationDate")));
-            params.put("publicationEditor", Utils.checkString(request.getParameter("publicationEditor")));
-            params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
-            params.put("publicationISBN", Utils.checkString(request.getParameter("publicationISBN")));
-            params.put("publicationPages", Utils.checkString(request.getParameter("publicationPages")));
+            //params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
+            params.put("publicationIsbn", request.getParameter("publicationIsbn"));
+            params.put("publicationPages", request.getParameter("publicationPages"));
             params.put("publicationLanguage", Utils.checkString(request.getParameter("publicationLanguage")));
-            params.put("editorId", Utils.checkString(request.getParameter("editorId")));
-            params.put("authorId", Utils.checkString(request.getParameter("authorId")));
-            params.put("keywordId", Utils.checkString(request.getParameter("keywordId")));
-            params.put("sourceId", Utils.checkString(request.getParameter("sourceId")));
+            params.put("editors", request.getParameter("editors"));
+            params.put("authors", request.getParameter("authors"));
+            params.put("keywords", request.getParameter("keywords"));
+            //params.put("sourceId", Utils.checkString(request.getParameter("sourceId")));
             if (!validator(params, request, response)) {
                 publication.setTitle(params.get("publicationTitle"));
                 publication.setDescription(params.get("publicationDescription"));
@@ -56,6 +55,8 @@ public class ComposePublication extends BiblioManagerBaseController {
                 publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editorId"))));
             }
             getDataLayer().storePublication(publication);
+            getDataLayer().storePublicationHasAuthor(Integer.parseInt(params.get("authorId")), publication.getKey());
+            getDataLayer().storePublicationHasKeyword(Integer.parseInt(params.get("keywordId")), publication.getKey());
             request.setAttribute("publication", publication);
             this.action_composeHistory(request, response);
             TemplateResult res = new TemplateResult(getServletContext());

@@ -38,8 +38,8 @@ public class UserList extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 User active = getDataLayer().getUser((int) session.getAttribute("userid"));
-                if (active != null && active.getState() < 2 && request.getParameter("user-selected") != null) {
-                    User user = getDataLayer().getUser(request.getParameter("user-selected"));
+                if (active != null && active.getState() < 2 && request.getParameter("userSelected") != null) {
+                    User user = getDataLayer().getUser(request.getParameter("userSelected"));
                     if (user.getState() == 2) {
                         user.setState(1);
                     }
@@ -56,8 +56,8 @@ public class UserList extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 User admin = getDataLayer().getUser((int) session.getAttribute("userid"));
-                if (admin != null && admin.getState() == 0 && request.getParameter("user-selected") != null) {
-                    User user = getDataLayer().getUser(request.getParameter("user-selected"));
+                if (admin != null && admin.getState() == 0 && request.getParameter("userSelected") != null) {
+                    User user = getDataLayer().getUser(request.getParameter("userSelected"));
                     if (user.getState() == 1) {
                         user.setState(2);
                     }
