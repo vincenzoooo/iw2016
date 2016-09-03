@@ -7,11 +7,14 @@
 package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.bibliomanager.data.model.Publication;
+import it.univaq.iw.bibliomanager.data.model.Source;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,8 +30,18 @@ public class PublicationsList extends BiblioManagerBaseController {
         TemplateResult res = new TemplateResult(getServletContext());
 
         try {
+            Map<Publication, String> params = new HashMap<Publication, String>();
             List<Publication> publications = getDataLayer().getPublications(orderBy);
-            request.setAttribute("publications", publications);
+            for(Publication publication : publications){
+                String cover = "";
+                for(Source source : publication.getSources()){
+                    if(source.getDescription().equals("copertina")){
+                        cover = source.getUri();
+                    }
+                }
+                params.put(publication, cover);
+            }
+            request.setAttribute("publications", params);
             res.activate("catalog.ftl.html", request, response);
         } catch (ServletException | DataLayerException ex) {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage());
