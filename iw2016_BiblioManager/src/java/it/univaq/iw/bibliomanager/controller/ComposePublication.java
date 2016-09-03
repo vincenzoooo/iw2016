@@ -6,8 +6,6 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
-import com.mysql.jdbc.StringUtils;
-import freemarker.template.utility.NumberUtil;
 import it.univaq.iw.bibliomanager.data.model.Author;
 import it.univaq.iw.bibliomanager.data.model.Editor;
 import it.univaq.iw.bibliomanager.data.model.History;
@@ -96,13 +94,25 @@ public class ComposePublication extends BiblioManagerBaseController {
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response){
         boolean error = super.validator(params, request, response);
         if(!error){
-            if(!Utils.isNumeric(params.get("publicationIsbn")) || !Utils.isNumeric(params.get("publicationPages"))){
-                request.setAttribute("errorPublicationIsbn", "Non è un codice valido");
-                error = true;
-            }
-            if(!Utils.isDate(params.get("publicationDate"))){
-                request.setAttribute("errorPublicationDate", "Non è una data valida, si aspetta il formato dd-mm-yyyy");
-                error = true;
+            try {
+                if(!Utils.isNumeric(params.get("publicationIsbn")) || params.get("publicationIsbn").length() < 14){
+                    request.setAttribute("errorPublicationIsbn", "Non è un codice valido");
+                    error = true;
+                }
+                if(getDataLayer().getPublicationByISBN(params.get("publicationIsbn")) != null){
+                    request.setAttribute("errorPublicationIsbn", "Non è un codice valido");
+                    error = true;
+                }
+                if(!Utils.isNumeric(params.get("publicationPages"))){
+                    request.setAttribute("errorPublicationPages", "Non è un numero valido");
+                    error = true;
+                }
+                if(!Utils.isDate(params.get("publicationDate"))){
+                    request.setAttribute("errorPublicationDate", "Non è una data valida, si aspetta il formato dd-mm-yyyy");
+                    error = true;
+                }
+            } catch (DataLayerException ex) {
+                action_error(request, response, "Error query ISBN: " + ex.getMessage());
             }
         }
         return error;
@@ -132,15 +142,13 @@ public class ComposePublication extends BiblioManagerBaseController {
                 if (request.getParameter("submitPublication") != null) {
                     action_composePublication(request, response);
                 }
-                else{
-                    TemplateResult res = new TemplateResult(getServletContext());
-                    res.activate("publication.ftl.html", request, response);
-                }
+                TemplateResult res = new TemplateResult(getServletContext());
+                res.activate("publication.ftl.html", request, response);
             } else {
                 action_default(request, response);
             }
         } catch (Exception ex) {
-            action_error(request, response, "OPS: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 

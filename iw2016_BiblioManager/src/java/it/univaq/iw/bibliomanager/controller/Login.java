@@ -36,7 +36,8 @@ public class Login extends BiblioManagerBaseController {
                     SecurityLayer.createSession(request, email, user.getKey(), user.getState());
                     request.setAttribute("page_title", "Benvenuto");
                     request.setAttribute("user", user);
-                    res.activate("home.ftl.html", request, response);//TODO: Definire la home page
+                    response.sendRedirect("home");
+                    //res.activate("home.ftl.html", request, response);//TODO: Definire la home page
                 } else {
                     request.setAttribute("message", "Credenziali errate, si invita a riprovare o ad iscriversi");
                     //res.activate("login.ftl.html", request, response);

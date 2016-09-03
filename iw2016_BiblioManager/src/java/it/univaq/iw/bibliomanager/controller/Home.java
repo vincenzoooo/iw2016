@@ -52,13 +52,13 @@ public class Home extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Homepage");
             // recupero lo userId e il nome
             int userId = (int) session.getAttribute("userid");
-            int role = (int) session.getAttribute("userRole");
+            int status = (int) session.getAttribute("userStatus");
             User user = getDataLayer().getUser(userId);
             String nameLogged = SecurityLayer.stripSlashes(user.getName());
             request.setAttribute("nameLogged", nameLogged);
             request.setAttribute("usernameLogged", "Homepage");
             TemplateResult res = new TemplateResult(getServletContext());
-            request.setAttribute("role", role);
+            request.setAttribute("userStatus", status);
             res.activate("home.ftl.html", request, response);
         }
     }
