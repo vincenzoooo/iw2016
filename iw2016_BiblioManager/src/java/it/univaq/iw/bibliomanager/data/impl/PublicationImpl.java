@@ -232,7 +232,7 @@ public class PublicationImpl implements Publication {
         title = publication.getTitle();
         description = publication.getDescription();
         index = publication.getIndex();
-        like = publication.getNumberOfLikes();
+        like = publication.getLike();
         editor = publication.getEditor();
         authors = publication.getAuthors();
         sources = publication.getSources();

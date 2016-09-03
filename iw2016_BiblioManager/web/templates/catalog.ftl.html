@@ -50,7 +50,7 @@
             <#list publications as item>
             <div class="row">
                 <div class="col-lg-5">
-                    <a href="publicationDetails?publicationId=${item.key}" class="relative">
+                    <a href="details?publicationId=${item.key}" class="relative">
                     <figure class="imageCatalog">
                     <#if item.cover??>
                         <img src= "<#if item.cover.uploaded>img?file=${item.cover.fileSource.id}<#else>${strip_slashes(item.cover.uri)?html}</#if>" alt="${strip_slashes(item.cover.description!'Copertina Default')?html}" />

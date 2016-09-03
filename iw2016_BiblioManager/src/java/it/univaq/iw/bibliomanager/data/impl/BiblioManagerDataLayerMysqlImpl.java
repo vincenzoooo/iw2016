@@ -80,7 +80,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.iUser = connection.prepareStatement("INSERT INTO iw2016.utente (nome, cognome, password, email, stato) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sHistories = connection.prepareStatement("SELECT * FROM iw2016.storico");
             this.sHistoriesByUser = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE utente = ?");
-            this.sHistoriesByUser = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE pubblicazione = ?");
+            this.sHistoriesByPublication = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE pubblicazione = ?");
             this.sHistoryById = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE idstorico = ?");
             this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");
             this.iHistory = connection.prepareStatement("INSERT INTO iw2016.storico (entry, tipo, data_operazione, pubblicazione, utente) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -208,11 +208,11 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             publication.setDescription(rs.getString("descrizione"));
             publication.setEditor(getEditor(rs.getInt("editore")));
             publication.setIndex(rs.getString("indice"));
-            publication.setNumberOfLikes(rs.getInt("n_consigli"));
-            publication.setISBN(rs.getString("isbn"));
+            publication.setLike(rs.getInt("n_consigli"));
+            publication.setIsbn(rs.getString("isbn"));
             publication.setLanguage(rs.getString("lingua"));
             publication.setPublicationDate(rs.getDate("data_pubblicazione"));
-            publication.setPages(rs.getInt("n_pagine"));
+            publication.setPageNumber(rs.getInt("n_pagine"));
             publication.setEditor(getEditor(rs.getInt("editore")));
             publication.setAuthor(getPublicationAuthors(rs.getInt("idpubblicazione")));
             publication.setSources(getPublicationSources(rs.getInt("idpubblicazione")));
@@ -1220,9 +1220,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uPublication.setString(2, publication.getDescription());
                 uPublication.setInt(3, publication.getEditor().getKey());
                 uPublication.setString(4, publication.getIndex());
-                uPublication.setInt(5, publication.getNumberOfLikes());
-                uPublication.setString(6, publication.getISBN());
-                uPublication.setInt(7, publication.getPages());
+                uPublication.setInt(5, publication.getLike());
+                uPublication.setString(6, publication.getIsbn());
+                uPublication.setInt(7, publication.getPageNumber());
                 uPublication.setString(8, publication.getLanguage());
                 uPublication.setDate(9, publication.getPublicationDate());
                 uPublication.setInt(10, key);
@@ -1233,9 +1233,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 iPublication.setString(2, publication.getDescription());
                 iPublication.setInt(3, publication.getEditor().getKey());
                 iPublication.setString(4, publication.getIndex());
-                iPublication.setInt(5, publication.getNumberOfLikes());
-                iPublication.setString(6, publication.getISBN());
-                iPublication.setInt(7, publication.getPages());
+                iPublication.setInt(5, publication.getLike());
+                iPublication.setString(6, publication.getIsbn());
+                iPublication.setInt(7, publication.getPageNumber());
                 iPublication.setString(8, publication.getLanguage());
                 iPublication.setDate(9, publication.getPublicationDate());
 

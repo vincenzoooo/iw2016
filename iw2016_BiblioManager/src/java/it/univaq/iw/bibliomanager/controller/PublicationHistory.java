@@ -24,7 +24,7 @@ public class PublicationHistory extends BiblioManagerBaseController {
 
     private void action_history(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, DataLayerException {
         TemplateResult res = new TemplateResult(getServletContext());
-        int publicationKey = Integer.parseInt(request.getParameter("publicationKey"));
+        int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
         List<History> histories = getDataLayer().getHistoriesByPublication(publicationKey);
         request.setAttribute("histories", histories);
         res.activate("history.ftl.html", request, response);//TODO: Definire pagina di storico
@@ -49,7 +49,7 @@ public class PublicationHistory extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (Exception ex) {
-            action_error(request, response, "OPS");
+            action_error(request, response, "Error" + ex.getMessage());
         }
     }
 

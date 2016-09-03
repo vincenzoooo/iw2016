@@ -4,6 +4,9 @@
         <div class="col-lg-12">
             <h1 class="title">
             ${strip_slashes(publication.title!'')?html}
+            <a href="history?historyData&publicationId=${publication.key}">
+                Storico
+            </a>
             <#if (userStatus?? && userStatus)>
                 <span>
                     <a href="managePublication?generalData&publicationId=${publication.key}">

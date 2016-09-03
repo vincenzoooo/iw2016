@@ -63,8 +63,8 @@ public class ComposePublication extends BiblioManagerBaseController {
                 publication.setPublicationDate(sqlDate);
                 publication.setIndex("");
                 //publication.setIndex(params.get("publicationIndex"));
-                publication.setISBN(params.get("publicationIsbn"));
-                publication.setPages(Integer.parseInt(params.get("publicationPages")));
+                publication.setIsbn(params.get("publicationIsbn"));
+                publication.setPageNumber(Integer.parseInt(params.get("publicationPages")));
                 publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editors"))));
                 getDataLayer().storePublication(publication);
                 getDataLayer().storePublicationHasAuthor(Integer.parseInt(params.get("authors")), publication.getKey());
