@@ -735,8 +735,10 @@ header .navbar-header-menu {
 
 .caption{
     border-bottom-right-radius:5px;
+    /**
     position:absolute;
     bottom:0px;
+     */
     background-color: black;
     padding-top:20px;
     padding-bottom:20px;

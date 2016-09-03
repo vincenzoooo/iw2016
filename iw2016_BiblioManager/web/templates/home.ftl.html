@@ -17,15 +17,10 @@
                             <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
                                 <figure class="cover-pubb">
                                 <#if item.cover??>
-                                    <img  src= 
-                                            "<#if item.sources.description.equals('copertina')>
-                                                img?file=${item.cover.fileSource.id}
-                                            <#else>
-                                                ${strip_slashes(item.cover.uri)?html}
-                                            </#if>" alt="${strip_slashes(item.cover.description)!'Copertina Default'?html}" />
-                                <#else>
-                                    <img  src= "img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
-                                </#if>
+                        <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
+                    <#else>
+                        <img src= "img/cover-cs.jpg" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
+                    </#if>
                                     <figcaption class="caption">
                                         <#if (item.title?length>45)>${item.title[0..41]?html}...<#else>${item.title?html}</#if>
                                     </figcaption>

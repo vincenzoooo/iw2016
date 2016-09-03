@@ -81,13 +81,13 @@
                 <div id="listPublicationUser" class="row">
                 <#list publications as item>
                     <div class="col-lg-4 homepublication">
-                        <a href="publicationDetails?publicationId=${item.id}" class="publicationDetailsHome">
+                        <a href="publicationDetails?publicationId=${item.key}" class="publicationDetailsHome">
                         <figure class="imageProfile">
                             <#if item.cover??>
-                                <img  src= "<#if item.cover.uploaded>img?file=${item.cover.fileSource.id}<#else>${strip_slashes(item.cover.uri)?html}</#if>" alt="${strip_slashes(item.cover.description)!'Copertina Defualt'?html}" />
-                            <#else>
-                                <img  src= "img/book2.png" alt="Copertina Defualt" />
-                            </#if>
+                        <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
+                    <#else>
+                        <img src= "img/cover-cs.jpg" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
+                    </#if>
                             <figcaption class="caption">
                             <#if (item.title?length>38)>
                                 ${item.title[0..34]?html}...<#else>${item.title?html}

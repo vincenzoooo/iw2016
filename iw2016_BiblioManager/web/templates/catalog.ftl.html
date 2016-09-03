@@ -53,9 +53,9 @@
                     <a href="details?publicationId=${item.key}" class="relative">
                     <figure class="imageCatalog">
                     <#if item.cover??>
-                        <img src= "<#if item.cover.uploaded>img?file=${item.cover.fileSource.id}<#else>${strip_slashes(item.cover.uri)?html}</#if>" alt="${strip_slashes(item.cover.description!'Copertina Default')?html}" />
+                        <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
                     <#else>
-                        <img src= "img/cover-cs.jpg" alt="Copertina Defualt" />
+                        <img src= "img/cover-cs.jpg" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
                     </#if>
                     </figure>
                     </a>
