@@ -273,7 +273,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             SourceImpl source = new SourceImpl(this);
             source.setKey(rs.getInt("idsorgente"));
             source.setType(rs.getString("tipo"));
-            source.setURI(rs.getString("URI"));
+            source.setUri(rs.getString("URI"));
             source.setFormat(rs.getString("formato"));
             source.setDescription(rs.getString("descrizione"));
             return source;
@@ -1394,7 +1394,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                }
                 //TODO: Salvataggio anche per la tabella pubblicazione_has_sorgente
                 uSource.setString(1, source.getType());
-                uSource.setString(2, source.getURI());
+                uSource.setString(2, source.getUri());
                 uSource.setString(3, source.getFormat());
                 uSource.setString(4, source.getDescription());
                 uSource.setInt(5, key);
@@ -1402,7 +1402,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uSource.executeUpdate();
             } else { //insert
                 iSource.setString(1, source.getType());
-                iSource.setString(2, source.getURI());
+                iSource.setString(2, source.getUri());
                 iSource.setString(3, source.getFormat());
                 iSource.setString(4, source.getDescription());
 

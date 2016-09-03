@@ -23,9 +23,9 @@ public interface Source {
 
     void setType(String type);
 
-    String getURI();
+    String getUri();
 
-    void setURI(String uri);
+    void setUri(String uri);
 
     String getFormat();
 

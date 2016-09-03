@@ -37,7 +37,7 @@ public class ComposeSource extends BiblioManagerBaseController {
             if (!validator(params, request, response)) {
                 source = getDataLayer().createSource();
                 source.setType(params.get("sourceType"));
-                source.setURI(params.get("sourceUri"));
+                source.setUri(params.get("sourceUri"));
                 source.setFormat(params.get("sourceFormat"));
                 source.setDescription(params.get("sourceDescription"));
                 getDataLayer().storeSource(source);
@@ -57,7 +57,7 @@ public class ComposeSource extends BiblioManagerBaseController {
             params.put("sourceDescription", Utils.checkString(request.getParameter("sourceDescription")));
             if (!validator(params, request, response)) {
                 source.setType(params.get("sourceType"));
-                source.setURI(params.get("sourceUri"));
+                source.setUri(params.get("sourceUri"));
                 source.setFormat(params.get("sourceFormat"));
                 source.setDescription(params.get("sourceDescription"));
                 getDataLayer().storeSource(source);
