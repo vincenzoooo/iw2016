@@ -129,16 +129,17 @@ public class ComposePublication extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            request.setAttribute("page_title", "Nuova Pubblicazione");
-            List<Author> authors = getDataLayer().getAuthors();
-            List<Editor> editors = getDataLayer().getEditors();
-            List<Keyword> keywords = getDataLayer().getKeywords();
-            List<Source> sources = getDataLayer().getSources();
-            request.setAttribute("authors", authors);
-            request.setAttribute("editors", editors);
-            request.setAttribute("keywords", keywords);
-            request.setAttribute("sources", sources);
-            if (SecurityLayer.checkSession(request) != null) {
+            HttpSession session = SecurityLayer.checkSession(request);
+            if(session != null){
+                request.setAttribute("page_title", "Nuova Pubblicazione");
+                List<Author> authors = getDataLayer().getAuthors();
+                List<Editor> editors = getDataLayer().getEditors();
+                List<Keyword> keywords = getDataLayer().getKeywords();
+                List<Source> sources = getDataLayer().getSources();
+                request.setAttribute("authors", authors);
+                request.setAttribute("editors", editors);
+                request.setAttribute("keywords", keywords);
+                request.setAttribute("sources", sources);
                 if (request.getParameter("submitPublication") != null) {
                     action_composePublication(request, response);
                 }
