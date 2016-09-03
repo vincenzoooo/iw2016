@@ -55,12 +55,12 @@ public class SourceImpl implements Source {
     }
 
     @Override
-    public String getURI() {
+    public String getUri() {
         return uri;
     }
 
     @Override
-    public void setURI(String uri) {
+    public void setUri(String uri) {
         this.uri = uri;
     }
 
@@ -89,7 +89,7 @@ public class SourceImpl implements Source {
         key = source.getKey();
         description = source.getDescription();
         format = source.getFormat();
-        uri = source.getURI();
+        uri = source.getUri();
         type = source.getType();
     }
 }
