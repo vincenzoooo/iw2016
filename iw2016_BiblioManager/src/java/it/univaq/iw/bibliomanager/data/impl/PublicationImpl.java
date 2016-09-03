@@ -102,32 +102,32 @@ public class PublicationImpl implements Publication {
     }
 
     @Override
-    public int getNumberOfLikes() {
+    public int getLike() {
         return like;
     }
 
     @Override
-    public void setNumberOfLikes(int likes) {
+    public void setLike(int likes) {
         this.like += likes;
     }
 
     @Override
-    public String getISBN() {
+    public String getIsbn() {
         return isbn;
     }
 
     @Override
-    public void setISBN(String isbn) {
+    public void setIsbn(String isbn) {
         this.isbn = isbn;
     }
 
     @Override
-    public int getPages() {
+    public int getPageNumber() {
         return pageNumber;
     }
 
     @Override
-    public void setPages(int pages) {
+    public void setPageNumber(int pages) {
         pageNumber = pages;
     }
 
