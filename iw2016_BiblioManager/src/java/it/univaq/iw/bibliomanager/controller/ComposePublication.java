@@ -82,7 +82,7 @@ public class ComposePublication extends BiblioManagerBaseController {
         HttpSession session = SecurityLayer.checkSession(request);
         User user = getDataLayer().getUser((int) session.getAttribute("userid"));
         History history = getDataLayer().createHistory();
-        history.setEntry("Insert new publication");
+        history.setEntry("inserito una pubblicazione");
         history.setType(0);
         history.setUser(user);
         history.setPublication((Publication) request.getAttribute("publication"));
