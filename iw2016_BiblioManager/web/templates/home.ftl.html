@@ -1,7 +1,7 @@
 <div class="container">
     <div class="row ">
         <div class="col-lg-8">
-            <#if role??>
+            <#if uresStatus??>
             <div id="role"></div>
             </#if>
             <#if pageNotFound??>
@@ -14,10 +14,15 @@
                     <#if (lastPublicationsInsert?? && lastPublicationsInsert?size>0)>
                         <#list lastPublicationsInsert as item>
                         <div class="homepublication">
-                            <a href="publicationDetails?publicationId=${item.id}" class="publicationDetailsHome">
+                            <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
                                 <figure class="cover-pubb">
                                 <#if item.cover??>
-                                    <img  src= "<#if item.cover.uploaded>img?file=${item.cover.fileSource.id}<#else>${strip_slashes(item.cover.uri)?html}</#if>" alt="${strip_slashes(item.cover.description)!'Copertina Default'?html}" />
+                                    <img  src= 
+                                            "<#if item.sources.description.equals('copertina')>
+                                                img?file=${item.cover.fileSource.id}
+                                            <#else>
+                                                ${strip_slashes(item.cover.uri)?html}
+                                            </#if>" alt="${strip_slashes(item.cover.description)!'Copertina Default'?html}" />
                                 <#else>
                                     <img  src= "img/cover-cs.jpg" alt="Copertina Default" class="img-thumbnail img-responsive"/>
                                 </#if>
@@ -40,7 +45,7 @@
                     <#if (lastPublicationsUpdate?? && lastPublicationsUpdate?size>0)>
                         <#list lastPublicationsUpdate as item>
                         <div class="homepublication">
-                            <a href="publicationDetails?publicationId=${item.id}" class="publicationDetailsHome">
+                            <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
                                 <figure class="cover-pubb">
                                 <#if item.cover??>
                                     <img src= "<#if item.cover.uploaded>img?file=${item.cover.fileSource.id}<#else>${strip_slashes(item.cover.uri)?html}</#if>" alt="${strip_slashes(item.cover.description)!'Copertina Default'?html}" /> 
