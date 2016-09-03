@@ -29,7 +29,7 @@ public class PublicationImpl implements Publication {
     private String index;
     private int like;
     private int editor_key;
-    private int isbn;
+    private String isbn;
     private int pageNumber;
     private String language;
     private Date publicationDate;
@@ -48,7 +48,7 @@ public class PublicationImpl implements Publication {
         description = "";
         index = "";
         like = 0;
-        isbn = 0;
+        isbn = "";
         pageNumber = 0;
         language = "";
         publicationDate = null;
@@ -112,12 +112,12 @@ public class PublicationImpl implements Publication {
     }
 
     @Override
-    public int getISBN() {
+    public String getISBN() {
         return isbn;
     }
 
     @Override
-    public void setISBN(int isbn) {
+    public void setISBN(String isbn) {
         this.isbn = isbn;
     }
 

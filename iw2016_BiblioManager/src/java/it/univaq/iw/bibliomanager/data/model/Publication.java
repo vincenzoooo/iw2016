@@ -44,9 +44,9 @@ public interface Publication {
 
     void setNumberOfLikes(int likes);
 
-    int getISBN();
+    String getISBN();
 
-    void setISBN(int isbn);
+    void setISBN(String isbn);
 
     int getPages();
 

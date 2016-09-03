@@ -81,6 +81,7 @@ public class ComposeKeyword extends BiblioManagerBaseController {
                 }
                 if (request.getParameter("submitKeyword") != null && request.getAttribute("keywordId") != null) {
                     action_updateKeyword(request, response);
+                    request.removeAttribute("keywordId");
                 }
                 List<Keyword> keywords = getDataLayer().getKeywords();
                 request.setAttribute("keywords", keywords);

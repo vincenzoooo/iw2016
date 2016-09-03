@@ -94,8 +94,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                     "JOIN storico st ON st.pubblicazione = p.idpubblicazione JOIN utente u ON u.idutente = st.utente " + 
                     "WHERE p.isbn LIKE '%?%' AND p.titolo LIKE '%?%' AND a.nome LIKE '%?%' AND a.cognome LIKE '%?%' AND r.data >= ? AND k.nome IN (?) AND lingua LIKE '%?%'"+
                     "ORDER BY ?");
-            this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, indice = ?, n_consigli = ? WHERE idpubblicazione = ?");
-            this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, indice, n_consigli) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, indice = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ? WHERE idpubblicazione = ?");
+            this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, indice, n_consigli, isbn, n_pagine, lingua, data_pubblicazione) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
             this.sSourceById = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE idsorgente = ?");
             this.sSourceByPublication = connection.prepareStatement("SELECT * FROM iw2016.sorgente JOIN pubblicazione_has_sorgente ON idsorgente = sorgente_idsorgente WHERE pubblicazione_idpubblicazione = ?");
@@ -209,9 +209,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             publication.setEditor(getEditor(rs.getInt("editore")));
             publication.setIndex(rs.getString("indice"));
             publication.setNumberOfLikes(rs.getInt("n_consigli"));
-            publication.setISBN(rs.getInt("isbn"));
+            publication.setISBN(rs.getString("isbn"));
             publication.setLanguage(rs.getString("lingua"));
             publication.setPublicationDate(rs.getDate("data_pubblicazione"));
+            publication.setPages(rs.getInt("n_pagine"));
             publication.setEditor(getEditor(rs.getInt("editore")));
             publication.setAuthor(getPublicationAuthors(rs.getInt("idpubblicazione")));
             publication.setSources(getPublicationSources(rs.getInt("idpubblicazione")));
@@ -1220,7 +1221,11 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uPublication.setInt(3, publication.getEditor().getKey());
                 uPublication.setString(4, publication.getIndex());
                 uPublication.setInt(5, publication.getNumberOfLikes());
-                uPublication.setInt(6, key);
+                uPublication.setString(6, publication.getISBN());
+                uPublication.setInt(7, publication.getPages());
+                uPublication.setString(8, publication.getLanguage());
+                uPublication.setDate(9, publication.getPublicationDate());
+                uPublication.setInt(10, key);
 
                 uPublication.executeUpdate();
             } else { //insert
@@ -1229,6 +1234,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 iPublication.setInt(3, publication.getEditor().getKey());
                 iPublication.setString(4, publication.getIndex());
                 iPublication.setInt(5, publication.getNumberOfLikes());
+                iPublication.setString(6, publication.getISBN());
+                iPublication.setInt(7, publication.getPages());
+                iPublication.setString(8, publication.getLanguage());
+                iPublication.setDate(9, publication.getPublicationDate());
 
                 if (iPublication.executeUpdate() == 1) {
                     keys = iPublication.getGeneratedKeys();

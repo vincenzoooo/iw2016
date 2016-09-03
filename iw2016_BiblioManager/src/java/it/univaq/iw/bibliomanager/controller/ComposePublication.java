@@ -36,20 +36,23 @@ public class ComposePublication extends BiblioManagerBaseController {
         try {
             Publication publication = null;
             Map<String, String> params = new HashMap<String, String>();
-            params.put("title", Utils.checkString(request.getParameter("publicationTitle")));
-            params.put("description", Utils.checkString(request.getParameter("publicationDescription")));
-            params.put("language", Utils.checkString(request.getParameter("publicationLanguage")));
-            params.put("date", Utils.checkString(request.getParameter("publicationDate")));
-            params.put("editor", Utils.checkString(request.getParameter("publicationEditor")));
-            params.put("index", Utils.checkString(request.getParameter("publicationIndex")));
-            params.put("editor", Utils.checkString(request.getParameter("editorId")));
-            params.put("author", Utils.checkString(request.getParameter("authorId")));
-            params.put("keywords", Utils.checkString(request.getParameter("keywordId")));
-            params.put("sources", Utils.checkString(request.getParameter("sourceId")));
+            params.put("publicationTitle", Utils.checkString(request.getParameter("publicationTitle")));
+            params.put("publicationDescription", Utils.checkString(request.getParameter("publicationDescription")));
+            params.put("publicationLanguage", Utils.checkString(request.getParameter("publicationLanguage")));
+            params.put("publicationDate", Utils.checkString(request.getParameter("publicationDate")));
+            params.put("publicationEditor", Utils.checkString(request.getParameter("publicationEditor")));
+            params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
+            params.put("publicationISBN", Utils.checkString(request.getParameter("publicationISBN")));
+            params.put("publicationPages", Utils.checkString(request.getParameter("publicationPages")));
+            params.put("publicationLanguage", Utils.checkString(request.getParameter("publicationLanguage")));
+            params.put("editorId", Utils.checkString(request.getParameter("editorId")));
+            params.put("authorId", Utils.checkString(request.getParameter("authorId")));
+            params.put("keywordId", Utils.checkString(request.getParameter("keywordId")));
+            params.put("sourceId", Utils.checkString(request.getParameter("sourceId")));
             if (!validator(params, request, response)) {
-                publication.setTitle(params.get("title"));
-                publication.setDescription(params.get("description"));
-                publication.setIndex(params.get("index"));
+                publication.setTitle(params.get("publicationTitle"));
+                publication.setDescription(params.get("publicationDescription"));
+                publication.setIndex(params.get("publicationIndex"));
                 publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editorId"))));
             }
             getDataLayer().storePublication(publication);

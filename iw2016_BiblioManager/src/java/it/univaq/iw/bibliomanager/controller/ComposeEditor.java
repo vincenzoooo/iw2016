@@ -81,6 +81,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
                 }
                 if (request.getParameter("submitEditor") != null && request.getAttribute("editorId") != null) {
                     action_updateEditor(request, response);
+                    request.removeAttribute("editorId");
                 }
                 List<Editor> editors = getDataLayer().getEditors();
                 request.setAttribute("editors", editors);
