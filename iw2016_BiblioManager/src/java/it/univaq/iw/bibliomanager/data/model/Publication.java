@@ -67,6 +67,10 @@ public interface Publication {
     List<Source> getSources() throws DataLayerException;
 
     void setSources(List<Source> sources);
+    
+    Source getCover() throws DataLayerException;
+    
+    void setCover(Source cover);
 
     List<Reprint> getReprints() throws DataLayerException;
 

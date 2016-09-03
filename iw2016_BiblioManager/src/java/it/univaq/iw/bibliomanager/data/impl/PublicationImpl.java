@@ -34,6 +34,7 @@ public class PublicationImpl implements Publication {
     private String language;
     private Date publicationDate;
     private Editor editor;
+    private Source cover;
     private List<Author> authors;
     private List<Source> sources;
     private List<Keyword> keywords;
@@ -54,6 +55,7 @@ public class PublicationImpl implements Publication {
         publicationDate = null;
         editor_key = 0;
         editor = null;
+        cover = null;
         authors = null;
         sources = null;
         keywords = null;
@@ -151,6 +153,23 @@ public class PublicationImpl implements Publication {
         publicationDate = date;
     }
 
+    @Override
+    public Source getCover() throws DataLayerException {
+        if(cover == null && sources != null){
+            for(Source source : sources){
+                if(source.getDescription().equals("copertina")){
+                    cover = source;
+                }
+            }
+        }
+        return cover;
+    }
+
+    @Override
+    public void setCover(Source cover) {
+        this.cover = cover;
+    }
+    
     @Override
     public Editor getEditor() throws DataLayerException {
         if (editor == null && editor_key > 0) {

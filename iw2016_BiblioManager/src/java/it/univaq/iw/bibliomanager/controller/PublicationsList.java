@@ -30,18 +30,8 @@ public class PublicationsList extends BiblioManagerBaseController {
         TemplateResult res = new TemplateResult(getServletContext());
 
         try {
-            Map<Publication, String> params = new HashMap<Publication, String>();
             List<Publication> publications = getDataLayer().getPublications(orderBy);
-            for(Publication publication : publications){
-                String cover = "";
-                for(Source source : publication.getSources()){
-                    if(source.getDescription().equals("copertina")){
-                        cover = source.getUri();
-                    }
-                }
-                params.put(publication, cover);
-            }
-            request.setAttribute("publications", params);
+            request.setAttribute("publications", publications);
             res.activate("catalog.ftl.html", request, response);
         } catch (ServletException | DataLayerException ex) {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage());
