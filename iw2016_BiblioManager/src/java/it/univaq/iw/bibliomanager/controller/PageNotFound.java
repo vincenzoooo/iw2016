@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author Luca Di Chiro , Luca Mangifesta ;
+ * @author Angelo Iezzi, Vincenzo Lanzieri;
  */
 public class PageNotFound extends BiblioManagerBaseController {
 

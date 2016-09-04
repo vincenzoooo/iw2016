@@ -7,6 +7,7 @@
 package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.bibliomanager.data.model.Reprint;
+import it.univaq.iw.bibliomanager.data.model.Source;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
@@ -16,6 +17,8 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -23,60 +26,46 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi;
  */
 public class ComposeReprint extends BiblioManagerBaseController {
 
-    private Reprint action_composeReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
-        Reprint reprint = null;
+    private void action_composeReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
         try {
+            Reprint reprint = null;
             Map<String, String> params = new HashMap<String, String>();
-            params.put("number", Utils.checkString(request.getParameter("reprintNumber")));
-            params.put("date", Utils.checkString(request.getParameter("reprintDate")));
+            params.put("reprintNumber", Utils.checkString(request.getParameter("reprintNumber")));
+            params.put("reprintDate", Utils.checkString(request.getParameter("reprintDate")));
             if (!validator(params, request, response)) {
                 DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                java.util.Date date = format.parse(params.get("date"));
+                java.util.Date date = format.parse(params.get("reprintDate"));
                 reprint = getDataLayer().createReprint();
-                reprint.setNumber(Integer.parseInt(params.get("number")));
+                reprint.setNumber(Integer.parseInt(params.get("reprintNumber")));
                 reprint.setDate(new java.sql.Date(date.getTime()));
                 getDataLayer().storeReprint(reprint);
             }
         } catch (NumberFormatException | ParseException | DataLayerException ex) {
-            action_error(request, response, "Errore nell'elaborare i dati: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare la ristampa: " + ex.getMessage());
         }
-        return reprint;
     }
 
-    private Reprint action_updateReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
+    private void action_updateReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
         Reprint reprint = null;
         try {
-            reprint = getDataLayer().getReprint(Integer.parseInt("idreprint"));
+            reprint = getDataLayer().getReprint(Integer.parseInt("reprintId"));
             Map<String, String> params = new HashMap<String, String>();
-            params.put("number", Utils.checkString(request.getParameter("reprintNumber")));
-            params.put("date", Utils.checkString(request.getParameter("reprintDate")));
+            params.put("reprintNumber", Utils.checkString(request.getParameter("reprintNumber")));
+            params.put("reprintDate", Utils.checkString(request.getParameter("reprintDate")));
             if (!validator(params, request, response)) {
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                java.util.Date date = format.parse(params.get("date"));
-                reprint.setNumber(Integer.parseInt(params.get("number")));
-                reprint.setDate(new java.sql.Date(date.getTime()));
+                reprint.setNumber(Integer.parseInt(params.get("reprintNumber")));
+                DateFormat format = new SimpleDateFormat("dd-mm-yyyy", Locale.ITALIAN);
+                java.util.Date date = format.parse(params.get("reprintDate"));
+                java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+                reprint.setDate(sqlDate);
                 getDataLayer().storeReprint(reprint);
             }
         } catch (NumberFormatException | ParseException | DataLayerException ex) {
-            action_error(request, response, "Errore nell'elaborare i dati: " + ex.getMessage());
-        }
-        return reprint;
-    }
-
-    @Override
-    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        if (SecurityLayer.checkSession(request) == null) {
-            request.setAttribute("page_title", "Login to Biblio");
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("login.ftl.html", request, response);
-        }
-        else{
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("reprint.ftl.html", request, response);//DA impostare il nome effettivamente usato
+            action_error(request, response, "Errore nel salvare la ristampa:: " + ex.getMessage());
         }
     }
     
@@ -95,25 +84,28 @@ public class ComposeReprint extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Gestione Ristampa");
             TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
-                if (request.getParameter("idreprint") != null) {
-                    Reprint reprint = getDataLayer().getReprint(Integer.parseInt(request.getParameter("idreprint")));
+                if (request.getParameter("reprintId") != null) {
+                    Reprint reprint = getDataLayer().getReprint(Integer.parseInt(request.getParameter("reprintId")));
                     request.setAttribute("reprint", reprint);
                     res.activate("reprint.ftl.html", request, response);//DA impostare il nome effettivamente usato
                 }
-                if (request.getParameter("submitReprint") != null && request.getParameter("idreprint") != null) {
-                    Reprint reprint = action_updateReprint(request, response);
-                    request.setAttribute("reprint", reprint);
-                    res.activate("reprint.ftl.html", request, response);//DA impostare il nome effettivamente usato
+                if (request.getParameter("submitReprint") != null && request.getParameter("reprintId") != null) {
+                    action_updateReprint(request, response);
+                    request.removeAttribute("reprintId");
                 }
-                //TODO: Verificarne la correttezza
-                if (request.getParameter("submitReprint") != null && request.getParameter("idreprint") == null) {
+                if (request.getParameter("submitReprint") != null && request.getParameter("reprintId") == null) {
                     action_composeReprint(request, response);
                 }
+                if (request.getParameter("publicationId") !=null){
+                    List<Reprint> reprints = getDataLayer().getReprints(Integer.parseInt(request.getParameter("publicationId")));
+                    request.setAttribute("reprints", reprints);
+                }
+                res.activate("reprint.ftl.html", request, response);
             } else {
                 action_default(request, response);
             }
         } catch (Exception ex) {
-            action_error(request, response, "OPS");
+            action_error(request, response, "Errore: " + ex.getMessage());
         }
 
     }

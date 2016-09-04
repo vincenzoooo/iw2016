@@ -7,7 +7,7 @@
                 <div class="form-group">
                     <label for="inputTitle" class="col-sm-2 control-label bold">Titolo</label>
                     <div class="col-sm-10 col-lg-6">
-                        <input class="form-control" name="publicationTitle" value="${publicationTitle!''?html}"  required='required' placeholder="Inserisci il titolo" />
+                        <input type="text" class="form-control" name="publicationTitle" value="${publicationTitle!''?html}"  required='required' placeholder="Inserisci il titolo" />
                     </div>
                 </div>
                 <#if errorTitle??>
@@ -18,7 +18,7 @@
                 <div class="form-group">
                     <label for="inputIsbn" class="col-sm-2 control-label bold">ISBN (13 cifre)</label>
                     <div class="col-sm-10 col-lg-6">
-                        <input class="form-control" name="publicationIsbn" value="${publicationIsbn!''?html}"  required='required' placeholder="Inserisci l'isbn" />
+                        <input type="text" class="form-control" name="publicationIsbn" value="${publicationIsbn!''?html}"  required='required' placeholder="Inserisci l'isbn" />
                     </div>
                 </div>
                 <#if errorIsbn??>
@@ -29,7 +29,7 @@
                 <div class="form-group">
                     <label for="inputPageNumber" class="col-sm-2 control-label bold">Numero pagine</label>
                     <div class="col-sm-10 col-lg-6">
-                        <input class="form-control" name="publicationPages" value="${publicationPages!''?html}"  required='required' placeholder="Inserisci il numero delle pagine" />
+                        <input type="text" class="form-control" name="publicationPages" value="${publicationPages!''?html}"  required='required' placeholder="Inserisci il numero delle pagine" />
                     </div>
                 </div>
                 <#if errorPageNumber??>
@@ -51,7 +51,7 @@
                 <div class="form-group">
                     <label for="inputPublicationDate" class="col-sm-2 control-label bold">Data di pubblicazione</label>
                     <div class="col-sm-10 col-lg-6">
-                        <input class="form-control" name="publicationDate" value="${publicationDate!''?html}" placeholder="Inserisci l'anno di pubblicazione" />
+                        <input type="text" class="form-control" name="publicationDate" value="${publicationDate!''?html}" placeholder="Inserisci l'anno di pubblicazione" />
                     </div>
                 </div>
                 <#if errorPublicationDate??>
@@ -62,7 +62,7 @@
                 <div class="form-group">
                     <label for="inputLanguage" class="col-sm-2 control-label bold">Lingua</label>
                     <div class="col-sm-10 col-lg-6">
-                        <input class="form-control" name="publicationLanguage" value="${publicationLanguage!''?html}"  required='required' placeholder="Inserisci la lingua" />
+                        <input type="text" class="form-control" name="publicationLanguage" value="${publicationLanguage!''?html}"  required='required' placeholder="Inserisci la lingua" />
                     </div>
                 </div>
                 <#if errorLanguage??>
@@ -134,6 +134,12 @@
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <a href="source" class="btn btn-default">Aggiungi risorse</a>
+                    </div>
+                </div> 
+                
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <a href="reprint" class="btn btn-default">Aggiungi ristampe</a>
                     </div>
                 </div> 
                 

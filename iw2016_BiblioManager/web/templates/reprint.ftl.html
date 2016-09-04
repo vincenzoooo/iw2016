@@ -1,0 +1,49 @@
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="center">Gestione ristampe</h1>
+            
+            <h3 class="row"> Aggiungi una ristampa</h3>
+            <form method="post" action="reprint" id="formReprint" class="form-horizontal">     
+                <div class="form-group">
+                    <label for="inputNumber" class="col-sm-2 control-label bold">Numero</label>
+                    <div class="col-sm-6">
+                        <input id="reprintNumber" class="form-control" name="reprintNumber" value="${reprintNumber!''?html}" placeholder="Inserisci numero ristampa" />
+                    </div>
+                </div>        
+                <#if errorReprintNumber??>
+                <div class="error">
+                    ${errorReprintNumber?html}
+                </div>
+                </#if>
+                
+                <div class="form-group">
+                    <label for="inputSurname" class="col-sm-2 control-label bold">Data ristampa</label>
+                    <div class="col-sm-6">
+                        <input id="reprintDate" class="form-control" name="reprintDate" value="${reprintDate!''?html}" placeholder="Inserisci data ristampa" />
+                    </div>
+                </div>        
+                <#if errorReprintDate??>
+                <div class="error">
+                    ${errorReprintDate?html}
+                </div>
+                </#if>
+                
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <span>
+                            <input value="Aggiungi" name="submitReprint" type="submit" class="btn btn-default"/>
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <a href="publication" class="btn btn-default" name="submitPublication">Torna indietro</a>
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+    </div>
+</div>

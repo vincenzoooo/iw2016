@@ -22,7 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri;
  */
 public class ComposeSource extends BiblioManagerBaseController {
 
@@ -49,7 +49,7 @@ public class ComposeSource extends BiblioManagerBaseController {
 
     private void action_updateSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
-            Source source = getDataLayer().getSource(Integer.parseInt(request.getParameter("idSource")));
+            Source source = getDataLayer().getSource(Integer.parseInt(request.getParameter("sourceId")));
             Map<String, String> params = new HashMap<String, String>();
             params.put("sourceType", Utils.checkString(request.getParameter("sourceType")));
             params.put("sourceUri", Utils.checkString(request.getParameter("sourceUri")));
@@ -82,10 +82,10 @@ public class ComposeSource extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Gestione Sorgenti");
             TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
-                if (request.getParameter("submitSource") != null && request.getParameter("idSource") == null) {
+                if (request.getParameter("submitSource") != null && request.getParameter("sourceId") == null) {
                     action_composeSource(request, response);
                 }
-                if (request.getParameter("submitSource") != null && request.getParameter("idSource") != null) {
+                if (request.getParameter("submitSource") != null && request.getParameter("sourceId") != null) {
                     action_updateSource(request, response);
                 }
                 List<Source> sources = getDataLayer().getSources();
