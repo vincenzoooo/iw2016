@@ -1,10 +1,12 @@
 <div class="container">
     <div class="row ">
         <div class="col-lg-12">
+            <!--
             <form class="row" method="post" action="usersList">
+             
                 <div class="col-lg-3">
                     <div>Ordina</div>
-                    <!--
+                    
                     <select name="userType" id="typeUser">
                         <option value='2' <#if userType?? && userType==2> selected='selected'</#if>>
                             Tutti gli utenti
@@ -16,11 +18,11 @@
                             Utenti attivi
                         </option>
                     </select>
-                    -->
+                    
                 </div>
                 <div class="col-lg-3">
                     <div>per:</div> 
-                    <!--
+
                     <select name='sortBy' id='userOrdering'>
                         <option value='0' <#if sortBy?? && sortBy==0> selected='selected'</#if>>
                             Cognome
@@ -29,11 +31,11 @@
                             Numero azioni effettuate
                         </option>
                     </select>
-                    -->
+                   
                 </div>
                 <div class="col-lg-3">
                     <div>in modo:</div>
-                    <!--
+
                     <select name='sortType' id='typeUserOrdering'>
                         <option value='0' <#if sortType?? && sortType==0> selected='selected'</#if>>
                             Ascendente
@@ -42,59 +44,82 @@
                             Discendente
                         </option>
                     </select>
-                    -->
+                 
                 </div>
                 <div class="margin-to-10 row">
                     <input type="submit" name="ordering" value="Ordina"/>
                 </div>
             </form>
+            -->
         </div>
     </div>
     <div class="row">
         <div class="col-lg-12">
+            <div class="users-letter">
+                <ul class="filtro list-inline list-unstyled">
+                    <li><a class="selected" href="community">Tutti</a></li>
+                    <li><a style="color:black;">|</a></li>
+                    <li><a class="first" href="community?filter=a">a</a></li>
+                    <li><a class="" href="community?filter=b">b</a></li> 
+                    <li><a class="" href="community?filter=c">c</a></li> 
+                    <li><a class="" href="community?filter=d">d</a></li> 
+                    <li><a class="" href="community?filter=e">e</a></li> 
+                    <li><a class="" href="community?filter=f">f</a></li> 
+                    <li><a class="" href="community?filter=g">g</a></li> 
+                    <li><a class="" href="community?filter=h">h</a></li> 
+                    <li><a class="" href="community?filter=i">i</a></li> 
+                    <li><a class="" href="community?filter=j">j</a></li> 
+                    <li><a class="" href="community?filter=k">k</a></li> 
+                    <li><a class="" href="community?filter=l">l</a></li>
+                    <li><a class="" href="community?filter=m">m</a></li>
+                    <li><a class="" href="community?filter=n">n</a></li> 
+                    <li><a class="" href="community?filter=o">o</a></li>
+                    <li><a class="" href="community?filter=p">p</a></li> 
+                    <li><a class="" href="community?filter=q">q</a></li> 
+                    <li><a class="" href="community?filter=r">r</a></li>
+                    <li><a class="" href="community?filter=s">s</a></li> 
+                    <li><a class="" href="community?filter=t">t</a></li> 
+                    <li><a class="" href="community?filter=u">u</a></li> 
+                    <li><a class="" href="community?filter=v">v</a></li>
+                    <li><a class="" href="community?filter=w">w</a></li> 
+                    <li><a class="" href="community?filter=y">y</a></li> 
+                    <li><a class="" href="community?filter=z">z</a></li>				
+                </ul>
+            </div>
             <#if (users?? && users?size>0)>
-            <table id='allUsers'>
-                <tr>
-                    <th>
-                        Nome
-                    </th>
-                    <th>
-                        Cognome
-                    </th>
-                    <th>
-                        Ruolo
-                    </th>
-                    <th>
+            <span class="bold">Utente amministratore</span>
+            <ul class="nodecoration">
+            <#list users as item>
+            <#if (item.state==0)>
+                <li class="nodecoration">
+                    <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
+                </li>
 
-                    </th>
-                </tr>
-                <#list users as item>
-                    <tr>
-                        <td>
-                            ${strip_slashes(item.name)!"''"?html}
-                        </td>
-                        <td>
-                            ${strip_slashes(item.surname)!"''"?html}
-                        </td>
-                        <td>
-                            <#switch strip_slashes(item.state)!"''"?html>
-                                <#case "0">
-                                    Amministratore
-                                <#break>
-                                <#case "1">
-                                    Utente attivo
-                                <#break>
-                                <#case "2">
-                                    Utente passivo
-                                <#break>
-                            </#switch>
-                        </td>
-                        <td>
-                            <a href="profile?userid=${item.key}">Vai alla scheda utente</a>
-                        </td>
-                    </tr>
-                </#list>
-            </table>
+            </#if>
+            </#list>
+            </ul>
+            <span class="bold">Utenti Attivi</span>
+            <ul class="nodecoration">
+            <#list users as item>
+            <#if (item.state==1)>
+                <li class="nodecoration">
+                    <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
+                </li>
+
+            </#if>
+            </#list>
+            </ul>
+            <span class="bold">Utenti passivi</span>
+            <ul class="nodecoration">
+            <#list users as item>
+            <#if (item.state==2)>
+                <li class="nodecoration">
+                    <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
+                </li>
+
+            </#if>
+            </#list>
+            </ul>
             <#else>
             <span class="bold">Nessun utente presente.</span>
             </#if>
