@@ -40,7 +40,7 @@ public class PublicationDetails extends BiblioManagerBaseController {
         HttpSession session = SecurityLayer.checkSession(request);
         TemplateResult res = new TemplateResult(getServletContext());
         //TODO: Check!!!!
-        User author = getDataLayer().getUser(Integer.parseInt(session.getAttribute("userid").toString()));
+        User author = getDataLayer().getUser(Integer.parseInt(session.getAttribute("userId").toString()));
         Publication publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("publicationId")));
         Review review = getDataLayer().createReview();
         review.setText(request.getParameter("reviewText"));

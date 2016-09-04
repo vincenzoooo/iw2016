@@ -62,7 +62,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
 
     private void action_updateHistory(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         HttpSession session = SecurityLayer.checkSession(request);
-        User user = getDataLayer().getUser((int) session.getAttribute("userid"));
+        User user = getDataLayer().getUser((int) session.getAttribute("userId"));
         History history = getDataLayer().createHistory();
         history.setEntry("Update");
         history.setType(1);

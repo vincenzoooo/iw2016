@@ -41,7 +41,7 @@ public class UserList extends BiblioManagerBaseController {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
-                User active = getDataLayer().getUser((int) session.getAttribute("userid"));
+                User active = getDataLayer().getUser((int) session.getAttribute("userId"));
                 if (active != null && active.getState() < 2 && request.getParameter("user") != null) {
                     User user = getDataLayer().getUser(Integer.parseInt(request.getParameter("user")));
                     if (user.getState() == 2) {
@@ -60,7 +60,7 @@ public class UserList extends BiblioManagerBaseController {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
-                User admin = getDataLayer().getUser((int) session.getAttribute("userid"));
+                User admin = getDataLayer().getUser((int) session.getAttribute("userId"));
                 if (admin != null && admin.getState() == 0 && request.getParameter("user") != null) {
                     User user = getDataLayer().getUser(Integer.parseInt(request.getParameter("user")));
                     if (user.getState() == 1) {
@@ -88,7 +88,7 @@ public class UserList extends BiblioManagerBaseController {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
-                User user = getDataLayer().getUser((int) session.getAttribute("userid"));
+                User user = getDataLayer().getUser((int) session.getAttribute("userId"));
                 request.setAttribute("me", user);
                 if(user.getState() != 2 && request.getParameter("op") != null){
                     if (Integer.parseInt(request.getParameter("op")) == 1) {

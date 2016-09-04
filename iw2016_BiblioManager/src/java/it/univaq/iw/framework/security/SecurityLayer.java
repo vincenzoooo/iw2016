@@ -29,7 +29,7 @@ public class SecurityLayer {
 
         //check sulla validità  della sessione
         //second, check is the session contains valid data
-        if (s.getAttribute("userid") == null) {
+        if (s.getAttribute("userId") == null) {
             check = false;
             //check sull'ip del client
             //check if the client ip chaged
@@ -80,12 +80,12 @@ public class SecurityLayer {
         }
     }
 
-    public static HttpSession createSession(HttpServletRequest request, String username, int userid, int userStatus) {
+    public static HttpSession createSession(HttpServletRequest request, String username, int userId, int userStatus) {
         HttpSession s = request.getSession(true);
         s.setAttribute("username", username);
         s.setAttribute("ip", request.getRemoteHost());
         s.setAttribute("inizio-sessione", Calendar.getInstance());
-        s.setAttribute("userid", userid);
+        s.setAttribute("userId", userId);
         s.setAttribute("userStatus", userStatus);
         return s;
     }

@@ -32,12 +32,11 @@ public class Profile extends BiblioManagerBaseController {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
             int userKey;
-            if (request.getParameter("userid") != null) {
-                userKey = Integer.parseInt(request.getParameter("userid"));
-                //TODO: Gestire la modifica in caso non si è il proprietario del profilo
+            if (request.getParameter("userId") != null) {
+                userKey = Integer.parseInt(request.getParameter("userId"));
                 request.setAttribute("displaynone", "display:none");
             } else {
-                userKey = (int) session.getAttribute("userid");
+                userKey = (int) session.getAttribute("userId");
             }
             User user = getDataLayer().getUser(userKey);
             List<Publication> publications = new ArrayList();
@@ -62,7 +61,7 @@ public class Profile extends BiblioManagerBaseController {
     private void action_save(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException, NoSuchAlgorithmException {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
-            int userKey = (int) session.getAttribute("userid");
+            int userKey = (int) session.getAttribute("userId");
             User user = getDataLayer().getUser(userKey);
             TemplateResult res = new TemplateResult(getServletContext());
             if (!validator(request, response)) {

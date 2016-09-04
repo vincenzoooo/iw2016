@@ -80,7 +80,7 @@ public class ComposePublication extends BiblioManagerBaseController {
 
     private void action_composeHistory(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         HttpSession session = SecurityLayer.checkSession(request);
-        User user = getDataLayer().getUser((int) session.getAttribute("userid"));
+        User user = getDataLayer().getUser((int) session.getAttribute("userId"));
         History history = getDataLayer().createHistory();
         history.setEntry("inserito una pubblicazione");
         history.setType(0);
