@@ -173,7 +173,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>publicationResearch</servlet-name>
-        <url-pattern>/publicationResearch</url-pattern>
+        <url-pattern>/research</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>publicationsList</servlet-name>
