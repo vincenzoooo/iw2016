@@ -51,8 +51,8 @@ public class Utils {
         return var == null || var.trim().isEmpty();
     }
 
-    public static Object getArrayParameter(Map<String, Object> list, String paramName){
-        Object result = null;
+    public static String getArrayParameter(Map<String, String> list, String paramName){
+        String result = null;
         if(list != null && !isNullOrEmpty(paramName) && !list.isEmpty() && list.containsKey(paramName)){
             result = list.get(paramName);
         }
