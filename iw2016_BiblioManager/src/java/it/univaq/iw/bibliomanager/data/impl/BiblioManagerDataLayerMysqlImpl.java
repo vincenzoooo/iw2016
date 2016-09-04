@@ -314,6 +314,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             user.setName(rs.getString("nome"));
             user.setSurname(rs.getString("cognome"));
             user.setEmail(rs.getString("email"));
+            user.setState(rs.getInt("stato"));
             return user;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
