@@ -42,8 +42,8 @@ public class UserList extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 User active = getDataLayer().getUser((int) session.getAttribute("userid"));
-                if (active != null && active.getState() < 2 && request.getParameter("userSelected") != null) {
-                    User user = getDataLayer().getUser(request.getParameter("userSelected"));
+                if (active != null && active.getState() < 2 && request.getParameter("user") != null) {
+                    User user = getDataLayer().getUser(request.getParameter("user"));
                     if (user.getState() == 2) {
                         user.setState(1);
                     }
@@ -60,8 +60,8 @@ public class UserList extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 User admin = getDataLayer().getUser((int) session.getAttribute("userid"));
-                if (admin != null && admin.getState() == 0 && request.getParameter("userSelected") != null) {
-                    User user = getDataLayer().getUser(request.getParameter("userSelected"));
+                if (admin != null && admin.getState() == 0 && request.getParameter("user") != null) {
+                    User user = getDataLayer().getUser(request.getParameter("user"));
                     if (user.getState() == 1) {
                         user.setState(2);
                     }
@@ -87,10 +87,12 @@ public class UserList extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 User user = getDataLayer().getUser((int) session.getAttribute("userid"));
-                if (user.getState() != 2 && Integer.parseInt(request.getParameter("op")) == 1) {
-                    action_upgrade(request, response);
-                } else {
-                    action_downgrade(request, response);
+                if(user.getState() != 2 && request.getParameter("op") != null){
+                    if (Integer.parseInt(request.getParameter("op")) == 1) {
+                        action_upgrade(request, response);
+                    } else {
+                        action_downgrade(request, response);
+                    }
                 }
                 action_list(request, response);
             } else {

@@ -92,7 +92,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                     "JOIN autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione JOIN autore a ON a.idautore = ap.autore_idautore JOIN pubblicazione_has_sorgente ps ON ps.pubblicazione_idpubblicazione = p.idpubblicazione " + 
                     "JOIN sorgente sr ON sr.idsorgente = ps.sorgente_idsorgente JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword " +
                     "JOIN storico st ON st.pubblicazione = p.idpubblicazione JOIN utente u ON u.idutente = st.utente " + 
-                    "WHERE p.isbn LIKE '%?%' AND p.titolo LIKE '%?%' AND a.nome LIKE '%?%' AND a.cognome LIKE '%?%' AND r.data >= ? AND k.nome IN ('?') AND lingua LIKE '%?%'"+
+                    "WHERE p.isbn LIKE ? AND p.titolo LIKE ? AND concat(a.nome, a.cognome) LIKE ? AND e.nome LIKE ? AND k.nome LIKE ? AND lingua LIKE ? AND  AND p.data_pubblicazione >= ? AND  AND p.data_pubblicazione < ?"+
                     "ORDER BY ?");
             this.sPublicationsByISBN = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE isbn LIKE ('%?%')");
             this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, indice = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ? WHERE idpubblicazione = ?");
@@ -611,14 +611,16 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         List<Publication> result = new ArrayList();
         ResultSet rs = null;
         try {
-            sPublicationsByFilters.setString(1, Utils.getArrayParameter(filters, "isbn"));
-            sPublicationsByFilters.setString(2, Utils.getArrayParameter(filters, "titolo"));
-            sPublicationsByFilters.setString(3, Utils.getArrayParameter(filters, "autore_nome"));
-            sPublicationsByFilters.setString(4, Utils.getArrayParameter(filters, "autore_cognome"));
-            sPublicationsByFilters.setString(5, Utils.getArrayParameter(filters, "data"));
-            sPublicationsByFilters.setString(6, Utils.getArrayParameter(filters, "keyword_nome"));
-            sPublicationsByFilters.setString(7, Utils.getArrayParameter(filters, "lingua"));
-            sPublicationsByFilters.setString(8, Utils.getArrayParameter(filters, "order_by"));
+            int year = Integer.parseInt(Utils.getArrayParameter(filters, "publicationYear")) + 1;
+            sPublicationsByFilters.setString(1, Utils.getArrayParameter(filters, "publicationIsbn"));
+            sPublicationsByFilters.setString(2, Utils.getArrayParameter(filters, "publicationTitle"));
+            sPublicationsByFilters.setString(3, Utils.getArrayParameter(filters, "publicationAuthor"));
+            sPublicationsByFilters.setString(4, Utils.getArrayParameter(filters, "publicationEditor"));
+            sPublicationsByFilters.setString(5, Utils.getArrayParameter(filters, "publicationKeyword"));
+            sPublicationsByFilters.setString(6, Utils.getArrayParameter(filters, "publicationLanguage"));
+            sPublicationsByFilters.setString(7, Utils.getArrayParameter(filters, "publicationYear"));
+            sPublicationsByFilters.setString(8, String.valueOf(year));
+            sPublicationsByFilters.setString(9, Utils.getArrayParameter(filters, "order_by"));
             rs = sPublicationsByFilters.executeQuery();
             while (rs.next()) {
                 result.add(getPublication(rs.getInt("idpubblicazione")));
