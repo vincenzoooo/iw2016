@@ -129,8 +129,7 @@ public class ComposePublication extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            HttpSession session = SecurityLayer.checkSession(request);
-            if(session != null){
+            if(SecurityLayer.checkSession(request) != null){
                 request.setAttribute("page_title", "Nuova Pubblicazione");
                 List<Author> authors = getDataLayer().getAuthors();
                 List<Editor> editors = getDataLayer().getEditors();
@@ -142,6 +141,9 @@ public class ComposePublication extends BiblioManagerBaseController {
                 request.setAttribute("sources", sources);
                 if (request.getParameter("submitPublication") != null) {
                     action_composePublication(request, response);
+                }
+                if (request.getParameter("addEditor") != null) {
+                    action_redirect(request, response, "/editor");
                 }
                 TemplateResult res = new TemplateResult(getServletContext());
                 res.activate("publication.ftl.html", request, response);

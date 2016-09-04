@@ -32,16 +32,18 @@ public class ComposeReprint extends BiblioManagerBaseController {
 
     private void action_composeReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
         try {
-            Reprint reprint = null;
+            Reprint reprint = getDataLayer().createReprint();
             Map<String, String> params = new HashMap<String, String>();
             params.put("reprintNumber", Utils.checkString(request.getParameter("reprintNumber")));
             params.put("reprintDate", Utils.checkString(request.getParameter("reprintDate")));
             if (!validator(params, request, response)) {
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                reprint.setNumber(Integer.parseInt(params.get("reprintNumber")));
+                DateFormat format = new SimpleDateFormat("dd-mm-yyyy", Locale.ITALIAN);
                 java.util.Date date = format.parse(params.get("reprintDate"));
+                java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 reprint = getDataLayer().createReprint();
                 reprint.setNumber(Integer.parseInt(params.get("reprintNumber")));
-                reprint.setDate(new java.sql.Date(date.getTime()));
+                reprint.setDate(sqlDate);
                 getDataLayer().storeReprint(reprint);
             }
         } catch (NumberFormatException | ParseException | DataLayerException ex) {

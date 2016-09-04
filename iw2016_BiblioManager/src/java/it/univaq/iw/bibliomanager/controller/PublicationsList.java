@@ -28,7 +28,6 @@ public class PublicationsList extends BiblioManagerBaseController {
     private void action_list(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String orderBy = request.getParameter("orderdBy") != null ? request.getParameter("orderdBy") : "titolo";
         TemplateResult res = new TemplateResult(getServletContext());
-
         try {
             List<Publication> publications = getDataLayer().getPublications(orderBy);
             request.setAttribute("publications", publications);
@@ -37,7 +36,7 @@ public class PublicationsList extends BiblioManagerBaseController {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage());
         }
     }
-
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
