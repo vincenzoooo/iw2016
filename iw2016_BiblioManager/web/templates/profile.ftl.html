@@ -45,15 +45,16 @@
                             Ruolo:
                         </span>
                         <span class="" id="userrole">
-                            <#switch user.state>
-                                <#case 0>
+                            <#switch strip_slashes(user.state)!"''"?html>
+                                <#case "0">
                                     Amministratore
                                 <#break>
-                                <#case 1>
+                                <#case "1">
                                     Utente attivo
                                 <#break>
-                                <#default>
+                                <#case "2">
                                     Utente passivo
+                                <#break>
                             </#switch>
                         </span>
                     </div>
@@ -71,52 +72,49 @@
             
             <div class="row">
                 <div class="col-lg-12">
-                   
+                    <h2 id="link">Pubblicazioni inserite dall'utente</h2>
+                    <#if (publications?? && publications?size>0) >
+                    <div id="listPublicationUser" class="row">
+                    <#list publications as item>
+                        <div class="col-lg-4 userPublication">
+                            <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
+                                <figure class="cover-pubb">
+                                    <#if item.cover??>
+                                    <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
+                                    <#else>
+                                    <img src= "img/cover-cs.jpg" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
+                                    </#if>
+                                    <figcaption class="caption">
+                                        <#if (item.title?length>38)>
+                                            ${item.title[0..34]?html}...<#else>${item.title?html}
+                                        </#if>
+                                    </figcaption>
+                                </figure>
+                            </a>
+                        </div>
+                    </#list>
+                    </div>
+                     <!--
+                    <#if (totpages?? && totpages>1)>
+                        <div class="row clear padding10">Vai alla pagina:         
+                            <span id="paging">
+                                <#list 1..totpages as page>
+                                <#if (page == curpage)>
+                                <span class="pagerCurrent">${page}</span>
+                                <#else>
+                                <a class="pagerLink" href="?page=${page}&userId=${user.id}#link">${page}</a>
+                                </#if>       
+                                </#list>
+                            </span>
+                        </div>
+                    </#if>
+                     -->
+                    <#else>
+                    <span class='bold'>L'utente non ha inserito nessuna pubblicazione.</span>
+                    </#if>
                 </div>
             </div>
-               
-            <!--
-            <h2 id="link">Pubblicazioni inserite dall'utente</h2>
-            <#if (publications?? && publications?size>0) >
-                <div id="listPublicationUser" class="row">
-                <#list publications as item>
-                    <div class="col-lg-4 homepublication">
-                        <a href="publicationDetails?publicationId=${item.key}" class="publicationDetailsHome">
-                        <figure class="imageProfile">
-                            <#if item.cover??>
-                        <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
-                    <#else>
-                        <img src= "img/cover-cs.jpg" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
-                    </#if>
-                            <figcaption class="caption">
-                            <#if (item.title?length>38)>
-                                ${item.title[0..34]?html}...<#else>${item.title?html}
-                            </#if>
-                            </figcaption>
-                        </figure>
-                        </a>
-                    </div>
-                </#list>
-                </div>
 
-                <#if (totpages?? && totpages>1)>
-                    <div class="row clear padding10">Vai alla pagina:         
-                        <span id="paging">
-                            <#list 1..totpages as page>
-                            <#if (page == curpage)>
-                            <span class="pagerCurrent">${page}</span>
-                            <#else>
-                            <a class="pagerLink" href="?page=${page}&userId=${user.id}#link">${page}</a>
-                            </#if>       
-                            </#list>
-                        </span>
-                    </div>
-                </#if> 
-                <#else>
-                <div>
-                   L'utente non ha inserito nessuna pubblicazione.
-                </div>
-            </#if>
             <h2>Ultime azioni effettuate</h2>
             <#if (historyUser?? && historyUser?size>0)>
                 <table >
@@ -125,7 +123,6 @@
                             <th>
                                 Timestamp
                             </th>
-
                             <th>
                                 Descrizione
                             </th>
@@ -157,7 +154,7 @@
             <#else>
                 Profilo utente non disponibile
             </#if>
-            -->
+
         </div>
     </div>
 </div>

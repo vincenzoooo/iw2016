@@ -9,26 +9,28 @@
             <#else>
             <div  id="last-insert">
                 <div class="row">  
-                    <h1 class="center">Ultime pubblicazioni inserite</h1>
-                    <div class="col-lg-4">
-                    <#if (lastPublicationsInsert?? && lastPublicationsInsert?size>0)>
-                        <#list lastPublicationsInsert as item>
-                        <div class="homepublication">
-                            <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
-                                <figure class="cover-pubb">
-                                <#if item.cover??>
-                        <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
-                    <#else>
-                        <img src= "img/cover-cs.jpg" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
-                    </#if>
-                                    <figcaption class="caption">
-                                        <#if (item.title?length>45)>${item.title[0..41]?html}...<#else>${item.title?html}</#if>
-                                    </figcaption>
-                                </figure>
-                            </a>
+                    <div class="col-lg-12">
+                        <h1 class="center">Ultime pubblicazioni inserite</h1>
+                        <#if (lastPublicationsInsert?? && lastPublicationsInsert?size>0)>
+                        <div id="homePublication" class="row">
+                            <#list lastPublicationsInsert as item>
+                            <div class="col-lg-4">
+                                <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
+                                    <figure class="cover-pubb">
+                                        <#if item.cover??>
+                                        <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
+                                        <#else>
+                                        <img src= "img/cover-cs.jpg" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
+                                        </#if>
+                                        <figcaption class="caption">
+                                            <#if (item.title?length>45)>${item.title[0..41]?html}...<#else>${item.title?html}</#if>
+                                        </figcaption>
+                                    </figure>
+                                </a>
+                            </div>
+                            </#list>
                         </div>
-                        </#list>
-                    </#if>
+                        </#if>
                     </div>
                 </div>
             </div>

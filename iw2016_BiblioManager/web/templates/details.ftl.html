@@ -22,9 +22,9 @@
         <div class="col-lg-4">
             <figure class="imageCard">
                 <#if publication.cover??>
-                <img src="<#if publication.cover.uploaded>img?file=${publication.cover.fileSource.id}<#else> ${strip_slashes(publication.cover.uri)?html}</#if>" alt="${strip_slashes(publication.cover.description)!'Copertina'?html}" />
+                <img src= "${strip_slashes(publication.cover.uri)?html}" alt="${strip_slashes(publication.cover.description)?html}" class="img-thumbnail img-responsive"/>
                 <#else>
-                    <img src= "img/book.png" alt="Copertina Defualt" />
+                <img src= "img/book.png" alt="Copertina Defualt" />
                 </#if>
             </figure>
             <div id="advicesPublication">
