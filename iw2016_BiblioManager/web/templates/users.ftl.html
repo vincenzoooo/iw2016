@@ -88,38 +88,44 @@
             </div>
             <#if (users?? && users?size>0)>
             <span class="bold">Utente amministratore</span>
-            <ul class="nodecoration">
-            <#list users as item>
-            <#if (item.state==0)>
-                <li class="nodecoration">
-                    <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
-                </li>
+            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                <ul class="nodecoration">
+                <#list users as item>
+                <#if (item.state==0)>
+                    <li class="nodecoration">
+                        <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
+                    </li>
 
-            </#if>
-            </#list>
-            </ul>
+                </#if>
+                </#list>
+                </ul>
+            </div>
             <span class="bold">Utenti Attivi</span>
-            <ul class="nodecoration">
-            <#list users as item>
-            <#if (item.state==1)>
-                <li class="nodecoration">
-                    <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
-                </li>
+            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                <ul class="nodecoration">
+                <#list users as item>
+                <#if (item.state==1)>
+                    <li class="nodecoration">
+                        <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
+                    </li>
 
-            </#if>
-            </#list>
-            </ul>
+                </#if>
+                </#list>
+                </ul>
+            </div>
             <span class="bold">Utenti passivi</span>
-            <ul class="nodecoration">
-            <#list users as item>
-            <#if (item.state==2)>
-                <li class="nodecoration">
-                    <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
-                </li>
+            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                <ul class="nodecoration">
+                <#list users as item>
+                <#if (item.state==2)>
+                    <li class="nodecoration">
+                        <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
+                    </li>
 
-            </#if>
-            </#list>
-            </ul>
+                </#if>
+                </#list>
+                </ul>
+            </div>
             <#else>
             <span class="bold">Nessun utente presente.</span>
             </#if>
