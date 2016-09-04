@@ -110,9 +110,11 @@
                     <#if (item.state==1)>
                         <li class="nodecoration">
                             <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
-                            <a href="community?op=2">
-                                <i class="fa-arrow-down" aria-hidden="true"></i>
+                            <#if (me.state==0)>
+                            <a href="community?op=2&user=${item.key}">
+                                <i class="fa fa-angle-double-down" aria-hidden="true"></i>
                             </a>
+                            </#if>
                         </li>
 
                     </#if>
@@ -128,9 +130,11 @@
                     <#if (item.state==2)>
                         <li class="nodecoration">
                             <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
-                            <a href="community?op=1">
-                                <i class="fa-arrow-up" aria-hidden="true"></i>
+                            <#if (me.state<2)>
+                            <a href="community?op=1&user=${item.key}">
+                                <i class="fa fa-angle-double-up" aria-hidden="true"></i>
                             </a>
+                            </#if>
                         </li>
 
                     </#if>

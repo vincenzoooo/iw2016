@@ -43,9 +43,10 @@ public class UserList extends BiblioManagerBaseController {
             if (session != null) {
                 User active = getDataLayer().getUser((int) session.getAttribute("userid"));
                 if (active != null && active.getState() < 2 && request.getParameter("user") != null) {
-                    User user = getDataLayer().getUser(request.getParameter("user"));
+                    User user = getDataLayer().getUser(Integer.parseInt(request.getParameter("user")));
                     if (user.getState() == 2) {
                         user.setState(1);
+                        getDataLayer().storeUser(user); 
                     }
                 }
             }
@@ -61,9 +62,10 @@ public class UserList extends BiblioManagerBaseController {
             if (session != null) {
                 User admin = getDataLayer().getUser((int) session.getAttribute("userid"));
                 if (admin != null && admin.getState() == 0 && request.getParameter("user") != null) {
-                    User user = getDataLayer().getUser(request.getParameter("user"));
+                    User user = getDataLayer().getUser(Integer.parseInt(request.getParameter("user")));
                     if (user.getState() == 1) {
                         user.setState(2);
+                        getDataLayer().storeUser(user);  
                     }
                 }
             }
@@ -87,6 +89,7 @@ public class UserList extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 User user = getDataLayer().getUser((int) session.getAttribute("userid"));
+                request.setAttribute("me", user);
                 if(user.getState() != 2 && request.getParameter("op") != null){
                     if (Integer.parseInt(request.getParameter("op")) == 1) {
                         action_upgrade(request, response);
