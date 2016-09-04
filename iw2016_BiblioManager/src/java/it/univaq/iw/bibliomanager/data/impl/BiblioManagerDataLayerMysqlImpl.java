@@ -71,7 +71,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             super.init();
             //Statement inizializzazione
-            this.sUsers = connection.prepareStatement("SELECT * FROM iw2016.utente");
+            this.sUsers = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE cognome LIKE ? ORDER BY cognome");
             this.sUserByEmail = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE email = ?");
             this.sUserByEmailPassword = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE email = ? AND password = ?");
             this.sUserById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idutente = ?");
@@ -92,7 +92,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                     "JOIN autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione JOIN autore a ON a.idautore = ap.autore_idautore JOIN pubblicazione_has_sorgente ps ON ps.pubblicazione_idpubblicazione = p.idpubblicazione " + 
                     "JOIN sorgente sr ON sr.idsorgente = ps.sorgente_idsorgente JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword " +
                     "JOIN storico st ON st.pubblicazione = p.idpubblicazione JOIN utente u ON u.idutente = st.utente " + 
-                    "WHERE p.isbn LIKE '%?%' AND p.titolo LIKE '%?%' AND a.nome LIKE '%?%' AND a.cognome LIKE '%?%' AND r.data >= ? AND k.nome IN (?) AND lingua LIKE '%?%'"+
+                    "WHERE p.isbn LIKE '%?%' AND p.titolo LIKE '%?%' AND a.nome LIKE '%?%' AND a.cognome LIKE '%?%' AND r.data >= ? AND k.nome IN ('?') AND lingua LIKE '%?%'"+
                     "ORDER BY ?");
             this.sPublicationsByISBN = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE isbn LIKE ('%?%')");
             this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, indice = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ? WHERE idpubblicazione = ?");
@@ -607,18 +607,18 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<Publication> getPublicationsByFilters(Map<String,Object> filters) throws DataLayerException {
+    public List<Publication> getPublicationsByFilters(Map<String,String> filters) throws DataLayerException {
         List<Publication> result = new ArrayList();
         ResultSet rs = null;
         try {
-            sPublicationsByFilters.setString(1, (String)Utils.getArrayParameter(filters, "isbn"));
-            sPublicationsByFilters.setString(2, (String)Utils.getArrayParameter(filters, "titolo"));
-            sPublicationsByFilters.setString(3, (String)Utils.getArrayParameter(filters, "autore_nome"));
-            sPublicationsByFilters.setString(4, (String)Utils.getArrayParameter(filters, "autore_cognome"));
-            sPublicationsByFilters.setDate(5, (Date)Utils.getArrayParameter(filters, "data"));
-            sPublicationsByFilters.setString(6, (String)Utils.getArrayParameter(filters, "keyword_nome"));
-            sPublicationsByFilters.setString(7, (String)Utils.getArrayParameter(filters, "lingua"));
-            sPublicationsByFilters.setString(8, (String)Utils.getArrayParameter(filters, "order_by"));
+            sPublicationsByFilters.setString(1, Utils.getArrayParameter(filters, "isbn"));
+            sPublicationsByFilters.setString(2, Utils.getArrayParameter(filters, "titolo"));
+            sPublicationsByFilters.setString(3, Utils.getArrayParameter(filters, "autore_nome"));
+            sPublicationsByFilters.setString(4, Utils.getArrayParameter(filters, "autore_cognome"));
+            sPublicationsByFilters.setString(5, Utils.getArrayParameter(filters, "data"));
+            sPublicationsByFilters.setString(6, Utils.getArrayParameter(filters, "keyword_nome"));
+            sPublicationsByFilters.setString(7, Utils.getArrayParameter(filters, "lingua"));
+            sPublicationsByFilters.setString(8, Utils.getArrayParameter(filters, "order_by"));
             rs = sPublicationsByFilters.executeQuery();
             while (rs.next()) {
                 result.add(getPublication(rs.getInt("idpubblicazione")));
@@ -1081,10 +1081,11 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<User> getUsers() throws DataLayerException {
+    public List<User> getUsers(String filter) throws DataLayerException {
         List<User> result = new ArrayList();
         ResultSet rs = null;
         try {
+            sUsers.setString(1, filter);
             rs = sUsers.executeQuery();
             while (rs.next()) {
                 result.add(getUser(rs.getInt("idutente")));

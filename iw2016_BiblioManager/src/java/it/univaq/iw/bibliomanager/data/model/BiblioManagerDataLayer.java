@@ -65,7 +65,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     List<Publication> getLastModifiedPublication() throws DataLayerException;
 
-    List<Publication> getPublicationsByFilters(Map<String, Object> filters) throws DataLayerException;
+    List<Publication> getPublicationsByFilters(Map<String, String> filters) throws DataLayerException;
 
     Review getReview(int review_key) throws DataLayerException;
 
@@ -95,7 +95,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     User getUser(String email, String password) throws DataLayerException;
 
-    List<User> getUsers() throws DataLayerException;
+    List<User> getUsers(String filter) throws DataLayerException;
 
     List<User> getMoreActiveUsers() throws DataLayerException;
 

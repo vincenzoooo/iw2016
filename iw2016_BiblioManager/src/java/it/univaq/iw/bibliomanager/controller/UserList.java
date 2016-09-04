@@ -25,7 +25,11 @@ public class UserList extends BiblioManagerBaseController {
 
     private void action_list(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException, IOException, ServletException {
-        List<User> users = getDataLayer().getUsers();
+        String filter = "%";
+        if(request.getParameter("filter") != null){
+            filter = request.getParameter("filter") + "%";
+        }
+        List<User> users = getDataLayer().getUsers(filter);
         request.setAttribute("users", users);
         request.setAttribute("page_title", "Users Manage");
         TemplateResult res = new TemplateResult(getServletContext());
@@ -83,14 +87,12 @@ public class UserList extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 User user = getDataLayer().getUser((int) session.getAttribute("userid"));
-                if (request.getParameter("op") == null) {
-                    action_list(request, response);
-                }
                 if (user.getState() != 2 && Integer.parseInt(request.getParameter("op")) == 1) {
                     action_upgrade(request, response);
                 } else {
                     action_downgrade(request, response);
                 }
+                action_list(request, response);
             } else {
                 action_default(request, response);
             }
