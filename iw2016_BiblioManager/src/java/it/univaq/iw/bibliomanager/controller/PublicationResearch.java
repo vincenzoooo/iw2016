@@ -7,6 +7,7 @@
 package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.framework.data.DataLayerException;
+import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import java.sql.Date;
 import java.text.DateFormat;
@@ -60,7 +61,7 @@ public class PublicationResearch extends BiblioManagerBaseController {
                 filters.put("lingua", language);
             }
             filters.put("order_by", "titolo");
-            request.setAttribute("results", getDataLayer().getPublicationsByFilters(filters));
+            request.setAttribute("publications", getDataLayer().getPublicationsByFilters(filters));
         }catch(ParseException ex){
             action_error(request, response, "Unable to parse the date: " + ex.getMessage());
         }
@@ -82,10 +83,12 @@ public class PublicationResearch extends BiblioManagerBaseController {
             throws ServletException {
         try {
             request.setAttribute("page_title", "Ricerca avanzata");
+            TemplateResult res = new TemplateResult(getServletContext());
             if (SecurityLayer.checkSession(request) != null) {
                 if (request.getParameter("submitResearch") != null) {
                     action_research(request, response);
                 }
+                res.activate("research.ftl.html", request, response);
             } else {
                 action_default(request, response);
             }
