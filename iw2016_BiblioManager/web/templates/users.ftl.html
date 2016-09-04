@@ -87,44 +87,56 @@
                 </ul>
             </div>
             <#if (users?? && users?size>0)>
-            <span class="bold">Utente amministratore</span>
-            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                <ul class="nodecoration">
-                <#list users as item>
-                <#if (item.state==0)>
-                    <li class="nodecoration">
-                        <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
-                    </li>
+            <div class="row">
+                <div class="bold">Utente amministratore</div>
+                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <ul class="nodecoration">
+                    <#list users as item>
+                    <#if (item.state==0)>
+                        <li class="nodecoration">
+                            <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
+                        </li>
 
-                </#if>
-                </#list>
-                </ul>
+                    </#if>
+                    </#list>
+                    </ul>
+                </div>
             </div>
-            <span class="bold">Utenti Attivi</span>
-            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                <ul class="nodecoration">
-                <#list users as item>
-                <#if (item.state==1)>
-                    <li class="nodecoration">
-                        <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
-                    </li>
+            <div class="row">
+                <div class="bold">Utenti Attivi</div>
+                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <ul class="nodecoration">
+                    <#list users as item>
+                    <#if (item.state==1)>
+                        <li class="nodecoration">
+                            <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
+                            <a href="community?op=2">
+                                <i class="fa-arrow-down" aria-hidden="true"></i>
+                            </a>
+                        </li>
 
-                </#if>
-                </#list>
-                </ul>
+                    </#if>
+                    </#list>
+                    </ul>
+                </div>
             </div>
-            <span class="bold">Utenti passivi</span>
-            <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                <ul class="nodecoration">
-                <#list users as item>
-                <#if (item.state==2)>
-                    <li class="nodecoration">
-                        <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
-                    </li>
+            <div class="row">
+                <div class="bold">Utenti passivi</div>
+                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                    <ul class="nodecoration">
+                    <#list users as item>
+                    <#if (item.state==2)>
+                        <li class="nodecoration">
+                            <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
+                            <a href="community?op=1">
+                                <i class="fa-arrow-up" aria-hidden="true"></i>
+                            </a>
+                        </li>
 
-                </#if>
-                </#list>
-                </ul>
+                    </#if>
+                    </#list>
+                    </ul>
+                </div>
             </div>
             <#else>
             <span class="bold">Nessun utente presente.</span>
