@@ -29,41 +29,37 @@ public class PublicationResearch extends BiblioManagerBaseController {
 
     private void action_research(HttpServletRequest request, HttpServletResponse response){
         try {
-            Map<String, Object> filters = new HashMap<String, Object>();
-            String isbn = request.getParameter("isbn");
+            Map<String, String> filters = new HashMap<String, String>();
+            String isbn = request.getParameter("publicationIsbn");
             if (isbn != null) {
-                filters.put("isbn", isbn);
+                filters.put("publicationIsbn", isbn);
             }
-            String title = request.getParameter("title");
+            String title = request.getParameter("publicationTitle");
             if (title != null) {
-                filters.put("titolo", title);
+                filters.put("publicationTitle", title);
             }
-            String authorName = request.getParameter("authorName");
+            String authorName = request.getParameter("publicationAuthor");
             if (authorName != null) {
-                filters.put("autore_nome", authorName);
+                filters.put("publicationAuthor", authorName);
             }
-            String authorSurname = request.getParameter("authorSurname");
-            if (authorSurname != null) {
-                filters.put("autore_cognome", authorSurname);
+            String editorName = request.getParameter("publicationEditor");
+            if (authorName != null) {
+                filters.put("publicationEditor", editorName);
             }
-            String date = request.getParameter("date");
+            String date = request.getParameter("publicationYear");
             if (date != null) {
-                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-                java.util.Date formatDate = format.parse(date);
-                filters.put("data", new java.sql.Date(formatDate.getTime()));
+                filters.put("publicationYear", date);
             }
-            String keyword = request.getParameter("keyword");
+            String keyword = request.getParameter("publicationKeyword");
             if (keyword != null) {
-                filters.put("keyword_nome", keyword);
+                filters.put("publicationKeyword", keyword);
             }
-            String language = request.getParameter("language");
+            String language = request.getParameter("publicationLanguage");
             if (language != null) {
-                filters.put("lingua", language);
+                filters.put("publicationLanguage", language);
             }
-            filters.put("order_by", "titolo");
+            filters.put("order_by", "publicationTitle");
             request.setAttribute("publications", getDataLayer().getPublicationsByFilters(filters));
-        }catch(ParseException ex){
-            action_error(request, response, "Unable to parse the date: " + ex.getMessage());
         }
         catch (DataLayerException ex) {
             action_error(request, response, "Unable to do the research: " + ex.getMessage());
