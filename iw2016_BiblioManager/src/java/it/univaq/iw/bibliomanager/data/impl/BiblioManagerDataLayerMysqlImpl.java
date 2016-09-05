@@ -88,13 +88,13 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
             this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 0");
             this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 1");
-            this.sPublicationsByFilters = connection.prepareStatement("SELECT * FROM pubblicazione p JOIN ristampa r ON r.pubblicazione = p.idpubblicazione JOIN editore e ON e.ideditore = p.editore " + 
-                    "JOIN autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione JOIN autore a ON a.idautore = ap.autore_idautore JOIN pubblicazione_has_sorgente ps ON ps.pubblicazione_idpubblicazione = p.idpubblicazione " + 
-                    "JOIN sorgente sr ON sr.idsorgente = ps.sorgente_idsorgente JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword " +
-                    "JOIN storico st ON st.pubblicazione = p.idpubblicazione JOIN utente u ON u.idutente = st.utente " + 
-                    "WHERE p.isbn LIKE ? AND p.titolo LIKE ? AND concat(a.nome, a.cognome) LIKE ? AND e.nome LIKE ? AND k.nome LIKE ? AND lingua LIKE ? AND  AND p.data_pubblicazione >= ? AND  AND p.data_pubblicazione < ?"+
+            this.sPublicationsByFilters = connection.prepareStatement("SELECT * FROM pubblicazione p LEFT JOIN ristampa r ON r.pubblicazione = p.idpubblicazione LEFT JOIN editore e ON e.ideditore = p.editore " + 
+                    "LEFT JOIN autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN autore a ON a.idautore = ap.autore_idautore LEFT JOIN pubblicazione_has_sorgente ps ON ps.pubblicazione_idpubblicazione = p.idpubblicazione " + 
+                    "LEFT JOIN sorgente sr ON sr.idsorgente = ps.sorgente_idsorgente LEFT JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword " +
+                    "LEFT JOIN storico st ON st.pubblicazione = p.idpubblicazione LEFT JOIN utente u ON u.idutente = st.utente " + 
+                    "WHERE p.isbn LIKE ? AND p.titolo LIKE ? AND concat(a.nome, a.cognome) LIKE ? AND e.nome LIKE ? AND k.nome LIKE ? AND lingua LIKE ? AND p.data_pubblicazione >= ? AND p.data_pubblicazione < ? "+
                     "ORDER BY ?");
-            this.sPublicationsByISBN = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE isbn LIKE ('%?%')");
+            this.sPublicationsByISBN = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE isbn = ?");
             this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, indice = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ? WHERE idpubblicazione = ?");
             this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, indice, n_consigli, isbn, n_pagine, lingua, data_pubblicazione) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
@@ -315,6 +315,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             user.setSurname(rs.getString("cognome"));
             user.setEmail(rs.getString("email"));
             user.setState(rs.getInt("stato"));
+            user.setPassword(rs.getString("password"));
             return user;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
@@ -611,7 +612,6 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         List<Publication> result = new ArrayList();
         ResultSet rs = null;
         try {
-            int year = Integer.parseInt(Utils.getArrayParameter(filters, "publicationYear")) + 1;
             sPublicationsByFilters.setString(1, Utils.getArrayParameter(filters, "publicationIsbn"));
             sPublicationsByFilters.setString(2, Utils.getArrayParameter(filters, "publicationTitle"));
             sPublicationsByFilters.setString(3, Utils.getArrayParameter(filters, "publicationAuthor"));
@@ -619,7 +619,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             sPublicationsByFilters.setString(5, Utils.getArrayParameter(filters, "publicationKeyword"));
             sPublicationsByFilters.setString(6, Utils.getArrayParameter(filters, "publicationLanguage"));
             sPublicationsByFilters.setString(7, Utils.getArrayParameter(filters, "publicationYear"));
-            sPublicationsByFilters.setString(8, String.valueOf(year));
+            sPublicationsByFilters.setString(8, Utils.getArrayParameter(filters, "publicationYearEnd"));
             sPublicationsByFilters.setString(9, Utils.getArrayParameter(filters, "order_by"));
             rs = sPublicationsByFilters.executeQuery();
             while (rs.next()) {

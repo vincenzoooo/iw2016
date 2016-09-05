@@ -9,14 +9,10 @@ package it.univaq.iw.bibliomanager.controller;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
-import java.sql.Date;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import it.univaq.iw.framework.utils.Utils;
+import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -30,35 +26,42 @@ public class PublicationResearch extends BiblioManagerBaseController {
     private void action_research(HttpServletRequest request, HttpServletResponse response){
         try {
             Map<String, String> filters = new HashMap<String, String>();
-            String isbn = request.getParameter("publicationIsbn");
+            String isbn = "%" + request.getParameter("publicationIsbn") + "%";
             if (isbn != null) {
                 filters.put("publicationIsbn", isbn);
             }
-            String title = request.getParameter("publicationTitle");
+            String title = "%" + request.getParameter("publicationTitle") + "%";
             if (title != null) {
                 filters.put("publicationTitle", title);
             }
-            String authorName = request.getParameter("publicationAuthor");
+            String authorName = "%" + request.getParameter("publicationAuthor") + "%";
             if (authorName != null) {
                 filters.put("publicationAuthor", authorName);
             }
-            String editorName = request.getParameter("publicationEditor");
+            String editorName = "%" + request.getParameter("publicationEditor") + "%";
             if (authorName != null) {
                 filters.put("publicationEditor", editorName);
             }
             String date = request.getParameter("publicationYear");
-            if (date != null) {
+            if (date != null && !date.isEmpty()) {
                 filters.put("publicationYear", date);
+                String end = String.valueOf(Integer.parseInt(Utils.getArrayParameter(filters, "publicationYear")) + 1);
+                filters.put("publicationYearEnd", end);
             }
-            String keyword = request.getParameter("publicationKeyword");
+            else{
+                filters.put("publicationYear", String.valueOf(0));
+                int year = Calendar.getInstance().get(Calendar.YEAR);
+                filters.put("publicationYearEnd", String.valueOf(year));
+            }
+            String keyword = "%" + request.getParameter("publicationKeyword") + "%";
             if (keyword != null) {
                 filters.put("publicationKeyword", keyword);
             }
-            String language = request.getParameter("publicationLanguage");
+            String language = "%" + request.getParameter("publicationLanguage") + "%";
             if (language != null) {
                 filters.put("publicationLanguage", language);
             }
-            filters.put("order_by", "publicationTitle");
+            filters.put("order_by", "titolo");
             request.setAttribute("publications", getDataLayer().getPublicationsByFilters(filters));
         }
         catch (DataLayerException ex) {
@@ -83,6 +86,7 @@ public class PublicationResearch extends BiblioManagerBaseController {
             if (SecurityLayer.checkSession(request) != null) {
                 if (request.getParameter("submitResearch") != null) {
                     action_research(request, response);
+                    action_redirect(request, response, "/catalog");
                 }
                 res.activate("research.ftl.html", request, response);
             } else {

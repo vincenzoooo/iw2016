@@ -70,9 +70,6 @@ public class ComposePublication extends BiblioManagerBaseController {
                 request.setAttribute("publication", publication);
                 this.action_composeHistory(request, response);
             }
-            
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("publication.ftl.html", request, response);
         } catch (DataLayerException | ParseException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
@@ -95,12 +92,13 @@ public class ComposePublication extends BiblioManagerBaseController {
         boolean error = super.validator(params, request, response);
         if(!error){
             try {
-                if(!Utils.isNumeric(params.get("publicationIsbn")) || params.get("publicationIsbn").length() < 14){
+                String isbn = params.get("publicationIsbn");
+                if(!Utils.isNumeric(isbn) || isbn.length() < 14){
                     request.setAttribute("errorPublicationIsbn", "Non è un codice valido");
                     error = true;
                 }
-                if(getDataLayer().getPublicationByISBN(params.get("publicationIsbn")) != null){
-                    request.setAttribute("errorPublicationIsbn", "Non è un codice valido");
+                if(getDataLayer().getPublicationByISBN(isbn) != null){
+                    request.setAttribute("errorPublicationIsbn", "ISBN già presente");
                     error = true;
                 }
                 if(!Utils.isNumeric(params.get("publicationPages"))){
