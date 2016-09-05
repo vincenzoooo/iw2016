@@ -39,14 +39,17 @@ public class ComposePublication extends BiblioManagerBaseController {
     private void action_composePublication(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         try {
             Publication publication = getDataLayer().createPublication();
+            if(request.getParameter("publicationId") != null){
+                publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("publicationId")));
+            }
             Map<String, String> params = new HashMap<String, String>();
             params.put("publicationTitle", Utils.checkString(request.getParameter("publicationTitle")));
             params.put("publicationDescription", Utils.checkString(request.getParameter("publicationDescription")));
             params.put("publicationLanguage", Utils.checkString(request.getParameter("publicationLanguage")));
             params.put("publicationDate", Utils.checkString(request.getParameter("publicationDate")));
             //params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
-            params.put("publicationIsbn", request.getParameter("publicationIsbn"));
-            params.put("publicationPages", request.getParameter("publicationPages"));
+            params.put("publicationIsbn", Utils.checkString(request.getParameter("publicationIsbn")));
+            params.put("publicationPages", Utils.checkString(request.getParameter("publicationPages")));
             params.put("editors", request.getParameter("editors"));
             params.put("authors", request.getParameter("authors"));
             params.put("keywords", request.getParameter("keywords"));
@@ -64,6 +67,7 @@ public class ComposePublication extends BiblioManagerBaseController {
                 publication.setIsbn(params.get("publicationIsbn"));
                 publication.setPageNumber(Integer.parseInt(params.get("publicationPages")));
                 publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editors"))));
+                publication.setIncomplete(false);
                 getDataLayer().storePublication(publication);
                 getDataLayer().storePublicationHasAuthor(Integer.parseInt(params.get("authors")), publication.getKey());
                 getDataLayer().storePublicationHasKeyword(Integer.parseInt(params.get("keywords")), publication.getKey());
@@ -93,7 +97,7 @@ public class ComposePublication extends BiblioManagerBaseController {
         if(!error){
             try {
                 String isbn = params.get("publicationIsbn");
-                if(!Utils.isNumeric(isbn) || isbn.length() < 14){
+                if(!Utils.isNumeric(isbn) || isbn.length() >= 13 && isbn.length() < 14){
                     request.setAttribute("errorPublicationIsbn", "Non è un codice valido");
                     error = true;
                 }
@@ -115,6 +119,45 @@ public class ComposePublication extends BiblioManagerBaseController {
         }
         return error;
     }
+    
+    private void action_savePartially(HttpServletRequest request, HttpServletResponse response, String url) throws DataLayerException, ServletException, IOException, ParseException {
+        HttpSession session = SecurityLayer.checkSession(request);
+        Publication publication = getDataLayer().createPublication();
+        if(request.getParameter("publicationId") != null){
+            publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("publicationId")));
+        }
+        if(!request.getParameter("publicationTitle").isEmpty()){
+            publication.setTitle(Utils.checkString(request.getParameter("publicationTitle")));
+        }
+        if(!request.getParameter("publicationDescription").isEmpty()){
+            publication.setDescription(Utils.checkString(request.getParameter("publicationDescription")));
+        }
+        if(!request.getParameter("publicationLanguage").isEmpty()){
+            publication.setLanguage(Utils.checkString(request.getParameter("publicationLanguage")));
+        }
+        if(!request.getParameter("publicationDate").isEmpty() && Utils.isDate(request.getParameter("publicationDate"))){
+            DateFormat df = new SimpleDateFormat("dd-mm-yyyy", Locale.ITALIAN);
+            java.util.Date date = df.parse(request.getParameter("publicationDate"));
+            java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+            publication.setPublicationDate(sqlDate);
+        }
+        //params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
+        if(!request.getParameter("publicationIsbn").isEmpty()&&getDataLayer().getPublicationByISBN(request.getParameter("publicationIsbn")) == null&&Utils.isNumeric(request.getParameter("publicationIsbn"))&&request.getParameter("publicationIsbn").length() >= 13 && request.getParameter("publicationIsbn").length() < 14){
+            publication.setIsbn(request.getParameter("publicationIsbn"));
+        }
+        if(!request.getParameter("publicationPages").isEmpty()&&Utils.isNumeric(request.getParameter("publicationPages"))){
+            publication.setPageNumber(Integer.parseInt(request.getParameter("publicationPages")));
+        }
+        if(!request.getParameter("editors").isEmpty()){
+            Editor editor = getDataLayer().getEditor(Integer.parseInt(request.getParameter("editors")));
+            publication.setEditor(editor);
+        }
+        publication.setIncomplete(true);
+        getDataLayer().storePublication(publication);
+        session.setAttribute("publicationId", publication.getKey());
+        action_redirect(request, response, url);
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -127,7 +170,8 @@ public class ComposePublication extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            if(SecurityLayer.checkSession(request) != null){
+            HttpSession session = SecurityLayer.checkSession(request);
+            if(session != null){
                 request.setAttribute("page_title", "Nuova Pubblicazione");
                 List<Author> authors = getDataLayer().getAuthors();
                 List<Editor> editors = getDataLayer().getEditors();
@@ -137,11 +181,27 @@ public class ComposePublication extends BiblioManagerBaseController {
                 request.setAttribute("editors", editors);
                 request.setAttribute("keywords", keywords);
                 request.setAttribute("sources", sources);
+                
+                Publication publication = null;
+                if(session.getAttribute("publicationId") != null){
+                    publication = getDataLayer().getPublication((int)session.getAttribute("publicationId"), true);
+                }
+                if(publication != null && publication.getIncomplete()){
+                    request.setAttribute("publicationTitle", publication.getTitle());
+                    request.setAttribute("publicationDescription", publication.getDescription());
+                    request.setAttribute("publicationLanguage", publication.getLanguage());
+                    request.setAttribute("publicationDate", publication.getPublicationDate());
+                    //params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
+                    request.setAttribute("publicationIsbn", publication.getIsbn());
+                    request.setAttribute("publicationPages", publication.getPageNumber());
+                    request.setAttribute("currentEditor", publication.getEditor().getKey());
+                }
                 if (request.getParameter("submitPublication") != null) {
                     action_composePublication(request, response);
+                    session.removeAttribute("publicationId");
                 }
                 if (request.getParameter("addEditor") != null) {
-                    action_redirect(request, response, "/editor");
+                    action_savePartially(request, response, "/editor");
                 }
                 TemplateResult res = new TemplateResult(getServletContext());
                 res.activate("publication.ftl.html", request, response);

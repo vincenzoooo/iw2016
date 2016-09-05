@@ -57,6 +57,8 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     Publication getPublication(int publication_key) throws DataLayerException;
     
+    Publication getPublication(int publication_key, boolean incomplete) throws DataLayerException;
+    
     Publication getPublicationByISBN(String isbn) throws DataLayerException;
 
     List<Publication> getPublications(String orderBy) throws DataLayerException;

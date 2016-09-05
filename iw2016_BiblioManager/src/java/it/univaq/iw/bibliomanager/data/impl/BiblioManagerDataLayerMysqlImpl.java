@@ -84,19 +84,19 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sHistoryById = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE idstorico = ?");
             this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");
             this.iHistory = connection.prepareStatement("INSERT INTO iw2016.storico (entry, tipo, data_operazione, pubblicazione, utente) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            this.sPublications = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione ORDER BY ?");
-            this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
+            this.sPublications = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE p.incompleta = 0 ORDER BY ?");
+            this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ? AND incompleta = ?");
             this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 0");
             this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 1");
             this.sPublicationsByFilters = connection.prepareStatement("SELECT * FROM pubblicazione p LEFT JOIN ristampa r ON r.pubblicazione = p.idpubblicazione LEFT JOIN editore e ON e.ideditore = p.editore " + 
                     "LEFT JOIN autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN autore a ON a.idautore = ap.autore_idautore LEFT JOIN pubblicazione_has_sorgente ps ON ps.pubblicazione_idpubblicazione = p.idpubblicazione " + 
                     "LEFT JOIN sorgente sr ON sr.idsorgente = ps.sorgente_idsorgente LEFT JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword " +
                     "LEFT JOIN storico st ON st.pubblicazione = p.idpubblicazione LEFT JOIN utente u ON u.idutente = st.utente " + 
-                    "WHERE p.isbn LIKE ? AND p.titolo LIKE ? AND concat(a.nome, a.cognome) LIKE ? AND e.nome LIKE ? AND k.nome LIKE ? AND lingua LIKE ? AND p.data_pubblicazione >= ? AND p.data_pubblicazione < ? "+
+                    "WHERE p.isbn LIKE ? AND p.titolo LIKE ? AND concat(a.nome, a.cognome) LIKE ? AND e.nome LIKE ? AND k.nome LIKE ? AND lingua LIKE ? AND p.data_pubblicazione >= ? AND p.data_pubblicazione < ? AND p.incompleta = 0 "+
                     "ORDER BY ?");
-            this.sPublicationsByISBN = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE isbn = ?");
-            this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, indice = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ? WHERE idpubblicazione = ?");
-            this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, indice, n_consigli, isbn, n_pagine, lingua, data_pubblicazione) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.sPublicationsByISBN = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE isbn = ? AND incompleta = 0");
+            this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, indice = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, incompleta = ? WHERE idpubblicazione = ?");
+            this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, indice, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
             this.sSourceById = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE idsorgente = ?");
             this.sSourceByPublication = connection.prepareStatement("SELECT * FROM iw2016.sorgente JOIN pubblicazione_has_sorgente ON idsorgente = sorgente_idsorgente WHERE pubblicazione_idpubblicazione = ?");
@@ -219,6 +219,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             publication.setSources(getPublicationSources(rs.getInt("idpubblicazione")));
             publication.setKeywords(getPublicationKeywords(rs.getInt("idpubblicazione")));
             publication.setReprints(getReprints(rs.getInt("idpubblicazione")));
+            publication.setIncomplete(rs.getBoolean("incompleta"));
             return publication;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create publication object form ResultSet", ex);
@@ -541,6 +542,32 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet rs = null;
         try {
             sPublicationById.setInt(1, publication_key);
+            sPublicationById.setBoolean(2, false);
+            rs = sPublicationById.executeQuery();
+            if (rs.next()) {
+                result = createPublication(rs);
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load publication by id", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
+    }
+    
+    @Override
+    public Publication getPublication(int publication_key, boolean incomplete) throws DataLayerException {
+        Publication result = null;
+        ResultSet rs = null;
+        try {
+            sPublicationById.setInt(1, publication_key);
+            sPublicationById.setBoolean(2, incomplete);
             rs = sPublicationById.executeQuery();
             if (rs.next()) {
                 result = createPublication(rs);
@@ -1254,7 +1281,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uPublication.setInt(7, publication.getPageNumber());
                 uPublication.setString(8, publication.getLanguage());
                 uPublication.setDate(9, publication.getPublicationDate());
-                uPublication.setInt(10, key);
+                uPublication.setBoolean(10, publication.getIncomplete());
+                uPublication.setInt(11, key);
 
                 uPublication.executeUpdate();
             } else { //insert
@@ -1267,6 +1295,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 iPublication.setInt(7, publication.getPageNumber());
                 iPublication.setString(8, publication.getLanguage());
                 iPublication.setDate(9, publication.getPublicationDate());
+                iPublication.setBoolean(10, publication.getIncomplete());
 
                 if (iPublication.executeUpdate() == 1) {
                     keys = iPublication.getGeneratedKeys();
@@ -1276,7 +1305,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 }
             }
             if (key > 0) {
-                publication.copyFrom(getPublication(key));
+                if(!publication.getIncomplete()){
+                    publication.copyFrom(getPublication(key));
+                }
+                else{
+                    publication.copyFrom(getPublication(key, publication.getIncomplete()));
+                }
             }
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to store review", ex);

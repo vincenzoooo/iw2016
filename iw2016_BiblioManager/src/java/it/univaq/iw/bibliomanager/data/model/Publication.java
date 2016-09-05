@@ -59,6 +59,10 @@ public interface Publication {
     Date getPublicationDate();
 
     void setPublicationDate(Date date);
+    
+    boolean getIncomplete();
+    
+    void setIncomplete(boolean incomplete);
 
     List<Keyword> getKeywords() throws DataLayerException;
 

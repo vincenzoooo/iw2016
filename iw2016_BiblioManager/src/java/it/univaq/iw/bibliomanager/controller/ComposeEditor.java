@@ -7,17 +7,18 @@
 package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.bibliomanager.data.model.Editor;
+import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -27,6 +28,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
 
     private void action_composeEditor(HttpServletRequest request, HttpServletResponse response) {
         try {
+            HttpSession session = SecurityLayer.checkSession(request);
             Editor editor = null;
             Map<String, String> params = new HashMap<String, String>();
             params.put("editorName", Utils.checkString(request.getParameter("editorName")));
@@ -34,6 +36,9 @@ public class ComposeEditor extends BiblioManagerBaseController {
                 editor = getDataLayer().createEditor();
                 editor.setName(params.get("editorName"));
                 getDataLayer().storeEditor(editor);
+                Publication publication = getDataLayer().getPublication((int) session.getAttribute("publicationId"), true);
+                publication.setEditor(editor);
+                getDataLayer().storePublication(publication);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare l'editore: " + ex.getMessage());
@@ -82,6 +87,9 @@ public class ComposeEditor extends BiblioManagerBaseController {
                 if (request.getParameter("submitEditor") != null && request.getAttribute("editorId") != null) {
                     action_updateEditor(request, response);
                     request.removeAttribute("editorId");
+                }
+                if(request.getParameter("turnBack") != null){
+                    action_redirect(request, response, "/publication");
                 }
                 List<Editor> editors = getDataLayer().getEditors();
                 request.setAttribute("editors", editors);
