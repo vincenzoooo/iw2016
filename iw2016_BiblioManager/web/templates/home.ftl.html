@@ -1,129 +1,137 @@
 <div class="container">
-    <div class="row ">
-        <div class="col-lg-8">
-            <#if uresStatus??>
-            <div id="role"></div>
-            </#if>
-            <#if pageNotFound??>
-            <div> La pagina richiesta non esiste </div>
-            <#else>
-            <div  id="last-insert">
-                <h1 class="center">Ultime pubblicazioni inserite</h1>
-                <#if (lastPublicationsInsert?? && lastPublicationsInsert?size>0)>
-                <div id="homePublication" class="row">
-                    <#list lastPublicationsInsert as item>
-                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                        <div class="thebox-container">
-                            <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
-                                <div class="thebox">
-                                    <figure class="cover-pubb">
-                                        <#if item.cover??>
-                                        <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
-                                        <#else>
-                                        <img src= "img/cover-cs.jpg" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
-                                        </#if>
-                                        <figcaption class="caption">
-                                        <#if (item.title?length>45)>${item.title[0..41]?html}...<#else>${item.title?html}</#if>
-                                        </figcaption>
-                                    </figure>
+    <div class="homePage">
+        <#if uresStatus??>
+        <div id="role"></div>
+        </#if>
+        <#if pageNotFound??>
+        <div> La pagina richiesta non esiste </div>
+        <#else>
+        <div class="row ">
+            <div class="col-lg-8">
+                <div class="section section-homePage-lastInsertPub">
+                    <div id="last-insert">
+                        <h1 class="center">Ultime pubblicazioni inserite</h1>
+                        <#if (lastPublicationsInsert?? && lastPublicationsInsert?size>0)>
+                        <div id="homePublication" class="row">
+                            <#list lastPublicationsInsert as item>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                <div class="thebox-container">
+                                    <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
+                                        <div class="thebox">
+                                            <figure class="cover-pubb">
+                                                <#if item.cover??>
+                                                <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
+                                                <#else>
+                                                <img src= "img/cover-cs.jpg" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
+                                                </#if>
+                                                <figcaption class="caption">
+                                                <#if (item.title?length>45)>${item.title[0..41]?html}...<#else>${item.title?html}</#if>
+                                                </figcaption>
+                                            </figure>
+                                        </div>
+                                    </a>
                                 </div>
-                            </a>
+                            </div>
+                            </#list>
+                        </div>
+                        </#if>
+                    </div>
+                </div>
+                <div class="section section-homePage-lastInsertPub">
+                    <div id="last-update">
+                        <h1 class="center">Ultime pubblicazioni modificate</h1>
+                        <#if (lastPublicationsUpdate?? && lastPublicationsUpdate?size>0)>
+                        <div id="homePublication" class="row">
+                            <#list lastPublicationsUpdate as item>
+                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                                <div class="thebox-container">
+                                    <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
+                                        <div class="thebox">
+                                            <figure class="cover-pubb">
+                                                <#if item.cover??>
+                                                <img src= "<#if item.cover.uploaded>img?file=${item.cover.fileSource.id}<#else>${strip_slashes(item.cover.uri)?html}</#if>" alt="${strip_slashes(item.cover.description)!'Copertina Default'?html}" /> 
+                                                <#else>
+                                                <img src= "img/cover-cs.jpg" alt="Copertina Default" />
+                                                </#if>
+                                                <figcaption>
+                                                <#if (item.title?length>45)>${item.title[0..41]?html}...<#else>${item.title?html}</#if>
+                                                </figcaption>
+                                            </figure>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                            </#list>
+                        </div>
+                        </#if>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-offset-1 col-lg-3 search-box" id="columnHome">
+                <div class="section section-homePage-research">
+                    <div class="formResearch">
+                        <form method="post" action="research">
+                            <div id="active-user" class="right">
+                                <h2>Ricerca pubblicazioni</h2>
+                            </div>
+                            <div class="form-group">
+                                <label>Autore</label>
+                                <input type="text" class="form-control" name="author" placeholder="Inserisci un autore">
+                            </div>
+                            <div class="form-group">
+                                <label>Titolo</label>
+                                <input type="text" class="form-control" name="title" placeholder="Inserisci un titolo">
+                            </div>
+                            <div class="form-group">
+                                <label>Keywords / ISBN</label>
+                                <input type="text" class="form-control" name="Keywords" placeholder="Inserisci una Kewords/ISBN">
+                            </div>
+                            <span>
+                                <input type="submit" value="Ricerca" name="submitResearch" class="btn btn-default">
+                            </span>
+                            <span>
+                                <a href="research" class="btn btn-default">Ricerca avanzata</a>
+                            </span>
+                        </form>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-offset-1 col-lg-3 search-box" id="columnHome">
+                 <div class="section section-homePage-activeUser">
+                    <div class="activeUser">
+                        <div id="active-user" class="right">
+                            <h2>Utenti pi&ugrave; attivi</h2>
+                            <#if (activeUsers?? && activeUsers?size>0)>
+                                <ul class="nodecoration">
+                                <#list activeUsers as item>
+                                    <li class="nodecoration">
+                                        <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
+                                    </li>
+                                </#list>
+                                </ul>
+                            </#if>
                         </div>
                     </div>
-                    </#list>
-                </div>
-                </#if>
-            </div>
-       
-            <div id="last-update">
-                <h1 class="center">Ultime pubblicazioni modificate</h1>
-                <#if (lastPublicationsUpdate?? && lastPublicationsUpdate?size>0)>
-                <div id="homePublication" class="row">
-                    <#list lastPublicationsUpdate as item>
-                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
-                        <div class="thebox-container">
-                            <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
-                                <div class="thebox">
-                                    <figure class="cover-pubb">
-                                        <#if item.cover??>
-                                        <img src= "<#if item.cover.uploaded>img?file=${item.cover.fileSource.id}<#else>${strip_slashes(item.cover.uri)?html}</#if>" alt="${strip_slashes(item.cover.description)!'Copertina Default'?html}" /> 
-                                        <#else>
-                                        <img src= "img/cover-cs.jpg" alt="Copertina Default" />
-                                        </#if>
-                                        <figcaption>
-                                        <#if (item.title?length>45)>${item.title[0..41]?html}...<#else>${item.title?html}</#if>
-                                        </figcaption>
-                                    </figure>
-                                </div>
-                            </a>
-                        </div>
-                    </div>
-                    </#list>
-                </div>
-                </#if>
-            </div>
-        </div>
-        <div class="col-lg-offset-1 col-lg-3 search-box" id="columnHome">
-            <div>
-                <form method="post" action="research">
-                    <div id="active-user" class="right">
-                        <h2>Ricerca pubblicazioni</h2>
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputEmail1">Autore</label>
-                        <input type="text" class="form-control" name="author" placeholder="Inserisci un autore">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputPassword1">Titolo</label>
-                        <input type="text" class="form-control" name="title" placeholder="Inserisci un titolo">
-                    </div>
-                    <div class="form-group">
-                        <label for="exampleInputFile">Keywords / ISBN</label>
-                        <input type="text" class="form-control" name="Keywords" placeholder="Inserisci una Kewords/ISBN">
-                    </div>
-                    <span>
-                        <input type="submit" value="Ricerca" name="submitResearch" class="btn btn-default">
-                    </span>
-                    <span>
-                        <a href="research" class="btn btn-default">Ricerca avanzata</a>
-                    </span>
-                </form>
-            </div>
-        </div>
-        <div class="col-lg-offset-1 col-lg-3 search-box" id="columnHome">
-            <div>
-                <div id="active-user" class="right">
-                    <h2>Utenti pi&ugrave; attivi</h2>
-                    <#if (activeUsers?? && activeUsers?size>0)>
-                        <ul class="nodecoration">
-                        <#list activeUsers as item>
-                            <li class="nodecoration">
-                                <a href="profile?userId=${item.key}" class="userProfileHome">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
-                            </li>
-                        </#list>
-                        </ul>
-                    </#if>
-                    
                 </div>
             </div>
+        </#if>
         </div>
-    </#if>
-    </div>
-    <#if passiveUser??>
-    <div class="confirm">
-        Registrati al sito per visualizzare gli altri contenuti o effettua il login
-        <div class="margin-top-10">
-            <a href="login">Login</a>
-            <a href="registration">Registrati</a>
-            <a href="home">Chiudi</a>
+        <#if passiveUser??>
+        <div class="confirm">
+            Registrati al sito per visualizzare gli altri contenuti o effettua il login
+            <div class="margin-top-10">
+                <a href="login">Login</a>
+                <a href="registration">Registrati</a>
+                <a href="home">Chiudi</a>
+            </div>
         </div>
+        </#if>
+        <#if sesExp??>
+        <div class="confirm">
+            Probabilmente la sessione &egrave; scaduta oppure stai cercando di accedere ad una pagina riservata.. effettua di nuovo il login per accedere ai contenuti
+            <button><a href="login">Login</a></button>
+            <button><a href="home">Chiudi</a></button>
+        </div>
+        </#if>
     </div>
-    </#if>
-    <#if sesExp??>
-    <div class="confirm">
-        Probabilmente la sessione &egrave; scaduta oppure stai cercando di accedere ad una pagina riservata.. effettua di nuovo il login per accedere ai contenuti
-        <button><a href="login">Login</a></button>
-        <button><a href="home">Chiudi</a></button>
-    </div>
-    </#if>
 </div>
