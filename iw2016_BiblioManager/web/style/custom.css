@@ -17,6 +17,7 @@ Professor: Giuseppe Della Penna
  * 2.0 - Header
  * 3.0 - Navigation
  * 4.0 - Content
+ *  4.1 - Catalog
  * 5.0 - Section
  *  - Footer
  *  - Other
@@ -754,17 +755,62 @@ header .navbar-header-menu {
     text-overflow: ellipsis;    
 }
 
-.users-letter{
-    font-size: 15px;
+
+
+/**
+ * 4.1 Catalog
+ * -----------------------------------------------------------------------------
+ */
+
+.catalog-item{
+    margin-bottom: 50px;
+}
+
+.vertical-border{
+    padding-left: 24px;
+    border-left: solid 1px;
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+/**
+ * 4.2 Community
+ * -----------------------------------------------------------------------------
+ */
+
+.users-letter {
+    font-size: 15px; 
     margin-bottom: 36px;
-    margin-top: 20px;
     line-height: 32px;
     padding-top: 0;
     font-family: 'Libre Baskerville',georgia,serif;
     border-bottom: solid 1px #ccc;
-
+    border-color: rgba(0, 0, 0, 0.1);
+    text-transform: uppercase;
 }
 
+.users-letter>ul>li>a {
+     color: black; 
+}
+
+.users-letter>ul>li>a:active{
+     color: red!important; 
+}
+
+.users-letter>ul>li>a:hover{
+     color: red; 
+}
+
+.promote{
+    color: green;
+}
+
+.degrade{
+    color: darkred;
+}
+
+.community-user{
+    color: #2b2b2b;
+}
 
 
 

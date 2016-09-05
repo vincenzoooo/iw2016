@@ -8,14 +8,14 @@
             <div> La pagina richiesta non esiste </div>
             <#else>
             <div  id="last-insert">
-                <div class="row">  
-                    <div class="col-lg-12">
-                        <h1 class="center">Ultime pubblicazioni inserite</h1>
-                        <#if (lastPublicationsInsert?? && lastPublicationsInsert?size>0)>
-                        <div id="homePublication" class="row">
-                            <#list lastPublicationsInsert as item>
-                            <div class="col-lg-4">
-                                <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
+                <h1 class="center">Ultime pubblicazioni inserite</h1>
+                <#if (lastPublicationsInsert?? && lastPublicationsInsert?size>0)>
+                <div id="homePublication" class="row">
+                    <#list lastPublicationsInsert as item>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="thebox-container">
+                            <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
+                                <div class="thebox">
                                     <figure class="cover-pubb">
                                         <#if item.cover??>
                                         <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
@@ -23,45 +23,46 @@
                                         <img src= "img/cover-cs.jpg" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
                                         </#if>
                                         <figcaption class="caption">
-                                            <#if (item.title?length>45)>${item.title[0..41]?html}...<#else>${item.title?html}</#if>
+                                        <#if (item.title?length>45)>${item.title[0..41]?html}...<#else>${item.title?html}</#if>
                                         </figcaption>
                                     </figure>
-                                </a>
-                            </div>
-                            </#list>
+                                </div>
+                            </a>
                         </div>
-                        </#if>
                     </div>
+                    </#list>
                 </div>
+                </#if>
             </div>
        
             <div id="last-update">
-                <div class="row">
-                    <h1 class="center">Ultime pubblicazioni modificate</h1>
-                    <div class="col-lg-4">
-                    <#if (lastPublicationsUpdate?? && lastPublicationsUpdate?size>0)>
-                        <#list lastPublicationsUpdate as item>
-                        <div class="homepublication">
+                <h1 class="center">Ultime pubblicazioni modificate</h1>
+                <#if (lastPublicationsUpdate?? && lastPublicationsUpdate?size>0)>
+                <div id="homePublication" class="row">
+                    <#list lastPublicationsUpdate as item>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                        <div class="thebox-container">
                             <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
-                                <figure class="cover-pubb">
-                                <#if item.cover??>
-                                    <img src= "<#if item.cover.uploaded>img?file=${item.cover.fileSource.id}<#else>${strip_slashes(item.cover.uri)?html}</#if>" alt="${strip_slashes(item.cover.description)!'Copertina Default'?html}" /> 
-                                <#else>
-                                    <img src= "img/cover-cs.jpg" alt="Copertina Default" />
-                                </#if>
-                                    <figcaption>
+                                <div class="thebox">
+                                    <figure class="cover-pubb">
+                                        <#if item.cover??>
+                                        <img src= "<#if item.cover.uploaded>img?file=${item.cover.fileSource.id}<#else>${strip_slashes(item.cover.uri)?html}</#if>" alt="${strip_slashes(item.cover.description)!'Copertina Default'?html}" /> 
+                                        <#else>
+                                        <img src= "img/cover-cs.jpg" alt="Copertina Default" />
+                                        </#if>
+                                        <figcaption>
                                         <#if (item.title?length>45)>${item.title[0..41]?html}...<#else>${item.title?html}</#if>
-                                    </figcaption>
-                                </figure>
+                                        </figcaption>
+                                    </figure>
+                                </div>
                             </a>
                         </div>
-                        </#list>
-                    </#if>
                     </div>
+                    </#list>
                 </div>
+                </#if>
             </div>
         </div>
-
         <div class="col-lg-offset-1 col-lg-3 search-box" id="columnHome">
             <div>
                 <form method="post" action="research">
@@ -84,7 +85,7 @@
                         <input type="submit" value="Ricerca" name="submitResearch" class="btn btn-default">
                     </span>
                     <span>
-                        <a href="research" class="btn btn-default"> Ricerca avanzata</a>
+                        <a href="research" class="btn btn-default">Ricerca avanzata</a>
                     </span>
                 </form>
             </div>
