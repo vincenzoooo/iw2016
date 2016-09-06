@@ -3,17 +3,17 @@
         <div class="section section-pageCatalog-title"> 
             <div class="row">
                 <div class="col-lg-12">
-                    <h1 class="center margin-bot-30">Catalogo delle pubblicazioni </h1>
+                    <h1 class="center margin-bot-30">Catalogo delle pubblicazioni</h1>
                 </div>
             </div>
         </div>
         <div class="section section-pageCatalog-tools margin-bot-30"> 
             <div class="row">
-                <div class="col-lg-12">
+                <div class="col-sm-9">
                     <form class="form-inline" method="post" action="catalog">
-                        <div class="form-group col-sm-5">
-                            <label for="sortby" class="col-sm-5 control-label bold">Ordina per</label>
-                            <div class="col-sm-7">
+                        <div class="form-group margin-right-10">
+                            <label for="sortby" class=" control-label bold">Ordina per</label>
+                            <div class="">
                                 <select name="sortBy" id="ordering" class="form-control">
                                     <option value='0' <#if sortBy?? && sortBy==0> selected='selected'</#if> >
                                     Titolo
@@ -33,66 +33,78 @@
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-sm-5">
-                            <label for="sortby" class="col-sm-5 control-label bold">In modo </label>
-                            <div class="col-sm-7">
+                        <div class="form-group margin-right-10">
+                            <label for="sortby" class=" control-label bold">In modo </label>
+                            <div class="">
                                 <select name='sortType' id="typeOrdering" class="form-control">
-                                    <option value='0' <#if sortType?? && sortType==0> selected='selected'</#if>>
+                                    <option value='0' <#if sortType?? && sortType==0> selected='selected'</#if> >
                                     Ascendente
                                     </option>
-                                    <option value='1' <#if sortType?? && sortType==1> selected='selected'</#if>>
+                                    <option value='1' <#if sortType?? && sortType==1> selected='selected'</#if> >
                                     Discendente
                                     </option>
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group col-sm-2">
+                        <div class="form-group margin-top-25">
                             <div class="">
-                                <input type="submit" name="ordering" value="Ordina" class="btn btn-default"/>
+                                <span>
+                                    <input type="submit" name="ordering" value="Ordina" class="btn btn-default"/>
+
+                                </span>
                             </div>
                         </div>
                     </form>
                 </div>
+                
+                <div class="col-sm-3">
+                    <a href="publication" class="btn btn-default margin-top-25" name="insertPublication">Aggiungi pubblicazione</a>
+                </div>
+                
             </div>
         </div>
         <hr>
         <div class="section section-pageCatalog-publications"> 
-            <#list publications as item>
-            <div class="catalog-item">            
-                <div class="row">
-                    <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
-                        <a href="details?publicationId=${item.key}" class="relative">
-                        <figure class="imageCatalog">
-                        <#if item.cover??>
-                            <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
-                        <#else>
-                            <img src= "img/cover-cs.jpg" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
-                        </#if>
-                        </figure>
-                        </a>
-                    </div>
-                    <div class="col-lg-6 col-md-5 col-sm-4 col-xs-12">
-                        <div class="important-info">
-                            <div class="author margin-top-10"> 
-                                <span class="bold"> Autori:</span>
-                                <#list item.authors as item2>
-                                    ${strip_slashes(item2.name!'')?html} ${strip_slashes(item2.surname!'')?html}, 
-                                </#list>
-                            </div>
-                            <h2 class="title">${strip_slashes(item.title)?html}</h2>
+            <#if (publications?? && publications?size>0)>
+                <#list publications as item>
+                <div class="catalog-item">            
+                    <div class="row">
+                        <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
+                            <a href="details?publicationId=${item.key}" class="relative">
+                            <figure class="imageCatalog">
+                            <#if item.cover??>
+                                <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
+                            <#else>
+                                <img src= "img/cover-cs.jpg" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
+                            </#if>
+                            </figure>
+                            </a>
+                        </div>
+                        <div class="col-lg-6 col-md-5 col-sm-4 col-xs-12">
+                            <div class="important-info">
+                                <div class="author margin-top-10"> 
+                                    <span class="bold"> Autori:</span>
+                                    <#list item.authors as item2>
+                                        ${strip_slashes(item2.name!'')?html} ${strip_slashes(item2.surname!'')?html}, 
+                                    </#list>
+                                </div>
+                                <h2 class="title">${strip_slashes(item.title)?html}</h2>
 
-                            <div class="description"> ${strip_slashes(item.description!'Nessuna descrizione.')?html} </div>
-                            <div class="likes margin-top-20"> <span class="bold">Numero consigni: </span> ${strip_slashes(item.like)?html} </div>
-                        </div> 
-                    </div>
-                    <div class="col-lg-3 col-md-3 col-sm-3 hidden-xs margin-top-10 vertical-border">
-                        <div class="editor font-2x"> ${strip_slashes(item.editor.name)!''?html} </div>
-                        <div class="date"> ${item.publicationDate!''} </div>
-                        <div class="isbn-pages"> pp. ${strip_slashes(item.pageNumber)!''?html}, isbn: ${strip_slashes(item.isbn)!''?html} </div>
+                                <div class="description"> ${strip_slashes(item.description!'Nessuna descrizione.')?html} </div>
+                                <div class="likes margin-top-20"> <span class="bold">Numero consigni: </span> ${strip_slashes(item.like)?html} </div>
+                            </div> 
+                        </div>
+                        <div class="col-lg-3 col-md-3 col-sm-3 hidden-xs margin-top-10 vertical-border">
+                            <div class="editor font-2x"> ${strip_slashes(item.editor.name)!''?html} </div>
+                            <div class="date"> ${item.publicationDate!''} </div>
+                            <div class="isbn-pages"> pp. ${strip_slashes(item.pageNumber)!''?html}, isbn: ${strip_slashes(item.isbn)!''?html} </div>
+                        </div>
                     </div>
                 </div>
-            </div>
-            </#list>
+                </#list>
+            <#else>
+            <div>Nessuna pubblicazione da visualizzare </div>
+            </#if>
         </div>
     </div>
 </div>

@@ -1,37 +1,52 @@
 <div class="container">
-    <h1 class="center">Storico pubblicazione</h1>
-    <div class="row">
-        <div class="col-lg-12">
-            <table id="history">
-                <tr>
-                    <th>
-                        Timestamp
-                    </th>
-                    <th>
-                        Utente
-                    </th>
-                    <th>
-                        Descrizione
-                    </th>
-                </tr>
-                <#if histories??>
-                <#list histories as item>
-                <tr>
-                    <td>
-                        ${item.date?html}
-                    </td>
-                    <td>
-                        <#if item.user??>
-                        <a href="profile?userId=${item.user.key}">${strip_slashes(item.user.name)?html} ${strip_slashes(item.user.surname)?html}</a>
+    <div class="pageHistory">
+        <div class="section section-pageHistory-title"> 
+            <div class="row">
+                <div class="col-lg-12">
+                     <h1 class="center">Storico pubblicazione</h1>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section section-pageHistory-listHistories"> 
+            <#if (histories?? && histories?size>0)>
+            <div class="row">
+                <div class="col-lg-12">
+                    <table id="history" class="table table-responsive">
+                        <tr>
+                            <th>
+                                Timestamp
+                            </th>
+                            <th>
+                                Utente
+                            </th>
+                            <th>
+                                Descrizione
+                            </th>
+                        </tr>
+                        <#if (histories?? && histories?size>0)>
+                        <#list histories as item>
+                        <tr>
+                            <td>
+                                ${item.date?html}
+                            </td>
+                            <td>
+                                <#if item.user??>
+                                <a href="profile?userId=${item.user.key}">${strip_slashes(item.user.name)?html} ${strip_slashes(item.user.surname)?html}</a>
+                                </#if>
+                            </td>
+                            <td>
+                                ${strip_slashes(item.entry)?html}
+                            </td>
+                        </tr>
+                        </#list>
                         </#if>
-                    </td>
-                    <td>
-                        ${strip_slashes(item.entry)?html}
-                    </td>
-                </tr>
-                </#list>
-                </#if>
-            </table>
+                    </table>
+                </div>
+            </div>
+            <#else>
+            <div class="margin-bot-20 margin-top-20">Non c'&egrave; nessuna informazione riguardo la pubblicazione</div>
+            </#if>
         </div>
     </div>
     
@@ -50,6 +65,6 @@
     </div>
     </#if>
     -->
-    <a href="details?publicationId=${publicationId}"> Torna alla scheda della pubblicazione</a>
+    <a href="details?publicationId=${publicationId}" class="btn btn-default"> Torna alla scheda della pubblicazione</a>
 </div>
             
