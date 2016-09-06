@@ -34,6 +34,7 @@ public class PublicationImpl implements Publication {
     private String language;
     private Date publicationDate;
     private Editor editor;
+    private boolean incomplete;
     private Source cover;
     private List<Author> authors;
     private List<Source> sources;
@@ -55,6 +56,7 @@ public class PublicationImpl implements Publication {
         publicationDate = null;
         editor_key = 0;
         editor = null;
+        incomplete = false;
         cover = null;
         authors = null;
         sources = null;
@@ -154,6 +156,29 @@ public class PublicationImpl implements Publication {
     }
 
     @Override
+    public Editor getEditor() throws DataLayerException {
+        if (editor == null && editor_key > 0) {
+            editor = ownerDataLayer.getEditor(editor_key);
+        }
+        return editor;
+    }
+
+    @Override
+    public void setEditor(Editor editor) {
+        this.editor = editor;
+    }
+
+    @Override
+    public boolean getIncomplete() {
+        return this.incomplete;
+    }
+
+    @Override
+    public void setIncomplete(boolean incomplete) {
+        this.incomplete = incomplete;
+    }
+    
+    @Override
     public Source getCover() throws DataLayerException {
         if(cover == null && sources != null){
             for(Source source : sources){
@@ -170,19 +195,6 @@ public class PublicationImpl implements Publication {
         this.cover = cover;
     }
     
-    @Override
-    public Editor getEditor() throws DataLayerException {
-        if (editor == null && editor_key > 0) {
-            editor = ownerDataLayer.getEditor(editor_key);
-        }
-        return editor;
-    }
-
-    @Override
-    public void setEditor(Editor editor) {
-        this.editor = editor;
-    }
-
     @Override
     public List<Author> getAuthors() throws DataLayerException {
         if (authors == null) {
@@ -252,7 +264,12 @@ public class PublicationImpl implements Publication {
         description = publication.getDescription();
         index = publication.getIndex();
         like = publication.getLike();
+        isbn = publication.getIsbn();
+        pageNumber = publication.getPageNumber();
+        language = publication.getLanguage();
+        publicationDate = publication.getPublicationDate();
         editor = publication.getEditor();
+        incomplete = publication.getIncomplete();
         authors = publication.getAuthors();
         sources = publication.getSources();
         keywords = publication.getKeywords();
