@@ -42,7 +42,7 @@ public class Home extends BiblioManagerBaseController {
             request.setAttribute("sesExp", "");
         }
         TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("Homepage.ftl.html", request, response);
+        res.activate("home.ftl.html", request, response);
     }
 
     private void action_logged(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, DataLayerException {
