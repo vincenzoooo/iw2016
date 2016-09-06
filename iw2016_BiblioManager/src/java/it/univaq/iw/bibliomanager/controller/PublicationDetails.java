@@ -6,6 +6,7 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
+import it.univaq.iw.bibliomanager.data.model.History;
 import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.Review;
 import it.univaq.iw.bibliomanager.data.model.User;
@@ -29,6 +30,8 @@ public class PublicationDetails extends BiblioManagerBaseController {
             throws DataLayerException, IOException, NumberFormatException, ServletException {
         TemplateResult res = new TemplateResult(getServletContext());
         int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
+        List<History> histories = getDataLayer().getHistoriesByPublication(publicationKey);
+        request.setAttribute("histories", histories);
         Publication publication = getDataLayer().getPublication(publicationKey);
         this.action_viewReviews(request, response);
         request.setAttribute("publication", publication);

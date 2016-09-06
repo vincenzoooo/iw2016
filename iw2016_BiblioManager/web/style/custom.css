@@ -18,6 +18,8 @@ Professor: Giuseppe Della Penna
  * 3.0 - Navigation
  * 4.0 - Content
  *  4.1 - Catalog
+ *  4.2 - Community
+ *  4.3 - Details Publication
  * 5.0 - Section
  *  - Footer
  *  - Other
@@ -136,9 +138,10 @@ Professor: Giuseppe Della Penna
 .round-5 { border-radius: 5px !important; }
 .round-10 { border-radius: 10px !important; }
 
-.blue {color:#036}
-.green {color:#9c6}
-.white {color:#fff}
+.blue {color:#036;}
+.green {color:#9c6;}
+.black {color:black;}
+.white {color:#fff;}
 
 .font-2x {font-size: 1.2em;}
 .font-3x {font-size: 1.5em;}
@@ -812,6 +815,15 @@ header .navbar-header-menu {
     color: #2b2b2b;
 }
 
+
+/**
+ * 4.3 Details Publication
+ * -----------------------------------------------------------------------------
+ */
+
+.titlePublication .title{
+    margin: 12px 0 36px;
+}
 
 
 

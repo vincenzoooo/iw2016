@@ -16,33 +16,35 @@
         <header>
             <div class="container">
                 <div class="row">
-                    <div class="col-lg-4"> 
-                        <div class="col-lg-2"> 
-                            <img src="img/libro.png" class="logo" alt="logo di BiblioManager"/>
-                        </div>
-                        <div class="col-lg-10">
-                        <h1 class="title-site">BiblioManager</h1>
+                    <div class="col-lg-4 col-md-4 col-sm-4 col-xs-6">
+                        <div class="row">
+                            <div class="col-xs-2"> 
+                                <img src="img/libro.png" class="logo" alt="logo di BiblioManager"/>
+                            </div>
+                            <div class="col-lg-offset-3 col-sm-offset-4 col-xs-offset-4 ">
+                            <h1 class="title-site">BiblioManager</h1>
+                            </div>
                         </div>
                     </div>
 
-                    <div id="user-menu" class="col-lg-offset-4 col-lg-4">
-                        <#if sessionId??>
-                            <div class="col-lg-6">
+                    <div id="user-menu" class="col-xs-offset-9">
+                        <div class="row uppermenu">
+                            <#if sessionId??>
+                            <div class="col-sm-6">
                                 <span id="sign-in" class="padding-all-10"><a class="nodecoration" href="logout">Logout</a> </span>
                             </div>
-                            <div class="col-lg-6">
+                            <div class="col-sm-6">
                                 <span id="sign-up" class="padding-all-10">Benvenuto<span id="namelogged">${nameLogged?html}</span></span>
                             </div>
-                        <#else>
-                            <div class="uppermenu">
-                                <div class="col-lg-4">
-                                    <span id="sign-in" class="padding-all-10" ><a class="nodecoration" href="login">Login</a> </span>
-                                </div>
-                                <div class="col-lg-4">
-                                    <span id="sign-up" class="padding-all-10"><a class="nodecoration" href="registration">Registrati</a></span>
-                                </div>
+                            <#else>
+                            <div class="col-sm-4">
+                                <span id="sign-in" class="padding-all-10" ><a class="nodecoration" href="login">Login</a> </span>
                             </div>
-                        </#if>
+                            <div class="col-sm-4">
+                                <span id="sign-up" class="padding-all-10"><a class="nodecoration" href="registration">Registrati</a></span>
+                            </div>
+                            </#if>
+                        </div>
                     </div>
                 </div> 
             </div>
@@ -94,4 +96,5 @@
         <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js">
         </script>
     </body>
+    
 </html>

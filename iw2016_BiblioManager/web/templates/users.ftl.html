@@ -50,58 +50,60 @@
             <#if (users?? && users?size>0)>
             <div class="bold">Utente amministratore</div>
             <div class="row"> 
-                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
+                <div class="col-lg-12">
                     <ul class="nodecoration">
                     <#list users as item>
                     <#if (item.state==0)>
                         <li class="nodecoration">
                             <a href="profile?userId=${item.key}" class="community-user">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
                         </li>
-
                     </#if>
                     </#list>
                     </ul>
                 </div>
             </div>
-            <div class="bold">Utenti Attivi</div>
             <div class="row">
-                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                    <ul class="nodecoration">
-                    <#list users as item>
-                    <#if (item.state==1)>
-                        <li class="nodecoration">
-                            <a href="profile?userId=${item.key}" class="community-user">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
-                            <#if (me.state==0)>
-                            <a href="community?op=2&user=${item.key}">
-                                <i class="fa fa-angle-double-down degrade" aria-hidden="true"></i>
-                            </a>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <div class="bold">Utenti Attivi</div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <ul class="nodecoration">
+                            <#list users as item>
+                            <#if (item.state==1)>
+                                <li class="nodecoration">
+                                    <a href="profile?userId=${item.key}" class="community-user">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                    <#if (me.state==0)>
+                                    <a href="community?op=2&user=${item.key}">
+                                        <i class="fa fa-angle-double-down degrade" aria-hidden="true"></i>
+                                    </a>
+                                    </#if>
+                                </li>
                             </#if>
-                        </li>
-
-                    </#if>
-                    </#list>
-                    </ul>
+                            </#list>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div class="bold">Utenti passivi</div>
-            <div class="row">
-
-                <div class="col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                    <ul class="nodecoration">
-                    <#list users as item>
-                    <#if (item.state==2)>
-                        <li class="nodecoration">
-                            <a href="profile?userId=${item.key}" class="community-user">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
-                            <#if (me.state<2)>
-                            <a href="community?op=1&user=${item.key}">
-                                <i class="fa fa-angle-double-up promote" aria-hidden="true"></i>
-                            </a>
+                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <div class="bold">Utenti passivi</div>
+                    <div class="row">
+                        <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                            <ul class="nodecoration">
+                            <#list users as item>
+                            <#if (item.state==2)>
+                                <li class="nodecoration">
+                                    <a href="profile?userId=${item.key}" class="community-user">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                    <#if (me.state<2)>
+                                    <a href="community?op=1&user=${item.key}">
+                                        <i class="fa fa-angle-double-up promote" aria-hidden="true"></i>
+                                    </a>
+                                    </#if>
+                                </li>
                             </#if>
-                        </li>
-
-                    </#if>
-                    </#list>
-                    </ul>
+                            </#list>
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
             <#else>
@@ -110,3 +112,4 @@
         </div>
     </div>
 </div>
+
