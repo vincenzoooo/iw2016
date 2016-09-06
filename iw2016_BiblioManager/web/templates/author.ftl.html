@@ -53,7 +53,7 @@
              <div class="row">
                 <div class="col-lg-12">
                     <h3 class=""> Lista degli autori</h3>
-                    <form method="post" action="turnBack" id="formSelectedAuthor" class="form-horizontal">     
+                    <form method="post" action="author" id="formSelectedAuthor" class="form-horizontal">     
                         <#if (authors?? && authors?size>0)>
                         <table id="allAuthors" class="table-responsive table-hover table">
                             <tr>
@@ -82,7 +82,7 @@
                                         <a href="author?authorId=${item.key}&currentNameAuthor=${item.name}&currentSurnameAuthor=${item.surname}#anchor">Modifica</a>
                                     </td>
                                     <td>
-                                        <input type="checkbox" class="form-control" name="authorSelected" value="${item.key}" />
+                                        <input type="checkbox" class="form-control" name="authorSelected" value="${item.key}" <#list publicationAuthors as item1><#if (item.key == item1.key)>checked="checked"</#if></#list>/>
                                     </td>
                                 </tr>
                             </#list>

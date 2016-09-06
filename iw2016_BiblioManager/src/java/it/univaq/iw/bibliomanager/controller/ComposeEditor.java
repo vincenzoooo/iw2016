@@ -88,9 +88,6 @@ public class ComposeEditor extends BiblioManagerBaseController {
                     action_updateEditor(request, response);
                     request.removeAttribute("editorId");
                 }
-                if(request.getParameter("turnBack") != null){
-                    action_redirect(request, response, "/publication");
-                }
                 List<Editor> editors = getDataLayer().getEditors();
                 request.setAttribute("editors", editors);
             

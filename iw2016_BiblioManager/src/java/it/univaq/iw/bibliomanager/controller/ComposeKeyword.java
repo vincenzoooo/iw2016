@@ -11,7 +11,6 @@ import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,6 +56,13 @@ public class ComposeKeyword extends BiblioManagerBaseController {
         return keyword;
     }
 
+    private void action_LinkKeyword(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
+        int pubId = (int) SecurityLayer.checkSession(request).getAttribute("publicationId");
+        String[] values = request.getParameterValues("keywordSelected");
+        for(String value : values){
+            getDataLayer().storePublicationHasKeyword(Integer.parseInt(value), pubId);
+        }
+    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -82,6 +88,9 @@ public class ComposeKeyword extends BiblioManagerBaseController {
                 if (request.getParameter("submitKeyword") != null && request.getAttribute("keywordId") != null) {
                     action_updateKeyword(request, response);
                     request.removeAttribute("keywordId");
+                }
+                if(request.getParameter("linkKeyword") != null){
+                    action_LinkKeyword(request, response);
                 }
                 List<Keyword> keywords = getDataLayer().getKeywords();
                 request.setAttribute("keywords", keywords);

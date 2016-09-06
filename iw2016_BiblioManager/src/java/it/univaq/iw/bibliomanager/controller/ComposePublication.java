@@ -27,6 +27,7 @@ import it.univaq.iw.bibliomanager.data.model.Keyword;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
@@ -38,9 +39,10 @@ public class ComposePublication extends BiblioManagerBaseController {
 
     private void action_composePublication(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         try {
+            HttpSession session = SecurityLayer.checkSession(request);
             Publication publication = getDataLayer().createPublication();
-            if(request.getParameter("publicationId") != null){
-                publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("publicationId")));
+            if(session.getAttribute("publicationId") != null){
+                publication = getDataLayer().getPublication((int)session.getAttribute("publicationId"), true);
             }
             Map<String, String> params = new HashMap<String, String>();
             params.put("publicationTitle", Utils.checkString(request.getParameter("publicationTitle")));
@@ -58,7 +60,7 @@ public class ComposePublication extends BiblioManagerBaseController {
                 publication.setTitle(params.get("publicationTitle"));
                 publication.setDescription(params.get("publicationDescription"));
                 publication.setLanguage(params.get("publicationLanguage"));
-                DateFormat df = new SimpleDateFormat("dd-mm-yyyy", Locale.ITALIAN);
+                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
                 java.util.Date date = df.parse(params.get("publicationDate"));
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 publication.setPublicationDate(sqlDate);
@@ -69,8 +71,6 @@ public class ComposePublication extends BiblioManagerBaseController {
                 publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editors"))));
                 publication.setIncomplete(false);
                 getDataLayer().storePublication(publication);
-                getDataLayer().storePublicationHasAuthor(Integer.parseInt(params.get("authors")), publication.getKey());
-                getDataLayer().storePublicationHasKeyword(Integer.parseInt(params.get("keywords")), publication.getKey());
                 request.setAttribute("publication", publication);
                 this.action_composeHistory(request, response);
             }
@@ -97,7 +97,7 @@ public class ComposePublication extends BiblioManagerBaseController {
         if(!error){
             try {
                 String isbn = params.get("publicationIsbn");
-                if(!Utils.isNumeric(isbn) || isbn.length() >= 13 && isbn.length() < 14){
+                if(!Utils.isNumeric(isbn) || isbn.length() < 13 && isbn.length() >= 14){
                     request.setAttribute("errorPublicationIsbn", "Non è un codice valido");
                     error = true;
                 }
@@ -136,7 +136,7 @@ public class ComposePublication extends BiblioManagerBaseController {
             publication.setLanguage(Utils.checkString(request.getParameter("publicationLanguage")));
         }
         if(!request.getParameter("publicationDate").isEmpty() && Utils.isDate(request.getParameter("publicationDate"))){
-            DateFormat df = new SimpleDateFormat("dd-mm-yyyy", Locale.ITALIAN);
+            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
             java.util.Date date = df.parse(request.getParameter("publicationDate"));
             java.sql.Date sqlDate = new java.sql.Date(date.getTime());
             publication.setPublicationDate(sqlDate);
@@ -173,11 +173,10 @@ public class ComposePublication extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if(session != null){
                 request.setAttribute("page_title", "Nuova Pubblicazione");
-                List<Author> authors = getDataLayer().getAuthors();
                 List<Editor> editors = getDataLayer().getEditors();
                 List<Keyword> keywords = getDataLayer().getKeywords();
                 List<Source> sources = getDataLayer().getSources();
-                request.setAttribute("authors", authors);
+                request.setAttribute("authors", "");
                 request.setAttribute("editors", editors);
                 request.setAttribute("keywords", keywords);
                 request.setAttribute("sources", sources);
@@ -187,10 +186,14 @@ public class ComposePublication extends BiblioManagerBaseController {
                     publication = getDataLayer().getPublication((int)session.getAttribute("publicationId"), true);
                 }
                 if(publication != null && publication.getIncomplete()){
+                    List<Author> authors = getDataLayer().getPublicationAuthors((int)session.getAttribute("publicationId"));
+                    request.setAttribute("authors", authors);
+                    
                     request.setAttribute("publicationTitle", publication.getTitle());
                     request.setAttribute("publicationDescription", publication.getDescription());
                     request.setAttribute("publicationLanguage", publication.getLanguage());
-                    request.setAttribute("publicationDate", publication.getPublicationDate());
+                    DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                    request.setAttribute("publicationDate", df.format(publication.getPublicationDate()));
                     //params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
                     request.setAttribute("publicationIsbn", publication.getIsbn());
                     request.setAttribute("publicationPages", publication.getPageNumber());
@@ -202,6 +205,12 @@ public class ComposePublication extends BiblioManagerBaseController {
                 }
                 if (request.getParameter("addEditor") != null) {
                     action_savePartially(request, response, "/editor");
+                }
+                if (request.getParameter("addAuthor") != null) {
+                    action_savePartially(request, response, "/author");
+                }
+                if (request.getParameter("addKeyword") != null) {
+                    action_savePartially(request, response, "/keyword");
                 }
                 TemplateResult res = new TemplateResult(getServletContext());
                 res.activate("publication.ftl.html", request, response);

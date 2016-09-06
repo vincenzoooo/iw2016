@@ -93,14 +93,14 @@
                     <label class="bold col-sm-2 control-label">Autore/i</label>
                     <div class="col-sm-6">
                         <select class="form-control" name="authors" >
-                        <#if (authors?? && authors?size>0)>
+                        <#if (authors?? && !authors.isEmpty() && authors?size>0)>
                             <#list authors as item>
                             <option value="${item.key!''?html}" >${item.name!''?html}&nbsp;${item.surname!''?html}</option>
                             </#list>
                         </#if>
                         </select>
                     </div>
-                    <a href="author" class="btn btn-default">Aggiungi nuovo autore</a>
+                    <input value='Aggiungi autore' name='addAuthor' type='submit' class="btn btn-default"/>
                 </div>
                 <#if errorAuthor??>  
                     <div class="error">
@@ -119,8 +119,7 @@
                         </#if>
                         </select>
                     </div>
-                    <a href="keyword" class="btn btn-default">Aggiungi parola chiave</a>
-
+                    <input value='Aggiungi parola chiave' name='addkeyword' type='submit' class="btn btn-default"/>
                 </div>
                 <#if errorKeyword??>  
                     <div class="error">

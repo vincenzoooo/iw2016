@@ -11,13 +11,15 @@ import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -60,6 +62,14 @@ public class ComposeAuthor extends BiblioManagerBaseController {
         }
     }
 
+    private void action_LinkAuthor(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
+        int pubId = (int) SecurityLayer.checkSession(request).getAttribute("publicationId");
+        List<String> values = new ArrayList<String>(Arrays.asList(request.getParameterValues("authorSelected")));
+        getDataLayer().deletePublicationHasAuthor(pubId);
+        for(String value : values){
+            getDataLayer().storePublicationHasAuthor(Integer.parseInt(value), pubId);
+        }
+    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -74,7 +84,8 @@ public class ComposeAuthor extends BiblioManagerBaseController {
         try {
             request.setAttribute("page_title", "Gestione Autore");
             TemplateResult res = new TemplateResult(getServletContext());
-            if (SecurityLayer.checkSession(request) != null) {
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
                 if (request.getParameter("authorId") != null) {
                     request.setAttribute("currentNameAuthor", request.getParameter("currentNameAuthor"));
                     request.setAttribute("currentSurnameAuthor", request.getParameter("currentSurnameAuthor"));
@@ -87,9 +98,13 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                     action_updateAuthor(request, response);
                     request.removeAttribute("authorId");
                 }
+                if(request.getParameter("linkAuthor") != null){
+                    action_LinkAuthor(request, response);
+                }
                 List<Author> authors = getDataLayer().getAuthors();
+                List<Author> publicationAuthors = getDataLayer().getPublicationAuthors((int) session.getAttribute("publicationId"));
                 request.setAttribute("authors", authors);
-            
+                request.setAttribute("publicationAuthors", publicationAuthors);
                 res.activate("author.ftl.html", request, response);
                 
             } else {

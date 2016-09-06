@@ -38,7 +38,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
             params.put("reprintDate", Utils.checkString(request.getParameter("reprintDate")));
             if (!validator(params, request, response)) {
                 reprint.setNumber(Integer.parseInt(params.get("reprintNumber")));
-                DateFormat format = new SimpleDateFormat("dd-mm-yyyy", Locale.ITALIAN);
+                DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
                 java.util.Date date = format.parse(params.get("reprintDate"));
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 reprint = getDataLayer().createReprint();
@@ -60,7 +60,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
             params.put("reprintDate", Utils.checkString(request.getParameter("reprintDate")));
             if (!validator(params, request, response)) {
                 reprint.setNumber(Integer.parseInt(params.get("reprintNumber")));
-                DateFormat format = new SimpleDateFormat("dd-mm-yyyy", Locale.ITALIAN);
+                DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
                 java.util.Date date = format.parse(params.get("reprintDate"));
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 reprint.setDate(sqlDate);
