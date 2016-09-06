@@ -28,7 +28,7 @@
                             <a href="history?historyData&publicationId=${publication.key}">
                                 Storico
                             </a>
-                            <#if (me.state==0 || (me.state==1 && me.key==user.key))>
+                            <#if (me.state==0 || (me.state==1 && me.key==publisher.key))>
                             <span>
                                 <a href="publication?publicationId=${publication.key}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
                             </span>
@@ -47,7 +47,7 @@
                     <div class="publiher margin-top-10">
                         <span>Inserito da </span>
                         <#if publisher??>
-                            ${strip_slashes(item.user.surname?html)?capitalize}&nbsp;${strip_slashes(item.user.name?html)?capitalize}
+                            ${strip_slashes(publisher.surname?html)?capitalize}&nbsp;${strip_slashes(publisher.name?html)?capitalize}
                         </#if>
                         <br/>
                         <span class="bold">Editore:</span>

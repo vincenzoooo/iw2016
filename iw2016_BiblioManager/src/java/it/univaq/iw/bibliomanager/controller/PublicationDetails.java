@@ -31,6 +31,11 @@ public class PublicationDetails extends BiblioManagerBaseController {
         TemplateResult res = new TemplateResult(getServletContext());
         int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
         List<History> histories = getDataLayer().getHistoriesByPublication(publicationKey);
+        for(History entry : histories){
+            if(entry.getType() == 0){
+                request.setAttribute("publisher", entry.getUser());
+            }
+        }
         request.setAttribute("histories", histories);
         Publication publication = getDataLayer().getPublication(publicationKey);
         this.action_viewReviews(request, response);
@@ -81,7 +86,7 @@ public class PublicationDetails extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (Exception ex) {
-            action_error(request, response, "OPS");
+            action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 

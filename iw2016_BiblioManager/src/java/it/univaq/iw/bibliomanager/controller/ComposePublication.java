@@ -193,7 +193,8 @@ public class ComposePublication extends BiblioManagerBaseController {
                     request.setAttribute("publicationDescription", publication.getDescription());
                     request.setAttribute("publicationLanguage", publication.getLanguage());
                     DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-                    request.setAttribute("publicationDate", df.format(publication.getPublicationDate()));
+                    String date = (publication.getPublicationDate() != null)? df.format(publication.getPublicationDate()) : "";
+                    request.setAttribute("publicationDate", date);
                     //params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
                     request.setAttribute("publicationIsbn", publication.getIsbn());
                     request.setAttribute("publicationPages", publication.getPageNumber());
