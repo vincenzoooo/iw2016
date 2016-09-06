@@ -96,8 +96,14 @@ public interface BiblioManagerDataLayer extends DataLayer {
     User getUser(String email) throws DataLayerException;
 
     User getUser(String email, String password) throws DataLayerException;
+    
+    User getUserAdministrator() throws DataLayerException;
 
     List<User> getUsers(String filter) throws DataLayerException;
+    
+    List<User> getUsersActive(String filter) throws DataLayerException;
+    
+    List<User> getUsersPassive(String filter) throws DataLayerException;
 
     List<User> getMoreActiveUsers() throws DataLayerException;
 

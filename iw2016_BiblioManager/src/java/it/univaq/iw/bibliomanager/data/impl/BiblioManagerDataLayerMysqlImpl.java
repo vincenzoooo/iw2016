@@ -38,7 +38,7 @@ import java.util.Map;
 public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implements BiblioManagerDataLayer {
 
     //Statements declaration
-    private PreparedStatement sUsers, sUserByEmail, sUserByEmailPassword, sUserById, sUserByNumberOfPublications;
+    private PreparedStatement sUsers, sUserByEmail, sUserByEmailPassword, sUserById, sUserByNumberOfPublications, sUserAdministrator, sUsersByStatus;
     private PreparedStatement uUser, iUser;
     private PreparedStatement sHistories, sHistoriesByUser, sHistoriesByPublication, sHistoryById;
     private PreparedStatement uHistory, iHistory;
@@ -76,6 +76,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sUserByEmailPassword = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE email = ? AND password = ?");
             this.sUserById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idutente = ?");
             this.sUserByNumberOfPublications = connection.prepareStatement("SELECT utente, COUNT(*) AS operazioni FROM storico JOIN utente ON idutente = utente GROUP BY utente HAVING operazioni > 1 ORDER BY operazioni");
+            this.sUserAdministrator = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE stato = 0 ORDER BY cognome");
+            this.sUsersByStatus = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE cognome LIKE ? AND stato = ? ORDER BY cognome");
             this.uUser = connection.prepareStatement("UPDATE iw2016.utente SET nome = ?, cognome = ?, password = ?, email = ?, stato = ? WHERE idutente = ?");
             this.iUser = connection.prepareStatement("INSERT INTO iw2016.utente (nome, cognome, password, email, stato) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sHistories = connection.prepareStatement("SELECT * FROM iw2016.storico");
@@ -1110,6 +1112,29 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
+    public User getUserAdministrator() throws DataLayerException {
+        User result = null;
+        ResultSet rs = null;
+        try {
+            rs = sUserAdministrator.executeQuery();
+            if (rs.next()) {
+                result = createUser(rs);
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load administrator user", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
+    }
+    
+    @Override
     public List<User> getUsers(String filter) throws DataLayerException {
         List<User> result = new ArrayList();
         ResultSet rs = null;
@@ -1134,6 +1159,58 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         return result;
     }
 
+    @Override
+    public List<User> getUsersActive(String filter) throws DataLayerException {
+        List<User> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sUsersByStatus.setString(1, filter);
+            sUsersByStatus.setInt(2, 1);
+            rs = sUsersByStatus.executeQuery();
+            while (rs.next()) {
+                result.add(getUser(rs.getInt("idutente")));
+
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load active users", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+    
+    @Override
+    public List<User> getUsersPassive(String filter) throws DataLayerException {
+        List<User> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sUsers.setString(1, filter);
+            sUsersByStatus.setInt(2, 2);
+            rs = sUsersByStatus.executeQuery();
+            while (rs.next()) {
+                result.add(getUser(rs.getInt("idutente")));
+
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load passive users", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+    
     @Override
     public void storeAuthor(Author author) throws DataLayerException {
         ResultSet keys = null;

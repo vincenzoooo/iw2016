@@ -29,8 +29,12 @@ public class UserList extends BiblioManagerBaseController {
         if(request.getParameter("filter") != null){
             filter = request.getParameter("filter") + "%";
         }
-        List<User> users = getDataLayer().getUsers(filter);
-        request.setAttribute("users", users);
+        User admin = getDataLayer().getUserAdministrator();
+        List<User> activeUsers = getDataLayer().getUsersActive(filter);
+        List<User> passiveUsers = getDataLayer().getUsersPassive(filter);
+        request.setAttribute("admin", admin);
+        request.setAttribute("activeUsers", activeUsers);
+        request.setAttribute("passiveUsers", passiveUsers);
         request.setAttribute("page_title", "Users Manage");
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("users.ftl.html", request, response);
