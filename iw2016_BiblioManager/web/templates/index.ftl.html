@@ -1,0 +1,53 @@
+<div class="container">
+    <div class="pageIndex">
+        <div class="section section-pageIndex-title"> 
+            <div class="row">
+                <div class="col-lg-12">
+                     <h1 class="center">Gestione degli indici</h1>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section section-pageIndex-insertIndex">
+            <div class="row">
+                <div class="col-lg-12">   
+                    <h3> Aggiungi una risorsa</h3>
+                    <form method="post" action="source" id="formSource" class="form-horizontal">     
+                        <div class="form-group">
+                            <label for="inputType" class="col-sm-2 control-label bold">Tipo capitolo</label>
+                            <div class="col-sm-6">
+                                <input id="type" class="form-control" name="sourceType" placeholder="Inserisci il tipo del capitolo" />
+                            </div>
+                        </div>
+                        <#if errorType??>
+                        <div class="error">
+                            ${errorType?html}
+                        </div>
+                        </#if>
+
+                        <div class="form-group">
+                            <label for="inputUri" class="col-sm-2 control-label bold">Numero del capitolo</label>
+                            <div class="col-sm-6">
+                                <input id="uri" class="form-control" name="sourceUri" placeholder="Inserisci indirizzo risorsa" />
+                            </div>
+                        </div>
+                        <#if errorUribn??>
+                        <div class="error">
+                            ${errorUri?html}
+                        </div>
+                        </#if>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <span>
+                                    <input value="Aggiungi" name="submitSource" type="submit" class="btn btn-default"/>
+                                    <a href="publication" class="btn btn-default col-xs-offset-1" name="submitPublication">Torna indietro</a>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

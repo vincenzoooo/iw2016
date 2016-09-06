@@ -85,7 +85,7 @@
                                 <div class="author margin-top-10"> 
                                     <span class="bold"> Autori:</span>
                                     <#list item.authors as item2>
-                                        ${strip_slashes(item2.name!'')?html} ${strip_slashes(item2.surname!'')?html}, 
+                                        ${strip_slashes(item2.name!'')?html} ${strip_slashes(item2.surname!'')?html}<#if item2.key != item.authors?last.key>,</#if>                                      
                                     </#list>
                                 </div>
                                 <h2 class="title">${strip_slashes(item.title)?html}</h2>
