@@ -95,9 +95,9 @@
                     <label class="bold col-sm-2 control-label">Autore/i</label>
                     <div class="col-sm-6">
                         <#if (authors?? && !authors.isEmpty() && authors?size>0)>
-                        <ul class="list-group listitem" name="authors">
+                        <ul class="list-group listitem">
                             <#list authors as item>
-                            <li class="list-group-item nodecoration" value="${item.key!''?html}">
+                            <li class="list-group-item nodecoration">
                                 ${item.name!''?html}&nbsp;${item.surname!''?html}
                                 <a href="publication" name="delateAuthor"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
                             </li>
@@ -121,9 +121,9 @@
                     <label class="bold col-sm-2 control-label">Keyword</label>
                     <div class="col-sm-6">
                         <#if (keywords?? && !keywords.isEmpty() && keywords?size>0)>
-                        <ul class="list-group listitem" name="keywords">
+                        <ul class="list-group listitem">
                             <#list keywords as item>
-                            <li class="list-group-item nodecoration" value="${item.key!''?html}">
+                            <li class="list-group-item nodecoration">
                                 ${item.name!''?html}
                                 <a href="publication" name="delateKeyword"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
                             </li>
