@@ -8,15 +8,15 @@
             </div>
         </div>
         
-        <div class="section section-pageIndex-insertIndex">
+        <div class="section section-pageIndex-insertChapter">
             <div class="row">
                 <div class="col-lg-12">   
-                    <h3>Crea un indice della pubblicazione</h3>
+                    <h3>Aggiungi capitoli della pubblicazione</h3>
                     <form method="post" action="index" id="formChapter" class="form-horizontal">     
                         <div class="form-group">
-                            <label for="inputTitlec" class="col-sm-2 control-label bold">Titolo capitolo</label>
+                            <label for="inputTitleC" class="col-sm-2 control-label bold">Titolo capitolo</label>
                             <div class="col-sm-6">
-                                <input id="titlec" class="form-control" name="chapterTitle" placeholder="Inserisci il titolo del capitolo" />
+                                <input id="inputTitleC" class="form-control" name="chapterTitle" placeholder="Inserisci il titolo del capitolo" />
                             </div>
                         </div>
                         <#if errorChapterTitle??>
@@ -26,9 +26,9 @@
                         </#if>
 
                         <div class="form-group">
-                            <label for="inputNumberc" class="col-sm-2 control-label bold">Numero del capitolo</label>
+                            <label for="inputNumberC" class="col-sm-2 control-label bold">Numero del capitolo</label>
                             <div class="col-sm-6">
-                                <input id="numverc" class="form-control" name="chapterNumber" placeholder="Inserisci il numero del captolo" />
+                                <input id="inputNumberC" class="form-control" name="chapterNumber" placeholder="Inserisci il numero del capitolo" />
                             </div>
                         </div>
                         <#if errorChapterNumber??>
@@ -41,7 +41,6 @@
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>
                                     <input value="Aggiungi" name="submitIndex" type="submit" class="btn btn-default"/>
-                                    <a href="publication" class="btn btn-default col-xs-offset-1" name="submitPublication">Torna indietro</a>
                                 </span>
                             </div>
                         </div>
@@ -85,8 +84,193 @@
                     <#else>
                     <span class="bold">Nessun capitolo presente.</span>
                     </#if>
+                    
+                    <div>
+                        <span>
+                            <a href="index" class="btn btn-default col-xs-offset-1" name="submitNext">Avanti</a>
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
+        
+        <#if !!!>
+        <div class="section section-pageIndex-insertSection">
+            <div class="row">
+                <div class="col-lg-12">   
+                    <h3>Aggiungi sezioni della pubblicazione</h3>
+                    <form method="post" action="index" id="formSection" class="form-horizontal">     
+                        <div class="form-group">
+                            <label for="inputTitles" class="col-sm-2 control-label bold">Titolo sezione</label>
+                            <div class="col-sm-6">
+                                <input id="insertTitleS" class="form-control" name="sectionTitle" placeholder="Inserisci il titolo del capitolo" />
+                            </div>
+                        </div>
+                        <#if errorChapterTitle??>
+                        <div class="error">
+                            ${errorChapterTitle?html}
+                        </div>
+                        </#if>
+
+                        <div class="form-group">
+                            <label for="inputNumbers" class="col-sm-2 control-label bold">Numero sezione</label>
+                            <div class="col-sm-6">
+                                <input id="inputNumberS" class="form-control" name="sectionNumber" placeholder="Inserisci il numero del capitolo" />
+                            </div>
+                        </div>
+                        <#if errorSectionNumber??>
+                        <div class="error">
+                            ${errorSectionNumber?html}
+                        </div>
+                        </#if>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <span>
+                                    <input value="Aggiungi" name="submitIndex" type="submit" class="btn btn-default"/>
+                                    <a href="index" class="btn btn-default col-xs-offset-1" name="submitNext">Avanti</a>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                    <#if errorSection??>
+                    <div class="error">
+                        ${errorSection?html}
+                    </div>
+                    </#if>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class=""> Lista delle sezioni</h3>
+                    <#if (sections?? && sections?size>0)>
+                    <table id="allChapters" class="table">
+                        <tr>
+                            <th>
+                                Numero
+                            </th>
+                            <th>
+                                Titolo
+                            </th>
+                            <th></th>
+                        </tr>
+                        <#list sections as item>
+                            <tr>
+                                <td>
+                                    ${item.number!"''"?html}
+                                </td>
+                                <td>
+                                    ${strip_slashes(item.title)!"''"?html}
+                                </td>
+                                <td>
+                                    <a class="deleteSection" href="#">Elimina</a>
+                                </td>
+                            </tr>
+                        </#list>
+                    </table>
+                    <#else>
+                    <span class="bold">Nessuna sezione presente.</span>
+                    </#if>
+                    
+                    <div>
+                        <span>
+                            <a href="index" class="btn btn-default col-xs-offset-1" name="submitNext">Avanti</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </#if>
+        
+        <#if !!!>
+        <div class="section section-pageIndex-insertParagraph">
+            <div class="row">
+                <div class="col-lg-12">   
+                    <h3>Aggiungi paragrazi della pubblicazione</h3>
+                    <form method="post" action="index" id="formParagraph" class="form-horizontal">     
+                        <div class="form-group">
+                            <label for="inputTitleP" class="col-sm-2 control-label bold">Titolo paragrafo</label>
+                            <div class="col-sm-6">
+                                <input id="insertTitleP" class="form-control" name="paragraphTitle" placeholder="Inserisci il titolo del pragrafo" />
+                            </div>
+                        </div>
+                        <#if errorParagraphTitle??>
+                        <div class="error">
+                            ${errorParagraphTitle?html}
+                        </div>
+                        </#if>
+
+                        <div class="form-group">
+                            <label for="inputNumberP" class="col-sm-2 control-label bold">Numero paragrafo</label>
+                            <div class="col-sm-6">
+                                <input id="inputNumberP" class="form-control" name="paragraphNumber" placeholder="Inserisci il numero del paragrafo" />
+                            </div>
+                        </div>
+                        <#if errorParagraphnNumber??>
+                        <div class="error">
+                            ${errorParagraphNumber?html}
+                        </div>
+                        </#if>
+
+                        <div class="form-group">
+                            <div class="col-sm-offset-2 col-sm-10">
+                                <span>
+                                    <input value="Aggiungi" name="submitIndex" type="submit" class="btn btn-default"/>
+                                </span>
+                            </div>
+                        </div>
+                    </form>
+                    <#if errorSection??>
+                    <div class="error">
+                        ${errorSection?html}
+                    </div>
+                    </#if>
+                </div>
+            </div>
+            
+            <div class="row">
+                <div class="col-lg-12">
+                    <h3 class=""> Lista dei paragrafi</h3>
+                    <#if (paragraphs?? && paragraphs?size>0)>
+                    <table id="allChapters" class="table">
+                        <tr>
+                            <th>
+                                Numero
+                            </th>
+                            <th>
+                                Titolo
+                            </th>
+                            <th></th>
+                        </tr>
+                        <#list paragraphs as item>
+                            <tr>
+                                <td>
+                                    ${item.number!"''"?html}
+                                </td>
+                                <td>
+                                    ${strip_slashes(item.title)!"''"?html}
+                                </td>
+                                <td>
+                                    <a class="deleteSection" href="#">Elimina</a>
+                                </td>
+                            </tr>
+                        </#list>
+                    </table>
+                    <#else>
+                    <span class="bold">Nessun paragrafo presente.</span>
+                    </#if>
+                    
+                    <div>
+                        <span>
+                            <a href="#" class="btn btn-default col-xs-offset-1" name="submitSave">Salva indice</a>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </#if>
+        
+        
     </div>
 </div>

@@ -94,16 +94,21 @@
                 <div class="form-group">
                     <label class="bold col-sm-2 control-label">Autore/i</label>
                     <div class="col-sm-6">
-                        <select class="form-control" name="authors" >
                         <#if (authors?? && !authors.isEmpty() && authors?size>0)>
+                        <ul class="list-group listitem" name="authors">
                             <#list authors as item>
-                            <option value="${item.key!''?html}" >${item.name!''?html}&nbsp;${item.surname!''?html}</option>
+                            <li class="list-group-item nodecoration" value="${item.key!''?html}">
+                                ${item.name!''?html}&nbsp;${item.surname!''?html}
+                                <a href="publication" name="delateAuthor"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
+                            </li>
                             </#list>
+                        </ul>
+                        <#else>
+                        <div class="padding-top-5">Nessun autore selezionato</div>
                         </#if>
-                        </select>
                     </div>
                     <div class="col-sm-2">
-                        <input value='Aggiungi autore' name='addAuthor' type='submit' class="btn btn-default"/>
+                        <input value="Seleziona autore" name="addAuthor" type="submit" class="btn btn-default"/>
                     </div>
                 </div>
                 <#if errorAuthor??>  
@@ -115,16 +120,22 @@
                 <div class="form-group">
                     <label class="bold col-sm-2 control-label">Keyword</label>
                     <div class="col-sm-6">
-                        <select class="form-control" name="keywords" >
-                        <#if (keywords?? && keywords?size>0)>
+                        <#if (keywords?? && !keywords.isEmpty() && keywords?size>0)>
+                        <ul class="list-group listitem" name="keywords">
                             <#list keywords as item>
-                                <option value="${item.key!''?html}" >${item.name!''?html}</option>
+                            <li class="list-group-item nodecoration" value="${item.key!''?html}">
+                                ${item.name!''?html}
+                                <a href="publication" name="delateKeyword"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
+                            </li>
                             </#list>
+                        </ul>
+                        <#else>
+                        <div class="padding-top-5">Nessuna parola chiave selezionata</div>
                         </#if>
-                        </select>
+
                     </div>
                     <div class="col-sm-2">
-                        <input value='Aggiungi parola chiave' name='addKeyword' type='submit' class="btn btn-default"/>
+                        <input value="Seleziona parola chiave" name="addKeyword" type="submit" class="btn btn-default"/>
                     </div>
                 </div>
                 <#if errorKeyword??>  
@@ -144,7 +155,7 @@
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <span>
-                            <input value='Aggiungi' name='submitPublication' type='submit' class="btn btn-default"/>
+                            <input value='Salva' name='submitPublication' type='submit' class="btn btn-default"/>
                         </span>
                     </div>
                 </div>

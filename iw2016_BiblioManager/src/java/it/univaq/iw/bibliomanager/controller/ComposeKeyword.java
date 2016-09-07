@@ -11,12 +11,15 @@ import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -24,7 +27,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class ComposeKeyword extends BiblioManagerBaseController {
 
-    private void action_composeKeyword(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
+    private void action_composeKeyword(HttpServletRequest request, HttpServletResponse response) 
+            throws DataLayerException {
         try {
             Keyword keyword = null;
             Map<String, String> params = new HashMap<String, String>();
@@ -39,9 +43,10 @@ public class ComposeKeyword extends BiblioManagerBaseController {
         }
     }
 
-    private Keyword action_updateKeyword(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
-        Keyword keyword = null;
+    private void action_updateKeyword(HttpServletRequest request, HttpServletResponse response) 
+            throws DataLayerException {
         try {
+            Keyword keyword = null;
             keyword = getDataLayer().getKeyword(Integer.parseInt(request.getParameter("keywordId")));
             Map<String, String> params = new HashMap<String, String>();
             params.put("keyName", Utils.checkString(request.getParameter("keyName")));
@@ -53,15 +58,20 @@ public class ComposeKeyword extends BiblioManagerBaseController {
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage());
         }
-        return keyword;
     }
 
     private void action_LinkKeyword(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         int pubId = (int) SecurityLayer.checkSession(request).getAttribute("publicationId");
-        String[] values = request.getParameterValues("keywordSelected");
+        List<String> values = new ArrayList<String>(Arrays.asList(request.getParameterValues("keywordSelected")));
+        getDataLayer().deletePublicationHasKeyword(pubId);
         for(String value : values){
             getDataLayer().storePublicationHasKeyword(Integer.parseInt(value), pubId);
         }
+        //SI PUO' CANCELLARE???
+//        String[] values = request.getParameterValues("keywordSelected");
+//        for(String value : values){
+//            getDataLayer().storePublicationHasKeyword(Integer.parseInt(value), pubId);
+//        }
     }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -77,7 +87,8 @@ public class ComposeKeyword extends BiblioManagerBaseController {
         try {
             request.setAttribute("page_title", "Gestione Parole Chiave");
             TemplateResult res = new TemplateResult(getServletContext());
-            if (SecurityLayer.checkSession(request) != null) {
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
                 if (request.getParameter("keywordId") != null) {
                     request.setAttribute("currentKeyword", request.getParameter("currentKeyword"));
                     request.setAttribute("keywordId", request.getParameter("keywordId"));
@@ -93,8 +104,9 @@ public class ComposeKeyword extends BiblioManagerBaseController {
                     action_LinkKeyword(request, response);
                 }
                 List<Keyword> keywords = getDataLayer().getKeywords();
+                List<Keyword> publicationKeywords = getDataLayer().getPublicationKeywords((int) session.getAttribute("publicationId"));
                 request.setAttribute("keywords", keywords);
-            
+                request.setAttribute("publicationKeywords", publicationKeywords);
                 res.activate("keyword.ftl.html", request, response);
  
             } else {

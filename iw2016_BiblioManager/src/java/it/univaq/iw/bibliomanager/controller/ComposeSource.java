@@ -13,16 +13,19 @@ import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Vincenzo Lanzieri;
+ * @author Vincenzo Lanzieri, Angelo Iezzi;
  */
 public class ComposeSource extends BiblioManagerBaseController {
 
@@ -49,7 +52,8 @@ public class ComposeSource extends BiblioManagerBaseController {
 
     private void action_updateSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
-            Source source = getDataLayer().getSource(Integer.parseInt(request.getParameter("sourceId")));
+            Source source = null;
+            source = getDataLayer().getSource(Integer.parseInt(request.getParameter("sourceId")));
             Map<String, String> params = new HashMap<String, String>();
             params.put("sourceType", Utils.checkString(request.getParameter("sourceType")));
             params.put("sourceUri", Utils.checkString(request.getParameter("sourceUri")));
@@ -67,6 +71,16 @@ public class ComposeSource extends BiblioManagerBaseController {
         }
     }
     
+    private void action_LinkSources(HttpServletRequest request, HttpServletResponse response)
+        throws DataLayerException {
+        int pubId = (int) SecurityLayer.checkSession(request).getAttribute("publicationId");
+        List<String> values = new ArrayList<String>(Arrays.asList(request.getParameterValues("sourceSelected")));
+        getDataLayer().deletePublicationHasAuthor(pubId);
+        for(String value : values){
+            getDataLayer().storePublicationHasSource(Integer.parseInt(value), pubId);
+        }
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -81,16 +95,28 @@ public class ComposeSource extends BiblioManagerBaseController {
         try {
             request.setAttribute("page_title", "Gestione Sorgenti");
             TemplateResult res = new TemplateResult(getServletContext());
-            if (SecurityLayer.checkSession(request) != null) {
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
+                if (request.getParameter("sourceId") != null) {
+                    request.setAttribute("currentTypeSource", request.getParameter("currentTypeSource"));
+                    request.setAttribute("currentUriSource", request.getParameter("currentUriSource"));
+                    request.setAttribute("currentFormatSource", request.getParameter("currentFormatSource"));
+                    request.setAttribute("currentDescripionSource", request.getParameter("currentDescriptionSource"));
+                    request.setAttribute("sourceId", request.getParameter("authorId"));
+                }
                 if (request.getParameter("submitSource") != null && request.getParameter("sourceId") == null) {
                     action_composeSource(request, response);
                 }
                 if (request.getParameter("submitSource") != null && request.getParameter("sourceId") != null) {
                     action_updateSource(request, response);
                 }
+                if(request.getParameter("linkSource") != null){
+                    action_LinkSources(request, response);
+                }
                 List<Source> sources = getDataLayer().getSources();
+                List<Source> publicationSources = getDataLayer().getPublicationSources((int) session.getAttribute("publicationId"));
                 request.setAttribute("sources", sources);
-                
+                request.setAttribute("publicationSources", publicationSources);
                 res.activate("source.ftl.html", request, response);
             } else {
                 action_default(request, response);
@@ -109,5 +135,7 @@ public class ComposeSource extends BiblioManagerBaseController {
     public String getServletInfo() {
         return "Short description";
     }
+
+    
 
 }

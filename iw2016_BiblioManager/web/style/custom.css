@@ -140,6 +140,7 @@ Professor: Giuseppe Della Penna
 .round-5 { border-radius: 5px !important; }
 .round-10 { border-radius: 10px !important; }
 
+.dred{color:darkred;}
 .blue {color:#036;}
 .green {color:#9c6;}
 .black {color:black;}
@@ -837,6 +838,20 @@ header .navbar-header-menu {
 
 .titlePublication .title{
     margin: 12px 0 36px;
+}
+
+/**
+ * 4. Insert Pubblication
+ * -----------------------------------------------------------------------------
+ */
+
+.delateitem{
+    color: darkred;
+}
+
+.listitem{
+    margin-left: 0px;
+    margin-bottom: 0px;
 }
 
 
