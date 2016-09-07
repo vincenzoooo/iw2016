@@ -94,12 +94,10 @@
                                 <th class="smallhidden">
                                     Descrizione
                                 </th>
-                                <th class="col-edit">
+                                <th class="col-edit hidden-xs">
                                     Gestisci
                                 </th>
-                                <th class="col-selection">
-                                    Seleziona
-                                </th>
+
                             </tr>
                             <#list sources as item>
                             <tr>
@@ -112,27 +110,16 @@
                                 <td class="smallhidden">
                                     ${strip_slashes(item.format)!"''"?html}
                                 </td>
-                                <td class="smallhidden">
+                                <td class="smallhidden hidden-xs">
                                     ${strip_slashes(item.description)!"''"?html}
                                 </td>
                                 <td>
                                     <a href="source?sourceId=${item.key}&currentTypeSource=${item.type}&currentUriSource=${item.uri}&currentFormatSource=${item.format}&currentDescriptionSource=${item.description}#anchor">Modifica</a>
                                 </td>
-                                <td>
-                                    <input type="checkbox" class="form-control" name="sourceSelected" value="${item.key}" <#list publicationSources as item1><#if (item.key == item1.key)>checked="checked"</#if></#list>/>
-                                </td>
+
                             </tr>
                             </#list>
-                            <tr>
-                                <td></td>
-                                <td class="hidden-xs"></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td>
-                                    <input type="submit" class="form-control" name="linkKeyword" value="Scegli!" />
-                                </td>
-                            </tr>
+
                         </table>
                         <#else>
                         <span class="bold">Nessuna parola chiave presente.</span>
