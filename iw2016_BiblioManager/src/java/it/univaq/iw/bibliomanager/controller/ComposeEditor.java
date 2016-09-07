@@ -76,7 +76,9 @@ public class ComposeEditor extends BiblioManagerBaseController {
         try {
             request.setAttribute("page_title", "Gestione Editore");
             TemplateResult res = new TemplateResult(getServletContext());
-            if (SecurityLayer.checkSession(request) != null) {
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
+                currentUser(request, response, session);
                 if (request.getParameter("editorId") != null) {
                     request.setAttribute("currentEditor", request.getParameter("currentEditor"));
                     request.setAttribute("editorId", request.getParameter("editorId"));

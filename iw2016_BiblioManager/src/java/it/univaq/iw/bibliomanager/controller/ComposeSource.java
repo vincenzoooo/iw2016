@@ -31,18 +31,19 @@ public class ComposeSource extends BiblioManagerBaseController {
 
     private void action_composeSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
-            Source source = null;
+            Source source = getDataLayer().createSource();
+            HttpSession session = SecurityLayer.checkSession(request);
             Map<String, String> params = new HashMap<String, String>();
             params.put("sourceType", Utils.checkString(request.getParameter("sourceType")));
             params.put("sourceUri", Utils.checkString(request.getParameter("sourceUri")));
             params.put("sourceFormat", Utils.checkString(request.getParameter("sourceFormat")));
             params.put("sourceDescription", Utils.checkString(request.getParameter("sourceDescription")));
             if (!validator(params, request, response)) {
-                source = getDataLayer().createSource();
                 source.setType(params.get("sourceType"));
                 source.setUri(params.get("sourceUri"));
                 source.setFormat(params.get("sourceFormat"));
                 source.setDescription(params.get("sourceDescription"));
+                source.setPublication(getDataLayer().getPublication((int) session.getAttribute("publicationId"), true));
                 getDataLayer().storeSource(source);
             }
         } catch (DataLayerException ex) {
@@ -71,16 +72,6 @@ public class ComposeSource extends BiblioManagerBaseController {
         }
     }
     
-    private void action_LinkSources(HttpServletRequest request, HttpServletResponse response)
-        throws DataLayerException {
-        int pubId = (int) SecurityLayer.checkSession(request).getAttribute("publicationId");
-        List<String> values = new ArrayList<String>(Arrays.asList(request.getParameterValues("sourceSelected")));
-        getDataLayer().deletePublicationHasAuthor(pubId);
-        for(String value : values){
-            getDataLayer().storePublicationHasSource(Integer.parseInt(value), pubId);
-        }
-    }
-    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -97,6 +88,7 @@ public class ComposeSource extends BiblioManagerBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
+                currentUser(request, response, session);
                 if (request.getParameter("sourceId") != null) {
                     request.setAttribute("currentTypeSource", request.getParameter("currentTypeSource"));
                     request.setAttribute("currentUriSource", request.getParameter("currentUriSource"));
@@ -109,9 +101,6 @@ public class ComposeSource extends BiblioManagerBaseController {
                 }
                 if (request.getParameter("submitSource") != null && request.getParameter("sourceId") != null) {
                     action_updateSource(request, response);
-                }
-                if(request.getParameter("linkSource") != null){
-                    action_LinkSources(request, response);
                 }
                 List<Source> sources = getDataLayer().getSources();
                 List<Source> publicationSources = getDataLayer().getPublicationSources((int) session.getAttribute("publicationId"));

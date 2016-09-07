@@ -28,7 +28,7 @@
                             <a href="history?historyData&publicationId=${publication.key}">
                                 Storico
                             </a>
-                            <#if (me.state==0 || (me.state==1))>
+                            <#if (me.state==0 || (me.state == 1 && me.key == publisher.key))>
                             <span>
                                 <a href="publication?publicationId=${publication.key}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
                             </span>

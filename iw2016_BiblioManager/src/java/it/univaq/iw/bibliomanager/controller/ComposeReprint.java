@@ -23,6 +23,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -85,7 +86,9 @@ public class ComposeReprint extends BiblioManagerBaseController {
         try {
             request.setAttribute("page_title", "Gestione Ristampa");
             TemplateResult res = new TemplateResult(getServletContext());
-            if (SecurityLayer.checkSession(request) != null) {
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
+                currentUser(request, response, session);
                 if (request.getParameter("reprintId") != null) {
                     Reprint reprint = getDataLayer().getReprint(Integer.parseInt(request.getParameter("reprintId")));
                     request.setAttribute("reprint", reprint);

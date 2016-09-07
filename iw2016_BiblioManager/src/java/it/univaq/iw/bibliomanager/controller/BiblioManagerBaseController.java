@@ -35,9 +35,6 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
             datalayer = new BiblioManagerDataLayerMysqlImpl((DataSource) getServletContext().getAttribute("datasource"));
             datalayer.init();
             HttpSession s = SecurityLayer.checkSession(request);
-            if (s!=null){
-               currentUser(request, response, s);      
-           }
             request.setAttribute("strip_slashes", new SplitSlashesFmkExt());
             //SecurityLayer.redirectToHttps(request, response);
             

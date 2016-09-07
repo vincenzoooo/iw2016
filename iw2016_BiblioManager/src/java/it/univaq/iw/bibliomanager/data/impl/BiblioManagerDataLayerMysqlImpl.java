@@ -59,8 +59,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement sPublicationHasAuthor, sPublicationHasAuthorByPublication, sPublicationHasAuthorByAuthor;
     private PreparedStatement sPublicationHasSource, sPublicationHasSourceByPublication, sPublicationHasSourceBySource;
     private PreparedStatement sPublicationHasKeyword, sPublicationHasKeywordByPublication, sPublicationHasKeywordByKeyword;
-    private PreparedStatement iPublicationHasAuthor, iPublicationHasSource, iPublicationHasKeyword;
-    private PreparedStatement dPublicationHasAuthor, dPublicationHasSource, dPublicationHasKeyword;
+    private PreparedStatement iPublicationHasAuthor, iPublicationHasKeyword;
+    private PreparedStatement dPublicationHasAuthor, dPublicationHasKeyword;
 
     public BiblioManagerDataLayerMysqlImpl(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
@@ -101,9 +101,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, indice, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
             this.sSourceById = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE idsorgente = ?");
-            this.sSourceByPublication = connection.prepareStatement("SELECT * FROM iw2016.sorgente JOIN pubblicazione_has_sorgente ON idsorgente = sorgente_idsorgente WHERE pubblicazione_idpubblicazione = ?");
-            this.uSource = connection.prepareStatement("UPDATE iw2016.sorgente SET tipo = ?, URI = ?, formato = ?, descrizione = ? WHERE idsorgente = ?");
-            this.iSource = connection.prepareStatement("INSERT INTO iw2016.sorgente (tipo, URI, formato, descrizione) VALUES (?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.sSourceByPublication = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE pubblicazione = ?");
+            this.uSource = connection.prepareStatement("UPDATE iw2016.sorgente SET tipo = ?, URI = ?, formato = ?, descrizione = ?, pubblicazione = ? WHERE idsorgente = ?");
+            this.iSource = connection.prepareStatement("INSERT INTO iw2016.sorgente (tipo, URI, formato, descrizione, pubblicazione) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sReprintsByPublication = connection.prepareStatement("SELECT * FROM iw2016.ristampa WHERE pubblicazione = ?");
             this.sReprintById = connection.prepareStatement("SELECT * FROM iw2016.ristampa WHERE idristampa = ?");
             this.uReprint = connection.prepareStatement("UPDATE iw2016.ristampa SET numero = ?, data = ?, pubblicazione = ? WHERE idristampa = ?");
@@ -141,8 +141,6 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.dPublicationHasAuthor = connection.prepareStatement("DELETE FROM iw2016.autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ?");
             this.iPublicationHasKeyword = connection.prepareStatement("INSERT INTO iw2016.pubblicazione_has_keyword (pubblicazione_idpubblicazione, keyword_idkeyword) VALUES (?,?)");
             this.dPublicationHasKeyword = connection.prepareStatement("DELETE FROM iw2016.pubblicazione_has_keyword WHERE pubblicazione_idpubblicazione = ?");
-            this.iPublicationHasSource = connection.prepareStatement("INSERT INTO iw2016.pubblicazione_has_sorgente (pubblicazione_idpubblicazione, sorgente_idsorgente) VALUES (?,?)");
-            this.dPublicationHasSource = connection.prepareStatement("DELETE FROM iw2016.pubblicazione_has_sorgente WHERE pubblicazione_idpubblicazione = ?");
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         }
@@ -1512,7 +1510,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uSource.setString(2, source.getUri());
                 uSource.setString(3, source.getFormat());
                 uSource.setString(4, source.getDescription());
-                uSource.setInt(5, key);
+                uSource.setInt(5, source.getPublication().getKey());
+                uSource.setInt(6, key);
 
                 uSource.executeUpdate();
             } else { //insert
@@ -1520,6 +1519,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 iSource.setString(2, source.getUri());
                 iSource.setString(3, source.getFormat());
                 iSource.setString(4, source.getDescription());
+                iSource.setInt(5, source.getPublication().getKey());
 
                 if (iSource.executeUpdate() == 1) {
                     keys = iSource.getGeneratedKeys();
@@ -1713,47 +1713,6 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             dPublicationHasKeyword.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete key relation", ex);
-        } finally {
-            try {
-                if (res != null) {
-                    res.close();
-                }
-            } catch (SQLException ex) {
-                //
-            }
-        }
-    }
-    
-    @Override
-    public void storePublicationHasSource(int idSource, int idPublication) throws DataLayerException {
-        ResultSet res = null;
-        try {
-            iPublicationHasSource.setInt(1, idPublication);
-            iPublicationHasSource.setInt(2, idSource);
-            
-            iPublicationHasSource.executeUpdate();
-        } catch (SQLException ex) {
-            throw new DataLayerException("Cannot relate source with publication", ex);
-        } finally {
-            try {
-                if (res != null) {
-                    res.close();
-                }
-            } catch (SQLException ex) {
-                //
-            }
-        }
-    }
-    
-    @Override
-    public void deletePublicationHasSource(int idPublication) throws DataLayerException {
-        ResultSet res = null;
-        try {
-            dPublicationHasSource.setInt(1, idPublication);
-            
-            dPublicationHasSource.executeUpdate();
-        } catch (SQLException ex) {
-            throw new DataLayerException("Cannot delete source relation", ex);
         } finally {
             try {
                 if (res != null) {

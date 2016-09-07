@@ -11,6 +11,7 @@ import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -22,63 +23,9 @@ import javax.servlet.http.HttpSession;
  *
  * @author Angelo Iezzi
  */
+public class ComposeIndex extends BiblioManagerBaseController {
 
-public class ComposeIndex extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        try {
-            request.setAttribute("page_title", "Gestione Indice");
-            TemplateResult res = new TemplateResult(getServletContext());
-            HttpSession session = SecurityLayer.checkSession(request);
-            if (session != null) {
-//                if (request.getParameter("indexId") != null) {
-//                    request.setAttribute("indexId", request.getParameter("indexId"));
-//                }
-//                if (request.getParameter("submitIndex") != null && request.getAttribute("authorId") == null) {
-//                    action_composeIndex(request, response);
-//                }
-//                if (request.getParameter("submitIndex") != null && request.getAttribute("authorId") != null) {
-//                    action_updateIndex(request, response);
-//                    request.removeAttribute("authorId");
-//                }
-//                if(request.getParameter("linkAuthor") != null){
-//                    action_LinkIndex(request, response);
-//                }
-//                List<Author> authors = getDataLayer().getAuthors();
-//                List<Author> publicationAuthors = getDataLayer().getPublicationAuthors((int) session.getAttribute("publicationId"));
-//                request.setAttribute("authors", authors);
-//                request.setAttribute("publicationAuthors", publicationAuthors);
-                res.activate("index.ftl.html", request, response);
-                
-            } else {
-                
-            }
-        } catch (Exception ex) {
-            
-        }
-    }
-
-   
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
+    private List<String> index;
 
     private void action_composeIndex(HttpServletRequest request, HttpServletResponse response) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -92,5 +39,53 @@ public class ComposeIndex extends HttpServlet {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     */
+    @Override
+    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException{
+        try {
+            request.setAttribute("page_title", "Gestione Indice");
+            TemplateResult res = new TemplateResult(getServletContext());
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
+                currentUser(request, response, session);
+//                if (request.getParameter("indexId") != null) {
+//                    request.setAttribute("indexId", request.getParameter("indexId"));
+//                }
+//                if (request.getParameter("submitIndex") != null && request.getAttribute("authorId") == null) {
+//                    action_composeIndex(request, response);
+//                }
+//                if (request.getParameter("submitIndex") != null && request.getAttribute("authorId") != null) {
+//                    action_updateIndex(request, response);
+//                    request.removeAttribute("authorId");
+//                }
+//                if(request.getParameter("linkAuthor") != null){
+//                    action_LinkIndex(request, response);
+//                }
+                res.activate("index.ftl.html", request, response);
 
+            } else {
+
+            }
+        } catch (Exception ex) {
+
+        }
+    }
+
+    /**
+     * Returns a short description of the servlet.
+     *
+     * @return a String containing servlet description
+     */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }
 }

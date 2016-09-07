@@ -76,11 +76,13 @@ public class PublicationDetails extends BiblioManagerBaseController {
             throws ServletException {
         try {
             request.setAttribute("page_title", "Details");
-            if (SecurityLayer.checkSession(request) != null) {
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
+                currentUser(request, response, session);
+                if(request.getAttribute("submitReview") != null){
+                    action_addReview(request, response);
+                }
                 action_publication(request, response);
-            }
-            else if(SecurityLayer.checkSession(request) != null && request.getAttribute("submitReview") != null){
-                action_addReview(request, response);
             }
             else {
                 action_default(request, response);

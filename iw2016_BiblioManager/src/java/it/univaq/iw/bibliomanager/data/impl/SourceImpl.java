@@ -23,6 +23,8 @@ public class SourceImpl implements Source {
     private String uri;
     private String format;
     private String description;
+    private int publication_key;
+    private Publication publication;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public SourceImpl(BiblioManagerDataLayer ownerDataLayer) {
@@ -31,6 +33,8 @@ public class SourceImpl implements Source {
         type = "";
         uri = "";
         format = "";
+        publication_key = 0;
+        publication = null;
         description = "";
     }
 
@@ -82,6 +86,19 @@ public class SourceImpl implements Source {
     @Override
     public void setDescription(String description) {
         this.description = description;
+    }
+    
+    @Override
+    public Publication getPublication() throws DataLayerException {
+        if (publication == null && publication_key > 0) {
+            publication = ownerDataLayer.getPublication(publication_key);
+        }
+        return publication;
+    }
+
+    @Override
+    public void setPublication(Publication publication) {
+        this.publication = publication;
     }
 
     @Override

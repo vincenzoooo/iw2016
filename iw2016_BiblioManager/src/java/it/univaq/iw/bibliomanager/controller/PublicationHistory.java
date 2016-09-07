@@ -15,6 +15,7 @@ import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -44,7 +45,9 @@ public class PublicationHistory extends BiblioManagerBaseController {
             throws ServletException {
         try {
             request.setAttribute("page_title", "History");
-            if (SecurityLayer.checkSession(request) != null) {
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
+                currentUser(request, response, session);
                 action_history(request, response);
             } else {
                 action_default(request, response);

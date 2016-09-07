@@ -46,21 +46,9 @@ public class Home extends BiblioManagerBaseController {
     }
 
     private void action_logged(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, DataLayerException {
-
-        HttpSession session = SecurityLayer.checkSession(request);
-        if (session != null) {
-            request.setAttribute("page_title", "Homepage");
-            // recupero lo userId e il nome
-//            int userId = (int) session.getAttribute("userId");
-//            int status = (int) session.getAttribute("userStatus");
-//            User user = getDataLayer().getUser(userId);
-//            String nameLogged = SecurityLayer.stripSlashes(user.getName());
-//            request.setAttribute("nameLogged", nameLogged);
-//            request.setAttribute("usernameLogged", "Homepage");
-            TemplateResult res = new TemplateResult(getServletContext());
-           // request.setAttribute("userStatus", status);
-            res.activate("home.ftl.html", request, response);
-        }
+        request.setAttribute("page_title", "Homepage");
+        TemplateResult res = new TemplateResult(getServletContext());
+        res.activate("home.ftl.html", request, response);
     }
 
     /**
@@ -81,7 +69,9 @@ public class Home extends BiblioManagerBaseController {
             request.setAttribute("lastPublicationsInsert", publicationsInsert);
             request.setAttribute("lastPublicationsUpdate", publicationsUpdate);
             request.setAttribute("activeUsers", activeUsers);
-            if (SecurityLayer.checkSession(request) != null) {
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
+                currentUser(request, response, session);
                 action_logged(request, response);
             } else {
                 action_default(request, response);

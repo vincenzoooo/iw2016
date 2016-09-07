@@ -87,6 +87,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
+                currentUser(request, response, session);
                 if (request.getParameter("authorId") != null) {
                     request.setAttribute("currentNameAuthor", request.getParameter("currentNameAuthor"));
                     request.setAttribute("currentSurnameAuthor", request.getParameter("currentSurnameAuthor"));

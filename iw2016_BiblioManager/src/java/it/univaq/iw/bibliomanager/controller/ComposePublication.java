@@ -172,6 +172,7 @@ public class ComposePublication extends BiblioManagerBaseController {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
             if(session != null){
+                currentUser(request, response, session);
                 request.setAttribute("page_title", "Nuova Pubblicazione");
                 List<Editor> editors = getDataLayer().getEditors();
                 List<Keyword> keywords = getDataLayer().getKeywords();

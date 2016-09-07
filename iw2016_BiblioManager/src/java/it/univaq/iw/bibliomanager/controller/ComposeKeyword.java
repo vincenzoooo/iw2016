@@ -89,6 +89,7 @@ public class ComposeKeyword extends BiblioManagerBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
+                currentUser(request, response, session);
                 if (request.getParameter("keywordId") != null) {
                     request.setAttribute("currentKeyword", request.getParameter("currentKeyword"));
                     request.setAttribute("keywordId", request.getParameter("keywordId"));

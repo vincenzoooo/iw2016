@@ -132,8 +132,4 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storePublicationHasKeyword(int idKeyword, int idPublication) throws DataLayerException;
     
     void deletePublicationHasKeyword(int idPublication) throws DataLayerException;
-    
-    void storePublicationHasSource(int idSource, int idPublication) throws DataLayerException;
-    
-    void deletePublicationHasSource(int idPublication) throws DataLayerException;
 }

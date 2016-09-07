@@ -110,7 +110,9 @@ public class Profile extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         try {
             request.setAttribute("page_title", "Profile");
-            if (SecurityLayer.checkSession(request) != null) {
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
+                currentUser(request, response, session);
                 if (request.getParameter("submitRegistration") != null) {
                     action_save(request, response);
                 }

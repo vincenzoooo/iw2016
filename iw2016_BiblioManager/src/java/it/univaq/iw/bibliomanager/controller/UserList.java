@@ -92,6 +92,7 @@ public class UserList extends BiblioManagerBaseController {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
+                currentUser(request, response, session);
                 User user = getDataLayer().getUser((int) session.getAttribute("userId"));
                 request.setAttribute("me", user);
                 if(user.getState() != 2 && request.getParameter("op") != null){

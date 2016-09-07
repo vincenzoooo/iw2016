@@ -18,6 +18,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -50,7 +51,9 @@ public class PublicationsList extends BiblioManagerBaseController {
             throws ServletException {
         try {
             request.setAttribute("page_title", "Ricerca avanzata");
-            if (SecurityLayer.checkSession(request) != null) {
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
+                currentUser(request, response, session);
                 action_list(request, response);
             } else {
                 action_default(request, response);
