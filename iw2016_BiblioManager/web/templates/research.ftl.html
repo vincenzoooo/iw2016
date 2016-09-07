@@ -4,15 +4,15 @@
             <h1 class="center">Ricerca avanzata</h1>
             <form method="post" action="research" class="form-horizontal">
                 <div class="form-group">
-                    <label for="title" class="col-sm-2 control-label bold">Titolo</label>
+                    <label for="inputSearchTitle" class="col-sm-2 control-label bold">Titolo</label>
                     <div class="col-sm-10 col-lg-6">
-                        <input type="text" class="form-control" name="publicationTitle" value="${publicationTitle!''?html}" placeholder="Inserisci il titolo" />
+                        <input id="inputSearchTitle" type="text" class="form-control" name="publicationTitle" value="${publicationTitle!''?html}" placeholder="Inserisci il titolo" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="isbn" class="col-sm-2 control-label bold">ISBN (13 cifre)</label>
+                    <label for="inputSearchIsbn" class="col-sm-2 control-label bold">ISBN (13 cifre)</label>
                     <div class="col-sm-10 col-lg-6">
-                        <input type="text" class="form-control" name="publicationIsbn" value="${publicationIsbn!''?html}" placeholder="Inserisci l'ISBN" />
+                        <input id="inputSearchIsbn" type="text" class="form-control" name="publicationIsbn" value="${publicationIsbn!''?html}" placeholder="Inserisci l'ISBN" />
                     </div>
                 </div>
                 <#if searchErrorIsbn??>
@@ -21,21 +21,21 @@
                 </div>
                 </#if>
                 <div class="form-group">
-                    <label for="author" class="col-sm-2 control-label bold">Autore</label>
+                    <label for="inputSearchAuthor" class="col-sm-2 control-label bold">Autore</label>
                     <div class="col-sm-10 col-lg-6">
-                        <input type="text" class="form-control" name="publicationAuthor" value="${publicationAuthor!''?html}" placeholder="Inserisci un autore" />
+                        <input id="inputSearchAuthor" type="text" class="form-control" name="publicationAuthor" value="${publicationAuthor!''?html}" placeholder="Inserisci un autore" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="editor" class="col-sm-2 control-label bold">Editore</label>
+                    <label for="inputSearchEditor" class="col-sm-2 control-label bold">Editore</label>
                     <div class="col-sm-10 col-lg-6">
-                        <input type="text" class="form-control" name="publicationEditor" value="${publicationEditor!''?html}" placeholder="Inserisci un editore" />
+                        <input id="inputSearchEditor" type="text" class="form-control" name="publicationEditor" value="${publicationEditor!''?html}" placeholder="Inserisci un editore" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="publicationYear" class="col-sm-2 control-label bold">Anno di pubblicazione</label>
+                    <label for="inputSearchPubyear" class="col-sm-2 control-label bold">Anno di pubblicazione</label>
                     <div class="col-sm-10 col-lg-6">
-                        <input type="text" class="form-control" name="publicationYear" value="${publicationYear!''?html}" placeholder="Inserisci l'anno di pubblicazione" />
+                        <input id="inputSearchPubyear" type="text" class="form-control" name="publicationYear" value="${publicationYear!''?html}" placeholder="Inserisci l'anno di pubblicazione" />
                     </div>
                 </div>
                 <#if errorSearchYear??>
@@ -44,27 +44,27 @@
                 </div>
                 </#if>
                 <div class="form-group">
-                    <label for="keyword" class="col-sm-2 control-label bold">Parola chiave</label>
+                    <label for="inputSearchKeyword" class="col-sm-2 control-label bold">Parola chiave</label>
                     <div class="col-sm-10 col-lg-6">
-                        <input type="text" class="form-control" name="publicationKeyword" value="${keyword!''?html}" placeholder="Inserisci la parola chiave" />
+                        <input id="inputSearchKeyword" type="text" class="form-control" name="publicationKeyword" value="${keyword!''?html}" placeholder="Inserisci la parola chiave" />
                     </div>
                 </div>
                 <div class="form-group">
-                    <label for="inputLanguage" class="col-sm-2 control-label bold">Lingua</label>
+                    <label for="inputSearchLanguage" class="col-sm-2 control-label bold">Lingua</label>
                     <div class="col-sm-10 col-lg-6">
-                        <input type="text" class="form-control" name="publicationLanguage" value="${publicationLanguage!''?html}" placeholder="Inserisci la lingua" />
+                        <input id="inputSearchLanguage" type="text" class="form-control" name="publicationLanguage" value="${publicationLanguage!''?html}" placeholder="Inserisci la lingua" />
                     </div>
                 </div>
                  <div class="form-group">
-                    <label for="inputLanguage" class="col-sm-2 control-label bold">Sorgenti di tipo download</label>
-                    <div class="col-sm-10 col-lg-6">
-                        <input type="checkbox" class="form-control" name="download" value="true" />
+                    <label for="inputSearchTyped" class="col-sm-2 control-label bold">Sorgenti di tipo download</label>
+                    <div class="col-sm-1 col-lg-1">
+                        <input id="inputSearchTyped" type="checkbox" class="form-control" name="download" value="true" />
                     </div>
                 </div>
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <span>
-                            <input value="submitResearch" name="submitResearch" type="submit" class="btn btn-default"/>
+                            <input value="Avvia ricerca" name="submitResearch" type="submit" class="btn btn-default"/>
                         </span>
                     </div>
                 </div>

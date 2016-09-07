@@ -11,11 +11,11 @@
              <div class="row">
                 <div class="col-lg-12">
                     <h3> Aggiungi un nuovo autore</h3>
-                    <form method="post" action="author" id="formAuthor" class="form-horizontal">     
+                    <form method="post" action="author" id="formAuthorInsert" class="form-horizontal">     
                         <div class="form-group">
-                            <label for="inputName" class="col-sm-2 control-label bold">Nome</label>
+                            <label for="inputAuthorName" class="col-sm-2 control-label bold">Nome</label>
                             <div class="col-sm-6">
-                                <input id="AuthorName" class="form-control" name="authorName" value="${name!''?html}" placeholder="Inserisci il mone dell'autore" />
+                                <input id="inputAuthorName" class="form-control" name="authorName" value="${name!''?html}" placeholder="Inserisci il mone dell'autore" />
                             </div>
                         </div>        
                         <#if errorAuthorName??>
@@ -25,9 +25,9 @@
                         </#if>
 
                         <div class="form-group">
-                            <label for="inputSurname" class="col-sm-2 control-label bold">Cognome</label>
+                            <label for="inputAuthorSurname" class="col-sm-2 control-label bold">Cognome</label>
                             <div class="col-sm-6">
-                                <input id="authorSurname" class="form-control" name="authorSurname" value="${surname!''?html}" placeholder="Inserisci il cognome dell'autore" />
+                                <input id="inputAuthorSurname" class="form-control" name="authorSurname" value="${surname!''?html}" placeholder="Inserisci il cognome dell'autore" />
                             </div>
                         </div>        
                         <#if errorAuthorSurname??>
@@ -110,18 +110,18 @@
              <div class="row">
                 <div class="col-lg-12">
                     <h3 class=""> Modifica autore</h3>
-                    <form method="post" action="author" id="formAuthor" class="form-horizontal">     
+                    <form method="post" action="author" id="formAuthorUpdate" class="form-horizontal">     
                         <div class="form-group">
-                            <label for="updateName" class="col-sm-2 control-label bold">Nome</label>
+                            <label for="updateAuthorName" class="col-sm-2 control-label bold">Nome</label>
                             <div class="col-sm-6">
                                 <input name="authorId" value="${authorId!''?html}" type="hidden"/>
-                                <input id="authorName" class="form-control" name='authorName' value="${currentNameAuthor!''?html}" placeholder="Modifica nome autore" />
+                                <input id="updateAuthorName" class="form-control" name='authorName' value="${currentNameAuthor!''?html}" placeholder="Modifica nome autore" />
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="updateSurname" class="col-sm-2 control-label bold">Cognome</label>
+                            <label for="updateAuthorSurname" class="col-sm-2 control-label bold">Cognome</label>
                             <div class="col-sm-6">
-                                <input id="authorSurname" class="form-control" name='authorSurname' value="${currentSurnameAuthor!''?html}" placeholder="Modifica cognome autore" />
+                                <input id="updateAuthorSurname" class="form-control" name='authorSurname' value="${currentSurnameAuthor!''?html}" placeholder="Modifica cognome autore" />
                             </div>
                         </div>
                         <div class="form-group">

@@ -67,11 +67,11 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-offset-1 col-lg-3 search-box" id="columnHome">
+            <div class="col-lg-offset-1 col-lg-3 search-box columnHome" id="searchBox">
                 <div class="section section-homePage-research">
                     <div class="formResearch">
                         <form method="post" action="research">
-                            <div id="active-user" class="right">
+                            <div class="right">
                                 <h2>Ricerca pubblicazioni</h2>
                             </div>
                             <div class="form-group">
@@ -86,17 +86,18 @@
                                 <label>Keywords / ISBN</label>
                                 <input type="text" class="form-control" name="Keywords" placeholder="Inserisci una Kewords/ISBN">
                             </div>
-                            <span>
-                                <input type="submit" value="Ricerca" name="submitResearch" class="btn btn-default">
-                            </span>
-                            <span>
-                                <a href="research" class="btn btn-default">Ricerca avanzata</a>
-                            </span>
+                            <div class="form-group">
+                                <span>
+                                    <input type="submit" value="Ricerca" name="submitResearch" class="btn btn-default">
+                                    <a href="research" class="btn btn-default">Ricerca avanzata</a>
+                                </span>
+                            </div>
+
                         </form>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-offset-1 col-lg-3 search-box" id="columnHome">
+            <div class="col-lg-offset-1 col-lg-3 search-box columnHome" id="activeUserBox">
                  <div class="section section-homePage-activeUser">
                     <div class="activeUser">
                         <div id="active-user" class="right">

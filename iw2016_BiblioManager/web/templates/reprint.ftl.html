@@ -14,9 +14,9 @@
                     <h3 class="row"> Aggiungi una ristampa</h3>
                     <form method="post" action="reprint" id="formReprint" class="form-horizontal">     
                         <div class="form-group">
-                            <label for="inputNumber" class="col-sm-2 control-label bold">Numero</label>
+                            <label for="inputReprintNumber" class="col-sm-2 control-label bold">Numero</label>
                             <div class="col-sm-6">
-                                <input id="reprintNumber" class="form-control" name="reprintNumber" value="${reprintNumber!''?html}" placeholder="Inserisci numero ristampa" />
+                                <input id="inputReprintNumber" class="form-control" name="reprintNumber" value="${reprintNumber!''?html}" placeholder="Inserisci numero ristampa" />
                             </div>
                         </div>        
                         <#if errorReprintNumber??>
@@ -26,9 +26,9 @@
                         </#if>
 
                         <div class="form-group">
-                            <label for="inputSurname" class="col-sm-2 control-label bold">Data ristampa</label>
+                            <label for="inputReprintDate" class="col-sm-2 control-label bold">Data ristampa</label>
                             <div class="col-sm-6">
-                                <input id="reprintDate" class="form-control" name="reprintDate" value="${reprintDate!''?html}" placeholder="Inserisci data ristampa" />
+                                <input id="inputReprintDate" class="form-control" name="reprintDate" value="${reprintDate!''?html}" placeholder="Inserisci data ristampa" />
                             </div>
                         </div>        
                         <#if errorReprintDate??>

@@ -14,9 +14,9 @@
                     <h3> Aggiungi una risorsa</h3>
                     <form method="post" action="source" id="formSource" class="form-horizontal">     
                         <div class="form-group">
-                            <label for="inputType" class="col-sm-2 control-label bold">Tipo</label>
+                            <label for="inputSourceType" class="col-sm-2 control-label bold">Tipo</label>
                             <div class="col-sm-6">
-                                <input id="type" class="form-control" name="sourceType" placeholder="Inserisci il tipo" />
+                                <input id="inputSourceType" class="form-control" name="sourceType" placeholder="Inserisci il tipo" />
                             </div>
                         </div>
                         <#if errorType??>
@@ -26,9 +26,9 @@
                         </#if>
 
                         <div class="form-group">
-                            <label for="inputUri" class="col-sm-2 control-label bold">Indirizzo risorsa</label>
+                            <label for="inputSourceUri" class="col-sm-2 control-label bold">Indirizzo risorsa</label>
                             <div class="col-sm-6">
-                                <input id="uri" class="form-control" name="sourceUri" placeholder="Inserisci indirizzo risorsa" />
+                                <input id="inputSourceUri" class="form-control" name="sourceUri" placeholder="Inserisci indirizzo risorsa" />
                             </div>
                         </div>
                         <#if errorUri??>
@@ -38,9 +38,9 @@
                         </#if>
 
                         <div class="form-group">
-                            <label for="inputFormat" class="col-sm-2 control-label bold">Formato</label>
+                            <label for="inputSourceFormat" class="col-sm-2 control-label bold">Formato</label>
                             <div class="col-sm-6">
-                                <input id="format" class="form-control" name="sourceFormat" placeholder="Inserisci il formato" />
+                                <input id="inputSourceFormat" class="form-control" name="sourceFormat" placeholder="Inserisci il formato" />
                             </div>
                         </div>
                         <#if errorFormat??>
@@ -50,9 +50,9 @@
                         </#if>
 
                         <div class="form-group">
-                            <label for="inputDescription" class="col-sm-2 control-label bold">Descrizione</label>
+                            <label for="inputSourceDescription" class="col-sm-2 control-label bold">Descrizione</label>
                             <div class="col-sm-6">
-                                <textarea class="form-control" name="sourceDescription" rows="4" placeholder="Inserisci una descrizione"></textarea>
+                                <textarea id="inputSourceDescription" class="form-control" name="sourceDescription" rows="4" placeholder="Inserisci una descrizione"></textarea>
                             </div>
                         </div>
                         <#if errorDescription??>
