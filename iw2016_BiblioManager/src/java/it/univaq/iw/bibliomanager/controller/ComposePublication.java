@@ -174,12 +174,11 @@ public class ComposePublication extends BiblioManagerBaseController {
             if(session != null){
                 request.setAttribute("page_title", "Nuova Pubblicazione");
                 List<Editor> editors = getDataLayer().getEditors();
-                List<Keyword> keywords = getDataLayer().getKeywords();
-                List<Source> sources = getDataLayer().getSources();
+               
                 request.setAttribute("authors", "");
                 request.setAttribute("editors", editors);
-                request.setAttribute("keywords", keywords);
-                request.setAttribute("sources", sources);
+                request.setAttribute("keywords", "");
+                request.setAttribute("sources", "");
                 
                 Publication publication = null;
                 if(session.getAttribute("publicationId") != null){
@@ -187,7 +186,11 @@ public class ComposePublication extends BiblioManagerBaseController {
                 }
                 if(publication != null && publication.getIncomplete()){
                     List<Author> authors = getDataLayer().getPublicationAuthors((int)session.getAttribute("publicationId"));
+                    List<Keyword> keywords = getDataLayer().getPublicationKeywords((int)session.getAttribute("publicationId"));
+                    List<Source> sources = getDataLayer().getPublicationSources((int)session.getAttribute("publicationId"));
                     request.setAttribute("authors", authors);
+                    request.setAttribute("keywords", keywords);
+                    request.setAttribute("sources", sources);
                     
                     request.setAttribute("publicationTitle", publication.getTitle());
                     request.setAttribute("publicationDescription", publication.getDescription());
