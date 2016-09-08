@@ -93,12 +93,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
             this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 0");
             this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 1");
-            this.sPublicationsByFilters = connection.prepareStatement("SELECT * FROM pubblicazione p LEFT JOIN ristampa r ON r.pubblicazione = p.idpubblicazione LEFT JOIN editore e ON e.ideditore = p.editore " + 
+            this.sPublicationsByFilters = connection.prepareStatement("SELECT p.idpubblicazione FROM pubblicazione p LEFT JOIN ristampa r ON r.pubblicazione = p.idpubblicazione LEFT JOIN editore e ON e.ideditore = p.editore " + 
                     "LEFT JOIN autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN autore a ON a.idautore = ap.autore_idautore " + 
                     "LEFT JOIN sorgente sr ON sr.pubblicazione = p.idpubblicazione LEFT JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword " +
                     "LEFT JOIN storico st ON st.pubblicazione = p.idpubblicazione LEFT JOIN utente u ON u.idutente = st.utente " + 
-                    "WHERE p.isbn LIKE ? AND p.titolo LIKE ? AND concat(a.nome, a.cognome) LIKE ? AND e.nome LIKE ? AND k.nome LIKE ? AND lingua LIKE ? AND p.data_pubblicazione >= ? AND p.data_pubblicazione < ? AND p.incompleta = 0 "+
-                    "ORDER BY ?");
+                    "WHERE p.isbn LIKE ? AND p.titolo LIKE ? AND concat(a.nome, ' ',a.cognome) LIKE ? AND e.nome LIKE ? AND k.nome LIKE ? AND lingua LIKE ? AND p.data_pubblicazione >= ? AND p.data_pubblicazione < ? AND p.incompleta = 0 AND CONCAT(u.nome, ' ',u.cognome) LIKE ?"+
+                    "GROUP BY p.idpubblicazione ORDER BY ?");
             this.sPublicationsByISBN = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE isbn = ? AND incompleta = 0");
             this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, incompleta = ? WHERE idpubblicazione = ?");
             this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -651,15 +651,26 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         List<Publication> result = new ArrayList();
         ResultSet rs = null;
         try {
-            sPublicationsByFilters.setString(1, Utils.getArrayParameter(filters, "publicationIsbn"));
-            sPublicationsByFilters.setString(2, Utils.getArrayParameter(filters, "publicationTitle"));
-            sPublicationsByFilters.setString(3, Utils.getArrayParameter(filters, "publicationAuthor"));
-            sPublicationsByFilters.setString(4, Utils.getArrayParameter(filters, "publicationEditor"));
-            sPublicationsByFilters.setString(5, Utils.getArrayParameter(filters, "publicationKeyword"));
-            sPublicationsByFilters.setString(6, Utils.getArrayParameter(filters, "publicationLanguage"));
+            for (Map.Entry<String, String> entry : filters.entrySet())
+            {
+                if(entry.getValue() == null){
+                    entry.setValue("");
+                }
+                else if(!entry.getKey().equals("publicationYear") && !entry.getKey().equals("publicationYearEnd")){
+                    entry.setValue("%"+entry.getValue()+"%");
+                }
+            }
+            //TODO: Generare qui il testo della query
+            sPublicationsByFilters.setString(1, filters.getOrDefault("publicationIsbn", "%%"));
+            sPublicationsByFilters.setString(2, filters.getOrDefault("publicationTitle", "%%"));
+            sPublicationsByFilters.setString(3, filters.getOrDefault("publicationAuthor", "%%"));
+            sPublicationsByFilters.setString(4, filters.getOrDefault("publicationEditor", "%%"));
+            sPublicationsByFilters.setString(5, filters.getOrDefault("publicationKeyword", "%%"));
+            sPublicationsByFilters.setString(6, filters.getOrDefault("publicationLanguage", "%%"));
             sPublicationsByFilters.setString(7, Utils.getArrayParameter(filters, "publicationYear"));
             sPublicationsByFilters.setString(8, Utils.getArrayParameter(filters, "publicationYearEnd"));
-            sPublicationsByFilters.setString(9, Utils.getArrayParameter(filters, "order_by"));
+            sPublicationsByFilters.setString(9, filters.getOrDefault("publicationUser", "%%"));
+            sPublicationsByFilters.setString(10, Utils.getArrayParameter(filters, "order_by"));
             rs = sPublicationsByFilters.executeQuery();
             while (rs.next()) {
                 result.add(getPublication(rs.getInt("idpubblicazione")));
