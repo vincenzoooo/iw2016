@@ -53,7 +53,20 @@ public class ComposeIndex extends BiblioManagerBaseController {
     }
 
     private void action_updateChapter(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            HttpSession session = SecurityLayer.checkSession(request);
+            IndexElement chapter = getDataLayer().getChapter(Integer.parseInt(request.getParameter("chapterId")));
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("chapterTitle", Utils.checkString(request.getParameter("chapterTitle")));
+            params.put("chapterNumber", Utils.checkString(request.getParameter("chapterNumber")));
+            if (!validator(params, request, response)) {
+                chapter.setNumber(Integer.parseInt(params.get("chapterNumber")));
+                chapter.setTitle(params.get("chapterTitle"));
+                getDataLayer().storeChapter(chapter);
+            }
+        } catch (DataLayerException ex) {
+            action_error(request, response, "Errore nel salvare il capitolo: " + ex.getMessage());
+        }
     }
     
     private void action_composeSection(HttpServletRequest request, HttpServletResponse response) {
@@ -78,7 +91,23 @@ public class ComposeIndex extends BiblioManagerBaseController {
     }
 
     private void action_updateSection(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try{
+            HttpSession session = SecurityLayer.checkSession(request);
+            IndexElement section = getDataLayer().getSection(Integer.parseInt(request.getParameter("sectionId")));;
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("chapter", Utils.checkString(request.getParameter("chapter")));
+            params.put("sectionTitle", Utils.checkString(request.getParameter("sectionTitle")));
+            params.put("sectionNumber", Utils.checkString(request.getParameter("sectionNumber")));
+            if (!validator(params, request, response)) {
+                section.setNumber(Integer.parseInt(params.get("sectionNumber")));
+                section.setTitle(params.get("sectionTitle"));
+                IndexElement chapter = getDataLayer().getChapter(Integer.parseInt(params.get("chapter")));
+                section.setAncestor(chapter);
+                getDataLayer().storeSection(section);
+            }
+        } catch (DataLayerException ex) {
+            action_error(request, response, "Errore nel salvare il sezione: " + ex.getMessage());
+        }
     }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -102,6 +131,14 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 }
                 if (request.getParameter("submitSection") != null) {
                     action_composeSection(request, response);
+                }
+                if (request.getParameter("submitChapter") != null && request.getAttribute("chapterId") != null) {
+                    action_updateChapter(request, response);
+                    request.removeAttribute("chapterId");
+                }
+                if (request.getParameter("submitSection") != null && request.getParameter("sectionId") != null) {
+                    action_updateSection(request, response);
+                    request.removeAttribute("sectionId");
                 }
                 List<IndexElement> chapters = getDataLayer().getChapters((int) session.getAttribute("publicationId"));
                 request.setAttribute("chapters", chapters);
