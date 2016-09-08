@@ -72,13 +72,13 @@ public class ChapterImpl implements IndexElement{
     }
 
     @Override
-    public IndexElement getAncestor() throws DataLayerException {
+    public IndexElement getChapter() throws DataLayerException {
         //Just do not do anything
         return null;
     }
 
     @Override
-    public void setAncestor(IndexElement ancestor) {
+    public void setChapter(IndexElement ancestor) {
         //Just do not do anything
     }
     

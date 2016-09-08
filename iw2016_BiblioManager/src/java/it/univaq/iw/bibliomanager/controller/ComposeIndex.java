@@ -39,11 +39,11 @@ public class ComposeIndex extends BiblioManagerBaseController {
             Map<String, String> params = new HashMap<String, String>();
             params.put("chapterTitle", Utils.checkString(request.getParameter("chapterTitle")));
             params.put("chapterNumber", Utils.checkString(request.getParameter("chapterNumber")));
-            if (!validator(params, request, response)) {
+            if (!validator(params, request, response, session)) {
                 chapter = getDataLayer().createChapter();
                 chapter.setNumber(Integer.parseInt(params.get("chapterNumber")));
                 chapter.setTitle(params.get("chapterTitle"));
-                Publication publication = getDataLayer().getPublication((int) session.getAttribute("publicationId"), true);
+                Publication publication = getDataLayer().getPublication((int) session.getAttribute("publicationId"));
                 chapter.setPublication(publication);
                 getDataLayer().storeChapter(chapter);
             }
@@ -59,7 +59,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
             Map<String, String> params = new HashMap<String, String>();
             params.put("chapterTitle", Utils.checkString(request.getParameter("chapterTitle")));
             params.put("chapterNumber", Utils.checkString(request.getParameter("chapterNumber")));
-            if (!validator(params, request, response)) {
+            if (!validator(params, request, response, session)) {
                 chapter.setNumber(Integer.parseInt(params.get("chapterNumber")));
                 chapter.setTitle(params.get("chapterTitle"));
                 getDataLayer().storeChapter(chapter);
@@ -77,12 +77,12 @@ public class ComposeIndex extends BiblioManagerBaseController {
             params.put("chapter", Utils.checkString(request.getParameter("chapter")));
             params.put("sectionTitle", Utils.checkString(request.getParameter("sectionTitle")));
             params.put("sectionNumber", Utils.checkString(request.getParameter("sectionNumber")));
-            if (!validator(params, request, response)) {
+            if (!validator(params, request, response, session)) {
                 section = getDataLayer().createSection();
                 section.setNumber(Integer.parseInt(params.get("sectionNumber")));
                 section.setTitle(params.get("sectionTitle"));
                 IndexElement chapter = getDataLayer().getChapter(Integer.parseInt(params.get("chapter")));
-                section.setAncestor(chapter);
+                section.setChapter(chapter);
                 getDataLayer().storeSection(section);
             }
         } catch (DataLayerException ex) {
@@ -98,17 +98,56 @@ public class ComposeIndex extends BiblioManagerBaseController {
             params.put("chapter", Utils.checkString(request.getParameter("chapter")));
             params.put("sectionTitle", Utils.checkString(request.getParameter("sectionTitle")));
             params.put("sectionNumber", Utils.checkString(request.getParameter("sectionNumber")));
-            if (!validator(params, request, response)) {
+            if (!validator(params, request, response, session)) {
                 section.setNumber(Integer.parseInt(params.get("sectionNumber")));
                 section.setTitle(params.get("sectionTitle"));
                 IndexElement chapter = getDataLayer().getChapter(Integer.parseInt(params.get("chapter")));
-                section.setAncestor(chapter);
+                section.setChapter(chapter);
                 getDataLayer().storeSection(section);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare il sezione: " + ex.getMessage());
         }
     }
+    
+    protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response, HttpSession session){
+        boolean error = super.validator(params, request, response);
+        if(!error){
+            try {
+                if(!Utils.isNullOrEmpty(params.get("chapterNumber")) && !Utils.isNumeric(params.get("chapterNumber"))){
+                    request.setAttribute("errorChapterNumber", "Non è un numero valido");
+                    error = true;
+                }
+                if(!Utils.isNullOrEmpty(params.get("sectionNumber")) && !Utils.isNumeric(params.get("sectionNumber"))){
+                    request.setAttribute("errorSectionNumber", "Non è un numero valido");
+                    error = true;
+                }
+                if(!error && !Utils.isNullOrEmpty(params.get("chapterNumber"))){
+                    List<IndexElement> elements = getDataLayer().getChapters((int) session.getAttribute("publicationId"));
+                    for(IndexElement element : elements){
+                        if(Integer.parseInt(params.get("chapterNumber")) == element.getNumber()){
+                            request.setAttribute("errorChapterNumber", "Numero capitolo già creato");
+                            error = true;
+                        }
+                    }
+                }
+                if(!error && !Utils.isNullOrEmpty(params.get("sectionNumber"))){
+                    List<IndexElement> elements = getDataLayer().getSections(Integer.parseInt(params.get("chapter")));
+                    for(IndexElement element : elements){
+                        if(Integer.parseInt(params.get("sectionNumber")) == element.getNumber()){
+                            request.setAttribute("errorSectionNumber", "Numero sezione già creato");
+                            error = true;
+                        }
+                    }
+                }
+                
+            } catch (DataLayerException ex) {
+                action_error(request, response, "Error to get chapter or section: " + ex.getMessage());
+            }
+        }
+        return error;
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -141,15 +180,17 @@ public class ComposeIndex extends BiblioManagerBaseController {
                     request.removeAttribute("sectionId");
                 }
                 List<IndexElement> chapters = getDataLayer().getChapters((int) session.getAttribute("publicationId"));
+                List<IndexElement> sections = new ArrayList<IndexElement>();
+                for(IndexElement chapter : chapters){
+                    List<IndexElement> tmp = getDataLayer().getSections(chapter.getKey());
+                    if(tmp.size() > 0){
+                        sections.addAll(tmp);
+                    }
+                }
+                
                 request.setAttribute("chapters", chapters);
-//                List<IndexElement> sections = getDataLayer().getSections(Integer.parseInt(request.getParameter("chapter")));
-//                if (request.getParameter("submitIndex") != null && request.getAttribute("authorId") == null) {
-//                    action_composeIndex(request, response);
-//                }
-//                if (request.getParameter("submitIndex") != null && request.getAttribute("authorId") != null) {
-//                    action_updateIndex(request, response);
-//                    request.removeAttribute("authorId");
-//                }
+                request.setAttribute("sections", sections);
+                
                 res.activate("index.ftl.html", request, response);
 
             } else {

@@ -73,12 +73,12 @@ public class SectionImpl implements IndexElement{
     }
 
     @Override
-    public IndexElement getAncestor() throws DataLayerException {
+    public IndexElement getChapter() throws DataLayerException {
         return chapter;
     }
 
     @Override
-    public void setAncestor(IndexElement ancestor) {
+    public void setChapter(IndexElement ancestor) {
         this.chapter = ancestor;
     }
     
@@ -87,6 +87,6 @@ public class SectionImpl implements IndexElement{
         key = section.getKey();
         number = section.getNumber();
         title = section.getTitle();
-        chapter = section.getAncestor();
+        chapter = section.getChapter();
     }
 }

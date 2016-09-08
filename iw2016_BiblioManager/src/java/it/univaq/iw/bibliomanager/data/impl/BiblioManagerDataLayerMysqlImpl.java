@@ -44,23 +44,23 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement sHistories, sHistoriesByUser, sHistoriesByPublication, sHistoryById;
     private PreparedStatement uHistory, iHistory;
     private PreparedStatement sPublications, sPublicationById, sPublicationsByInsertDate, sPublicationsByUpdateDate, sPublicationsByFilters, sPublicationsByISBN;
-    private PreparedStatement uPublication, iPublication;
+    private PreparedStatement uPublication, iPublication, dPublication, dIncompletePublication;
     private PreparedStatement sSources, sSourceById, sSourceByPublication;
-    private PreparedStatement uSource, iSource;
+    private PreparedStatement uSource, iSource, dSource;
     private PreparedStatement sReprintsByPublication, sReprintById;
-    private PreparedStatement uReprint, iReprint;
+    private PreparedStatement uReprint, iReprint, dReprint;
     private PreparedStatement sEditors, sEditorsByName, sEditorById;
-    private PreparedStatement uEditor, iEditor;
+    private PreparedStatement uEditor, iEditor, dEditor;
     private PreparedStatement sAuthors, sAuthorsByName, sAuthorById, sAuthorByPublication;
-    private PreparedStatement uAuthor, iAuthor;
+    private PreparedStatement uAuthor, iAuthor, dAuthor;
     private PreparedStatement sReviewsByPublication, sReviewById;
-    private PreparedStatement uReview, iReview;
+    private PreparedStatement uReview, iReview, dReview;
     private PreparedStatement sKeywords, sKeywordsByPublication, sKeywordById;
-    private PreparedStatement uKeyword, iKeyword;
+    private PreparedStatement uKeyword, iKeyword, dKeyword;
     private PreparedStatement sChapters, sChapterById;
-    private PreparedStatement iChapter, uChapter;
+    private PreparedStatement iChapter, uChapter, dChapter;
     private PreparedStatement sSections, sSectionById;
-    private PreparedStatement iSection, uSection;
+    private PreparedStatement iSection, uSection, dSection;
     private PreparedStatement iPublicationHasAuthor, iPublicationHasKeyword;
     private PreparedStatement dPublicationHasAuthor, dPublicationHasKeyword;
 
@@ -89,7 +89,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");
             this.iHistory = connection.prepareStatement("INSERT INTO iw2016.storico (entry, tipo, data_operazione, pubblicazione, utente) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sPublications = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE incompleta = 0 ORDER BY ?");
-            this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ? AND incompleta = ?");
+            this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
             this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 0");
             this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 1");
             this.sPublicationsByFilters = connection.prepareStatement("SELECT * FROM pubblicazione p LEFT JOIN ristampa r ON r.pubblicazione = p.idpubblicazione LEFT JOIN editore e ON e.ideditore = p.editore " + 
@@ -257,7 +257,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             reprint.setKey(rs.getInt("idristampa"));
             reprint.setNumber(rs.getInt("numero"));
             reprint.setDate(rs.getDate("data"));
-            reprint.setPublication(getPublication(rs.getInt("pubblicazione")));
+            reprint.setPublicationKey(rs.getInt("pubblicazione"));
             return reprint;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
@@ -352,7 +352,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             section.setKey(rs.getInt("idsezione"));
             section.setNumber(rs.getInt("numero"));
             section.setTitle(rs.getString("titolo"));
-            section.setAncestor(getChapter(rs.getInt("capitolo")));
+            section.setChapter(getChapter(rs.getInt("capitolo")));
             return section;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create chapter object form ResultSet", ex);
@@ -577,32 +577,6 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet rs = null;
         try {
             sPublicationById.setInt(1, publication_key);
-            sPublicationById.setBoolean(2, false);
-            rs = sPublicationById.executeQuery();
-            if (rs.next()) {
-                result = createPublication(rs);
-            }
-        } catch (SQLException ex) {
-            throw new DataLayerException("Unable to load publication by id", ex);
-        } finally {
-            try {
-                if (rs != null) {
-                    rs.close();
-                }
-            } catch (SQLException ex) {
-                //Nothing to return
-            }
-        }
-        return result;
-    }
-    
-    @Override
-    public Publication getPublication(int publication_key, boolean incomplete) throws DataLayerException {
-        Publication result = null;
-        ResultSet rs = null;
-        try {
-            sPublicationById.setInt(1, publication_key);
-            sPublicationById.setBoolean(2, incomplete);
             rs = sPublicationById.executeQuery();
             if (rs.next()) {
                 result = createPublication(rs);
@@ -910,7 +884,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             sReprintsByPublication.setInt(1, publication_key);
             rs = sReprintsByPublication.executeQuery();
             while (rs.next()) {
-                result.add(getReprint(rs.getInt("pubblicazione")));
+                result.add(getReprint(rs.getInt("idristampa")));
             }
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to load reprints of publication", ex);
@@ -1515,7 +1489,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                     publication.copyFrom(getPublication(key));
                 }
                 else{
-                    publication.copyFrom(getPublication(key, publication.getIncomplete()));
+                    publication.copyFrom(getPublication(key));
                 }
             }
         } catch (SQLException ex) {
@@ -1593,14 +1567,14 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                }
                 uReprint.setInt(1, reprint.getNumber());
                 uReprint.setDate(2, reprint.getDate());
-                uReprint.setInt(3, reprint.getPublication().getKey());
+                uReprint.setInt(3, reprint.getPublicationKey());
                 uReprint.setInt(4, key);
 
                 uReprint.executeUpdate();
             } else { //insert
                 iReprint.setInt(1, reprint.getNumber());
                 iReprint.setDate(2, reprint.getDate());
-                iReprint.setInt(3, reprint.getPublication().getKey());
+                iReprint.setInt(3, reprint.getPublicationKey());
 
                 if (iReprint.executeUpdate() == 1) {
                     keys = iReprint.getGeneratedKeys();
@@ -1831,14 +1805,14 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                }
                 uSection.setInt(1, section.getNumber());
                 uSection.setString(2, section.getTitle());
-                uSection.setInt(3, section.getAncestor().getKey());
+                uSection.setInt(3, section.getChapter().getKey());
                 uSection.setInt(4, section.getKey());
 
                 uSection.executeUpdate();
             } else { //insert
                 iSection.setInt(1, section.getNumber());
                 iSection.setString(2, section.getTitle());
-                iSection.setInt(3, section.getAncestor().getKey());
+                iSection.setInt(3, section.getChapter().getKey());
                 
                 if (iSection.executeUpdate() == 1) {
                     keys = iSection.getGeneratedKeys();
@@ -1943,5 +1917,70 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 //
             }
         }
+    }
+
+    @Override
+    public void deleteAuthor(Author author) throws DataLayerException {
+        ResultSet res = null;
+        try {
+            dAuthor.setInt(1, author.getKey());
+            
+            dAuthor.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete author", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+    }
+
+    @Override
+    public void deleteEditor(Editor editor) throws DataLayerException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void deleteKeyword(Keyword keyword) throws DataLayerException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void deletePublication(Publication publication) throws DataLayerException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void deleteIncompletePublication(Publication publication) throws DataLayerException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void deleteReview(Review review) throws DataLayerException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void deleteReprint(Reprint reprint) throws DataLayerException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void deleteSource(Source source) throws DataLayerException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void deleteChapter(IndexElement chapter) throws DataLayerException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+
+    @Override
+    public void deleteSection(IndexElement section) throws DataLayerException {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

@@ -22,7 +22,6 @@ public class ReprintImpl implements Reprint {
     private int number;
     private Date date;
     private int publication_key;
-    private Publication publication;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public ReprintImpl(BiblioManagerDataLayer ownerDataLayer) {
@@ -30,8 +29,6 @@ public class ReprintImpl implements Reprint {
         key = 0;
         number = 0;
         date = null;
-        publication_key = 0;
-        publication = null;
     }
 
     @Override
@@ -65,16 +62,13 @@ public class ReprintImpl implements Reprint {
     }
 
     @Override
-    public Publication getPublication() throws DataLayerException {
-        if (publication == null && publication_key > 0) {
-            publication = ownerDataLayer.getPublication(publication_key);
-        }
-        return publication;
+    public int getPublicationKey() throws DataLayerException {
+        return publication_key;
     }
 
     @Override
-    public void setPublication(Publication publication) {
-        this.publication = publication;
+    public void setPublicationKey(int publication_key) {
+        this.publication_key = publication_key;
     }
 
     @Override
@@ -82,6 +76,6 @@ public class ReprintImpl implements Reprint {
         key = reprint.getKey();
         date = reprint.getDate();
         number = reprint.getNumber();
-        publication_key = reprint.getPublication().getKey();
+        publication_key = reprint.getPublicationKey();
     }
 }

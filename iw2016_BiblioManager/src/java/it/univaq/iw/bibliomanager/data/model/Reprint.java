@@ -27,9 +27,9 @@ public interface Reprint {
 
     void setDate(Date date);
 
-    Publication getPublication() throws DataLayerException;
+    int getPublicationKey() throws DataLayerException;
 
-    void setPublication(Publication publication);
+    void setPublicationKey(int publication);
 
     void copyFrom(Reprint reprint) throws DataLayerException;
 }

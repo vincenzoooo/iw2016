@@ -31,9 +31,9 @@ public interface IndexElement {
 
     void setPublication(Publication publication);
     
-    IndexElement getAncestor() throws DataLayerException;
+    IndexElement getChapter() throws DataLayerException;
 
-    void setAncestor(IndexElement ancestor);
+    void setChapter(IndexElement ancestor);
 
     //--
     void copyFrom(IndexElement element) throws DataLayerException;

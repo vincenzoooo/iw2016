@@ -33,6 +33,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
 
     private void action_composeReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
         try {
+            HttpSession session = SecurityLayer.checkSession(request);
             Reprint reprint = getDataLayer().createReprint();
             Map<String, String> params = new HashMap<String, String>();
             params.put("reprintNumber", Utils.checkString(request.getParameter("reprintNumber")));
@@ -42,9 +43,8 @@ public class ComposeReprint extends BiblioManagerBaseController {
                 DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
                 java.util.Date date = format.parse(params.get("reprintDate"));
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-                reprint = getDataLayer().createReprint();
-                reprint.setNumber(Integer.parseInt(params.get("reprintNumber")));
                 reprint.setDate(sqlDate);
+                reprint.setPublicationKey((int)session.getAttribute("publicationId"));
                 getDataLayer().storeReprint(reprint);
             }
         } catch (NumberFormatException | ParseException | DataLayerException ex) {
@@ -101,10 +101,8 @@ public class ComposeReprint extends BiblioManagerBaseController {
                 if (request.getParameter("submitReprint") != null && request.getParameter("reprintId") == null) {
                     action_composeReprint(request, response);
                 }
-                if (request.getParameter("publicationId") !=null){
-                    List<Reprint> reprints = getDataLayer().getReprints(Integer.parseInt(request.getParameter("publicationId")));
-                    request.setAttribute("reprints", reprints);
-                }
+                List<Reprint> reprints = getDataLayer().getReprints((int) session.getAttribute("publicationId"));
+                request.setAttribute("reprints", reprints);
                 res.activate("reprint.ftl.html", request, response);
             } else {
                 action_default(request, response);

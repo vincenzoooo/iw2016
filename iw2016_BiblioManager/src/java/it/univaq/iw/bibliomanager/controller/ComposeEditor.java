@@ -36,7 +36,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
                 editor = getDataLayer().createEditor();
                 editor.setName(params.get("editorName"));
                 getDataLayer().storeEditor(editor);
-                Publication publication = getDataLayer().getPublication((int) session.getAttribute("publicationId"), true);
+                Publication publication = getDataLayer().getPublication((int) session.getAttribute("publicationId"));
                 publication.setEditor(editor);
                 getDataLayer().storePublication(publication);
             }

@@ -61,8 +61,6 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     Publication getPublication(int publication_key) throws DataLayerException;
     
-    Publication getPublication(int publication_key, boolean incomplete) throws DataLayerException;
-    
     Publication getPublicationByISBN(String isbn) throws DataLayerException;
 
     List<Publication> getPublications(String orderBy) throws DataLayerException;
@@ -140,6 +138,26 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeChapter(IndexElement chapter) throws DataLayerException;
     
     void storeSection(IndexElement section) throws DataLayerException;
+    
+    void deleteAuthor(Author author) throws DataLayerException;
+
+    void deleteEditor(Editor editor) throws DataLayerException;
+
+    void deleteKeyword(Keyword keyword) throws DataLayerException;
+
+    void deletePublication(Publication publication) throws DataLayerException;
+    
+    void deleteIncompletePublication(Publication publication) throws DataLayerException;
+
+    void deleteReview(Review review) throws DataLayerException;
+
+    void deleteReprint(Reprint reprint) throws DataLayerException;
+
+    void deleteSource(Source source) throws DataLayerException;
+    
+    void deleteChapter(IndexElement chapter) throws DataLayerException;
+    
+    void deleteSection(IndexElement section) throws DataLayerException;
     
     void storePublicationHasAuthor(int idAuthor, int idPublication) throws DataLayerException;
     

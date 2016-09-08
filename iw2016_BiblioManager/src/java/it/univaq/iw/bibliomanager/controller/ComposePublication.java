@@ -42,7 +42,7 @@ public class ComposePublication extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             Publication publication = getDataLayer().createPublication();
             if(session.getAttribute("publicationId") != null){
-                publication = getDataLayer().getPublication((int)session.getAttribute("publicationId"), true);
+                publication = getDataLayer().getPublication((int)session.getAttribute("publicationId"));
             }
             Map<String, String> params = new HashMap<String, String>();
             params.put("publicationTitle", Utils.checkString(request.getParameter("publicationTitle")));
@@ -138,7 +138,6 @@ public class ComposePublication extends BiblioManagerBaseController {
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 publication.setPublicationDate(sqlDate);
             }
-            //params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
             if(!request.getParameter("publicationIsbn").isEmpty()&&getDataLayer().getPublicationByISBN(request.getParameter("publicationIsbn")) == null&&Utils.isNumeric(request.getParameter("publicationIsbn"))&&request.getParameter("publicationIsbn").length() >= 13 && request.getParameter("publicationIsbn").length() < 14){
                 publication.setIsbn(request.getParameter("publicationIsbn"));
             }
@@ -181,7 +180,7 @@ public class ComposePublication extends BiblioManagerBaseController {
                 
                 Publication publication = null;
                 if(session.getAttribute("publicationId") != null){
-                    publication = getDataLayer().getPublication((int)session.getAttribute("publicationId"), true);
+                    publication = getDataLayer().getPublication((int)session.getAttribute("publicationId"));
                 }
                 if(publication != null && publication.getIncomplete()){
                     List<Author> authors = getDataLayer().getPublicationAuthors((int)session.getAttribute("publicationId"));
@@ -197,7 +196,6 @@ public class ComposePublication extends BiblioManagerBaseController {
                     DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
                     String date = (publication.getPublicationDate() != null)? df.format(publication.getPublicationDate()) : "";
                     request.setAttribute("publicationDate", date);
-                    //params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
                     request.setAttribute("publicationIsbn", publication.getIsbn());
                     request.setAttribute("publicationPages", publication.getPageNumber());
                     request.setAttribute("currentEditor", publication.getEditor().getKey());

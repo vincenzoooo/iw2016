@@ -43,7 +43,7 @@ public class ComposeSource extends BiblioManagerBaseController {
                 source.setUri(params.get("sourceUri"));
                 source.setFormat(params.get("sourceFormat"));
                 source.setDescription(params.get("sourceDescription"));
-                source.setPublication(getDataLayer().getPublication((int) session.getAttribute("publicationId"), true));
+                source.setPublication(getDataLayer().getPublication((int) session.getAttribute("publicationId")));
                 getDataLayer().storeSource(source);
             }
         } catch (DataLayerException ex) {

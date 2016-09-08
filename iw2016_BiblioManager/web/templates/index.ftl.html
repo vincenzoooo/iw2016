@@ -164,7 +164,7 @@
                         <#list sections as item>
                             <tr>
                                 <td>
-                                    ${item.chapter!"''"?html}.${item.number!"''"?html}
+                                    ${item.chapter.number!"''"?html}.${item.number!"''"?html}
                                 </td>
                                 <td>
                                     ${strip_slashes(item.title)!"''"?html}
