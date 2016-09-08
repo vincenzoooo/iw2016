@@ -36,9 +36,9 @@ public interface Publication {
 
     void setEditor(Editor editor);
 
-    List<IndexElement> getIndex();
+    List<Chapter> getIndex();
 
-    void setIndex(List<IndexElement> index);
+    void setIndex(List<Chapter> index);
 
     int getLike();
 

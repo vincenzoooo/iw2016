@@ -35,9 +35,9 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     User createUser();
     
-    IndexElement createChapter();
+    Chapter createChapter();
     
-    IndexElement createSection();
+    Section createSection();
 
     Author getAuthor(int author_key) throws DataLayerException;
 
@@ -109,13 +109,13 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     List<User> getMoreActiveUsers() throws DataLayerException;
     
-    IndexElement getChapter(int chapter_key) throws DataLayerException;
+    Chapter getChapter(int chapter_key) throws DataLayerException;
     
-    IndexElement getSection(int section_key) throws DataLayerException;
+    Section getSection(int section_key) throws DataLayerException;
     
-    List<IndexElement> getChapters(int publication_key) throws DataLayerException;
+    List<Chapter> getChapters(int publication_key) throws DataLayerException;
     
-    List<IndexElement> getSections(int chapter_key) throws DataLayerException;
+    List<Section> getSections(int chapter_key) throws DataLayerException;
 
     void storeAuthor(Author author) throws DataLayerException;
 
@@ -135,9 +135,9 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     void storeUser(User user) throws DataLayerException;
     
-    void storeChapter(IndexElement chapter) throws DataLayerException;
+    void storeChapter(Chapter chapter) throws DataLayerException;
     
-    void storeSection(IndexElement section) throws DataLayerException;
+    void storeSection(Section section) throws DataLayerException;
     
     void deleteAuthor(Author author) throws DataLayerException;
 
@@ -155,9 +155,9 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     void deleteSource(Source source) throws DataLayerException;
     
-    void deleteChapter(IndexElement chapter) throws DataLayerException;
+    void deleteChapter(Chapter chapter) throws DataLayerException;
     
-    void deleteSection(IndexElement section) throws DataLayerException;
+    void deleteSection(Section section) throws DataLayerException;
     
     void storePublicationHasAuthor(int idAuthor, int idPublication) throws DataLayerException;
     

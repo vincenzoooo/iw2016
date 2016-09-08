@@ -6,22 +6,18 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
-import it.univaq.iw.bibliomanager.data.model.Editor;
-import it.univaq.iw.bibliomanager.data.model.IndexElement;
+import it.univaq.iw.bibliomanager.data.model.Chapter;
 import it.univaq.iw.bibliomanager.data.model.Publication;
+import it.univaq.iw.bibliomanager.data.model.Section;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -35,7 +31,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
     private void action_composeChapter(HttpServletRequest request, HttpServletResponse response) {
         try{
             HttpSession session = SecurityLayer.checkSession(request);
-            IndexElement chapter = null;
+            Chapter chapter = null;
             Map<String, String> params = new HashMap<String, String>();
             params.put("chapterTitle", Utils.checkString(request.getParameter("chapterTitle")));
             params.put("chapterNumber", Utils.checkString(request.getParameter("chapterNumber")));
@@ -43,8 +39,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 chapter = getDataLayer().createChapter();
                 chapter.setNumber(Integer.parseInt(params.get("chapterNumber")));
                 chapter.setTitle(params.get("chapterTitle"));
-                Publication publication = getDataLayer().getPublication((int) session.getAttribute("publicationId"));
-                chapter.setPublication(publication);
+                chapter.setPublicationKey((int) session.getAttribute("publicationId"));
                 getDataLayer().storeChapter(chapter);
             }
         } catch (DataLayerException ex) {
@@ -55,7 +50,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
     private void action_updateChapter(HttpServletRequest request, HttpServletResponse response) {
         try{
             HttpSession session = SecurityLayer.checkSession(request);
-            IndexElement chapter = getDataLayer().getChapter(Integer.parseInt(request.getParameter("chapterId")));
+            Chapter chapter = getDataLayer().getChapter(Integer.parseInt(request.getParameter("chapterId")));
             Map<String, String> params = new HashMap<String, String>();
             params.put("chapterTitle", Utils.checkString(request.getParameter("chapterTitle")));
             params.put("chapterNumber", Utils.checkString(request.getParameter("chapterNumber")));
@@ -72,7 +67,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
     private void action_composeSection(HttpServletRequest request, HttpServletResponse response) {
         try{
             HttpSession session = SecurityLayer.checkSession(request);
-            IndexElement section = null;
+            Section section = null;
             Map<String, String> params = new HashMap<String, String>();
             params.put("chapter", Utils.checkString(request.getParameter("chapter")));
             params.put("sectionTitle", Utils.checkString(request.getParameter("sectionTitle")));
@@ -81,8 +76,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 section = getDataLayer().createSection();
                 section.setNumber(Integer.parseInt(params.get("sectionNumber")));
                 section.setTitle(params.get("sectionTitle"));
-                IndexElement chapter = getDataLayer().getChapter(Integer.parseInt(params.get("chapter")));
-                section.setChapter(chapter);
+                section.setChapterKey(Integer.parseInt(params.get("chapter")));
                 getDataLayer().storeSection(section);
             }
         } catch (DataLayerException ex) {
@@ -93,7 +87,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
     private void action_updateSection(HttpServletRequest request, HttpServletResponse response) {
         try{
             HttpSession session = SecurityLayer.checkSession(request);
-            IndexElement section = getDataLayer().getSection(Integer.parseInt(request.getParameter("sectionId")));;
+            Section section = getDataLayer().getSection(Integer.parseInt(request.getParameter("sectionId")));;
             Map<String, String> params = new HashMap<String, String>();
             params.put("chapter", Utils.checkString(request.getParameter("chapter")));
             params.put("sectionTitle", Utils.checkString(request.getParameter("sectionTitle")));
@@ -101,8 +95,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
             if (!validator(params, request, response, session)) {
                 section.setNumber(Integer.parseInt(params.get("sectionNumber")));
                 section.setTitle(params.get("sectionTitle"));
-                IndexElement chapter = getDataLayer().getChapter(Integer.parseInt(params.get("chapter")));
-                section.setChapter(chapter);
+                section.setChapterKey(Integer.parseInt(params.get("chapter")));
                 getDataLayer().storeSection(section);
             }
         } catch (DataLayerException ex) {
@@ -123,8 +116,8 @@ public class ComposeIndex extends BiblioManagerBaseController {
                     error = true;
                 }
                 if(!error && !Utils.isNullOrEmpty(params.get("chapterNumber"))){
-                    List<IndexElement> elements = getDataLayer().getChapters((int) session.getAttribute("publicationId"));
-                    for(IndexElement element : elements){
+                    List<Chapter> elements = getDataLayer().getChapters((int) session.getAttribute("publicationId"));
+                    for(Chapter element : elements){
                         if(Integer.parseInt(params.get("chapterNumber")) == element.getNumber()){
                             request.setAttribute("errorChapterNumber", "Numero capitolo già creato");
                             error = true;
@@ -132,8 +125,8 @@ public class ComposeIndex extends BiblioManagerBaseController {
                     }
                 }
                 if(!error && !Utils.isNullOrEmpty(params.get("sectionNumber"))){
-                    List<IndexElement> elements = getDataLayer().getSections(Integer.parseInt(params.get("chapter")));
-                    for(IndexElement element : elements){
+                    List<Section> elements = getDataLayer().getSections(Integer.parseInt(params.get("chapter")));
+                    for(Section element : elements){
                         if(Integer.parseInt(params.get("sectionNumber")) == element.getNumber()){
                             request.setAttribute("errorSectionNumber", "Numero sezione già creato");
                             error = true;
@@ -179,17 +172,9 @@ public class ComposeIndex extends BiblioManagerBaseController {
                     action_updateSection(request, response);
                     request.removeAttribute("sectionId");
                 }
-                List<IndexElement> chapters = getDataLayer().getChapters((int) session.getAttribute("publicationId"));
-                List<IndexElement> sections = new ArrayList<IndexElement>();
-                for(IndexElement chapter : chapters){
-                    List<IndexElement> tmp = getDataLayer().getSections(chapter.getKey());
-                    if(tmp.size() > 0){
-                        sections.addAll(tmp);
-                    }
-                }
+                List<Chapter> chapters = getDataLayer().getChapters((int) session.getAttribute("publicationId"));
                 
                 request.setAttribute("chapters", chapters);
-                request.setAttribute("sections", sections);
                 
                 res.activate("index.ftl.html", request, response);
 

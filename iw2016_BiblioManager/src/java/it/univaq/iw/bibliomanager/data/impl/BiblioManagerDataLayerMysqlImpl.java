@@ -18,17 +18,18 @@ import java.util.List;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import it.univaq.iw.bibliomanager.data.model.Author;
+import it.univaq.iw.bibliomanager.data.model.Chapter;
 import it.univaq.iw.bibliomanager.data.model.Editor;
 import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.Review;
 import it.univaq.iw.bibliomanager.data.model.Reprint;
 import it.univaq.iw.bibliomanager.data.model.Source;
 import it.univaq.iw.bibliomanager.data.model.History;
-import it.univaq.iw.bibliomanager.data.model.IndexElement;
 import it.univaq.iw.bibliomanager.data.model.User;
 import java.sql.Date;
 import java.util.Calendar;
 import it.univaq.iw.bibliomanager.data.model.Keyword;
+import it.univaq.iw.bibliomanager.data.model.Section;
 import it.univaq.iw.framework.utils.Utils;
 import java.util.Map;
 
@@ -219,6 +220,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             publication.setSources(getPublicationSources(rs.getInt("idpubblicazione")));
             publication.setKeywords(getPublicationKeywords(rs.getInt("idpubblicazione")));
             publication.setReprints(getReprints(rs.getInt("idpubblicazione")));
+            publication.setIndex(getChapters(rs.getInt("idpubblicazione")));
             publication.setIncomplete(rs.getBoolean("incompleta"));
             return publication;
         } catch (SQLException ex) {
@@ -324,17 +326,17 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
     
     @Override
-    public IndexElement createChapter() {
+    public Chapter createChapter() {
         return new ChapterImpl(this);
     }
     
-    public IndexElement createChapter(ResultSet rs)  throws DataLayerException {
+    public Chapter createChapter(ResultSet rs)  throws DataLayerException {
         try {
             ChapterImpl chapter = new ChapterImpl(this);
             chapter.setKey(rs.getInt("idcapitolo"));
             chapter.setNumber(rs.getInt("numero"));
             chapter.setTitle(rs.getString("titolo"));
-            chapter.setPublication(getPublication(rs.getInt("pubblicazione")));
+            chapter.setPublicationKey(rs.getInt("pubblicazione"));
             return chapter;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create chapter object form ResultSet", ex);
@@ -342,20 +344,20 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
     
     @Override
-    public IndexElement createSection() {
+    public Section createSection() {
         return new SectionImpl(this);
     }
     
-    public IndexElement createSection(ResultSet rs) throws DataLayerException{
+    public Section createSection(ResultSet rs) throws DataLayerException{
         try {
             SectionImpl section = new SectionImpl(this);
             section.setKey(rs.getInt("idsezione"));
             section.setNumber(rs.getInt("numero"));
             section.setTitle(rs.getString("titolo"));
-            section.setChapter(getChapter(rs.getInt("capitolo")));
+            section.setChapterKey(rs.getInt("capitolo"));
             return section;
         } catch (SQLException ex) {
-            throw new DataLayerException("Unable to create chapter object form ResultSet", ex);
+            throw new DataLayerException("Unable to create section object form ResultSet", ex);
         }
     }
     @Override
@@ -1219,8 +1221,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public IndexElement getChapter(int chapter_key) throws DataLayerException {
-        IndexElement result = null;
+    public Chapter getChapter(int chapter_key) throws DataLayerException {
+        Chapter result = null;
         ResultSet rs = null;
         try {
             sChapterById.setInt(1, chapter_key);
@@ -1243,8 +1245,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public IndexElement getSection(int section_key) throws DataLayerException {
-        IndexElement result = null;
+    public Section getSection(int section_key) throws DataLayerException {
+        Section result = null;
         ResultSet rs = null;
         try {
             sSectionById.setInt(1, section_key);
@@ -1267,8 +1269,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<IndexElement> getChapters(int publication_key) throws DataLayerException {
-        List<IndexElement> result = new ArrayList();
+    public List<Chapter> getChapters(int publication_key) throws DataLayerException {
+        List<Chapter> result = new ArrayList();
         ResultSet rs = null;
         try {
             sChapters.setInt(1, publication_key);
@@ -1292,8 +1294,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<IndexElement> getSections(int chapter_key) throws DataLayerException {
-        List<IndexElement> result = new ArrayList();
+    public List<Section> getSections(int chapter_key) throws DataLayerException {
+        List<Section> result = new ArrayList();
         ResultSet rs = null;
         try {
             sSections.setInt(1, chapter_key);
@@ -1748,7 +1750,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public void storeChapter(IndexElement chapter) throws DataLayerException {
+    public void storeChapter(Chapter chapter) throws DataLayerException {
        ResultSet keys = null;
         int key = chapter.getKey();
         try {
@@ -1760,14 +1762,14 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                }
                 uChapter.setInt(1, chapter.getNumber());
                 uChapter.setString(2, chapter.getTitle());
-                uChapter.setInt(3, chapter.getPublication().getKey());
+                uChapter.setInt(3, chapter.getPublicationKey());
                 uChapter.setInt(4, chapter.getKey());
 
                 uChapter.executeUpdate();
             } else { //insert
                 iChapter.setInt(1, chapter.getNumber());
                 iChapter.setString(2, chapter.getTitle());
-                iChapter.setInt(3, chapter.getPublication().getKey());
+                iChapter.setInt(3, chapter.getPublicationKey());
 
                 if (iChapter.executeUpdate() == 1) {
                     keys = iChapter.getGeneratedKeys();
@@ -1793,7 +1795,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public void storeSection(IndexElement section) throws DataLayerException {
+    public void storeSection(Section section) throws DataLayerException {
         ResultSet keys = null;
         int key = section.getKey();
         try {
@@ -1805,14 +1807,14 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                }
                 uSection.setInt(1, section.getNumber());
                 uSection.setString(2, section.getTitle());
-                uSection.setInt(3, section.getChapter().getKey());
+                uSection.setInt(3, section.getChapterKey());
                 uSection.setInt(4, section.getKey());
 
                 uSection.executeUpdate();
             } else { //insert
                 iSection.setInt(1, section.getNumber());
                 iSection.setString(2, section.getTitle());
-                iSection.setInt(3, section.getChapter().getKey());
+                iSection.setInt(3, section.getChapterKey());
                 
                 if (iSection.executeUpdate() == 1) {
                     keys = iSection.getGeneratedKeys();
@@ -1975,12 +1977,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public void deleteChapter(IndexElement chapter) throws DataLayerException {
+    public void deleteChapter(Chapter chapter) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
-    public void deleteSection(IndexElement section) throws DataLayerException {
+    public void deleteSection(Section section) throws DataLayerException {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 }

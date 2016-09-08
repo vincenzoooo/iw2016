@@ -7,20 +7,18 @@
 package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
-import it.univaq.iw.bibliomanager.data.model.IndexElement;
-import it.univaq.iw.bibliomanager.data.model.Publication;
+import it.univaq.iw.bibliomanager.data.model.Chapter;
 import it.univaq.iw.framework.data.DataLayerException;
-import java.util.List;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public class ChapterImpl implements IndexElement{
+public class ChapterImpl implements Chapter{
     private int key;
     private int number;
     private String title;
-    private Publication publication;
+    private int publication_key;
     protected BiblioManagerDataLayer ownerDataLayer;
     
     public ChapterImpl(BiblioManagerDataLayer ownerDataLayer){
@@ -28,7 +26,7 @@ public class ChapterImpl implements IndexElement{
         this.key = 0;
         this.number = 0;
         this.title = "";
-        publication = null;
+        publication_key = 0;
     }
 
     @Override
@@ -60,33 +58,22 @@ public class ChapterImpl implements IndexElement{
     public void setTitle(String title) {
         this.title = title;
     }
-    
+
     @Override
-    public Publication getPublication() throws DataLayerException {
-        return publication;
+    public int getPublicationKey() {
+        return publication_key;
     }
 
     @Override
-    public void setPublication(Publication publication) {
-        this.publication = publication;
-    }
-
-    @Override
-    public IndexElement getChapter() throws DataLayerException {
-        //Just do not do anything
-        return null;
-    }
-
-    @Override
-    public void setChapter(IndexElement ancestor) {
-        //Just do not do anything
+    public void setPublicationKey(int publication_key) {
+        this.publication_key = publication_key;
     }
     
     @Override
-    public void copyFrom(IndexElement chapter) throws DataLayerException {
+    public void copyFrom(Chapter chapter) throws DataLayerException {
         key = chapter.getKey();
         number = chapter.getNumber();
         title = chapter.getTitle();
-        publication = chapter.getPublication();
+        publication_key = chapter.getPublicationKey();
     }
 }

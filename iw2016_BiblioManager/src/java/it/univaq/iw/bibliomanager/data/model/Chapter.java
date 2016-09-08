@@ -7,14 +7,12 @@
 package it.univaq.iw.bibliomanager.data.model;
 
 import it.univaq.iw.framework.data.DataLayerException;
-import java.sql.Date;
-import java.util.List;
 
 /**
  *
  * @author Vincenzo Lanzieri
  */
-public interface IndexElement {
+public interface Chapter{
     int getKey();
 
     void setKey(int key);
@@ -27,14 +25,10 @@ public interface IndexElement {
 
     void setTitle(String title);
     
-    Publication getPublication() throws DataLayerException;
-
-    void setPublication(Publication publication);
+    int getPublicationKey();
     
-    IndexElement getChapter() throws DataLayerException;
-
-    void setChapter(IndexElement ancestor);
-
+    void setPublicationKey(int publication_key);
+    
     //--
-    void copyFrom(IndexElement element) throws DataLayerException;
+    void copyFrom(Chapter element) throws DataLayerException;
 }

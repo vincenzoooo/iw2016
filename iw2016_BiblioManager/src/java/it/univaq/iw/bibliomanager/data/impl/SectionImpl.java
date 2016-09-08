@@ -7,8 +7,9 @@
 package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
-import it.univaq.iw.bibliomanager.data.model.IndexElement;
+import it.univaq.iw.bibliomanager.data.model.Chapter;
 import it.univaq.iw.bibliomanager.data.model.Publication;
+import it.univaq.iw.bibliomanager.data.model.Section;
 import it.univaq.iw.framework.data.DataLayerException;
 import java.util.List;
 
@@ -16,11 +17,11 @@ import java.util.List;
  *
  * @author Vincenzo Lanzieri
  */
-public class SectionImpl implements IndexElement{
+public class SectionImpl implements Section{
     private int key;
     private int number;
     private String title;
-    private IndexElement chapter;
+    private int chapter_key;
     protected BiblioManagerDataLayer ownerDataLayer;
     
     public SectionImpl(BiblioManagerDataLayer ownerDataLayer){
@@ -28,7 +29,7 @@ public class SectionImpl implements IndexElement{
         this.key = 0;
         this.number = 0;
         this.title = "";
-        chapter = null;
+        chapter_key = 0;
     }
 
     @Override
@@ -62,31 +63,20 @@ public class SectionImpl implements IndexElement{
     }
 
     @Override
-    public Publication getPublication() throws DataLayerException {
-        //Just not do anything
-        return null;
+    public int getChapterKey() {
+        return chapter_key;
     }
 
     @Override
-    public void setPublication(Publication publication) {
-        //Just not do anything
-    }
-
-    @Override
-    public IndexElement getChapter() throws DataLayerException {
-        return chapter;
-    }
-
-    @Override
-    public void setChapter(IndexElement ancestor) {
-        this.chapter = ancestor;
+    public void setChapterKey(int chapter_key) {
+        this.chapter_key = chapter_key;
     }
     
     @Override
-    public void copyFrom(IndexElement section) throws DataLayerException {
+    public void copyFrom(Section section) throws DataLayerException {
         key = section.getKey();
         number = section.getNumber();
         title = section.getTitle();
-        chapter = section.getChapter();
+        chapter_key = section.getChapterKey();
     }
 }

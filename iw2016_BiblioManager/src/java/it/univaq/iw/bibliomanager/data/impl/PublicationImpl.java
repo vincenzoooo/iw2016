@@ -10,8 +10,8 @@ import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.framework.data.DataLayerException;
 import java.util.List;
 import it.univaq.iw.bibliomanager.data.model.Author;
+import it.univaq.iw.bibliomanager.data.model.Chapter;
 import it.univaq.iw.bibliomanager.data.model.Editor;
-import it.univaq.iw.bibliomanager.data.model.IndexElement;
 import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.Reprint;
 import it.univaq.iw.bibliomanager.data.model.Source;
@@ -27,7 +27,7 @@ public class PublicationImpl implements Publication {
     private int key;
     private String title;
     private String description;
-    private List<IndexElement> index;
+    private List<Chapter> index;
     private int like;
     private int editor_key;
     private String isbn;
@@ -97,12 +97,12 @@ public class PublicationImpl implements Publication {
     }
 
     @Override
-    public List<IndexElement> getIndex() {
+    public List<Chapter> getIndex() {
         return index;
     }
 
     @Override
-    public void setIndex(List<IndexElement> index) {
+    public void setIndex(List<Chapter> index) {
         this.index = index;
     }
 
