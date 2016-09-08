@@ -337,6 +337,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             chapter.setNumber(rs.getInt("numero"));
             chapter.setTitle(rs.getString("titolo"));
             chapter.setPublicationKey(rs.getInt("pubblicazione"));
+            chapter.setSections(getSections(rs.getInt("idcapitolo")));
             return chapter;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create chapter object form ResultSet", ex);

@@ -7,6 +7,7 @@
 package it.univaq.iw.bibliomanager.data.model;
 
 import it.univaq.iw.framework.data.DataLayerException;
+import java.util.List;
 
 /**
  *
@@ -28,6 +29,10 @@ public interface Chapter{
     int getPublicationKey();
     
     void setPublicationKey(int publication_key);
+    
+    List<Section> getSections() throws DataLayerException;
+
+    void setSections(List<Section> sections);
     
     //--
     void copyFrom(Chapter element) throws DataLayerException;

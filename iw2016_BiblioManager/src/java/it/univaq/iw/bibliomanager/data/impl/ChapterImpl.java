@@ -8,7 +8,9 @@ package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.bibliomanager.data.model.Chapter;
+import it.univaq.iw.bibliomanager.data.model.Section;
 import it.univaq.iw.framework.data.DataLayerException;
+import java.util.List;
 
 /**
  *
@@ -19,6 +21,7 @@ public class ChapterImpl implements Chapter{
     private int number;
     private String title;
     private int publication_key;
+    private List<Section> sections;
     protected BiblioManagerDataLayer ownerDataLayer;
     
     public ChapterImpl(BiblioManagerDataLayer ownerDataLayer){
@@ -27,6 +30,7 @@ public class ChapterImpl implements Chapter{
         this.number = 0;
         this.title = "";
         publication_key = 0;
+        sections = null;
     }
 
     @Override
@@ -67,6 +71,16 @@ public class ChapterImpl implements Chapter{
     @Override
     public void setPublicationKey(int publication_key) {
         this.publication_key = publication_key;
+    }
+
+    @Override
+    public List<Section> getSections() throws DataLayerException {
+        return sections;
+    }
+
+    @Override
+    public void setSections(List<Section> sections) {
+        this.sections = sections;
     }
     
     @Override
