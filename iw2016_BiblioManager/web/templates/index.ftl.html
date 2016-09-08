@@ -13,18 +13,6 @@
                     <h3>Aggiungi capitoli della pubblicazione</h3>
                     <form method="post" action="index" id="formChapter" class="form-horizontal">     
                         <div class="form-group">
-                            <label for="inputTitleC" class="col-sm-2 control-label bold">Titolo capitolo</label>
-                            <div class="col-sm-6">
-                                <input id="inputTitleC" class="form-control" name="chapterTitle" placeholder="Inserisci il titolo del capitolo" />
-                            </div>
-                        </div>
-                        <#if errorChapterTitle??>
-                        <div class="error">
-                            ${errorChapterTitle?html}
-                        </div>
-                        </#if>
-
-                        <div class="form-group">
                             <label for="inputNumberC" class="col-sm-2 control-label bold">Numero del capitolo</label>
                             <div class="col-sm-6">
                                 <input id="inputNumberC" class="form-control" name="chapterNumber" placeholder="Inserisci il numero del capitolo" />
@@ -33,6 +21,18 @@
                         <#if errorChapterNumber??>
                         <div class="error">
                             ${errorChapterNumber?html}
+                        </div>
+                        </#if>
+                        
+                        <div class="form-group">
+                            <label for="inputTitleC" class="col-sm-2 control-label bold">Titolo capitolo</label>
+                            <div class="col-sm-6">
+                                <input id="inputTitleC" class="form-control" name="chapterTitle" placeholder="Inserisci il titolo del capitolo" />
+                            </div>
+                        </div>
+                        <#if errorChapterTitle??>
+                        <div class="error">
+                            ${errorChapterTitle?html}
                         </div>
                         </#if>
 
@@ -59,13 +59,9 @@
                     <#if (chapters?? && chapters?size>0)>
                     <table id="allChapters" class="table">
                         <tr>
-                            <th>
-                                Numero
-                            </th>
-                            <th>
-                                Titolo
-                            </th>
-                            <th></th>
+                            <th>Numero</th>
+                            <th>Titolo</th>
+                            <th>Gestione</th>
                         </tr>
                         <#list chapters as item>
                             <tr>
@@ -81,17 +77,20 @@
                             </tr>
                         </#list>
                     </table>
+                    <!--
                     <div>
                         <span>
                             <a href="index?step=2" class="btn btn-default col-xs-offset-1">Avanti</a>
                         </span>
                     </div>
+                    -->
                     <#else>
                     <span class="bold">Nessun capitolo presente.</span>
                     </#if>
                 </div>
             </div>
         </div>
+        
         <#if (chapters?? && chapters?size>0)>
         <div class="section section-pageIndex-insertSection">
             <div class="row">
@@ -104,23 +103,12 @@
                                 <select class="form-control" name="chapter" >
                                 <#if (chapters?? && chapters?size>0)>
                                     <#list chapters as item>
-                                    <option value="${item.key!''?html}">${item.number!''?html},${item.title}</option>
+                                    <option value="${item.key!''?html}">${item.number!''?html}. ${item.title}</option>
                                     </#list>
                                 </#if>
                                 </select>
                             </div>
                         </div>
-                        <div class="form-group">
-                            <label for="inputTitleS" class="col-sm-2 control-label bold">Titolo sezione</label>
-                            <div class="col-sm-6">
-                                <input id="insertTitleS" class="form-control" name="sectionTitle" placeholder="Inserisci il titolo del capitolo" />
-                            </div>
-                        </div>
-                        <#if errorSectionTitle??>
-                        <div class="error">
-                            ${errorSectionTitle?html}
-                        </div>
-                        </#if>
 
                         <div class="form-group">
                             <label for="inputNumbers" class="col-sm-2 control-label bold">Numero sezione</label>
@@ -131,6 +119,18 @@
                         <#if errorSectionNumber??>
                         <div class="error">
                             ${errorSectionNumber?html}
+                        </div>
+                        </#if>
+                        
+                        <div class="form-group">
+                            <label for="inputTitleS" class="col-sm-2 control-label bold">Titolo sezione</label>
+                            <div class="col-sm-6">
+                                <input id="insertTitleS" class="form-control" name="sectionTitle" placeholder="Inserisci il titolo del capitolo" />
+                            </div>
+                        </div>
+                        <#if errorSectionTitle??>
+                        <div class="error">
+                            ${errorSectionTitle?html}
                         </div>
                         </#if>
 
@@ -157,18 +157,14 @@
                     <#if (sections?? && sections?size>0)>
                     <table id="allChapters" class="table">
                         <tr>
-                            <th>
-                                Numero
-                            </th>
-                            <th>
-                                Titolo
-                            </th>
-                            <th></th>
+                            <th>Numero</th>
+                            <th>Titolo</th>
+                            <th>Gestione</th>
                         </tr>
                         <#list sections as item>
                             <tr>
                                 <td>
-                                    ${item.number!"''"?html}
+                                    ${item.chapter!"''"?html}.${item.number!"''"?html}
                                 </td>
                                 <td>
                                     ${strip_slashes(item.title)!"''"?html}
@@ -183,9 +179,9 @@
                     <span class="bold">Nessuna sezione presente.</span>
                     </#if>
                     
-                    <div>
+                    <div class="margin-top-20">
                         <span>
-                            <a href="index" class="btn btn-default col-xs-offset-1" name="submitNext">Avanti</a>
+                            <a href="publication" class="btn btn-default" name="submitPublication">Torna alla pubblicazione</a>   
                         </span>
                     </div>
                 </div>

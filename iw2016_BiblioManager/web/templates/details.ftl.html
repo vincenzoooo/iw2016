@@ -73,13 +73,15 @@
                         </span>
                     </div>
                     <div id="advicesPublication" class="margin-top-30">
-                        <#if adviced??>
-                             <div class="margin-bottom-10"><a id="addAdvice" href="?addAdvice&publicationId=${publication.key}"> Consiglia!</a></div>
-                        <#else> 
-                            <div class="margin-bottom-10"> Hai consigliato questa pubblicazione</div>
+                        <#if advised??>
+                        <form method="post" action="details" name="votePublication" class="form-horizontal">
+                            <button class="btn btn-default" name="submitPublication" id="pulsante"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Vota</button>
+                        </form>
+                        <#else>
+                        <div class="margin-bottom-10"> Hai consigliato questa pubblicazione</div>
                         </#if>
                         <div class="margin-bottom-10 bold"> 
-                            Numero consigli:&nbsp;<span id="numberAdvices">${publication.like}</span> 
+                            <div>Numero consigli:&nbsp;<span id="numberAdvices">${publication.like}</span></div> 
                         </div>
                    </div>
                 </div>
