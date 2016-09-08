@@ -11,6 +11,7 @@ import it.univaq.iw.framework.data.DataLayerException;
 import java.util.List;
 import it.univaq.iw.bibliomanager.data.model.Author;
 import it.univaq.iw.bibliomanager.data.model.Editor;
+import it.univaq.iw.bibliomanager.data.model.IndexElement;
 import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.Reprint;
 import it.univaq.iw.bibliomanager.data.model.Source;
@@ -26,7 +27,7 @@ public class PublicationImpl implements Publication {
     private int key;
     private String title;
     private String description;
-    private String index;
+    private List<IndexElement> index;
     private int like;
     private int editor_key;
     private String isbn;
@@ -48,7 +49,7 @@ public class PublicationImpl implements Publication {
         key = 0;
         title = "";
         description = "";
-        index = "";
+        index = null;
         like = 0;
         isbn = "";
         pageNumber = 0;
@@ -96,12 +97,12 @@ public class PublicationImpl implements Publication {
     }
 
     @Override
-    public String getIndex() {
+    public List<IndexElement> getIndex() {
         return index;
     }
 
     @Override
-    public void setIndex(String index) {
+    public void setIndex(List<IndexElement> index) {
         this.index = index;
     }
 

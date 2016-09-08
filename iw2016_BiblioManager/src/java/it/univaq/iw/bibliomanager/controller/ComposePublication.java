@@ -64,7 +64,6 @@ public class ComposePublication extends BiblioManagerBaseController {
                 java.util.Date date = df.parse(params.get("publicationDate"));
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 publication.setPublicationDate(sqlDate);
-                publication.setIndex("");
                 //publication.setIndex(params.get("publicationIndex"));
                 publication.setIsbn(params.get("publicationIsbn"));
                 publication.setPageNumber(Integer.parseInt(params.get("publicationPages")));

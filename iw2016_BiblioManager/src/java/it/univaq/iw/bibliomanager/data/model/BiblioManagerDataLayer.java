@@ -34,6 +34,10 @@ public interface BiblioManagerDataLayer extends DataLayer {
     History createHistory();
 
     User createUser();
+    
+    IndexElement createChapter();
+    
+    IndexElement createSection();
 
     Author getAuthor(int author_key) throws DataLayerException;
 
@@ -106,6 +110,14 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<User> getUsersPassive(String filter) throws DataLayerException;
 
     List<User> getMoreActiveUsers() throws DataLayerException;
+    
+    IndexElement getChapter(int chapter_key) throws DataLayerException;
+    
+    IndexElement getSection(int section_key) throws DataLayerException;
+    
+    List<IndexElement> getChapters(int publication_key) throws DataLayerException;
+    
+    List<IndexElement> getSections(int chapter_key) throws DataLayerException;
 
     void storeAuthor(Author author) throws DataLayerException;
 
@@ -124,6 +136,10 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeHistory(History historia) throws DataLayerException;
 
     void storeUser(User user) throws DataLayerException;
+    
+    void storeChapter(IndexElement chapter) throws DataLayerException;
+    
+    void storeSection(IndexElement section) throws DataLayerException;
     
     void storePublicationHasAuthor(int idAuthor, int idPublication) throws DataLayerException;
     

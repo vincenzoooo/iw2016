@@ -11,7 +11,9 @@ import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -25,17 +27,11 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeIndex extends BiblioManagerBaseController {
 
-    private List<String> index;
-
     private void action_composeIndex(HttpServletRequest request, HttpServletResponse response) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     private void action_updateIndex(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
-    }
-
-    private void action_LinkIndex(HttpServletRequest request, HttpServletResponse response) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -56,18 +52,15 @@ public class ComposeIndex extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
-//                if (request.getParameter("indexId") != null) {
-//                    request.setAttribute("indexId", request.getParameter("indexId"));
-//                }
+                if (request.getParameter("submitChapter") != null) {
+                    request.setAttribute("indexId", request.getParameter("indexId"));
+                }
 //                if (request.getParameter("submitIndex") != null && request.getAttribute("authorId") == null) {
 //                    action_composeIndex(request, response);
 //                }
 //                if (request.getParameter("submitIndex") != null && request.getAttribute("authorId") != null) {
 //                    action_updateIndex(request, response);
 //                    request.removeAttribute("authorId");
-//                }
-//                if(request.getParameter("linkAuthor") != null){
-//                    action_LinkIndex(request, response);
 //                }
                 res.activate("index.ftl.html", request, response);
 

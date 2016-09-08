@@ -50,7 +50,6 @@ public class UpdatePublication extends BiblioManagerBaseController {
             if (!validator(params, request, response)) {
                 publication.setTitle(params.get("title"));
                 publication.setDescription(params.get("description"));
-                publication.setIndex(params.get("index"));
                 publication.setEditor(editor);
             }
             request.setAttribute("publication", publication);

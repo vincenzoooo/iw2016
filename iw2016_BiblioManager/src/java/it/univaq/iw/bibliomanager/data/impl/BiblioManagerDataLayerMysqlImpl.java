@@ -24,6 +24,7 @@ import it.univaq.iw.bibliomanager.data.model.Review;
 import it.univaq.iw.bibliomanager.data.model.Reprint;
 import it.univaq.iw.bibliomanager.data.model.Source;
 import it.univaq.iw.bibliomanager.data.model.History;
+import it.univaq.iw.bibliomanager.data.model.IndexElement;
 import it.univaq.iw.bibliomanager.data.model.User;
 import java.sql.Date;
 import java.util.Calendar;
@@ -56,9 +57,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement uReview, iReview;
     private PreparedStatement sKeywords, sKeywordsByPublication, sKeywordById;
     private PreparedStatement uKeyword, iKeyword;
-    private PreparedStatement sPublicationHasAuthor, sPublicationHasAuthorByPublication, sPublicationHasAuthorByAuthor;
-    private PreparedStatement sPublicationHasSource, sPublicationHasSourceByPublication, sPublicationHasSourceBySource;
-    private PreparedStatement sPublicationHasKeyword, sPublicationHasKeywordByPublication, sPublicationHasKeywordByKeyword;
+    private PreparedStatement sChapters, sChapterById;
+    private PreparedStatement iChapter, uChapter;
+    private PreparedStatement sSections, sSectionById;
+    private PreparedStatement iSection, uSection;
     private PreparedStatement iPublicationHasAuthor, iPublicationHasKeyword;
     private PreparedStatement dPublicationHasAuthor, dPublicationHasKeyword;
 
@@ -97,8 +99,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                     "WHERE p.isbn LIKE ? AND p.titolo LIKE ? AND concat(a.nome, a.cognome) LIKE ? AND e.nome LIKE ? AND k.nome LIKE ? AND lingua LIKE ? AND p.data_pubblicazione >= ? AND p.data_pubblicazione < ? AND p.incompleta = 0 "+
                     "ORDER BY ?");
             this.sPublicationsByISBN = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE isbn = ? AND incompleta = 0");
-            this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, indice = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, incompleta = ? WHERE idpubblicazione = ?");
-            this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, indice, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, incompleta = ? WHERE idpubblicazione = ?");
+            this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
             this.sSourceById = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE idsorgente = ?");
             this.sSourceByPublication = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE pubblicazione = ?");
@@ -128,15 +130,14 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sKeywordsByPublication = connection.prepareStatement("SELECT * FROM iw2016.keyword JOIN pubblicazione_has_keyword ON idkeyword = keyword_idkeyword WHERE pubblicazione_idpubblicazione = ?");
             this.uKeyword = connection.prepareStatement("UPDATE iw2016.keyword SET nome = ? WHERE idkeyword = ?");
             this.iKeyword = connection.prepareStatement("INSERT INTO iw2016.keyword (nome) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
-            this.sPublicationHasAuthor = connection.prepareStatement("SELECT * FROM iw2016.autore_has_pubblicazione");
-            this.sPublicationHasAuthorByAuthor = connection.prepareStatement("SELECT * FROM iw2016.autore_has_pubblicazione WHERE autore_idautore = ?");
-            this.sPublicationHasAuthorByPublication = connection.prepareStatement("SELECT * FROM iw2016.autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ?");
-            this.sPublicationHasSource = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione_has_sorgente");
-            this.sPublicationHasSourceByPublication = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione_has_sorgente WHERE pubblicazione_idpubblicazione = ?");
-            this.sPublicationHasSourceBySource = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione_has_sorgente WHERE sorgente_idsorgente = ?");
-            this.sPublicationHasKeyword = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione_has_keyword");
-            this.sPublicationHasKeywordByPublication = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione_has_keyword WHERE pubblicazione_idpubblicazione = ?");
-            this.sPublicationHasKeywordByKeyword = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione_has_keyword WHERE keyword_idkeyword = ?");
+            this.sChapters = connection.prepareStatement("SELECT * FROM iw2016.capitolo WHERE pubblicazione = ?");
+            this.sChapterById = connection.prepareStatement("SELECT * FROM iw2016.capitolo WHERE idcapitolo = ?");
+            this.uChapter = connection.prepareStatement("UPDATE iw2016.capitolo SET numero = ?, titolo = ?, pubblicazione = ? WHERE idcapitolo = ?"); 
+            this.iChapter = connection.prepareStatement("INSERT INTO iw2016.capitolo (numero,titolo,pubblicazione) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.sSections = connection.prepareStatement("SELECT * FROM iw2016.sezione WHERE capitolo = ?");
+            this.sSectionById = connection.prepareStatement("SELECT * FROM iw2016.sezione WHERE idsezione = ?");
+            this.uSection = connection.prepareStatement("UPDATE iw2016.sezione SET numero = ?, titolo = ?, capitolo = ? WHERE idsezione = ?");
+            this.iSection = connection.prepareStatement("INSERT INTO iw2016.sezione (numero, titolo, capitolo) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS); 
             this.iPublicationHasAuthor = connection.prepareStatement("INSERT INTO iw2016.autore_has_pubblicazione(autore_idautore,pubblicazione_idpubblicazione) VALUES (?,?)");
             this.dPublicationHasAuthor = connection.prepareStatement("DELETE FROM iw2016.autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ?");
             this.iPublicationHasKeyword = connection.prepareStatement("INSERT INTO iw2016.pubblicazione_has_keyword (pubblicazione_idpubblicazione, keyword_idkeyword) VALUES (?,?)");
@@ -208,7 +209,6 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             publication.setTitle(rs.getString("titolo"));
             publication.setDescription(rs.getString("descrizione"));
             publication.setEditor(getEditor(rs.getInt("editore")));
-            publication.setIndex(rs.getString("indice"));
             publication.setLike(rs.getInt("n_consigli"));
             publication.setIsbn(rs.getString("isbn"));
             publication.setLanguage(rs.getString("lingua"));
@@ -322,7 +322,43 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
         }
     }
-
+    
+    @Override
+    public IndexElement createChapter() {
+        return new ChapterImpl(this);
+    }
+    
+    public IndexElement createChapter(ResultSet rs)  throws DataLayerException {
+        try {
+            ChapterImpl chapter = new ChapterImpl(this);
+            chapter.setKey(rs.getInt("idcapitolo"));
+            chapter.setNumber(rs.getInt("numero"));
+            chapter.setTitle(rs.getString("titolo"));
+            chapter.setPublication(getPublication(rs.getInt("pubblicazione")));
+            chapter.setChildren(getSections(rs.getInt("idcapitolo")));
+            return chapter;
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to create chapter object form ResultSet", ex);
+        }
+    }
+    
+    @Override
+    public IndexElement createSection() {
+        return new SectionImpl(this);
+    }
+    
+    public IndexElement createSection(ResultSet rs) throws DataLayerException{
+        try {
+            SectionImpl section = new SectionImpl(this);
+            section.setKey(rs.getInt("idsezione"));
+            section.setNumber(rs.getInt("numero"));
+            section.setTitle(rs.getString("titolo"));
+            section.setAncestor(getChapter(rs.getInt("capitolo")));
+            return section;
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to create chapter object form ResultSet", ex);
+        }
+    }
     @Override
     public Author getAuthor(int author_key) throws DataLayerException {
         Author result = null;
@@ -1208,6 +1244,104 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
+
+    @Override
+    public IndexElement getChapter(int chapter_key) throws DataLayerException {
+        IndexElement result = null;
+        ResultSet rs = null;
+        try {
+            sChapterById.setInt(1, chapter_key);
+            rs = sChapterById.executeQuery();
+            if (rs.next()) {
+                result = createChapter(rs);
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load publication chapter", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public IndexElement getSection(int section_key) throws DataLayerException {
+        IndexElement result = null;
+        ResultSet rs = null;
+        try {
+            sSectionById.setInt(1, section_key);
+            rs = sSectionById.executeQuery();
+            if (rs.next()) {
+                result = createSection(rs);
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load chapter section", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<IndexElement> getChapters(int publication_key) throws DataLayerException {
+        List<IndexElement> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sChapters.setInt(1, publication_key);
+            rs = sChapters.executeQuery();
+            while (rs.next()) {
+                result.add(getChapter(rs.getInt("idcapitolo")));
+
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load chapters from publication", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public List<IndexElement> getSections(int chapter_key) throws DataLayerException {
+        List<IndexElement> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sSections.setInt(1, chapter_key);
+            rs = sSections.executeQuery();
+            while (rs.next()) {
+                result.add(getSection(rs.getInt("idsezione")));
+
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load sections from chapter", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
     
     @Override
     public void storeAuthor(Author author) throws DataLayerException {
@@ -1350,27 +1484,25 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uPublication.setString(1, publication.getTitle());
                 uPublication.setString(2, publication.getDescription());
                 uPublication.setInt(3, publication.getEditor().getKey());
-                uPublication.setString(4, publication.getIndex());
-                uPublication.setInt(5, publication.getLike());
-                uPublication.setString(6, publication.getIsbn());
-                uPublication.setInt(7, publication.getPageNumber());
-                uPublication.setString(8, publication.getLanguage());
-                uPublication.setDate(9, publication.getPublicationDate());
-                uPublication.setBoolean(10, publication.getIncomplete());
-                uPublication.setInt(11, key);
+                uPublication.setInt(4, publication.getLike());
+                uPublication.setString(5, publication.getIsbn());
+                uPublication.setInt(6, publication.getPageNumber());
+                uPublication.setString(7, publication.getLanguage());
+                uPublication.setDate(8, publication.getPublicationDate());
+                uPublication.setBoolean(9, publication.getIncomplete());
+                uPublication.setInt(10, key);
 
                 uPublication.executeUpdate();
             } else { //insert
                 iPublication.setString(1, publication.getTitle());
                 iPublication.setString(2, publication.getDescription());
                 iPublication.setInt(3, publication.getEditor().getKey());
-                iPublication.setString(4, publication.getIndex());
-                iPublication.setInt(5, publication.getLike());
-                iPublication.setString(6, publication.getIsbn());
-                iPublication.setInt(7, publication.getPageNumber());
-                iPublication.setString(8, publication.getLanguage());
-                iPublication.setDate(9, publication.getPublicationDate());
-                iPublication.setBoolean(10, publication.getIncomplete());
+                iPublication.setInt(4, publication.getLike());
+                iPublication.setString(5, publication.getIsbn());
+                iPublication.setInt(6, publication.getPageNumber());
+                iPublication.setString(7, publication.getLanguage());
+                iPublication.setDate(8, publication.getPublicationDate());
+                iPublication.setBoolean(9, publication.getIncomplete());
 
                 if (iPublication.executeUpdate() == 1) {
                     keys = iPublication.getGeneratedKeys();
@@ -1631,6 +1763,98 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             }
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to store user", ex);
+        } finally {
+            try {
+                if (keys != null) {
+                    keys.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+    }
+
+    @Override
+    public void storeChapter(IndexElement chapter) throws DataLayerException {
+       ResultSet keys = null;
+        int key = chapter.getKey();
+        try {
+            if (chapter.getKey() > 0) { //update
+                //non facciamo nulla se l'oggetto non ha subito modifiche
+                //do not store the object if it was not modified
+//                if (!article.isDirty()) {
+//                    return;
+//                }
+                uChapter.setInt(1, chapter.getNumber());
+                uChapter.setString(2, chapter.getTitle());
+                uChapter.setInt(3, chapter.getPublication().getKey());
+                uChapter.setInt(4, chapter.getKey());
+
+                uChapter.executeUpdate();
+            } else { //insert
+                iChapter.setInt(1, chapter.getNumber());
+                iChapter.setString(2, chapter.getTitle());
+                iChapter.setInt(3, chapter.getPublication().getKey());
+                iChapter.setInt(4, chapter.getKey());
+
+                if (iChapter.executeUpdate() == 1) {
+                    keys = iChapter.getGeneratedKeys();
+                    if (keys.next()) {
+                        key = keys.getInt(1);
+                    }
+                }
+            }
+            if (key > 0) {
+                chapter.copyFrom(getChapter(key));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to store chapter", ex);
+        } finally {
+            try {
+                if (keys != null) {
+                    keys.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+    }
+
+    @Override
+    public void storeSection(IndexElement section) throws DataLayerException {
+        ResultSet keys = null;
+        int key = section.getKey();
+        try {
+            if (section.getKey() > 0) { //update
+                //non facciamo nulla se l'oggetto non ha subito modifiche
+                //do not store the object if it was not modified
+//                if (!article.isDirty()) {
+//                    return;
+//                }
+                uSection.setInt(1, section.getNumber());
+                uSection.setString(2, section.getTitle());
+                uSection.setInt(3, section.getAncestor().getKey());
+                uSection.setInt(4, section.getKey());
+
+                uSection.executeUpdate();
+            } else { //insert
+                iSection.setInt(1, section.getNumber());
+                iSection.setString(2, section.getTitle());
+                iSection.setInt(3, section.getPublication().getKey());
+                iSection.setInt(4, section.getKey());
+
+                if (iSection.executeUpdate() == 1) {
+                    keys = iSection.getGeneratedKeys();
+                    if (keys.next()) {
+                        key = keys.getInt(1);
+                    }
+                }
+            }
+            if (key > 0) {
+                section.copyFrom(getChapter(key));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to store section", ex);
         } finally {
             try {
                 if (keys != null) {
