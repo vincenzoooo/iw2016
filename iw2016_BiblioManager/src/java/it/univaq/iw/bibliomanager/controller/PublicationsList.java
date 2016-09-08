@@ -30,10 +30,10 @@ public class PublicationsList extends BiblioManagerBaseController {
         String orderBy = request.getParameter("orderdBy") != null ? request.getParameter("orderdBy") : "titolo";
         TemplateResult res = new TemplateResult(getServletContext());
         try {
-            List<Publication> publications = getDataLayer().getPublications(orderBy);
-            request.setAttribute("publications", publications);
+//            List<Publication> publications = getDataLayer().getPublications(orderBy);
+//            request.setAttribute("publications", publications);
             res.activate("catalog.ftl.html", request, response);
-        } catch (ServletException | DataLayerException ex) {
+        } catch (ServletException ex) {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage());
         }
     }
