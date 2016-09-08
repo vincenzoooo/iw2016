@@ -212,7 +212,7 @@ public class PublicationImpl implements Publication {
     @Override
     public List<Source> getSources() throws DataLayerException {
         if (sources == null) {
-            sources = ownerDataLayer.getSources();
+            sources = ownerDataLayer.getPublicationSources(key);
         }
         return sources;
     }

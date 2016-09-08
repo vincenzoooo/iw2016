@@ -102,10 +102,8 @@ public class ComposeSource extends BiblioManagerBaseController {
                 if (request.getParameter("submitSource") != null && request.getParameter("sourceId") != null) {
                     action_updateSource(request, response);
                 }
-                List<Source> sources = getDataLayer().getSources();
-                List<Source> publicationSources = getDataLayer().getPublicationSources((int) session.getAttribute("publicationId"));
+                List<Source> sources = getDataLayer().getPublicationSources((int) session.getAttribute("publicationId"));
                 request.setAttribute("sources", sources);
-                request.setAttribute("publicationSources", publicationSources);
                 res.activate("source.ftl.html", request, response);
             } else {
                 action_default(request, response);
