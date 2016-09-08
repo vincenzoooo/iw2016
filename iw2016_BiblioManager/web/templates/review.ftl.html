@@ -1,0 +1,72 @@
+<div class="container">
+    <div class="pageReview">
+        <div class="section section-pageReview-title"> 
+            <div class="row">
+                <div class="col-lg-12">
+                     <h1 class="center">Lista recensioni pubblicazione</h1>
+                </div>
+            </div>
+        </div>
+
+        <div class="section section-pageReview-listReview"> 
+            <div class="row">
+                <div class="col-lg-12">
+                    <div id="listReviews">
+                    <#if (reviews??) && (reviews?size>0)>
+                        <#list reviews as item>
+                        <#if item.status==1>
+                        <div class="review approvedReview">
+                            <div class="">
+                                <div class="">
+                                    <span class="bold">
+                                        <a href="profile?userId=${item.key}"> ${strip_slashes(item.author.name)?html} ${strip_slashes(item.author.surname)?html}</a>
+                                    </span> &nbsp;${item.date?datetime}
+                                </div>
+                                <div class="">
+                                    <div>${strip_slashes(item.text)?html}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <#else>
+                        <div class="review notApprovedReview">
+                            <div class="fourteen columns">
+                                <div class="row">
+                                    <span class="bold">
+                                        <a href="profile?userId=${item.key}"> ${strip_slashes(item.author.name)?html} ${strip_slashes(item.author.surname)?html}</a>
+                                    </span> &nbsp;${item.date?datetime}</div>
+                                <div class="">
+                                    <div>${strip_slashes(item.text)?html}</div>                  
+                                </div>
+                                <div class="center">
+                                        <a class="approveReview btn btn-default" href="?approveReview&reviewId=${item.id}">Approva</a>
+                                        <a class="deleteReview btn btn-default" href="?deleteReview&reviewId=${item.id}">Elimina</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        </#if>
+                        </#list>
+                    <#else>
+                    <div>Non ci sono ancora recensioni approvate</div>
+                    </#if>
+                    <!--
+                    <#if (totpages?? && totpages>1)>
+                    <div class="row pageBar">Vai alla pagina:         
+                        <span id="paging">
+                            <#list 1..totpages as page>
+                            <#if (page == curpage)>
+                            <span class="pagerCurrent">${page}</span>
+                            <#else>
+                            <a class="pagerLink" href="?page=${page}">${page}</a>
+                            </#if>       
+                            </#list>
+                        </span>
+                    </div>
+                    </#if>
+                    -->
+                    <a href="details?publication_key">Torna alla scheda bibliografica</a>
+                </div>
+            </div>  
+        </div>
+    </div>
+</div>
