@@ -158,13 +158,13 @@
                     <#if publication.index??>
                         <#if (publication.index?? && publication.index?size>0)>
                             <#list publication.index as item>
-                            <ul>
-                                <li>
+                            <ul class="nodecoration">
+                                <li class="">
                                     ${item.number!"''"?html}&nbsp;${strip_slashes(item.title)!"''"?html}
                                 </li>
                                 <#if (item.sections?? && item.sections?size>0) >
                                     <#list item.sections as item2>
-                                        <ul>
+                                        <ul class="nodecoration">
                                             <li>
                                                 ${item.number!"''"?html}.${item2.number!"''"?html}&nbsp;${strip_slashes(item2.title)!"''"?html}
                                             </li>

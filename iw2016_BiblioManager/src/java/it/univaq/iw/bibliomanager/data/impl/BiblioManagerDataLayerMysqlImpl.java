@@ -111,12 +111,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sReprintById = connection.prepareStatement("SELECT * FROM iw2016.ristampa WHERE idristampa = ?");
             this.uReprint = connection.prepareStatement("UPDATE iw2016.ristampa SET numero = ?, data = ?, pubblicazione = ? WHERE idristampa = ?");
             this.iReprint = connection.prepareStatement("INSERT INTO iw2016.ristampa (numero, data, pubblicazione) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            this.sEditors = connection.prepareStatement("SELECT * FROM iw2016.editore");
+            this.sEditors = connection.prepareStatement("SELECT * FROM iw2016.editore ORDER BY nome");
             this.sEditorsByName = connection.prepareStatement("SELECT * FROM iw2016.editor WHERE nome LIKE '%?%'");
             this.sEditorById = connection.prepareStatement("SELECT * FROM iw2016.editore WHERE ideditore = ?");
             this.uEditor = connection.prepareStatement("UPDATE iw2016.editore SET nome = ? WHERE ideditore = ?");
             this.iEditor = connection.prepareStatement("INSERT INTO iw2016.editore (nome) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
-            this.sAuthors = connection.prepareStatement("SELECT * FROM iw2016.autore");
+            this.sAuthors = connection.prepareStatement("SELECT * FROM iw2016.autore ORDER BY cognome, nome");
             this.sAuthorsByName = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE nome LIKE '%?%'");
             this.sAuthorById = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE idautore = ?");
             this.sAuthorByPublication = connection.prepareStatement("SELECT * FROM iw2016.autore JOIN autore_has_pubblicazione ON idautore = autore_idautore WHERE pubblicazione_idpubblicazione = ?");
@@ -126,7 +126,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sReviewById = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE idrecensione = ?");
             this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET testo = ?, moderata = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
             this.iReview = connection.prepareStatement("INSERT INTO iw2016.recensione (testo, moderata, utente_autore, pubblicazione, storico) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            this.sKeywords = connection.prepareStatement("SELECT * FROM iw2016.keyword");
+            this.sKeywords = connection.prepareStatement("SELECT * FROM iw2016.keyword ORDER BY nome");
             this.sKeywordById = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE idkeyword = ?");
             this.sKeywordsByPublication = connection.prepareStatement("SELECT * FROM iw2016.keyword JOIN pubblicazione_has_keyword ON idkeyword = keyword_idkeyword WHERE pubblicazione_idpubblicazione = ?");
             this.uKeyword = connection.prepareStatement("UPDATE iw2016.keyword SET nome = ? WHERE idkeyword = ?");
