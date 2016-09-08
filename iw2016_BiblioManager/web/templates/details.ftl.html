@@ -156,8 +156,8 @@
                 <div class="col-lg-12">
                     <h2>Indice</h2>
                     <#if publication.index??>
-                        <#if (publication.index.chapters?? && publication.index.chapters?size>0)>
-                            <#list publication.index.chapters as item>
+                        <#if (publication.index?? && publication.index?size>0)>
+                            <#list publication.index as item>
                             <ul>
                                 <li>
                                     ${item.number!"''"?html}&nbsp;${strip_slashes(item.title)!"''"?html}
@@ -166,7 +166,7 @@
                                     <#list item.sections as item2>
                                         <ul>
                                             <li>
-                                                ${item2.chapter!"''"?html}.${item2.number!"''"?html}&nbsp;${strip_slashes(item2.title)!"''"?html}
+                                                ${item.number!"''"?html}.${item2.number!"''"?html}&nbsp;${strip_slashes(item2.title)!"''"?html}
                                             </li>
                                         </ul>
                                     </#list>

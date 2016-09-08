@@ -94,8 +94,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 0");
             this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 1");
             this.sPublicationsByFilters = connection.prepareStatement("SELECT * FROM pubblicazione p LEFT JOIN ristampa r ON r.pubblicazione = p.idpubblicazione LEFT JOIN editore e ON e.ideditore = p.editore " + 
-                    "LEFT JOIN autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN autore a ON a.idautore = ap.autore_idautore LEFT JOIN pubblicazione_has_sorgente ps ON ps.pubblicazione_idpubblicazione = p.idpubblicazione " + 
-                    "LEFT JOIN sorgente sr ON sr.idsorgente = ps.sorgente_idsorgente LEFT JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword " +
+                    "LEFT JOIN autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN autore a ON a.idautore = ap.autore_idautore " + 
+                    "LEFT JOIN sorgente sr ON sr.pubblicazione = p.idpubblicazione LEFT JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword " +
                     "LEFT JOIN storico st ON st.pubblicazione = p.idpubblicazione LEFT JOIN utente u ON u.idutente = st.utente " + 
                     "WHERE p.isbn LIKE ? AND p.titolo LIKE ? AND concat(a.nome, a.cognome) LIKE ? AND e.nome LIKE ? AND k.nome LIKE ? AND lingua LIKE ? AND p.data_pubblicazione >= ? AND p.data_pubblicazione < ? AND p.incompleta = 0 "+
                     "ORDER BY ?");

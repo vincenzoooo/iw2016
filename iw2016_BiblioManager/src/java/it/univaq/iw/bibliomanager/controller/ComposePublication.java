@@ -202,7 +202,9 @@ public class ComposePublication extends BiblioManagerBaseController {
                 }
                 if (request.getParameter("submitPublication") != null) {
                     action_composePublication(request, response);
+                    String url = "details?publicationId="+session.getAttribute("publicationId");
                     session.removeAttribute("publicationId");
+                    response.sendRedirect(url);
                 }
                 if (request.getParameter("addEditor") != null) {
                     action_savePartially(request, response, "/editor", session, publication);
