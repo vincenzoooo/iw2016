@@ -53,8 +53,6 @@ public class ComposePublication extends BiblioManagerBaseController {
             params.put("publicationIsbn", Utils.checkString(request.getParameter("publicationIsbn")));
             params.put("publicationPages", Utils.checkString(request.getParameter("publicationPages")));
             params.put("editors", request.getParameter("editors"));
-            params.put("authors", request.getParameter("authors"));
-            params.put("keywords", request.getParameter("keywords"));
             //params.put("sourceId", Utils.checkString(request.getParameter("sourceId")));
             if (!validator(params, request, response)) {
                 publication.setTitle(params.get("publicationTitle"));
@@ -119,41 +117,42 @@ public class ComposePublication extends BiblioManagerBaseController {
         return error;
     }
     
-    private void action_savePartially(HttpServletRequest request, HttpServletResponse response, String url) throws DataLayerException, ServletException, IOException, ParseException {
-        HttpSession session = SecurityLayer.checkSession(request);
-        Publication publication = getDataLayer().createPublication();
-        if(request.getParameter("publicationId") != null){
-            publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("publicationId")));
+    private void action_savePartially(HttpServletRequest request, HttpServletResponse response, String url, HttpSession session, Publication publication) throws DataLayerException, ServletException, IOException, ParseException {
+        if(publication == null){
+            publication = getDataLayer().createPublication();
+            if(request.getParameter("publicationId") != null){
+                publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("publicationId")));
+            }
+            if(!request.getParameter("publicationTitle").isEmpty()){
+                publication.setTitle(Utils.checkString(request.getParameter("publicationTitle")));
+            }
+            if(!request.getParameter("publicationDescription").isEmpty()){
+                publication.setDescription(Utils.checkString(request.getParameter("publicationDescription")));
+            }
+            if(!request.getParameter("publicationLanguage").isEmpty()){
+                publication.setLanguage(Utils.checkString(request.getParameter("publicationLanguage")));
+            }
+            if(!request.getParameter("publicationDate").isEmpty() && Utils.isDate(request.getParameter("publicationDate"))){
+                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                java.util.Date date = df.parse(request.getParameter("publicationDate"));
+                java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+                publication.setPublicationDate(sqlDate);
+            }
+            //params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
+            if(!request.getParameter("publicationIsbn").isEmpty()&&getDataLayer().getPublicationByISBN(request.getParameter("publicationIsbn")) == null&&Utils.isNumeric(request.getParameter("publicationIsbn"))&&request.getParameter("publicationIsbn").length() >= 13 && request.getParameter("publicationIsbn").length() < 14){
+                publication.setIsbn(request.getParameter("publicationIsbn"));
+            }
+            if(!request.getParameter("publicationPages").isEmpty()&&Utils.isNumeric(request.getParameter("publicationPages"))){
+                publication.setPageNumber(Integer.parseInt(request.getParameter("publicationPages")));
+            }
+            if(!request.getParameter("editors").isEmpty()){
+                Editor editor = getDataLayer().getEditor(Integer.parseInt(request.getParameter("editors")));
+                publication.setEditor(editor);
+            }
+            publication.setIncomplete(true);
+            getDataLayer().storePublication(publication);
+            session.setAttribute("publicationId", publication.getKey());
         }
-        if(!request.getParameter("publicationTitle").isEmpty()){
-            publication.setTitle(Utils.checkString(request.getParameter("publicationTitle")));
-        }
-        if(!request.getParameter("publicationDescription").isEmpty()){
-            publication.setDescription(Utils.checkString(request.getParameter("publicationDescription")));
-        }
-        if(!request.getParameter("publicationLanguage").isEmpty()){
-            publication.setLanguage(Utils.checkString(request.getParameter("publicationLanguage")));
-        }
-        if(!request.getParameter("publicationDate").isEmpty() && Utils.isDate(request.getParameter("publicationDate"))){
-            DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-            java.util.Date date = df.parse(request.getParameter("publicationDate"));
-            java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-            publication.setPublicationDate(sqlDate);
-        }
-        //params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
-        if(!request.getParameter("publicationIsbn").isEmpty()&&getDataLayer().getPublicationByISBN(request.getParameter("publicationIsbn")) == null&&Utils.isNumeric(request.getParameter("publicationIsbn"))&&request.getParameter("publicationIsbn").length() >= 13 && request.getParameter("publicationIsbn").length() < 14){
-            publication.setIsbn(request.getParameter("publicationIsbn"));
-        }
-        if(!request.getParameter("publicationPages").isEmpty()&&Utils.isNumeric(request.getParameter("publicationPages"))){
-            publication.setPageNumber(Integer.parseInt(request.getParameter("publicationPages")));
-        }
-        if(!request.getParameter("editors").isEmpty()){
-            Editor editor = getDataLayer().getEditor(Integer.parseInt(request.getParameter("editors")));
-            publication.setEditor(editor);
-        }
-        publication.setIncomplete(true);
-        getDataLayer().storePublication(publication);
-        session.setAttribute("publicationId", publication.getKey());
         action_redirect(request, response, url);
     }
     
@@ -208,13 +207,13 @@ public class ComposePublication extends BiblioManagerBaseController {
                     session.removeAttribute("publicationId");
                 }
                 if (request.getParameter("addEditor") != null) {
-                    action_savePartially(request, response, "/editor");
+                    action_savePartially(request, response, "/editor", session, publication);
                 }
                 if (request.getParameter("addAuthor") != null) {
-                    action_savePartially(request, response, "/author");
+                    action_savePartially(request, response, "/author", session, publication);
                 }
                 if (request.getParameter("addKeyword") != null) {
-                    action_savePartially(request, response, "/keyword");
+                    action_savePartially(request, response, "/keyword", session, publication);
                 }
                 TemplateResult res = new TemplateResult(getServletContext());
                 res.activate("publication.ftl.html", request, response);

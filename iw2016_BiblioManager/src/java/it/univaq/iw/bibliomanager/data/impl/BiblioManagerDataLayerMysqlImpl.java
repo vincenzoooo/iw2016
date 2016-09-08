@@ -734,7 +734,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             sSourceByPublication.setInt(1, publication_key);
             rs = sSourceByPublication.executeQuery();
             while (rs.next()) {
-                result.add(getSource(rs.getInt("sorgente_idsorgente")));
+                result.add(getSource(rs.getInt("idsorgente")));
             }
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to load sources of publication", ex);
