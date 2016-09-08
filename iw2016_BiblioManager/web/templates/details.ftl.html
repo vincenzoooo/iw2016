@@ -166,8 +166,7 @@
                                     <#list item.sections as item2>
                                         <ul>
                                             <li>
-                                                ${item2.number!"''"?html}
-                                                ${strip_slashes(item2.title)!"''"?html}
+                                                ${item2.chapter!"''"?html}.${item2.number!"''"?html}&nbsp;${strip_slashes(item2.title)!"''"?html}
                                             </li>
                                         </ul>
                                     </#list>
