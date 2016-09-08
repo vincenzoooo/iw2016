@@ -1,17 +1,166 @@
-<!DOCTYPE html>
-<!--
-University of L'Aquila 2015/2016
-BiblioManager project
-Authors: Vincenzo Lanzieri, Angelo Iezzi
-Professor: Giuseppe Della Penna
--->
-<html>
-    <head>
-        <title>TODO supply a title</title>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    </head>
-    <body>
-        <div>TODO write content</div>
-    </body>
-</html>
+<div class="container">
+    <div class="row">
+        <div class="col-lg-12">
+            <h1 class="center">Modifica pubblicazione</h1>
+            <form method="post" action="publication" name='editPublication' class="form-horizontal">
+                <div class="form-group">
+                    <label for="editTitlePub" class="col-sm-2 control-label bold">Titolo</label>
+                    <div class="col-sm-10 col-lg-6">
+                        <input id="editTitlePub" type="text" class="form-control" name="publicationTitle" value="${publicationTitle!''?html}" placeholder="Modifica il titolo" />
+                    </div>
+                </div>
+                <#if errorTitle??>
+                <div class="error">
+                    ${errorTitle?html}
+                </div>
+                </#if>
+                <div class="form-group">
+                    <label for="editIsbnPub" class="col-sm-2 control-label bold">ISBN (13 cifre)</label>
+                    <div class="col-sm-10 col-lg-6">
+                        <input id="editIsbnPub" type="text" class="form-control" name="publicationIsbn" value="${publicationIsbn!''?html}" placeholder="Modifica l'isbn" />
+                    </div>
+                </div>
+                <#if errorIsbn??>
+                <div class="error">
+                    ${errorIsbn?html}
+                </div>
+                </#if>
+                <div class="form-group">
+                    <label for="editPageNumberPub" class="col-sm-2 control-label bold">Numero pagine</label>
+                    <div class="col-sm-10 col-lg-6">
+                        <input id="editPageNumberPub" type="text" class="form-control" name="publicationPages" value="${publicationPages!''?html}" placeholder="Modifica il numero delle pagine" />
+                    </div>
+                </div>
+                <#if errorPageNumber??>
+                <div class="error">
+                    ${errorPageNumber?html}
+                </div>
+                </#if>
+                <div class="form-group">
+                    <label for="editDescriptionPub" class="col-sm-2 control-label bold">Descrizione</label>
+                    <div class="col-sm-10 col-lg-6">
+                        <textarea id="editDescriptionPub" class="form-control" name="publicationDescription" rows="4" placeholder="Modifica la descrizione">${publicationDescription!''?html}</textarea>
+                    </div>
+                </div>
+                <#if errorDescription??>
+                <div class="error">    
+                    ${errorDescription?html}    
+                </div>
+                </#if>
+                <div class="form-group">
+                    <label for="editPublicationDatePub" class="col-sm-2 control-label bold">Data di pubblicazione</label>
+                    <div class="col-sm-10 col-lg-6">
+                        <input id="editPublicationDatePub" type="text" class="form-control" name="publicationDate" value="${publicationDate!''?html}" placeholder="Modifica l'anno di pubblicazione" />
+                    </div>
+                </div>
+                <#if errorPublicationDate??>
+                <div class="error">    
+                    ${errorPublicationDate?html}    
+                </div>
+                </#if>
+                <div class="form-group">
+                    <label for="editLanguagePub" class="col-sm-2 control-label bold">Lingua</label>
+                    <div class="col-sm-10 col-lg-6">
+                        <input id="editLanguagePub" type="text" class="form-control" name="publicationLanguage" value="${publicationLanguage!''?html}" placeholder="Modifica la lingua" />
+                    </div>
+                </div>
+                <#if errorLanguage??>
+                <div class="error">    
+                    ${errorLanguage?html}    
+                </div>
+                </#if>
+                
+                <div class="form-group">
+                    <label class="bold col-sm-2 control-label">Editore</label>
+                    <div class="col-sm-6">
+                        <select class="form-control" name="editors" >
+                        <#if (editors?? && editors?size>0)>
+                            <#list editors as item>
+                            <option value="${item.key!''?html}" <#if (currentEditor?? && currentEditor == item.key)>selected="selected"</#if>>${item.name!''?html}</option>
+                            </#list>
+                        </#if>
+                        </select>
+                    </div>
+                    <div class="col-sm-2">
+                        <input value='Aggiungi nuovo editore' name='addEditor' type='submit' class="btn btn-default"/>
+                    </div>
+                </div>
+                <#if errorEditor??>  
+                    <div class="error">
+                        ${errorEditor?html}      
+                      </div>
+                </#if>
+                
+                <div class="form-group">
+                    <label class="bold col-sm-2 control-label">Autore/i</label>
+                    <div class="col-sm-6">
+                        <#if (authors?? && !authors.isEmpty() && authors?size>0)>
+                        <ul class="list-group listitem">
+                            <#list authors as item>
+                            <li class="list-group-item nodecoration">
+                                ${item.name!''?html}&nbsp;${item.surname!''?html}
+                                <a href="publication" name="delateAuthor"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
+                            </li>
+                            </#list>
+                        </ul>
+                        <#else>
+                        <div class="padding-top-5">Nessun autore selezionato</div>
+                        </#if>
+                    </div>
+                    <div class="col-sm-2">
+                        <input value="Seleziona autore" name="addAuthor" type="submit" class="btn btn-default"/>
+                    </div>
+                </div>
+                <#if errorAuthor??>  
+                    <div class="error">
+                        ${errorAuthor?html}      
+                      </div>
+                </#if>
+                
+                <div class="form-group">
+                    <label class="bold col-sm-2 control-label">Keyword</label>
+                    <div class="col-sm-6">
+                        <#if (keywords?? && !keywords.isEmpty() && keywords?size>0)>
+                        <ul class="list-group listitem">
+                            <#list keywords as item>
+                            <li class="list-group-item nodecoration">
+                                ${item.name!''?html}
+                                <a href="publication" name="delateKeyword"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
+                            </li>
+                            </#list>
+                        </ul>
+                        <#else>
+                        <div class="padding-top-5">Nessuna parola chiave selezionata</div>
+                        </#if>
+
+                    </div>
+                    <div class="col-sm-2">
+                        <input value="Seleziona parola chiave" name="addKeyword" type="submit" class="btn btn-default"/>
+                    </div>
+                </div>
+                <#if errorKeyword??>  
+                    <div class="error">
+                        ${errorKeyword?html}      
+                      </div>
+                </#if>
+                
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <a href="index" class="btn btn-default ">Modifica indice</a>
+                        <a href="source" class="btn btn-default col-sm-offset-1">Modifica risorse</a>
+                        <a href="reprint" class="btn btn-default col-sm-offset-1">Modifica ristampe</a>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <div class="col-sm-offset-2 col-sm-10">
+                        <span>
+                            <input value='Salva' name='submitManagPublication' type='submit' class="btn btn-default"/>
+                        </span>
+                    </div>
+                </div>
+            
+            </form>
+        </div>
+    </div>
+</div>
