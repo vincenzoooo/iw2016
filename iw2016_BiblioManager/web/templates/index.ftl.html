@@ -7,7 +7,6 @@
                 </div>
             </div>
         </div>
-        
         <div class="section section-pageIndex-insertChapter">
             <div class="row">
                 <div class="col-lg-12">   
@@ -40,7 +39,7 @@
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>
-                                    <input value="Aggiungi" name="submitIndex" type="submit" class="btn btn-default"/>
+                                    <input value="Aggiungi" name="submitChapter" type="submit" class="btn btn-default"/>
                                 </span>
                             </div>
                         </div>
@@ -83,7 +82,7 @@
                     </table>
                     <div>
                         <span>
-                            <a href="index" class="btn btn-default col-xs-offset-1" name="submitNext">Avanti</a>
+                            <a href="index?step=2" class="btn btn-default col-xs-offset-1">Avanti</a>
                         </span>
                     </div>
                     <#else>
@@ -92,8 +91,7 @@
                 </div>
             </div>
         </div>
-        
-        <#if index??>
+        <#if (chapters?? && chapters?size>0)>
         <div class="section section-pageIndex-insertSection">
             <div class="row">
                 <div class="col-lg-12">   
@@ -102,7 +100,7 @@
                         <div class="form-group">
                             <label class="bold col-sm-2 control-label">Capitolo</label>
                             <div class="col-sm-6">
-                                <select class="form-control" name="editors" >
+                                <select class="form-control" name="chapter" >
                                 <#if (chapters?? && chapters?size>0)>
                                     <#list chapters as item>
                                     <option value="${item.key!''?html}">${item.number!''?html},${item.title}</option>
@@ -138,8 +136,8 @@
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>
-                                    <input value="Aggiungi" name="submitIndex" type="submit" class="btn btn-default"/>
-                                    <a href="index" class="btn btn-default col-xs-offset-1" name="submitNext">Avanti</a>
+                                    <input value="Aggiungi" name="submitSection" type="submit" class="btn btn-default"/>
+                                    <a href="index" class="btn btn-default col-xs-offset-1">Avanti</a>
                                 </span>
                             </div>
                         </div>

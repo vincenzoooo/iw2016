@@ -6,12 +6,17 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
+import it.univaq.iw.bibliomanager.data.model.Editor;
+import it.univaq.iw.bibliomanager.data.model.IndexElement;
 import it.univaq.iw.bibliomanager.data.model.Publication;
+import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
+import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.servlet.ServletException;
@@ -27,14 +32,54 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeIndex extends BiblioManagerBaseController {
 
-    private void action_composeIndex(HttpServletRequest request, HttpServletResponse response) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    private void action_composeChapter(HttpServletRequest request, HttpServletResponse response) {
+        try{
+            HttpSession session = SecurityLayer.checkSession(request);
+            IndexElement chapter = null;
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("chapterTitle", Utils.checkString(request.getParameter("chapterTitle")));
+            params.put("chapterNumber", Utils.checkString(request.getParameter("chapterNumber")));
+            if (!validator(params, request, response)) {
+                chapter = getDataLayer().createChapter();
+                chapter.setNumber(Integer.parseInt(params.get("chapterNumber")));
+                chapter.setTitle(params.get("chapterTitle"));
+                Publication publication = getDataLayer().getPublication((int) session.getAttribute("publicationId"), true);
+                chapter.setPublication(publication);
+                getDataLayer().storeChapter(chapter);
+            }
+        } catch (DataLayerException ex) {
+            action_error(request, response, "Errore nel salvare il capitolo: " + ex.getMessage());
+        }
     }
 
-    private void action_updateIndex(HttpServletRequest request, HttpServletResponse response) {
+    private void action_updateChapter(HttpServletRequest request, HttpServletResponse response) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    private void action_composeSection(HttpServletRequest request, HttpServletResponse response) {
+        try{
+            HttpSession session = SecurityLayer.checkSession(request);
+            IndexElement section = null;
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("chapter", Utils.checkString(request.getParameter("chapter")));
+            params.put("sectionTitle", Utils.checkString(request.getParameter("sectionTitle")));
+            params.put("sectionNumber", Utils.checkString(request.getParameter("sectionNumber")));
+            if (!validator(params, request, response)) {
+                section = getDataLayer().createSection();
+                section.setNumber(Integer.parseInt(params.get("sectionNumber")));
+                section.setTitle(params.get("sectionTitle"));
+                IndexElement chapter = getDataLayer().getChapter(Integer.parseInt(params.get("chapter")));
+                section.setAncestor(chapter);
+                getDataLayer().storeSection(section);
+            }
+        } catch (DataLayerException ex) {
+            action_error(request, response, "Errore nel salvare il sezione: " + ex.getMessage());
+        }
+    }
 
+    private void action_updateSection(HttpServletRequest request, HttpServletResponse response) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -53,8 +98,14 @@ public class ComposeIndex extends BiblioManagerBaseController {
             if (session != null) {
                 currentUser(request, response, session);
                 if (request.getParameter("submitChapter") != null) {
-                    request.setAttribute("indexId", request.getParameter("indexId"));
+                    action_composeChapter(request, response);
                 }
+                if (request.getParameter("submitSection") != null) {
+                    action_composeSection(request, response);
+                }
+                List<IndexElement> chapters = getDataLayer().getChapters((int) session.getAttribute("publicationId"));
+                request.setAttribute("chapters", chapters);
+//                List<IndexElement> sections = getDataLayer().getSections(Integer.parseInt(request.getParameter("chapter")));
 //                if (request.getParameter("submitIndex") != null && request.getAttribute("authorId") == null) {
 //                    action_composeIndex(request, response);
 //                }
@@ -65,10 +116,10 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 res.activate("index.ftl.html", request, response);
 
             } else {
-
+                action_default(request, response);
             }
         } catch (Exception ex) {
-
+               action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 

@@ -35,10 +35,6 @@ public interface IndexElement {
 
     void setAncestor(IndexElement ancestor);
 
-    List<IndexElement> getChildren() throws DataLayerException;
-
-    void setChildren(List<IndexElement> elements);
-
     //--
     void copyFrom(IndexElement element) throws DataLayerException;
 }

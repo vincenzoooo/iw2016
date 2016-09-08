@@ -215,6 +215,15 @@ public class ComposePublication extends BiblioManagerBaseController {
                 if (request.getParameter("addKeyword") != null) {
                     action_savePartially(request, response, "/keyword", session, publication);
                 }
+                if (request.getParameter("addIndex") != null) {
+                    action_savePartially(request, response, "/index", session, publication);
+                }
+                if (request.getParameter("addSource") != null) {
+                    action_savePartially(request, response, "/source", session, publication);
+                }
+                if (request.getParameter("addReprint") != null) {
+                    action_savePartially(request, response, "/reprint", session, publication);
+                }
                 TemplateResult res = new TemplateResult(getServletContext());
                 res.activate("publication.ftl.html", request, response);
             } else {

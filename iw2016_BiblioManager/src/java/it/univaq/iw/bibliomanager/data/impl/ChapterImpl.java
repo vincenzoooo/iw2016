@@ -21,7 +21,6 @@ public class ChapterImpl implements IndexElement{
     private int number;
     private String title;
     private Publication publication;
-    private List<IndexElement> sections;
     protected BiblioManagerDataLayer ownerDataLayer;
     
     public ChapterImpl(BiblioManagerDataLayer ownerDataLayer){
@@ -30,7 +29,6 @@ public class ChapterImpl implements IndexElement{
         this.number = 0;
         this.title = "";
         publication = null;
-        sections = null;
     }
 
     @Override
@@ -74,16 +72,6 @@ public class ChapterImpl implements IndexElement{
     }
 
     @Override
-    public List<IndexElement> getChildren() throws DataLayerException {
-        return sections;
-    }
-
-    @Override
-    public void setChildren(List<IndexElement> elements) {
-        this.sections = elements;
-    }
-
-    @Override
     public IndexElement getAncestor() throws DataLayerException {
         //Just do not do anything
         return null;
@@ -100,6 +88,5 @@ public class ChapterImpl implements IndexElement{
         number = chapter.getNumber();
         title = chapter.getTitle();
         publication = chapter.getPublication();
-        sections = chapter.getChildren();
     }
 }

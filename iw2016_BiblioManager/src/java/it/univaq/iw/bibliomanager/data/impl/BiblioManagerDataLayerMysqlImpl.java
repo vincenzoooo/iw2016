@@ -335,7 +335,6 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             chapter.setNumber(rs.getInt("numero"));
             chapter.setTitle(rs.getString("titolo"));
             chapter.setPublication(getPublication(rs.getInt("pubblicazione")));
-            chapter.setChildren(getSections(rs.getInt("idcapitolo")));
             return chapter;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create chapter object form ResultSet", ex);
@@ -1795,7 +1794,6 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 iChapter.setInt(1, chapter.getNumber());
                 iChapter.setString(2, chapter.getTitle());
                 iChapter.setInt(3, chapter.getPublication().getKey());
-                iChapter.setInt(4, chapter.getKey());
 
                 if (iChapter.executeUpdate() == 1) {
                     keys = iChapter.getGeneratedKeys();
@@ -1840,9 +1838,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             } else { //insert
                 iSection.setInt(1, section.getNumber());
                 iSection.setString(2, section.getTitle());
-                iSection.setInt(3, section.getPublication().getKey());
-                iSection.setInt(4, section.getKey());
-
+                iSection.setInt(3, section.getAncestor().getKey());
+                
                 if (iSection.executeUpdate() == 1) {
                     keys = iSection.getGeneratedKeys();
                     if (keys.next()) {
@@ -1851,7 +1848,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 }
             }
             if (key > 0) {
-                section.copyFrom(getChapter(key));
+                section.copyFrom(getSection(key));
             }
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to store section", ex);

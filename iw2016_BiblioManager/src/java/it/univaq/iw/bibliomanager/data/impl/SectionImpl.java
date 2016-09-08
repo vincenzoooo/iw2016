@@ -83,17 +83,6 @@ public class SectionImpl implements IndexElement{
     }
     
     @Override
-    public List<IndexElement> getChildren() throws DataLayerException {
-        //Just not do anything
-        return null;
-    }
-
-    @Override
-    public void setChildren(List<IndexElement> elements) {
-        //Just not do anything
-    }
-    
-    @Override
     public void copyFrom(IndexElement section) throws DataLayerException {
         key = section.getKey();
         number = section.getNumber();
