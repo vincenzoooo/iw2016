@@ -93,7 +93,7 @@ public class ComposeSource extends BiblioManagerBaseController {
                     request.setAttribute("currentTypeSource", request.getParameter("currentTypeSource"));
                     request.setAttribute("currentUriSource", request.getParameter("currentUriSource"));
                     request.setAttribute("currentFormatSource", request.getParameter("currentFormatSource"));
-                    request.setAttribute("currentDescripionSource", request.getParameter("currentDescriptionSource"));
+                    request.setAttribute("currentDescriptionSource", request.getParameter("currentDescriptionSource"));
                     request.setAttribute("sourceId", request.getParameter("sourceId"));
                 }
                 if (request.getParameter("submitSource") != null && request.getParameter("sourceId") == null) {
