@@ -775,6 +775,18 @@ header .navbar-header-menu {
     width: 100px;
 }
 
+.fa-custom{
+    font-size: 1.5em!important;
+}
+
+.custom-title{
+    font-size: 20px;
+}
+
+.me-line{
+    margin-top: -5px;
+}
+
 /**
  * 4. Catalog
  * -----------------------------------------------------------------------------
@@ -839,6 +851,11 @@ header .navbar-header-menu {
 .titlePublication .title{
     margin: 12px 0 36px;
 }
+
+.chapter-title{
+    font-weight: bold;
+}
+
 
 /**
  * 4. Insert Pubblication

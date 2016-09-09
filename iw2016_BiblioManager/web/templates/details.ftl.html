@@ -1,7 +1,25 @@
 <div class="container">
     <div class="pagePublicationDetails">
-        <#if publication?? >
-        <div class="section section-publication-conten margin-top-50">
+        <#if publication??>
+        <div class="section section-publication-tools margin-top-50">
+            <#if (me.state==0 || (me.state == 1 && me.key == publisher.key))>
+            <span class="custom-title">Gestione pubblicazione:</span>
+            <div class="btn-group me-line" role="group" aria-label="...">
+                <a href="managePublication?publicationId=${publication.key}" class="btn btn-default" title="Modifica">
+                    <i class="fa fa-pencil fa-custom" aria-hidden="true"></i>
+                </a>
+
+                <a href="delatePublication?publicationId=${publication.key}" class="btn btn-default" title="Cancella">
+                    <i class="fa fa-trash-o fa-custom" aria-hidden="true"></i>
+                </a>
+
+                <a href="history?historyData&publicationId=${publication.key}" class="btn btn-default" title="Storico">
+                    <i class="fa fa-history fa-custom" aria-hidden="true"></i>
+                </a>
+            </div>
+            </#if>
+        </div>
+        <div class="section section-publication-conten margin-top-30">
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-4">
                     <figure class="imageCard">
@@ -25,14 +43,7 @@
                     <div class="titlePublication">
                         <h1 class="title">
                             ${strip_slashes(publication.title!'')?html}
-                            <a href="history?historyData&publicationId=${publication.key}">
-                                Storico
-                            </a>
-                            <#if (me.state==0 || (me.state == 1 && me.key == publisher.key))>
-                            <span>
-                                <a href="managePublication?publicationId=${publication.key}"><i class="fa fa-pencil" aria-hidden="true"></i></a>
-                            </span>
-                            </#if>
+                            
                             <!--
                             <#if (userStatus?? && userStatus)>
                             <span>
@@ -159,8 +170,8 @@
                         <#if (publication.index?? && publication.index?size>0)>
                             <#list publication.index as item>
                             <ul class="nodecoration">
-                                <li class="">
-                                    ${item.number!"''"?html}&nbsp;${strip_slashes(item.title)!"''"?html}
+                                <li class="chapter-title">
+                                    ${item.number!"''"?html}&nbsp;&nbsp;${strip_slashes(item.title)!"''"?html}
                                 </li>
                                 <#if (item.sections?? && item.sections?size>0) >
                                     <#list item.sections as item2>
