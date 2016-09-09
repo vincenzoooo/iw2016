@@ -89,16 +89,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sHistoryById = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE idstorico = ?");
             this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");
             this.iHistory = connection.prepareStatement("INSERT INTO iw2016.storico (entry, tipo, data_operazione, pubblicazione, utente) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            this.sPublications = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE incompleta = 0 ORDER BY ?");
+            this.sPublications = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE incompleta = 0");
             this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
             this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 0");
             this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 1");
-            this.sPublicationsByFilters = connection.prepareStatement("SELECT p.idpubblicazione FROM pubblicazione p LEFT JOIN ristampa r ON r.pubblicazione = p.idpubblicazione LEFT JOIN editore e ON e.ideditore = p.editore " + 
-                    "LEFT JOIN autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN autore a ON a.idautore = ap.autore_idautore " + 
-                    "LEFT JOIN sorgente sr ON sr.pubblicazione = p.idpubblicazione LEFT JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword " +
-                    "LEFT JOIN storico st ON st.pubblicazione = p.idpubblicazione LEFT JOIN utente u ON u.idutente = st.utente " + 
-                    "WHERE p.isbn LIKE ? AND p.titolo LIKE ? AND concat(a.nome, ' ',a.cognome) LIKE ? AND e.nome LIKE ? AND k.nome LIKE ? AND lingua LIKE ? AND p.data_pubblicazione >= ? AND p.data_pubblicazione < ? AND p.incompleta = 0 AND CONCAT(u.nome, ' ',u.cognome) LIKE ?"+
-                    "GROUP BY p.idpubblicazione ORDER BY ?");
             this.sPublicationsByISBN = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE isbn = ? AND incompleta = 0");
             this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, incompleta = ? WHERE idpubblicazione = ?");
             this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -131,11 +125,11 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sKeywordsByPublication = connection.prepareStatement("SELECT * FROM iw2016.keyword JOIN pubblicazione_has_keyword ON idkeyword = keyword_idkeyword WHERE pubblicazione_idpubblicazione = ?");
             this.uKeyword = connection.prepareStatement("UPDATE iw2016.keyword SET nome = ? WHERE idkeyword = ?");
             this.iKeyword = connection.prepareStatement("INSERT INTO iw2016.keyword (nome) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
-            this.sChapters = connection.prepareStatement("SELECT * FROM iw2016.capitolo WHERE pubblicazione = ?");
+            this.sChapters = connection.prepareStatement("SELECT * FROM iw2016.capitolo WHERE pubblicazione = ? ORDER BY numero");
             this.sChapterById = connection.prepareStatement("SELECT * FROM iw2016.capitolo WHERE idcapitolo = ?");
             this.uChapter = connection.prepareStatement("UPDATE iw2016.capitolo SET numero = ?, titolo = ?, pubblicazione = ? WHERE idcapitolo = ?"); 
             this.iChapter = connection.prepareStatement("INSERT INTO iw2016.capitolo (numero,titolo,pubblicazione) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            this.sSections = connection.prepareStatement("SELECT * FROM iw2016.sezione WHERE capitolo = ?");
+            this.sSections = connection.prepareStatement("SELECT * FROM iw2016.sezione WHERE capitolo = ? ORDER BY numero");
             this.sSectionById = connection.prepareStatement("SELECT * FROM iw2016.sezione WHERE idsezione = ?");
             this.uSection = connection.prepareStatement("UPDATE iw2016.sezione SET numero = ?, titolo = ?, capitolo = ? WHERE idsezione = ?");
             this.iSection = connection.prepareStatement("INSERT INTO iw2016.sezione (numero, titolo, capitolo) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS); 
@@ -623,11 +617,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
     
     @Override
-    public List<Publication> getPublications(String orderBy) throws DataLayerException {
+    public List<Publication> getPublications() throws DataLayerException {
         List<Publication> result = new ArrayList();
         ResultSet rs = null;
         try {
-            sPublications.setString(1, orderBy);
             rs = sPublications.executeQuery();
             while (rs.next()) {
                 result.add(getPublication(rs.getInt("idpubblicazione")));
@@ -651,26 +644,42 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         List<Publication> result = new ArrayList();
         ResultSet rs = null;
         try {
+            String query = "SELECT p.idpubblicazione FROM pubblicazione p LEFT JOIN ristampa r ON r.pubblicazione = p.idpubblicazione LEFT JOIN editore e ON e.ideditore = p.editore " + 
+                    "LEFT JOIN autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN autore a ON a.idautore = ap.autore_idautore " + 
+                    "LEFT JOIN sorgente sr ON sr.pubblicazione = p.idpubblicazione LEFT JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword " +
+                    "LEFT JOIN storico st ON st.pubblicazione = p.idpubblicazione LEFT JOIN utente u ON u.idutente = st.utente WHERE p.incompleta = 0 ";
             for (Map.Entry<String, String> entry : filters.entrySet())
             {
-                if(entry.getValue() == null){
-                    entry.setValue("");
+                if(entry.getKey().equals("publicationIsbn") && entry.getValue() != null){
+                    query += " AND p.isbn LIKE '%"+entry.getValue()+"%' ";
                 }
-                else if(!entry.getKey().equals("publicationYear") && !entry.getKey().equals("publicationYearEnd")){
-                    entry.setValue("%"+entry.getValue()+"%");
+                if(entry.getKey().equals("publicationTitle") && entry.getValue() != null){
+                    query += " AND p.titolo LIKE '%"+entry.getValue()+"%' ";
+                }
+                if(entry.getKey().equals("publicationAuthor") && entry.getValue() != null){
+                    query += " AND concat(a.nome, ' ',a.cognome) LIKE '%"+entry.getValue()+"%' ";
+                }
+                if(entry.getKey().equals("publicationEditor") && entry.getValue() != null){
+                    query += " AND e.nome LIKE '%"+entry.getValue()+"%' ";
+                }
+                if(entry.getKey().equals("publicationKeyword") && entry.getValue() != null){
+                    query += " AND k.nome LIKE '%"+entry.getValue()+"%' ";
+                }
+                if(entry.getKey().equals("publicationLanguage") && entry.getValue() != null){
+                    query += " AND p.lingua LIKE '%"+entry.getValue()+"%' ";
+                }
+                if(entry.getKey().equals("publicationYear") && entry.getValue() != null){
+                    query += " AND p.data_pubblicazione >= '"+entry.getValue()+"' ";
+                }
+                if(entry.getKey().equals("publicationYearEnd") && entry.getValue() != null){
+                    query += " AND p.data_pubblicazione < '"+entry.getValue()+"' ";
+                }
+                if(entry.getKey().equals("publicationUser") && entry.getValue() != null){
+                    query += " AND CONCAT(u.nome, ' ',u.cognome) LIKE '%"+entry.getValue()+"%' ";
                 }
             }
-            //TODO: Generare qui il testo della query
-            sPublicationsByFilters.setString(1, filters.getOrDefault("publicationIsbn", "%%"));
-            sPublicationsByFilters.setString(2, filters.getOrDefault("publicationTitle", "%%"));
-            sPublicationsByFilters.setString(3, filters.getOrDefault("publicationAuthor", "%%"));
-            sPublicationsByFilters.setString(4, filters.getOrDefault("publicationEditor", "%%"));
-            sPublicationsByFilters.setString(5, filters.getOrDefault("publicationKeyword", "%%"));
-            sPublicationsByFilters.setString(6, filters.getOrDefault("publicationLanguage", "%%"));
-            sPublicationsByFilters.setString(7, Utils.getArrayParameter(filters, "publicationYear"));
-            sPublicationsByFilters.setString(8, Utils.getArrayParameter(filters, "publicationYearEnd"));
-            sPublicationsByFilters.setString(9, filters.getOrDefault("publicationUser", "%%"));
-            sPublicationsByFilters.setString(10, Utils.getArrayParameter(filters, "order_by"));
+            query += "GROUP BY p.idpubblicazione ORDER BY " + Utils.getArrayParameter(filters, "order_by") + " " + Utils.getArrayParameter(filters, "order_mode");
+            this.sPublicationsByFilters = connection.prepareStatement(query);
             rs = sPublicationsByFilters.executeQuery();
             while (rs.next()) {
                 result.add(getPublication(rs.getInt("idpubblicazione")));

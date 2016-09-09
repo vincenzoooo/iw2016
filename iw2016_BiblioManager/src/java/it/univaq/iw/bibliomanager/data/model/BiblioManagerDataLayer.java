@@ -63,7 +63,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     
     Publication getPublicationByISBN(String isbn) throws DataLayerException;
 
-    List<Publication> getPublications(String orderBy) throws DataLayerException;
+    List<Publication> getPublications() throws DataLayerException;
 
     List<Publication> getLastInsertedPublication() throws DataLayerException;
 

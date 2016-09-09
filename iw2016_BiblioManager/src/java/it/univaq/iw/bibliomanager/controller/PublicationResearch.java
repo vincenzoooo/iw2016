@@ -6,13 +6,16 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
+import it.univaq.iw.bibliomanager.data.model.User;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
+import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,22 +27,22 @@ import javax.servlet.http.HttpSession;
  */
 public class PublicationResearch extends BiblioManagerBaseController {
 
-    private void action_research(HttpServletRequest request, HttpServletResponse response){
+    private void action_research(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
         try {
             Map<String, String> filters = new HashMap<String, String>();
-            String isbn = "%" + request.getParameter("publicationIsbn") + "%";
+            String isbn = request.getParameter("publicationIsbn");
             if (isbn != null) {
                 filters.put("publicationIsbn", isbn);
             }
-            String title = "%" + request.getParameter("publicationTitle") + "%";
+            String title = request.getParameter("publicationTitle");
             if (title != null) {
                 filters.put("publicationTitle", title);
             }
-            String authorName = "%" + request.getParameter("publicationAuthor") + "%";
+            String authorName = request.getParameter("publicationAuthor");
             if (authorName != null) {
                 filters.put("publicationAuthor", authorName);
             }
-            String editorName = "%" + request.getParameter("publicationEditor") + "%";
+            String editorName = request.getParameter("publicationEditor");
             if (authorName != null) {
                 filters.put("publicationEditor", editorName);
             }
@@ -52,18 +55,23 @@ public class PublicationResearch extends BiblioManagerBaseController {
             else{
                 filters.put("publicationYear", String.valueOf(0));
                 int year = Calendar.getInstance().get(Calendar.YEAR);
-                filters.put("publicationYearEnd", String.valueOf(year));
+                filters.put("publicationYearEnd", String.valueOf(year+1));
             }
-            String keyword = "%" + request.getParameter("publicationKeyword") + "%";
+            String keyword = request.getParameter("publicationKeyword");
             if (keyword != null) {
                 filters.put("publicationKeyword", keyword);
             }
-            String language = "%" + request.getParameter("publicationLanguage") + "%";
+            String language = request.getParameter("publicationLanguage");
             if (language != null) {
                 filters.put("publicationLanguage", language);
             }
+            String user = request.getAttribute("publicationUser").toString();
+            if(user != null){
+                filters.put("publicationUser", user);
+            }
             filters.put("order_by", "titolo");
             request.setAttribute("publications", getDataLayer().getPublicationsByFilters(filters));
+            getServletContext().getRequestDispatcher("/catalog").forward(request, response);
         }
         catch (DataLayerException ex) {
             action_error(request, response, "Unable to do the research: " + ex.getMessage());
@@ -89,7 +97,14 @@ public class PublicationResearch extends BiblioManagerBaseController {
                 currentUser(request, response, session);
                 if (request.getParameter("submitResearch") != null) {
                     action_research(request, response);
-                    action_redirect(request, response, "/catalog");
+                }
+                if(request.getParameter("userId") != null) {
+                    User user = getDataLayer().getUser(Integer.parseInt(request.getParameter("userId")));
+                    if(user != null){
+                        request.setAttribute("publicationUser", user.getName() + " " + user.getSurname());
+                        action_research(request, response);
+                    }
+                    
                 }
                 res.activate("research.ftl.html", request, response);
             } else {

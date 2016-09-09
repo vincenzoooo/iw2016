@@ -14,21 +14,21 @@
                         <div class="form-group margin-right-10">
                             <label for="sortby" class=" control-label bold">Ordina per</label>
                             <div class="">
-                                <select name="sortBy" id="ordering" class="form-control">
-                                    <option value='0' <#if sortBy?? && sortBy==0> selected='selected'</#if> >
+                                <select name="orderBy" id="ordering" class="form-control">
+                                    <option value='0' <#if orderBy?? && orderBy==0> selected='selected'</#if> >
                                     Titolo
                                     </option>
-                                    <option value='1' <#if sortBy?? && sortBy==1> selected='selected'</#if> >
+                                    <option value='1' <#if orderBy?? && orderBy==1> selected='selected'</#if> >
+                                    Editore
+                                    </option>
+                                    <option value='2' <#if orderBy?? && orderBy==2> selected='selected'</#if> >
+                                    Autori
+                                    </option>
+                                    <option value='3' <#if orderBy?? && orderBy==3> selected='selected'</#if> >
                                     Data di Pubblicazione
                                     </option>
-                                    <option value='2' <#if sortBy?? && sortBy==2> selected='selected'</#if> >
-                                    Data di Inserimento
-                                    </option>
-                                    <option value='3' <#if sortBy?? && sortBy==3> selected='selected'</#if> >
-                                    Data di Ultima Modifica
-                                    </option>
-                                    <option value='4' <#if sortBy?? && sortBy==4> selected='selected'</#if> >
-                                    Numero Consigli
+                                    <option value='4' <#if orderBy?? && orderBy==4> selected='selected'</#if> >
+                                    Numero consigli
                                     </option>
                                 </select>
                             </div>
@@ -36,11 +36,11 @@
                         <div class="form-group margin-right-10">
                             <label for="sortby" class=" control-label bold">In modo </label>
                             <div class="">
-                                <select name='sortType' id="typeOrdering" class="form-control">
-                                    <option value='0' <#if sortType?? && sortType==0> selected='selected'</#if> >
+                                <select name='orderMode' id="typeOrdering" class="form-control">
+                                    <option value='0' <#if orderMode?? && orderMode==0> selected='selected'</#if> >
                                     Ascendente
                                     </option>
-                                    <option value='1' <#if sortType?? && sortType==1> selected='selected'</#if> >
+                                    <option value='1' <#if orderMode?? && orderMode==1> selected='selected'</#if> >
                                     Discendente
                                     </option>
                                 </select>

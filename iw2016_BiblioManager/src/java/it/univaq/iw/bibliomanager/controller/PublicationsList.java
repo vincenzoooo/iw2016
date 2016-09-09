@@ -7,7 +7,6 @@
 package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.bibliomanager.data.model.Publication;
-import it.univaq.iw.bibliomanager.data.model.Source;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
@@ -25,15 +24,24 @@ import javax.servlet.http.HttpSession;
  * @author Vincenzo Lanzieri
  */
 public class PublicationsList extends BiblioManagerBaseController {
-
+    private final String[] orderField = new String[]{"titolo", "e.nome", "a.cognome", "data_pubblicazione", "n_consigli"};
+    private final String[] orderType = new String[]{"ASC", "DESC"};
     private void action_list(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String orderBy = request.getParameter("orderdBy") != null ? request.getParameter("orderdBy") : "titolo";
+        Map<String, String> filters = new HashMap<String, String>();
+        int orderBy = request.getParameter("orderBy") != null ? Integer.parseInt(request.getParameter("orderBy")) : 0;
+        filters.put("order_by", orderField[orderBy]);
+        int orderMode = request.getParameter("orderMode") != null ? Integer.parseInt(request.getParameter("orderMode")) : 0;
+        filters.put("order_mode", orderType[orderMode]);       
+        request.setAttribute("orderBy", orderBy);
+        request.setAttribute("orderMode", orderMode);
         TemplateResult res = new TemplateResult(getServletContext());
         try {
-//            List<Publication> publications = getDataLayer().getPublications(orderBy);
-//            request.setAttribute("publications", publications);
+            if(request.getAttribute("publications") == null){
+                List<Publication> publications = getDataLayer().getPublicationsByFilters(filters);
+                request.setAttribute("publications", publications);
+            }
             res.activate("catalog.ftl.html", request, response);
-        } catch (ServletException ex) {
+        } catch (ServletException | DataLayerException ex) {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage());
         }
     }
@@ -50,7 +58,7 @@ public class PublicationsList extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            request.setAttribute("page_title", "Ricerca avanzata");
+            request.setAttribute("page_title", "Catalogo");
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
