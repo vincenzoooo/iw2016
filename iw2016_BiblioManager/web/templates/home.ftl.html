@@ -37,6 +37,7 @@
                         </#if>
                     </div>
                 </div>
+
                 <div class="section section-homePage-lastInsertPub">
                     <div id="last-update">
                         <h1 class="center">Ultime pubblicazioni modificate</h1>
@@ -63,9 +64,12 @@
                             </div>
                             </#list>
                         </div>
+                        <#else>
+                        <span class="bold">Nessuna pubblicazione modificta di recente.</span>
                         </#if>
                     </div>
                 </div>
+
             </div>
             <div class="col-lg-offset-1 col-lg-3 search-box columnHome" id="searchBox">
                 <div class="section section-homePage-research">
@@ -132,6 +136,31 @@
             Probabilmente la sessione &egrave; scaduta oppure stai cercando di accedere ad una pagina riservata.. effettua di nuovo il login per accedere ai contenuti
             <button><a href="login">Login</a></button>
             <button><a href="home">Chiudi</a></button>
+        </div>
+        </#if>
+        
+        <#if passiveUser??>
+        <div class="confirm">
+            Registrati al sito per visualizzare gli altri contenuti o effettua il login
+            <div class="margintop10">
+            <a href="login">Login</a>
+            <a href="registration">Registrati</a>
+            <a href="status">Chiudi</a>
+            </div>
+        </div>
+        <div class="oscure">
+    
+        </div>
+        </#if>
+        <#if sesExp??>
+        <div class="confirm confirmbig">
+            Probabilmente la sessione &egrave; scaduta oppure stai cercando di accedere ad una pagina riservata.. effettua di nuovo il login per accedere ai contenuti
+            <button><a href="login">Login</a></button>
+            <button><a href="status">Chiudi</a></button>
+
+        </div>
+        <div class="oscure">
+
         </div>
         </#if>
     </div>
