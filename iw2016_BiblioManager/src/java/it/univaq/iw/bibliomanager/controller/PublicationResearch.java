@@ -71,6 +71,7 @@ public class PublicationResearch extends BiblioManagerBaseController {
             }
             filters.put("order_by", "titolo");
             request.setAttribute("publications", getDataLayer().getPublicationsByFilters(filters));
+            request.setAttribute("isResearch", 1);
             getServletContext().getRequestDispatcher("/catalog").forward(request, response);
         }
         catch (DataLayerException ex) {
