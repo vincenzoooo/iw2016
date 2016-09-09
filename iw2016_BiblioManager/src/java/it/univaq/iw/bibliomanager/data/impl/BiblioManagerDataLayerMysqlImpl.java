@@ -674,6 +674,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 if(entry.getKey().equals("publicationYearEnd") && entry.getValue() != null){
                     query += " AND p.data_pubblicazione < '"+entry.getValue()+"' ";
                 }
+                if(entry.getKey().equals("download") && entry.getValue() != null){
+                    query += " AND sr.tipo = '"+entry.getValue()+"' ";
+                }
                 if(entry.getKey().equals("publicationUser") && entry.getValue() != null){
                     query += " AND CONCAT(u.nome, ' ',u.cognome) LIKE '%"+entry.getValue()+"%' ";
                 }

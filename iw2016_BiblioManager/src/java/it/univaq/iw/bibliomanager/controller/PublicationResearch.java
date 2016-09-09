@@ -31,23 +31,23 @@ public class PublicationResearch extends BiblioManagerBaseController {
         try {
             Map<String, String> filters = new HashMap<String, String>();
             String isbn = request.getParameter("publicationIsbn");
-            if (isbn != null) {
+            if (!Utils.isNullOrEmpty(isbn)) {
                 filters.put("publicationIsbn", isbn);
             }
             String title = request.getParameter("publicationTitle");
-            if (title != null) {
+            if (!Utils.isNullOrEmpty(title)) {
                 filters.put("publicationTitle", title);
             }
             String authorName = request.getParameter("publicationAuthor");
-            if (authorName != null) {
+            if (!Utils.isNullOrEmpty(authorName)) {
                 filters.put("publicationAuthor", authorName);
             }
             String editorName = request.getParameter("publicationEditor");
-            if (authorName != null) {
+            if (!Utils.isNullOrEmpty(authorName)) {
                 filters.put("publicationEditor", editorName);
             }
             String date = request.getParameter("publicationYear");
-            if (date != null && !date.isEmpty()) {
+            if (!Utils.isNullOrEmpty(date)) {
                 filters.put("publicationYear", date);
                 String end = String.valueOf(Integer.parseInt(Utils.getArrayParameter(filters, "publicationYear")) + 1);
                 filters.put("publicationYearEnd", end);
@@ -58,18 +58,22 @@ public class PublicationResearch extends BiblioManagerBaseController {
                 filters.put("publicationYearEnd", String.valueOf(year+1));
             }
             String keyword = request.getParameter("publicationKeyword");
-            if (keyword != null) {
+            if (!Utils.isNullOrEmpty(keyword)) {
                 filters.put("publicationKeyword", keyword);
             }
             String language = request.getParameter("publicationLanguage");
-            if (language != null) {
+            if (!Utils.isNullOrEmpty(language)) {
                 filters.put("publicationLanguage", language);
             }
-            String user = request.getAttribute("publicationUser").toString();
-            if(user != null){
-                filters.put("publicationUser", user);
+            String download = request.getParameter("download");
+            if (!Utils.isNullOrEmpty(download)) {
+                filters.put("download", "download");
+            }
+            if(request.getAttribute("publicationUser") != null){
+                filters.put("publicationUser", request.getAttribute("publicationUser").toString());
             }
             filters.put("order_by", "titolo");
+            filters.put("order_mode", "ASC");
             request.setAttribute("publications", getDataLayer().getPublicationsByFilters(filters));
             request.setAttribute("isResearch", 1);
             getServletContext().getRequestDispatcher("/catalog").forward(request, response);
@@ -112,7 +116,7 @@ public class PublicationResearch extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (Exception ex) {
-            action_error(request, response, "OPS");
+            action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 
