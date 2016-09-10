@@ -644,6 +644,8 @@ header .navbar-header-menu {
 .navbar{
     border-style: none;
     border-radius: 0px; 
+    -webkit-border-radius: 0px;
+    -moz-border-radius:    0px;
     position: fixed; 
     top: 80px; 
     width: 100%; 
@@ -848,7 +850,6 @@ header .navbar-header-menu {
 }
 
 .thumbnail img{
-    border: 1px solid white;
     margin: 0 5px 5px 0;
 }
 
@@ -856,16 +857,15 @@ header .navbar-header-menu {
     background-color: transparent;
 }
 
-.thumbnail:hover img{
-    border: 1px solid blue;
-}
-
 .thumbnail span{ /*CSS for enlarged image*/
     position: absolute;
     background-color: lightyellow;
     padding: 5px;
     left: -1000px;
-    border: 1px dashed gray;
+    border: 1px solid gray;
+    -webkit-border-radius: 4px;
+    -moz-border-radius:    4px;
+    border-radius: 4px;
     visibility: hidden;
     color: black;
     text-decoration: none;
@@ -879,7 +879,7 @@ header .navbar-header-menu {
 .thumbnail:hover span{ /*CSS for enlarged image*/
     visibility: visible;
     top: 0;
-    left: 230px; /*position where enlarged image should offset horizontally */
+    left: 195px; /*position where enlarged image should offset horizontally */
     z-index: 50;
 }
 
@@ -907,7 +907,7 @@ figcaption {
 figure:hover figcaption {
     opacity: 0.7;
 }
-figure:before {
+figure.imgHome:before {
     content: "i";
     position: absolute;
     font-weight: 800;
@@ -1025,16 +1025,18 @@ footer{
 /*end google recaptcha group*/
 
 #contact-gmap {
-	height:500px;
-	margin:10px 0;
+    height:500px;
+    margin:10px 0;
 }
 
 /*CUSTOM BS*/
 
 .btn-custom {
-	border-radius:0px!important;
-	background-color:#B3A06C;
-	border-color:#B3A06C;
+    border-radius:0px!important;
+    -webkit-border-radius: 0px!important;
+    -moz-border-radius:    0px!important;
+    background-color:#B3A06C;
+    border-color:#B3A06C;
 	
 }
 

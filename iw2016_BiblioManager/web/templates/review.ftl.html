@@ -9,67 +9,68 @@
         </div>
 
         <div class="section section-pageReview-listReview"> 
-            <div class="row">
-                <div class="col-lg-12">
-                    <div id="listReviews">
-                    <#if (reviews??) && (reviews?size>0)>
-                        <#list reviews as item>
-                        <#if item.status>
-                        <div class="review approvedReview">
-                            <div class="">
-                                <div class="">
-                                    <span class="bold">
-                                        <a href="profile?userId=${item.key}"> ${strip_slashes(item.author.name)?html} ${strip_slashes(item.author.surname)?html}</a>
-                                    </span> &nbsp;${item.reviewDate}
-                                </div>
-                                <div class="">
-                                    <div>${strip_slashes(item.text)?html}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <#else>
-                        <div class="review notApprovedReview">
-                            <div class="fourteen columns">
+            <div class="listReviews">
+                <div class="row">
+                    <div class="col-lg-12">
+                        <#if (reviews??) && (reviews?size>0)>
+                            <#list reviews as item>
+                            <#if item.status>
+                            <div class="review approvedReview margin-bot-20">
                                 <div class="row">
-                                    <span class="bold">
-                                        <a href="profile?userId=${item.key}"> ${strip_slashes(item.author.name)?html} ${strip_slashes(item.author.surname)?html}</a>
-                                    </span> &nbsp;${item.reviewDate} <span>- Da moderare</span>
-                                </div>
-                                <div class="">
-                                    <div>${strip_slashes(item.text)?html}</div>                  
-                                </div>
-                                <#if item.author.key != me.key>
-                                    <div class="center">
-                                        <a class="approveReview btn btn-default" href="review?r=1&reviewId=${item.key}&publicationId=${item.publicationKey}">Approva</a>
-                                        <a class="deleteReview btn btn-default" href="review?r=0&reviewId=${item.key}&publicationId=${item.publicationKey}">Elimina</a>
+                                    <div class="col-lg-12">
+                                        <span class="bold">
+                                            <a href="profile?userId=${item.key}"> ${strip_slashes(item.author.name)?html} ${strip_slashes(item.author.surname)?html}</a>
+                                        </span> &nbsp;${item.reviewDate}
+                                        <div>${strip_slashes(item.text)?html}</div>
                                     </div>
-                                </#if>
                                 </div>
                             </div>
+                            <#else>
+                                <#if me.state<2 >
+                            <div class="review notApprovedReview margin-bot-20">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <span class="bold">
+                                            <a href="profile?userId=${item.key}"> ${strip_slashes(item.author.name)?html} ${strip_slashes(item.author.surname)?html}</a>
+                                        </span> &nbsp;${item.reviewDate} 
+                                        <span>- Da moderare</span>
+                                        <div>${strip_slashes(item.text)?html}</div>                  
+                                        <#if item.author.key != me.key>
+                                            <div class="">
+                                                <a title="Approva" class="approveReview btn btn-default" href="review?r=1&reviewId=${item.key}&publicationId=${item.publicationKey}"><i class="fa fa-check green" aria-hidden="true"></i></a>
+                                                <a title="Elimina"class="deleteReview btn btn-default" href="review?r=0&reviewId=${item.key}&publicationId=${item.publicationKey}"><i class="fa fa-times dred" aria-hidden="true"></i></a>
+                                            </div>
+                                        </#if>
+                                    </div>
+                                </div>
+                                </div>
+
+                                 <#else>
+                                    <div>Non ci sono ancora recensioni approvate</div>
+                                </#if>
+                                 </#if>
+                            </#list>
+
+                        </#if>
+                        <!--
+                        <#if (totpages?? && totpages>1)>
+                        <div class="row pageBar">Vai alla pagina:         
+                            <span id="paging">
+                                <#list 1..totpages as page>
+                                <#if (page == curpage)>
+                                <span class="pagerCurrent">${page}</span>
+                                <#else>
+                                <a class="pagerLink" href="?page=${page}">${page}</a>
+                                </#if>       
+                                </#list>
+                            </span>
                         </div>
                         </#if>
-                        </#list>
-                    <#else>
-                    <div>Non ci sono ancora recensioni approvate</div>
-                    </#if>
-                    <!--
-                    <#if (totpages?? && totpages>1)>
-                    <div class="row pageBar">Vai alla pagina:         
-                        <span id="paging">
-                            <#list 1..totpages as page>
-                            <#if (page == curpage)>
-                            <span class="pagerCurrent">${page}</span>
-                            <#else>
-                            <a class="pagerLink" href="?page=${page}">${page}</a>
-                            </#if>       
-                            </#list>
-                        </span>
+                        -->
+                        <a href="details?publicationId=${publicationId}" class="btn btn-default">Torna alla scheda bibliografica</a>
                     </div>
-                    </#if>
-                    -->
-                    <a href="details?publicationId = ${publicationId}">Torna alla scheda bibliografica</a>
-                </div>
             </div>  
         </div>
     </div>
-</div>
+    </div></div>
+
