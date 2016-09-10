@@ -1,51 +1,47 @@
-<!--
-University of L'Aquila 2015/2016
-BiblioManager project
-Authors: Vincenzo Lanzieri, Angelo Iezzi
-Professor: Giuseppe Della Penna
--->
-<!-- 
-<form method="post" action="signin">
-    <input type="text" name="username" value=""/>
-    <input type="submit" value="sign-in"/>
-</form>
--->
 <div class="container">
-    <div class="row">
-        <div class="col-lg-6">
-                <span class="login">Login</span>
-                <a href="registration" class="registrati">registrati</a>
-        </div>
-    </div> 
-    
-    <div class="row">
-        <div class="col-lg-12">
-            <form method="post" action="login" class="form-horizontal">
-              <div class="form-group">
-                <label for="inputEmail" class="col-sm-2 control-label bold">Email</label>
-                <div class="col-sm-10">
-                  <input class="form-control" name="email" type="email" value="${username!''?html}" placeholder="Inserisci indirizzo email" required="required" />
+    <div class="pageLogin">
+        <div class="section section-pageLogin-title"> 
+            <div class="row">
+                <div class="col-lg-12">
+                    <h1 class="center">
+                        <span class="login">Login&nbsp;</span>o&nbsp;
+                        <a href="registration" class="registrati">Registrati</a>
+                    </h1>
                 </div>
-              </div>
-              <div class="form-group">
-                <label for="inputPassword" class="col-sm-2 control-label bold">Password</label>
-                <div class="col-sm-10">
-                  <input class="form-control" name="password" type="password" value="${password!''?html}"  placeholder="Inserisci password" required="required"/>
-                </div>
-              </div>
-              <div class="form-group">
-                <div class="col-sm-offset-2 col-sm-10">
-                    <span>
-                        <input type="submit" value="sign-in" name="submitLogin" class="btn btn-default">
-                    </span>
-                </div>
-              </div>
-            </form>
-            <#if errorLogin??>
-            <div class="error">
-                ${errorLogin?html}
             </div>
-            </#if>
+        </div>
+        
+        <div class="section section-pageLogin-action">     
+            <div class="row">
+                <div class="col-lg-12">
+                    <form method="post" action="login" class="form-horizontal">
+                      <div class="form-group">
+                        <label for="inputEmail" class="col-sm-2 control-label bold">Email</label>
+                        <div class="col-sm-10">
+                          <input class="form-control" name="email" type="email" value="${username!''?html}" placeholder="Inserisci indirizzo email" required="required" />
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <label for="inputPassword" class="col-sm-2 control-label bold">Password</label>
+                        <div class="col-sm-10">
+                          <input class="form-control" name="password" type="password" value="${password!''?html}"  placeholder="Inserisci password" required="required"/>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-10">
+                            <span>
+                                <input type="submit" value="sign-in" name="submitLogin" class="btn btn-default">
+                            </span>
+                        </div>
+                      </div>
+                    </form>
+                    <#if errorLogin??>
+                    <div class="error">
+                        ${errorLogin?html}
+                    </div>
+                    </#if>
+                </div>
+            </div>
         </div>
     </div>
 </div>

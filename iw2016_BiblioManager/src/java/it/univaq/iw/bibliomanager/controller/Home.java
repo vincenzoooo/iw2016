@@ -63,6 +63,7 @@ public class Home extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
+            request.setAttribute("script", "script/ramdombox.js");
             List<Publication> publicationsInsert = getDataLayer().getLastInsertedPublication();
             List<Publication> publicationsUpdate = getDataLayer().getLastModifiedPublication();
             List<User> activeUsers = getDataLayer().getMoreActiveUsers();

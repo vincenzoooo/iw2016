@@ -21,6 +21,7 @@ Professor: Giuseppe Della Penna
  *  4. - Catalog
  *  4. - Community
  *  4. - Details Publication
+ *  4. - Home
  * 5.0 - Section
  *  - Footer
  *  - Other
@@ -169,7 +170,7 @@ Professor: Giuseppe Della Penna
 }
 
 body {
-    background-color: #EFE5D3; 
+    /**background-color: #EFE5D3;*/ 
 }
 
 
@@ -744,22 +745,7 @@ header .navbar-header-menu {
    margin: 10px;
 }
 
-.caption{
-    border-bottom-right-radius:5px;
-    /**
-    position:absolute;
-    bottom:0px;
-     */
-    background-color: black;
-    padding-top:20px;
-    padding-bottom:20px;
-    height:40px;
-    opacity: 0.7;
-    width:100%;
-    color:white;
-    overflow:hidden;
-    text-overflow: ellipsis;    
-}
+
 
 
 /**
@@ -855,6 +841,36 @@ header .navbar-header-menu {
 .chapter-title{
     font-weight: bold;
 }
+
+
+/**
+ * 4. Home
+ * -----------------------------------------------------------------------------
+ */
+.caption{
+    border-bottom-right-radius:5px;
+    background-color: black;
+    padding-top:15px;
+    padding-bottom:15px;
+    padding-left: 10px;
+    height:40px;
+    opacity: 0.7;
+    width:100%;
+    color:white;
+    overflow:hidden;
+    text-overflow: ellipsis;    
+}
+
+.thebox-content{
+    margin-top: -50px;
+    height: 50px;
+}
+
+.thebox-content:hover{
+    margin-top: -100px;
+    height: 100px;
+}
+
 
 
 /**
