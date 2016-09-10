@@ -116,10 +116,11 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sAuthorByPublication = connection.prepareStatement("SELECT * FROM iw2016.autore JOIN autore_has_pubblicazione ON idautore = autore_idautore WHERE pubblicazione_idpubblicazione = ?");
             this.uAuthor = connection.prepareStatement("UPDATE iw2016.autore SET nome = ?, cognome = ? WHERE idautore = ?");
             this.iAuthor = connection.prepareStatement("INSERT INTO iw2016.autore (nome, cognome) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-            this.sReviewsByPublication = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ? AND moderata = 1");
+            this.sReviewsByPublication = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ? ORDER BY data_recensione");
             this.sReviewById = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE idrecensione = ?");
-            this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET testo = ?, moderata = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
-            this.iReview = connection.prepareStatement("INSERT INTO iw2016.recensione (testo, moderata, utente_autore, pubblicazione, storico) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET testo = ?, moderata = ?, data_recensione = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
+            this.iReview = connection.prepareStatement("INSERT INTO iw2016.recensione (testo, moderata, data_recensione, utente_autore, pubblicazione) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.dReview = connection.prepareStatement("DELETE FROM iw2016.recensione WHERE idrecensione = ?");
             this.sKeywords = connection.prepareStatement("SELECT * FROM iw2016.keyword ORDER BY nome");
             this.sKeywordById = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE idkeyword = ?");
             this.sKeywordsByPublication = connection.prepareStatement("SELECT * FROM iw2016.keyword JOIN pubblicazione_has_keyword ON idkeyword = keyword_idkeyword WHERE pubblicazione_idpubblicazione = ?");
@@ -207,7 +208,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             publication.setLike(rs.getInt("n_consigli"));
             publication.setIsbn(rs.getString("isbn"));
             publication.setLanguage(rs.getString("lingua"));
-            publication.setPublicationDate(rs.getDate("data_pubblicazione"));
+            publication.setPublicationDate(rs.getTimestamp("data_pubblicazione"));
             publication.setPageNumber(rs.getInt("n_pagine"));
             publication.setEditor(getEditor(rs.getInt("editore")));
             publication.setAuthor(getPublicationAuthors(rs.getInt("idpubblicazione")));
@@ -233,8 +234,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             review.setKey(rs.getInt("idrecensione"));
             review.setText(rs.getString("testo"));
             review.setStatus(rs.getBoolean("moderata"));
+            review.setReviewDate(rs.getTimestamp("data_recensione"));
             review.setAuthor(getUser(rs.getInt("utente_autore")));
-            review.setPublication(getPublication(rs.getInt("pubblicazione")));
+            review.setPublicationKey(rs.getInt("pubblicazione"));
             review.setHistory(getHistory(rs.getInt("storico")));
             return review;
         } catch (SQLException ex) {
@@ -290,7 +292,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             history.setKey(rs.getInt("idstorico"));
             history.setEntry(rs.getString("entry"));
             history.setType(rs.getInt("tipo"));
-            history.setDate(rs.getDate("data_operazione"));
+            history.setDate(rs.getTimestamp("data_operazione"));
             history.setPublication(getPublication(rs.getInt("pubblicazione")));
             history.setUser(getUser(rs.getInt("utente")));
             return history;
@@ -862,7 +864,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             sReviewsByPublication.setInt(1, publication_key);
             rs = sReviewsByPublication.executeQuery();
             while (rs.next()) {
-                result.add(getReview(rs.getInt("pubblicazione")));
+                result.add(getReview(rs.getInt("idrecensione")));
             }
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to load review of publication", ex);
@@ -1487,7 +1489,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uPublication.setString(5, publication.getIsbn());
                 uPublication.setInt(6, publication.getPageNumber());
                 uPublication.setString(7, publication.getLanguage());
-                uPublication.setDate(8, publication.getPublicationDate());
+                uPublication.setTimestamp(8, publication.getPublicationDate());
                 uPublication.setBoolean(9, publication.getIncomplete());
                 uPublication.setInt(10, key);
 
@@ -1500,7 +1502,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 iPublication.setString(5, publication.getIsbn());
                 iPublication.setInt(6, publication.getPageNumber());
                 iPublication.setString(7, publication.getLanguage());
-                iPublication.setDate(8, publication.getPublicationDate());
+                iPublication.setTimestamp(8, publication.getPublicationDate());
                 iPublication.setBoolean(9, publication.getIncomplete());
 
                 if (iPublication.executeUpdate() == 1) {
@@ -1544,19 +1546,20 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                }
                 uReview.setString(1, review.getText());
                 uReview.setBoolean(2, review.getStatus());
-                uReview.setInt(3, review.getAuthor().getKey());
-                uReview.setInt(4, review.getPublication().getKey());
-                uReview.setInt(5, review.getHistory().getKey());
-                uReview.setInt(6, key);
+                uReview.setTimestamp(3, review.getReviewDate());
+                uReview.setInt(4, review.getAuthor().getKey());
+                uReview.setInt(5, review.getPublicationKey());
+                uReview.setInt(6, review.getHistory().getKey());
+                uReview.setInt(7, key);
 
                 uReview.executeUpdate();
             } else { //insert
                 iReview.setString(1, review.getText());
                 iReview.setBoolean(2, review.getStatus());
-                iReview.setInt(3, review.getAuthor().getKey());
-                iReview.setInt(4, review.getPublication().getKey());
-                iReview.setInt(5, review.getHistory().getKey());
-
+                iReview.setTimestamp(3, review.getReviewDate());
+                iReview.setInt(4, review.getAuthor().getKey());
+                iReview.setInt(5, review.getPublicationKey());
+                
                 if (iReview.executeUpdate() == 1) {
                     keys = iReview.getGeneratedKeys();
                     if (keys.next()) {
@@ -1688,7 +1691,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                }
                 uHistory.setString(1, historia.getEntry());
                 uHistory.setInt(2, historia.getType());
-                uHistory.setDate(3, historia.getDate());
+                uHistory.setTimestamp(3, historia.getDate());
                 uHistory.setInt(4, historia.getPublication().getKey());
                 uHistory.setInt(5, historia.getUser().getKey());
                 uHistory.setInt(6, key);
@@ -1697,7 +1700,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             } else { //insert
                 iHistory.setString(1, historia.getEntry());
                 iHistory.setInt(2, historia.getType());
-                iHistory.setDate(3, historia.getDate());
+                iHistory.setTimestamp(3, historia.getDate());
                 iHistory.setInt(4, historia.getPublication().getKey());
                 iHistory.setInt(5, historia.getUser().getKey());
 
@@ -1987,7 +1990,22 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
     @Override
     public void deleteReview(Review review) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet res = null;
+        try {
+            dReview.setInt(1, review.getKey());
+            
+            dReview.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete review", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override

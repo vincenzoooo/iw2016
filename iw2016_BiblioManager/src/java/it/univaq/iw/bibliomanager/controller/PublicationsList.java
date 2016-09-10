@@ -21,22 +21,24 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class PublicationsList extends BiblioManagerBaseController {
+
     private final String[] orderField = new String[]{"titolo", "e.nome", "a.cognome", "data_pubblicazione", "n_consigli"};
     private final String[] orderType = new String[]{"ASC", "DESC"};
+
     private void action_list(HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map<String, String> filters = new HashMap<String, String>();
         int orderBy = request.getParameter("orderBy") != null ? Integer.parseInt(request.getParameter("orderBy")) : 0;
         filters.put("order_by", orderField[orderBy]);
         int orderMode = request.getParameter("orderMode") != null ? Integer.parseInt(request.getParameter("orderMode")) : 0;
-        filters.put("order_mode", orderType[orderMode]);       
+        filters.put("order_mode", orderType[orderMode]);
         request.setAttribute("orderBy", orderBy);
         request.setAttribute("orderMode", orderMode);
         TemplateResult res = new TemplateResult(getServletContext());
         try {
-            if(request.getAttribute("publications") == null){
+            if (request.getAttribute("publications") == null) {
                 List<Publication> publications = getDataLayer().getPublicationsByFilters(filters);
                 request.setAttribute("publications", publications);
             }
@@ -45,7 +47,7 @@ public class PublicationsList extends BiblioManagerBaseController {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage());
         }
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -66,7 +68,7 @@ public class PublicationsList extends BiblioManagerBaseController {
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
+        } catch (IOException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
     }

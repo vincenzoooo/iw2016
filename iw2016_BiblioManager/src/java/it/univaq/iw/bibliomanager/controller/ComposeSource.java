@@ -6,15 +6,12 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
-import it.univaq.iw.bibliomanager.data.model.Keyword;
 import it.univaq.iw.bibliomanager.data.model.Source;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -53,8 +50,7 @@ public class ComposeSource extends BiblioManagerBaseController {
 
     private void action_updateSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
-            Source source = null;
-            source = getDataLayer().getSource(Integer.parseInt(request.getParameter("sourceId")));
+            Source source = getDataLayer().getSource(Integer.parseInt(request.getParameter("sourceId")));
             Map<String, String> params = new HashMap<String, String>();
             params.put("sourceType", Utils.checkString(request.getParameter("sourceType")));
             params.put("sourceUri", Utils.checkString(request.getParameter("sourceUri")));
@@ -71,7 +67,7 @@ public class ComposeSource extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage());
         }
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -108,7 +104,7 @@ public class ComposeSource extends BiblioManagerBaseController {
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
+        } catch (DataLayerException | IOException | ServletException ex) {
             action_error(request, response, "Errore: " + ex.getMessage());
         }
     }
@@ -122,7 +118,5 @@ public class ComposeSource extends BiblioManagerBaseController {
     public String getServletInfo() {
         return "Short description";
     }
-
-    
 
 }

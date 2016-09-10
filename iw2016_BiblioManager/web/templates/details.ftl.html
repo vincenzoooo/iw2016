@@ -253,7 +253,7 @@
                         </div>
                         </#if>
                     </div>
-                    <form id="formAddReview" method="post" action="details">
+                    <form id="formAddReview" method="post" action="review">
                         <div class="form-group margin-top-5">
                             <label for="comment">Aggiungine una:</label>
                             <textarea class="form-control" id="textReview" name="textReview" rows="5" placeholder="Scrivi una Recensione"></textarea>
@@ -272,7 +272,7 @@
                             <#if (publication.reviews?? && publication.reviews?size>0)>
                             <a href="catalog" class="btn btn-default" name="submitReview">Vedi tutte le recensioni</a>
                             </#if>
-                            <a href="review" class="btn btn-default" name="submitReview">Vedi tutte le recensioni</a>
+                            <a href="review?publicationId=${publication.key}" class="btn btn-default" name="submitReview">Vedi tutte le recensioni</a>
                         </div>
                     </form> 
                 </div>

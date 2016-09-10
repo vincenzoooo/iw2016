@@ -10,7 +10,6 @@ import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.Source;
-import java.util.List;
 
 /**
  *
@@ -87,7 +86,7 @@ public class SourceImpl implements Source {
     public void setDescription(String description) {
         this.description = description;
     }
-    
+
     @Override
     public Publication getPublication() throws DataLayerException {
         if (publication == null && publication_key > 0) {

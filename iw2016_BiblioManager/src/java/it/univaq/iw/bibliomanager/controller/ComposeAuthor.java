@@ -11,6 +11,7 @@ import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -29,12 +30,11 @@ public class ComposeAuthor extends BiblioManagerBaseController {
 
     private void action_composeAuthor(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Author author = null;
+            Author author = getDataLayer().createAuthor();
             Map<String, String> params = new HashMap<String, String>();
             params.put("authorName", Utils.checkString(request.getParameter("authorName")));
             params.put("authorSurname", Utils.checkString(request.getParameter("authorSurname")));
             if (!validator(params, request, response)) {
-                author = getDataLayer().createAuthor();
                 author.setName(params.get("authorName"));
                 author.setSurname(params.get("authorSurname"));
                 getDataLayer().storeAuthor(author);
@@ -46,8 +46,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
 
     private void action_updateAuthor(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Author author = null;
-            author = getDataLayer().getAuthor(Integer.parseInt(request.getParameter("authorId")));
+            Author author = getDataLayer().getAuthor(Integer.parseInt(request.getParameter("authorId")));
             Map<String, String> params = new HashMap<String, String>();
             params.put("authorName", Utils.checkString(request.getParameter("authorName")));
             params.put("authorSurname", Utils.checkString(request.getParameter("authorSurname")));
@@ -62,15 +61,16 @@ public class ComposeAuthor extends BiblioManagerBaseController {
         }
     }
 
-    private void action_LinkAuthor(HttpServletRequest request, HttpServletResponse response) 
+    private void action_LinkAuthor(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
         int pubId = (int) SecurityLayer.checkSession(request).getAttribute("publicationId");
         List<String> values = new ArrayList<String>(Arrays.asList(request.getParameterValues("authorSelected")));
         getDataLayer().deletePublicationHasAuthor(pubId);
-        for(String value : values){
+        for (String value : values) {
             getDataLayer().storePublicationHasAuthor(Integer.parseInt(value), pubId);
         }
     }
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -100,7 +100,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                     action_updateAuthor(request, response);
                     request.removeAttribute("authorId");
                 }
-                if(request.getParameter("linkAuthor") != null){
+                if (request.getParameter("linkAuthor") != null) {
                     action_LinkAuthor(request, response);
                 }
                 List<Author> authors = getDataLayer().getAuthors();
@@ -108,12 +108,12 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                 request.setAttribute("authors", authors);
                 request.setAttribute("publicationAuthors", publicationAuthors);
                 res.activate("author.ftl.html", request, response);
-                
+
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
-            action_error(request, response, "OPS" + ex.getMessage());
+        } catch (DataLayerException | IOException | ServletException ex) {
+            action_error(request, response, "Error: " + ex.getMessage());
         }
 
     }

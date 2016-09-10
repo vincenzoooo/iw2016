@@ -29,7 +29,7 @@ import it.univaq.iw.bibliomanager.data.model.Keyword;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class UpdatePublication extends BiblioManagerBaseController {
 
@@ -67,7 +67,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
         history.setType(1);
         history.setUser(user);
         history.setPublication((Publication) request.getAttribute("publication"));
-        history.setDate(new java.sql.Date(System.currentTimeMillis()));
+        history.setDate(new java.sql.Timestamp(System.currentTimeMillis()));
         getDataLayer().storeHistory(history);
     }
 
@@ -100,7 +100,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
+        } catch (DataLayerException | IOException | NumberFormatException | ServletException ex) {
             action_error(request, response, "OPS");
         }
     }

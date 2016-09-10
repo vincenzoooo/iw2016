@@ -8,9 +8,7 @@ package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.framework.data.DataLayerException;
-import java.util.List;
 import it.univaq.iw.bibliomanager.data.model.Author;
-import it.univaq.iw.bibliomanager.data.model.Publication;
 
 /**
  *

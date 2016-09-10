@@ -24,7 +24,7 @@ import java.util.List;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class Profile extends BiblioManagerBaseController {
 
@@ -120,7 +120,7 @@ public class Profile extends BiblioManagerBaseController {
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
+        } catch (DataLayerException | IOException | NoSuchAlgorithmException | ServletException ex) {
             action_error(request, response, "OPS: " + ex.getMessage());
         }
     }

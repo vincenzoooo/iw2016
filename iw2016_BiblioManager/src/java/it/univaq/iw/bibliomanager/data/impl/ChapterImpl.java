@@ -16,15 +16,16 @@ import java.util.List;
  *
  * @author Vincenzo Lanzieri
  */
-public class ChapterImpl implements Chapter{
+public class ChapterImpl implements Chapter {
+
     private int key;
     private int number;
     private String title;
     private int publication_key;
     private List<Section> sections;
     protected BiblioManagerDataLayer ownerDataLayer;
-    
-    public ChapterImpl(BiblioManagerDataLayer ownerDataLayer){
+
+    public ChapterImpl(BiblioManagerDataLayer ownerDataLayer) {
         this.ownerDataLayer = ownerDataLayer;
         this.key = 0;
         this.number = 0;
@@ -52,7 +53,7 @@ public class ChapterImpl implements Chapter{
     public void setNumber(int number) {
         this.number = number;
     }
-    
+
     @Override
     public String getTitle() {
         return title;
@@ -82,7 +83,7 @@ public class ChapterImpl implements Chapter{
     public void setSections(List<Section> sections) {
         this.sections = sections;
     }
-    
+
     @Override
     public void copyFrom(Chapter chapter) throws DataLayerException {
         key = chapter.getKey();

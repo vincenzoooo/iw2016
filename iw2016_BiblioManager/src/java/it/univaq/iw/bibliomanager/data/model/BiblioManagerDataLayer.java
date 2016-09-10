@@ -34,9 +34,9 @@ public interface BiblioManagerDataLayer extends DataLayer {
     History createHistory();
 
     User createUser();
-    
+
     Chapter createChapter();
-    
+
     Section createSection();
 
     Author getAuthor(int author_key) throws DataLayerException;
@@ -60,7 +60,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Keyword> getPublicationKeywords(int publication_key) throws DataLayerException;
 
     Publication getPublication(int publication_key) throws DataLayerException;
-    
+
     Publication getPublicationByISBN(String isbn) throws DataLayerException;
 
     List<Publication> getPublications() throws DataLayerException;
@@ -98,23 +98,23 @@ public interface BiblioManagerDataLayer extends DataLayer {
     User getUser(String email) throws DataLayerException;
 
     User getUser(String email, String password) throws DataLayerException;
-    
+
     User getUserAdministrator() throws DataLayerException;
 
     List<User> getUsers(String filter) throws DataLayerException;
-    
+
     List<User> getUsersActive(String filter) throws DataLayerException;
-    
+
     List<User> getUsersPassive(String filter) throws DataLayerException;
 
     List<User> getMoreActiveUsers() throws DataLayerException;
-    
+
     Chapter getChapter(int chapter_key) throws DataLayerException;
-    
+
     Section getSection(int section_key) throws DataLayerException;
-    
+
     List<Chapter> getChapters(int publication_key) throws DataLayerException;
-    
+
     List<Section> getSections(int chapter_key) throws DataLayerException;
 
     void storeAuthor(Author author) throws DataLayerException;
@@ -134,11 +134,11 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeHistory(History historia) throws DataLayerException;
 
     void storeUser(User user) throws DataLayerException;
-    
+
     void storeChapter(Chapter chapter) throws DataLayerException;
-    
+
     void storeSection(Section section) throws DataLayerException;
-    
+
     void deleteAuthor(Author author) throws DataLayerException;
 
     void deleteEditor(Editor editor) throws DataLayerException;
@@ -146,7 +146,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deleteKeyword(Keyword keyword) throws DataLayerException;
 
     void deletePublication(Publication publication) throws DataLayerException;
-    
+
     void deleteIncompletePublication(Publication publication) throws DataLayerException;
 
     void deleteReview(Review review) throws DataLayerException;
@@ -154,16 +154,16 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deleteReprint(Reprint reprint) throws DataLayerException;
 
     void deleteSource(Source source) throws DataLayerException;
-    
+
     void deleteChapter(Chapter chapter) throws DataLayerException;
-    
+
     void deleteSection(Section section) throws DataLayerException;
-    
+
     void storePublicationHasAuthor(int idAuthor, int idPublication) throws DataLayerException;
-    
+
     void deletePublicationHasAuthor(int idPublication) throws DataLayerException;
-    
+
     void storePublicationHasKeyword(int idKeyword, int idPublication) throws DataLayerException;
-    
+
     void deletePublicationHasKeyword(int idPublication) throws DataLayerException;
 }

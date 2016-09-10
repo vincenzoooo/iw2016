@@ -21,7 +21,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Angelo Iezzi
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class Home extends BiblioManagerBaseController {
 
@@ -31,14 +31,14 @@ public class Home extends BiblioManagerBaseController {
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("home.ftl.html", request, response);
     }
-    
+
     private void action_anonymous(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         HTMLResult result = new HTMLResult(getServletContext());
         request.setAttribute("page_title", "Homepage");
-        if(request.getParameter("passiveUser")!=null){
+        if (request.getParameter("passiveUser") != null) {
             request.setAttribute("passiveUser", "");
         }
-        if(request.getParameter("sesExp")!=null){
+        if (request.getParameter("sesExp") != null) {
             request.setAttribute("sesExp", "");
         }
         TemplateResult res = new TemplateResult(getServletContext());
@@ -76,7 +76,7 @@ public class Home extends BiblioManagerBaseController {
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
+        } catch (DataLayerException | IOException | ServletException ex) {
             action_error(request, response, "OPS: " + ex.getMessage());
         }
     }

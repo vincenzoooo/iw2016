@@ -14,13 +14,13 @@
                     <div id="listReviews">
                     <#if (reviews??) && (reviews?size>0)>
                         <#list reviews as item>
-                        <#if item.status==1>
+                        <#if item.status>
                         <div class="review approvedReview">
                             <div class="">
                                 <div class="">
                                     <span class="bold">
                                         <a href="profile?userId=${item.key}"> ${strip_slashes(item.author.name)?html} ${strip_slashes(item.author.surname)?html}</a>
-                                    </span> &nbsp;${item.date?datetime}
+                                    </span> &nbsp;${item.reviewDate}
                                 </div>
                                 <div class="">
                                     <div>${strip_slashes(item.text)?html}</div>
@@ -33,14 +33,17 @@
                                 <div class="row">
                                     <span class="bold">
                                         <a href="profile?userId=${item.key}"> ${strip_slashes(item.author.name)?html} ${strip_slashes(item.author.surname)?html}</a>
-                                    </span> &nbsp;${item.date?datetime}</div>
+                                    </span> &nbsp;${item.reviewDate} <span>- Da moderare</span>
+                                </div>
                                 <div class="">
                                     <div>${strip_slashes(item.text)?html}</div>                  
                                 </div>
-                                <div class="center">
-                                        <a class="approveReview btn btn-default" href="?approveReview&reviewId=${item.id}">Approva</a>
-                                        <a class="deleteReview btn btn-default" href="?deleteReview&reviewId=${item.id}">Elimina</a>
+                                <#if item.author.key != me.key>
+                                    <div class="center">
+                                        <a class="approveReview btn btn-default" href="review?r=1&reviewId=${item.key}&publicationId=${item.publicationKey}">Approva</a>
+                                        <a class="deleteReview btn btn-default" href="review?r=0&reviewId=${item.key}&publicationId=${item.publicationKey}">Elimina</a>
                                     </div>
+                                </#if>
                                 </div>
                             </div>
                         </div>
@@ -64,7 +67,7 @@
                     </div>
                     </#if>
                     -->
-                    <a href="details?publication_key">Torna alla scheda bibliografica</a>
+                    <a href="details?publicationId = ${publicationId}">Torna alla scheda bibliografica</a>
                 </div>
             </div>  
         </div>

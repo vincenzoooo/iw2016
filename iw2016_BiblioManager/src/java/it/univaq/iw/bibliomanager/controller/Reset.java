@@ -21,7 +21,7 @@ import it.univaq.iw.bibliomanager.data.model.User;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class Reset extends BiblioManagerBaseController {
 
@@ -73,7 +73,7 @@ public class Reset extends BiblioManagerBaseController {
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
+        } catch (DataLayerException | IOException | MessagingException | NoSuchAlgorithmException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
 

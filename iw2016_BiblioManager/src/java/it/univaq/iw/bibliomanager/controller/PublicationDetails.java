@@ -9,7 +9,6 @@ package it.univaq.iw.bibliomanager.controller;
 import it.univaq.iw.bibliomanager.data.model.History;
 import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.Review;
-import it.univaq.iw.bibliomanager.data.model.User;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
@@ -22,7 +21,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class PublicationDetails extends BiblioManagerBaseController {
 
@@ -31,8 +30,8 @@ public class PublicationDetails extends BiblioManagerBaseController {
         TemplateResult res = new TemplateResult(getServletContext());
         int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
         List<History> histories = getDataLayer().getHistoriesByPublication(publicationKey);
-        for(History entry : histories){
-            if(entry.getType() == 0){
+        for (History entry : histories) {
+            if (entry.getType() == 0) {
                 request.setAttribute("publisher", entry.getUser());
             }
         }
@@ -40,29 +39,14 @@ public class PublicationDetails extends BiblioManagerBaseController {
         Publication publication = getDataLayer().getPublication(publicationKey);
         this.action_viewReviews(request, response);
         request.setAttribute("publication", publication);
-        res.activate("details.ftl.html", request, response);//TODO: Definire pagina di dettaglio
+        res.activate("details.ftl.html", request, response);
     }
-    
-    //TODO: Gestione recensioni sia aggiunta che moderazione
-    private void action_addReview(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException{
-        HttpSession session = SecurityLayer.checkSession(request);
-        TemplateResult res = new TemplateResult(getServletContext());
-        //TODO: Check!!!!
-        User author = getDataLayer().getUser(Integer.parseInt(session.getAttribute("userId").toString()));
-        Publication publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("publicationId")));
-        Review review = getDataLayer().createReview();
-        review.setText(request.getParameter("reviewText"));
-        review.setAuthor(author);
-        review.setPublication(publication);
-        review.setHistory(null);
-        review.setStatus(Boolean.FALSE);
-        res.activate("details.ftl.html", request, response);//TODO: Definire pagina di dettaglio
-    }
-    
-    private void action_viewReviews(HttpServletRequest request, HttpServletResponse response) throws DataLayerException{
+
+    private void action_viewReviews(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         List<Review> reviews = getDataLayer().getReviews(Integer.parseInt(request.getParameter("publicationId")));
         request.setAttribute("reviews", reviews);
     }
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -79,15 +63,11 @@ public class PublicationDetails extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
-                if(request.getAttribute("submitReview") != null){
-                    action_addReview(request, response);
-                }
                 action_publication(request, response);
-            }
-            else {
+            } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
+        } catch (DataLayerException | IOException | NumberFormatException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
     }

@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class Logout extends BiblioManagerBaseController {
 
@@ -40,7 +40,7 @@ public class Logout extends BiblioManagerBaseController {
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
+        } catch (IOException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
     }

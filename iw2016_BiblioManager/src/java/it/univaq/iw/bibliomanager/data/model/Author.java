@@ -7,7 +7,6 @@
 package it.univaq.iw.bibliomanager.data.model;
 
 import it.univaq.iw.framework.data.DataLayerException;
-import java.util.List;
 
 /**
  *

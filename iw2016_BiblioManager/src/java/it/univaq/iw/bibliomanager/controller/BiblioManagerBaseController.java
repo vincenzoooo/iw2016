@@ -37,7 +37,7 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
             HttpSession s = SecurityLayer.checkSession(request);
             request.setAttribute("strip_slashes", new SplitSlashesFmkExt());
             //SecurityLayer.redirectToHttps(request, response);
-            
+
             //WARNING: never declare DB-related objects including references to Connection and Statement (as our data layer)
             //as class variables of a servlet. Since servlet instances are reused, concurrent requests may conflict on such
             //variables leading to unexpected results. To always have different connections and statements on a per-request
@@ -64,21 +64,21 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
             } catch (DataLayerException ex) {
                 Logger.getLogger(BiblioManagerBaseController.class.getName()).log(Level.SEVERE, null, ex);
             }
-            */
+             */
         }
     }
-    
-    protected void currentUser(HttpServletRequest request, HttpServletResponse response, HttpSession session){
+
+    protected void currentUser(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         try {
             int userId = (int) session.getAttribute("userId");
             int status = (int) session.getAttribute("userStatus");
             User user = getDataLayer().getUser(userId);
             request.setAttribute("me", user);
         } catch (DataLayerException ex) {
-          
+
         }
     }
-    
+
     protected void action_error(HttpServletRequest request, HttpServletResponse response, String message) {
         (new FailureResult(getServletContext())).activate(message, request, response);
     }
@@ -88,11 +88,12 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("login.ftl.html", request, response);
     }
-    
+
     protected void action_redirect(HttpServletRequest request, HttpServletResponse response, String url) throws ServletException, IOException {
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(url);
         dispatcher.forward(request, response);
     }
+
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = false;
         for (Map.Entry<String, String> entry : params.entrySet()) {

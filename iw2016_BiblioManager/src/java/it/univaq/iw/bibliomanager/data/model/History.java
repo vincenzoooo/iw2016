@@ -7,7 +7,7 @@
 package it.univaq.iw.bibliomanager.data.model;
 
 import it.univaq.iw.framework.data.DataLayerException;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -27,9 +27,9 @@ public interface History {
 
     void setType(int type);
 
-    Date getDate();
+    Timestamp getDate();
 
-    void setDate(Date date);
+    void setDate(Timestamp date);
 
     Publication getPublication() throws DataLayerException;
 

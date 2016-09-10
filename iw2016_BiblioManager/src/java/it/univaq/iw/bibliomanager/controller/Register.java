@@ -21,7 +21,7 @@ import java.util.Map;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class Register extends BiblioManagerBaseController {
 
@@ -44,9 +44,6 @@ public class Register extends BiblioManagerBaseController {
                 newUser.setPassword(params.get("password"));
                 newUser.setEmail(params.get("email"));
                 getDataLayer().storeUser(newUser);
-                //TODO: Controllare l'invio email
-                //String text = "Benvenuto su BiblioManager!";
-                //Utils.sendEmail(email, text);
                 action_redirect(request, response, "/home");
             } else {
                 request.setAttribute("name", params.get("name"));
@@ -55,8 +52,7 @@ public class Register extends BiblioManagerBaseController {
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
-        }
-        catch (NullPointerException ex){
+        } catch (NullPointerException ex) {
             action_error(request, response, "Something goes wrong");
         }
     }
@@ -114,7 +110,7 @@ public class Register extends BiblioManagerBaseController {
         }
         return error;
     }
-    
+
     @Override
     protected void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setAttribute("page_title", "Register");
@@ -139,7 +135,7 @@ public class Register extends BiblioManagerBaseController {
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
+        } catch (DataLayerException | IOException | MessagingException | NoSuchAlgorithmException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
 

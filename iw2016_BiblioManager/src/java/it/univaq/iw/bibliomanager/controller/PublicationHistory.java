@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class PublicationHistory extends BiblioManagerBaseController {
 
@@ -52,7 +52,7 @@ public class PublicationHistory extends BiblioManagerBaseController {
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
+        } catch (DataLayerException | IOException | ServletException ex) {
             action_error(request, response, "Error" + ex.getMessage());
         }
     }

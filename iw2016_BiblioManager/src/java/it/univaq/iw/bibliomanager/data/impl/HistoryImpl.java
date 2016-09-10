@@ -11,7 +11,7 @@ import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.History;
 import it.univaq.iw.bibliomanager.data.model.User;
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -22,7 +22,7 @@ public class HistoryImpl implements History {
     private int key;
     private String entry;
     private int type;
-    private Date date;
+    private Timestamp date;
     private int publication_key;
     private Publication publication;
     private int user_key;
@@ -72,12 +72,12 @@ public class HistoryImpl implements History {
     }
 
     @Override
-    public Date getDate() {
+    public Timestamp getDate() {
         return date;
     }
 
     @Override
-    public void setDate(Date date) {
+    public void setDate(Timestamp date) {
         this.date = date;
     }
 

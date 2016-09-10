@@ -7,7 +7,6 @@
 package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.bibliomanager.data.model.Reprint;
-import it.univaq.iw.bibliomanager.data.model.Source;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
@@ -18,7 +17,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -44,7 +42,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
                 java.util.Date date = format.parse(params.get("reprintDate"));
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 reprint.setDate(sqlDate);
-                reprint.setPublicationKey((int)session.getAttribute("publicationId"));
+                reprint.setPublicationKey((int) session.getAttribute("publicationId"));
                 getDataLayer().storeReprint(reprint);
             }
         } catch (NumberFormatException | ParseException | DataLayerException ex) {
@@ -53,9 +51,8 @@ public class ComposeReprint extends BiblioManagerBaseController {
     }
 
     private void action_updateReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
-        Reprint reprint = null;
         try {
-            reprint = getDataLayer().getReprint(Integer.parseInt("reprintId"));
+            Reprint reprint = getDataLayer().getReprint(Integer.parseInt("reprintId"));
             Map<String, String> params = new HashMap<String, String>();
             params.put("reprintNumber", Utils.checkString(request.getParameter("reprintNumber")));
             params.put("reprintDate", Utils.checkString(request.getParameter("reprintDate")));
@@ -71,7 +68,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare la ristampa:: " + ex.getMessage());
         }
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -107,7 +104,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
+        } catch (DataLayerException | IOException | NumberFormatException | ParseException | ServletException ex) {
             action_error(request, response, "Errore: " + ex.getMessage());
         }
 

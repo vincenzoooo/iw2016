@@ -7,7 +7,7 @@ package it.univaq.iw.bibliomanager.controller;
 
 /**
  *
- * @author Angelo Iezzi
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 import it.univaq.iw.framework.result.DataModelFiller;
 import java.util.ArrayList;
@@ -17,6 +17,7 @@ import java.util.Map;
 
 public class DataModelFillerImpl implements DataModelFiller {
 
+    @Override
     public void fillDataModel(Map datamodel) {
         List<Map> menuitems = new ArrayList();
         datamodel.put("menu", menuitems);

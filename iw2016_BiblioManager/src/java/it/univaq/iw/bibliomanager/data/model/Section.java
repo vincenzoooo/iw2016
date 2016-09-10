@@ -12,23 +12,24 @@ import it.univaq.iw.framework.data.DataLayerException;
  *
  * @author Vincenzo Lanzieri
  */
-public interface Section{
+public interface Section {
+
     int getKey();
 
     void setKey(int key);
 
     int getNumber();
-    
+
     void setNumber(int number);
-    
+
     String getTitle();
 
     void setTitle(String title);
 
     int getChapterKey();
-    
+
     void setChapterKey(int chapter_key);
-    
+
     //--
     void copyFrom(Section element) throws DataLayerException;
 }

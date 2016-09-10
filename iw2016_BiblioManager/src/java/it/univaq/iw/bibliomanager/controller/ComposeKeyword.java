@@ -11,6 +11,7 @@ import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -27,14 +28,13 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeKeyword extends BiblioManagerBaseController {
 
-    private void action_composeKeyword(HttpServletRequest request, HttpServletResponse response) 
+    private void action_composeKeyword(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
         try {
-            Keyword keyword = null;
+            Keyword keyword = getDataLayer().createKeyword();
             Map<String, String> params = new HashMap<String, String>();
             params.put("keyName", Utils.checkString(request.getParameter("keyName")));
             if (!validator(params, request, response)) {
-                keyword = getDataLayer().createKeyword();
                 keyword.setName(params.get("keyName"));
                 getDataLayer().storeKeyword(keyword);
             }
@@ -43,11 +43,10 @@ public class ComposeKeyword extends BiblioManagerBaseController {
         }
     }
 
-    private void action_updateKeyword(HttpServletRequest request, HttpServletResponse response) 
+    private void action_updateKeyword(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
         try {
-            Keyword keyword = null;
-            keyword = getDataLayer().getKeyword(Integer.parseInt(request.getParameter("keywordId")));
+            Keyword keyword = getDataLayer().getKeyword(Integer.parseInt(request.getParameter("keywordId")));
             Map<String, String> params = new HashMap<String, String>();
             params.put("keyName", Utils.checkString(request.getParameter("keyName")));
             if (!validator(params, request, response)) {
@@ -64,15 +63,11 @@ public class ComposeKeyword extends BiblioManagerBaseController {
         int pubId = (int) SecurityLayer.checkSession(request).getAttribute("publicationId");
         List<String> values = new ArrayList<String>(Arrays.asList(request.getParameterValues("keywordSelected")));
         getDataLayer().deletePublicationHasKeyword(pubId);
-        for(String value : values){
+        for (String value : values) {
             getDataLayer().storePublicationHasKeyword(Integer.parseInt(value), pubId);
         }
-        //SI PUO' CANCELLARE???
-//        String[] values = request.getParameterValues("keywordSelected");
-//        for(String value : values){
-//            getDataLayer().storePublicationHasKeyword(Integer.parseInt(value), pubId);
-//        }
     }
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -101,7 +96,7 @@ public class ComposeKeyword extends BiblioManagerBaseController {
                     action_updateKeyword(request, response);
                     request.removeAttribute("keywordId");
                 }
-                if(request.getParameter("linkKeyword") != null){
+                if (request.getParameter("linkKeyword") != null) {
                     action_LinkKeyword(request, response);
                 }
                 List<Keyword> keywords = getDataLayer().getKeywords();
@@ -109,12 +104,12 @@ public class ComposeKeyword extends BiblioManagerBaseController {
                 request.setAttribute("keywords", keywords);
                 request.setAttribute("publicationKeywords", publicationKeywords);
                 res.activate("keyword.ftl.html", request, response);
- 
+
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
-            action_error(request, response, "OPS" + ex.getMessage());
+        } catch (DataLayerException | IOException | ServletException ex) {
+            action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 

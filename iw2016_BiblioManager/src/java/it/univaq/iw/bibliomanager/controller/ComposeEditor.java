@@ -12,6 +12,7 @@ import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,18 +23,17 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class ComposeEditor extends BiblioManagerBaseController {
 
     private void action_composeEditor(HttpServletRequest request, HttpServletResponse response) {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
-            Editor editor = null;
+            Editor editor = getDataLayer().createEditor();
             Map<String, String> params = new HashMap<String, String>();
             params.put("editorName", Utils.checkString(request.getParameter("editorName")));
             if (!validator(params, request, response)) {
-                editor = getDataLayer().createEditor();
                 editor.setName(params.get("editorName"));
                 getDataLayer().storeEditor(editor);
                 Publication publication = getDataLayer().getPublication((int) session.getAttribute("publicationId"));
@@ -61,7 +61,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
         }
         return editor;
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -92,13 +92,13 @@ public class ComposeEditor extends BiblioManagerBaseController {
                 }
                 List<Editor> editors = getDataLayer().getEditors();
                 request.setAttribute("editors", editors);
-            
+
                 res.activate("editor.ftl.html", request, response);
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
-            action_error(request, response, "OPS" + ex.getMessage());
+        } catch (DataLayerException | IOException | ServletException ex) {
+            action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 }

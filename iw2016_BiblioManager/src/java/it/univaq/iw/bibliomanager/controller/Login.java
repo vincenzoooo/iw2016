@@ -19,7 +19,7 @@ import it.univaq.iw.bibliomanager.data.model.User;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class Login extends BiblioManagerBaseController {
 
@@ -87,7 +87,7 @@ public class Login extends BiblioManagerBaseController {
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
+        } catch (DataLayerException | IOException | NoSuchAlgorithmException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
 

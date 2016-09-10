@@ -19,14 +19,14 @@ import it.univaq.iw.bibliomanager.data.model.User;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class UserList extends BiblioManagerBaseController {
 
     private void action_list(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException, IOException, ServletException {
         String filter = "%";
-        if(request.getParameter("filter") != null){
+        if (request.getParameter("filter") != null) {
             filter = request.getParameter("filter") + "%";
         }
         User admin = getDataLayer().getUserAdministrator();
@@ -50,11 +50,11 @@ public class UserList extends BiblioManagerBaseController {
                     User user = getDataLayer().getUser(Integer.parseInt(request.getParameter("user")));
                     if (user.getState() == 2) {
                         user.setState(1);
-                        getDataLayer().storeUser(user); 
+                        getDataLayer().storeUser(user);
                     }
                 }
             }
-        } catch (Exception ex) {
+        } catch (DataLayerException | NumberFormatException ex) {
             throw new Exception("Non puoi promuovere questo utente", ex);
         }
     }
@@ -69,11 +69,11 @@ public class UserList extends BiblioManagerBaseController {
                     User user = getDataLayer().getUser(Integer.parseInt(request.getParameter("user")));
                     if (user.getState() == 1) {
                         user.setState(2);
-                        getDataLayer().storeUser(user);  
+                        getDataLayer().storeUser(user);
                     }
                 }
             }
-        } catch (Exception ex) {
+        } catch (DataLayerException | NumberFormatException ex) {
             throw new Exception("Non puoi degradare questo utente", ex);
         }
     }
@@ -95,7 +95,7 @@ public class UserList extends BiblioManagerBaseController {
                 currentUser(request, response, session);
                 User user = getDataLayer().getUser((int) session.getAttribute("userId"));
                 request.setAttribute("me", user);
-                if(user.getState() != 2 && request.getParameter("op") != null){
+                if (user.getState() != 2 && request.getParameter("op") != null) {
                     if (Integer.parseInt(request.getParameter("op")) == 1) {
                         action_upgrade(request, response);
                     } else {

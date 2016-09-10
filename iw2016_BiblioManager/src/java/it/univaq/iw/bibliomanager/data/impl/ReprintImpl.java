@@ -9,7 +9,6 @@ package it.univaq.iw.bibliomanager.data.impl;
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.framework.data.DataLayerException;
 import java.sql.Date;
-import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.Reprint;
 
 /**

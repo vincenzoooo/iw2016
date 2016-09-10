@@ -7,7 +7,7 @@
 package it.univaq.iw.bibliomanager.data.model;
 
 import it.univaq.iw.framework.data.DataLayerException;
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.List;
 
 /**
@@ -56,12 +56,12 @@ public interface Publication {
 
     void setLanguage(String language);
 
-    Date getPublicationDate();
+    Timestamp getPublicationDate();
 
-    void setPublicationDate(Date date);
-    
+    void setPublicationDate(Timestamp date);
+
     boolean getIncomplete();
-    
+
     void setIncomplete(boolean incomplete);
 
     List<Keyword> getKeywords() throws DataLayerException;
@@ -71,9 +71,9 @@ public interface Publication {
     List<Source> getSources() throws DataLayerException;
 
     void setSources(List<Source> sources);
-    
+
     Source getCover() throws DataLayerException;
-    
+
     void setCover(Source cover);
 
     List<Reprint> getReprints() throws DataLayerException;

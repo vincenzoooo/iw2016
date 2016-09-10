@@ -17,6 +17,7 @@ import it.univaq.iw.bibliomanager.data.model.Reprint;
 import it.univaq.iw.bibliomanager.data.model.Source;
 import it.univaq.iw.bibliomanager.data.model.Keyword;
 import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  *
@@ -29,11 +30,10 @@ public class PublicationImpl implements Publication {
     private String description;
     private List<Chapter> index;
     private int like;
-    private int editor_key;
     private String isbn;
     private int pageNumber;
     private String language;
-    private Date publicationDate;
+    private Timestamp publicationDate;
     private Editor editor;
     private boolean incomplete;
     private Source cover;
@@ -55,7 +55,6 @@ public class PublicationImpl implements Publication {
         pageNumber = 0;
         language = "";
         publicationDate = null;
-        editor_key = 0;
         editor = null;
         incomplete = false;
         cover = null;
@@ -147,20 +146,17 @@ public class PublicationImpl implements Publication {
     }
 
     @Override
-    public Date getPublicationDate() {
+    public Timestamp getPublicationDate() {
         return publicationDate;
     }
 
     @Override
-    public void setPublicationDate(Date date) {
+    public void setPublicationDate(Timestamp date) {
         publicationDate = date;
     }
 
     @Override
     public Editor getEditor() throws DataLayerException {
-        if (editor == null && editor_key > 0) {
-            editor = ownerDataLayer.getEditor(editor_key);
-        }
         return editor;
     }
 
@@ -178,12 +174,12 @@ public class PublicationImpl implements Publication {
     public void setIncomplete(boolean incomplete) {
         this.incomplete = incomplete;
     }
-    
+
     @Override
     public Source getCover() throws DataLayerException {
-        if(cover == null && sources != null){
-            for(Source source : sources){
-                if(source.getDescription().equals("copertina")){
+        if (cover == null && sources != null) {
+            for (Source source : sources) {
+                if (source.getDescription().equals("copertina")) {
                     cover = source;
                 }
             }
@@ -195,7 +191,7 @@ public class PublicationImpl implements Publication {
     public void setCover(Source cover) {
         this.cover = cover;
     }
-    
+
     @Override
     public List<Author> getAuthors() throws DataLayerException {
         if (authors == null) {

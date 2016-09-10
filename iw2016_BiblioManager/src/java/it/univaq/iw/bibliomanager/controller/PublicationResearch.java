@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,11 +22,11 @@ import javax.servlet.http.HttpSession;
 
 /**
  *
- * @author Vincenzo Lanzieri
+ * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public class PublicationResearch extends BiblioManagerBaseController {
 
-    private void action_research(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
+    private void action_research(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
             Map<String, String> filters = new HashMap<String, String>();
             String isbn = request.getParameter("publicationIsbn");
@@ -51,11 +50,10 @@ public class PublicationResearch extends BiblioManagerBaseController {
                 filters.put("publicationYear", date);
                 String end = String.valueOf(Integer.parseInt(Utils.getArrayParameter(filters, "publicationYear")) + 1);
                 filters.put("publicationYearEnd", end);
-            }
-            else{
+            } else {
                 filters.put("publicationYear", String.valueOf(0));
                 int year = Calendar.getInstance().get(Calendar.YEAR);
-                filters.put("publicationYearEnd", String.valueOf(year+1));
+                filters.put("publicationYearEnd", String.valueOf(year + 1));
             }
             String keyword = request.getParameter("publicationKeyword");
             if (!Utils.isNullOrEmpty(keyword)) {
@@ -69,7 +67,7 @@ public class PublicationResearch extends BiblioManagerBaseController {
             if (!Utils.isNullOrEmpty(download)) {
                 filters.put("download", "download");
             }
-            if(request.getAttribute("publicationUser") != null){
+            if (request.getAttribute("publicationUser") != null) {
                 filters.put("publicationUser", request.getAttribute("publicationUser").toString());
             }
             filters.put("order_by", "titolo");
@@ -77,8 +75,7 @@ public class PublicationResearch extends BiblioManagerBaseController {
             request.setAttribute("publications", getDataLayer().getPublicationsByFilters(filters));
             request.setAttribute("isResearch", 1);
             getServletContext().getRequestDispatcher("/catalog").forward(request, response);
-        }
-        catch (DataLayerException ex) {
+        } catch (DataLayerException ex) {
             action_error(request, response, "Unable to do the research: " + ex.getMessage());
         }
     }
@@ -103,19 +100,19 @@ public class PublicationResearch extends BiblioManagerBaseController {
                 if (request.getParameter("submitResearch") != null) {
                     action_research(request, response);
                 }
-                if(request.getParameter("userId") != null) {
+                if (request.getParameter("userId") != null) {
                     User user = getDataLayer().getUser(Integer.parseInt(request.getParameter("userId")));
-                    if(user != null){
+                    if (user != null) {
                         request.setAttribute("publicationUser", user.getName() + " " + user.getSurname());
                         action_research(request, response);
                     }
-                    
+
                 }
                 res.activate("research.ftl.html", request, response);
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
+        } catch (DataLayerException | IOException | NumberFormatException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
     }
