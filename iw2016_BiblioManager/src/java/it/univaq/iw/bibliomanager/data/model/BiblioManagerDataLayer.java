@@ -74,6 +74,8 @@ public interface BiblioManagerDataLayer extends DataLayer {
     Review getReview(int review_key) throws DataLayerException;
 
     List<Review> getReviews(int publication_key) throws DataLayerException;
+    
+    List<Review> getLastReviews(int publication_key, int limit) throws DataLayerException;
 
     Reprint getReprint(int reprint_key) throws DataLayerException;
 
