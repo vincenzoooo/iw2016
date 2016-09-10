@@ -161,7 +161,7 @@
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>updatePublication</servlet-name>
-        <url-pattern>/updatePublication</url-pattern>
+        <url-pattern>/managePublication</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>composeEditor</servlet-name>

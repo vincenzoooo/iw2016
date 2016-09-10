@@ -54,7 +54,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement uEditor, iEditor, dEditor;
     private PreparedStatement sAuthors, sAuthorsByName, sAuthorById, sAuthorByPublication;
     private PreparedStatement uAuthor, iAuthor, dAuthor;
-    private PreparedStatement sReviewsByPublication, sReviewById;
+    private PreparedStatement sReviewsByPublication, sReviewById, sLastModeratedReviews;
     private PreparedStatement uReview, iReview, dReview;
     private PreparedStatement sKeywords, sKeywordsByPublication, sKeywordById;
     private PreparedStatement uKeyword, iKeyword, dKeyword;
@@ -118,6 +118,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.iAuthor = connection.prepareStatement("INSERT INTO iw2016.autore (nome, cognome) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sReviewsByPublication = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ? ORDER BY data_recensione DESC");
             this.sReviewById = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE idrecensione = ?");
+            this.sLastModeratedReviews = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ? AND moderata = 1 ORDER BY data_recensione DESC LIMIT ?");
             this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET testo = ?, moderata = ?, data_recensione = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
             this.iReview = connection.prepareStatement("INSERT INTO iw2016.recensione (testo, moderata, data_recensione, utente_autore, pubblicazione) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.dReview = connection.prepareStatement("DELETE FROM iw2016.recensione WHERE idrecensione = ?");
@@ -881,6 +882,31 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         return result;
     }
 
+    @Override
+    public List<Review> getLastReviews(int publication_key, int limit) throws DataLayerException {
+        List<Review> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sLastModeratedReviews.setInt(1, publication_key);
+            sLastModeratedReviews.setInt(2, limit);
+            rs = sLastModeratedReviews.executeQuery();
+            while (rs.next()) {
+                result.add(getReview(rs.getInt("idrecensione")));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load last moderated review of publication", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+            
     @Override
     public Reprint getReprint(int reprint_key) throws DataLayerException {
         Reprint result = null;

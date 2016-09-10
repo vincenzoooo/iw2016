@@ -47,11 +47,9 @@ public class ComposePublication extends BiblioManagerBaseController {
             params.put("publicationDescription", Utils.checkString(request.getParameter("publicationDescription")));
             params.put("publicationLanguage", Utils.checkString(request.getParameter("publicationLanguage")));
             params.put("publicationDate", Utils.checkString(request.getParameter("publicationDate")));
-            //params.put("publicationIndex", Utils.checkString(request.getParameter("publicationIndex")));
             params.put("publicationIsbn", Utils.checkString(request.getParameter("publicationIsbn")));
             params.put("publicationPages", Utils.checkString(request.getParameter("publicationPages")));
             params.put("editors", request.getParameter("editors"));
-            //params.put("sourceId", Utils.checkString(request.getParameter("sourceId")));
             if (!validator(params, request, response)) {
                 publication.setTitle(params.get("publicationTitle"));
                 publication.setDescription(params.get("publicationDescription"));
@@ -60,7 +58,6 @@ public class ComposePublication extends BiblioManagerBaseController {
                 java.util.Date date = df.parse(params.get("publicationDate"));
                 java.sql.Timestamp sqlDate = new java.sql.Timestamp(date.getTime());
                 publication.setPublicationDate(sqlDate);
-                //publication.setIndex(params.get("publicationIndex"));
                 publication.setIsbn(params.get("publicationIsbn"));
                 publication.setPageNumber(Integer.parseInt(params.get("publicationPages")));
                 publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editors"))));

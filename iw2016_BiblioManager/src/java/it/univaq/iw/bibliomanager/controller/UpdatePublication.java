@@ -26,6 +26,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import it.univaq.iw.bibliomanager.data.model.Keyword;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 
 /**
  *
@@ -34,28 +37,37 @@ import it.univaq.iw.bibliomanager.data.model.Keyword;
 public class UpdatePublication extends BiblioManagerBaseController {
 
     private void action_updatePublication(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, IOException, NumberFormatException, ServletException {
-        //TODO: Gestire la modifica dei dati correlati alla pubblicazione, modifica ed inserimento di nuovi
-        if (request.getParameter("idPublication") != null) {
-            Publication publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("idPublication")));
-            Editor editor = publication.getEditor();
-            List<Source> sources = publication.getSources();
-            List<Author> authors = publication.getAuthors();
-            List<Reprint> reprint = publication.getReprints();
-            List<Keyword> keyword = publication.getKeywords();
+        try{
+        if (request.getAttribute("publicationId") != null) {
+            Publication publication = getDataLayer().getPublication((int)request.getAttribute("publicationId"));
             Map<String, String> params = new HashMap<String, String>();
-            params.put("title", Utils.checkString(request.getParameter("publicationTitle")));
-            params.put("description", Utils.checkString(request.getParameter("publicationDescription")));
-            params.put("editor", Utils.checkString(request.getParameter("publicationEditor")));
-            params.put("index", Utils.checkString(request.getParameter("publicationIndex")));
+            params.put("publicationTitle", Utils.checkString(request.getParameter("publicationTitle")));
+            params.put("publicationDescription", Utils.checkString(request.getParameter("publicationDescription")));
+            params.put("publicationLanguage", Utils.checkString(request.getParameter("publicationLanguage")));
+            params.put("publicationDate", Utils.checkString(request.getParameter("publicationDate")));
+            params.put("publicationIsbn", Utils.checkString(request.getParameter("publicationIsbn")));
+            params.put("publicationPages", Utils.checkString(request.getParameter("publicationPages")));
+            params.put("editors", request.getParameter("editors"));
             if (!validator(params, request, response)) {
-                publication.setTitle(params.get("title"));
-                publication.setDescription(params.get("description"));
-                publication.setEditor(editor);
+                publication.setTitle(params.get("publicationTitle"));
+                publication.setDescription(params.get("publicationDescription"));
+                publication.setLanguage(params.get("publicationLanguage"));
+                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                java.util.Date date = df.parse(params.get("publicationDate"));
+                java.sql.Timestamp sqlDate = new java.sql.Timestamp(date.getTime());
+                publication.setPublicationDate(sqlDate);
+                publication.setIsbn(params.get("publicationIsbn"));
+                publication.setPageNumber(Integer.parseInt(params.get("publicationPages")));
+                publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editors"))));
+                publication.setIncomplete(false);
+                getDataLayer().storePublication(publication);
+                this.action_updateHistory(request, response);
+                request.setAttribute("publicationId", publication.getKey());
+                action_redirect(request, response, "/details");
             }
-            request.setAttribute("publication", publication);
-            this.action_updateHistory(request, response);
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("publication.ftl.html", request, response);
+        }
+        }catch(DataLayerException | NumberFormatException | ParseException ex){
+            action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 
@@ -63,14 +75,49 @@ public class UpdatePublication extends BiblioManagerBaseController {
         HttpSession session = SecurityLayer.checkSession(request);
         User user = getDataLayer().getUser((int) session.getAttribute("userId"));
         History history = getDataLayer().createHistory();
-        history.setEntry("Update");
+        history.setEntry("Modificata la pubblicazione");
         history.setType(1);
         history.setUser(user);
         history.setPublicationKey((int)request.getAttribute("publication"));
         history.setDate(new java.sql.Timestamp(System.currentTimeMillis()));
         getDataLayer().storeHistory(history);
     }
-
+    
+    @Override
+    protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
+        boolean error = super.validator(params, request, response);
+        if (!error) {
+            try {
+                String isbn = params.get("publicationIsbn");
+                if (!Utils.isNumeric(isbn) || isbn.length() < 13 && isbn.length() >= 14) {
+                    request.setAttribute("errorPublicationIsbn", "Non è un codice valido");
+                    error = true;
+                }
+                if (!getDataLayer().getPublication((int)request.getAttribute("publicationId")).getIsbn().equals(isbn) && getDataLayer().getPublicationByISBN(isbn) != null) {
+                    request.setAttribute("errorPublicationIsbn", "ISBN già presente");
+                    error = true;
+                }
+                if (!Utils.isNumeric(params.get("publicationPages"))) {
+                    request.setAttribute("errorPublicationPages", "Non è un numero valido");
+                    error = true;
+                }
+                if (!Utils.isDate(params.get("publicationDate"))) {
+                    request.setAttribute("errorPublicationDate", "Non è una data valida, si aspetta il formato dd-mm-yyyy");
+                    error = true;
+                }
+            } catch (DataLayerException ex) {
+                action_error(request, response, "Error query ISBN: " + ex.getMessage());
+            }
+        }
+        return error;
+    }
+    
+    private void action_loadData(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
+        List<Editor> editors = getDataLayer().getEditors();
+        Publication publication = getDataLayer().getPublication((int)request.getAttribute("publicationId"));
+        request.setAttribute("publication", publication);
+        request.setAttribute("editors", editors);
+    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -83,25 +130,55 @@ public class UpdatePublication extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            request.setAttribute("page_title", "Nuova Pubblicazione");
-            List<Author> authors = getDataLayer().getAuthors();
-            List<Editor> editors = getDataLayer().getEditors();
-            List<Keyword> keywords = getDataLayer().getKeywords();
-            List<Source> sources = getDataLayer().getSources();
-            request.setAttribute("authors", authors);
-            request.setAttribute("editors", editors);
-            request.setAttribute("keywords", keywords);
-            request.setAttribute("sources", sources);
-            if (SecurityLayer.checkSession(request) != null) {
-                //TODO
-                if (request.getParameter("submitPublication") != null) {
+            request.setAttribute("page_title", "Modifica Pubblicazione");
+            HttpSession session = SecurityLayer.checkSession(request);
+            if (session != null) {
+                if(request.getParameter("publicationId") != null){
+                    request.setAttribute("publicationId", Integer.parseInt(request.getParameter("publicationId")));
+                }
+                if(session.getAttribute("publicationId") != null){
+                    request.setAttribute("publicationId", (int) session.getAttribute("publicationId"));
+                    session.removeAttribute("publicationId");
+                }
+                if(session.getAttribute("publicationId") != null){
+                    request.setAttribute("publicationId", (int)session.getAttribute("publicationId"));
+                    session.removeAttribute("publicationId");
+                }
+                if (request.getParameter("addEditor") != null) {
+                    session.setAttribute("publicationId", Integer.parseInt(request.getParameter("publicationId")));
+                    response.sendRedirect("editor");
+                }
+                if (request.getParameter("addAuthor") != null) {
+                    session.setAttribute("publicationId", Integer.parseInt(request.getParameter("publicationId")));
+                    response.sendRedirect("author");
+                }
+                if (request.getParameter("addKeyword") != null) {
+                    session.setAttribute("publicationId", Integer.parseInt(request.getParameter("publicationId")));
+                    response.sendRedirect("keyword");
+                }
+                if (request.getParameter("addIndex") != null) {
+                    session.setAttribute("publicationId", Integer.parseInt(request.getParameter("publicationId")));
+                    response.sendRedirect("index");
+                }
+                if (request.getParameter("addSource") != null) {
+                    session.setAttribute("publicationId", Integer.parseInt(request.getParameter("publicationId")));
+                    response.sendRedirect("source");
+                }
+                if (request.getParameter("addReprint") != null) {
+                    session.setAttribute("publicationId", Integer.parseInt(request.getParameter("publicationId")));
+                    response.sendRedirect("reprint");
+                }
+                action_loadData(request, response);
+                if(request.getParameter("submitPublication") != null){
                     action_updatePublication(request, response);
                 }
+                TemplateResult res = new TemplateResult(getServletContext());
+                res.activate("managePublication.ftl.html", request, response);
             } else {
                 action_default(request, response);
             }
-        } catch (DataLayerException | IOException | NumberFormatException | ServletException ex) {
-            action_error(request, response, "OPS");
+        } catch (DataLayerException | IOException ex) {
+            action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 

@@ -39,6 +39,8 @@ public class PublicationDetails extends BiblioManagerBaseController {
         Publication publication = getDataLayer().getPublication(publicationKey);
         this.action_viewReviews(request, response);
         request.setAttribute("publication", publication);
+        List<Review> lastReviews = getDataLayer().getLastReviews(publicationKey, 1);
+        request.setAttribute("lastReviews", lastReviews);
         res.activate("details.ftl.html", request, response);
     }
 
