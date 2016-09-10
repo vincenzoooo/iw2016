@@ -7,6 +7,7 @@
         <meta charset="UTF-8" />
         <!-- LINK -->
         <link rel="stylesheet" href="lib/bootstrap/css/bootstrap.min.css" type="text/css" />
+         <link rel="stylesheet" href="lib/prettyphoto/css/prettyPhoto.css" type="text/css" />
         <link rel="stylesheet" href="style/custom.css" type="text/css" />
         <link href="lib/font-awesome/css/font-awesome.min.css" rel="stylesheet" media="screen"/>
         
@@ -93,7 +94,14 @@
         
         <!-- SCRIPT -->
         <script type="text/javascript" src="script/jquery.min.js"></script>
-        <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js">
+        <script type="text/javascript" src="lib/bootstrap/js/bootstrap.min.js"></script>
+        <script type="text/javascript" src="lib/prettyphoto/js/jquery.prettyPhoto.js"></script>
+        <script type="text/javascript" src="script/jquery.localscroll.js"></script>
+        <script type="text/javascript" src="script/jquery.scrollto.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            $(document).ready(function(){
+                $("a[rel^='prettyPhoto']").prettyPhoto();
+            });
         </script>
     </body>
     

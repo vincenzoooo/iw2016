@@ -17,17 +17,26 @@
                             <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                                 <div class="thebox-container">
                                     <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
-                                        <div class="thebox">
-                                            <figure class="cover-pubb">
-                                                <#if item.cover??>
-                                                <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
-                                                <#else>
-                                                <img src= "img/come.png" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
-                                                </#if>
-                                                <figcaption class="caption">
-                                                <#if (item.title?length>45)>${item.title[0..41]?html}...<#else>${item.title?html}</#if>
-                                                </figcaption>
-                                            </figure>
+                                        <div class="thebox" id="theBox">
+                                            <div class="thebox-image">
+                                                <figure class="cover-pubb cap-bot">
+                                                    <#if item.cover??>
+                                                    <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
+                                                    <#else>
+                                                    <img src= "img/come.png" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
+                                                    </#if>
+                                                    <figcaption class="caption thebox-content">
+                                                        <#if (item.title?length>45)><div class="bold">${item.title[0..41]?html}...</div><#else><div class="bold">${item.title?html}</div></#if>
+                                                        <div class="padding-top-5">
+                                                            <#if (item.authors?? && item.authors?size>0)>
+                                                            <#list item.authors as item2>
+                                                                ${strip_slashes(item2.name!'')?html} ${strip_slashes(item2.surname!'')?html}<#if item2.key != item.authors?last.key>,</#if> 
+                                                            </#list>
+                                                            </#if>
+                                                        </div>
+                                                    </figcaption>
+                                                </figure>
+                                            </div>
                                         </div>
                                     </a>
                                 </div>
