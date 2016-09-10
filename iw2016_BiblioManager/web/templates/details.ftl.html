@@ -187,8 +187,6 @@
                         <#else>
                         <span class='bold'> Nessun indice presente per la pubblicazione</span>
                         </#if>
-                    <#else>
-                        <span class='bold'> Nessun indice presente per la pubblicazione</span>
                     </#if>
                 </div>
             </div>
@@ -225,7 +223,16 @@
 
             <div class="row">
                 <div class="col-lg-12">
-                    <h2>Gallery!!! da fare</h2>
+                    <h2>Galleria di immagini</h2>
+                    <#if publication.source??>
+                    <div class="gallerycontainer">
+                        <a class="thumbnail" href="#thumb"><img src="media/tree_thumb.jpg" width="100px" height="66px" border="0" />
+                            <span><img src="media/tree.jpg" /><br />Simply beautiful.</span>
+                        </a>
+                    </div>
+                    <#else>
+                    <span>Nessuna immagine disponibile.</span>
+                    </#if>
                 </div>
             </div>
 
