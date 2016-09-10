@@ -240,7 +240,7 @@
                 <div class="col-lg-12">
                     <h2> Ultima recensione </h2>
                     <div id='contentReview'>
-                        <#if lastReview??>
+                        <#if publication.reviews??>
                         <div class="review row" id="lastReview">
                         <div class="col-lg-2">
                             <span>
@@ -248,9 +248,9 @@
                             </span>
                         </div>
                         <div class="fourteen columns">
-                            <div class="row marginleft1"><span class="bold"> ${strip_slashes(lastReview.writer.name)?html} ${strip_slashes(lastReview.writer.surname)?html}</span> &nbsp;${lastReview.dateWrite?datetime}</div>
+                            <div class="row marginleft1"><span class="bold"> ${strip_slashes(publication.reviews?first.author.name)?html} ${strip_slashes(publication.reviews?first.author.surname)?html}</span> &nbsp;${publication.reviews?first.reviewDate?datetime}</div>
                             <div class="row">
-                                <div class="twelve columns justify">${strip_slashes(lastReview.text)?html}</div>
+                                <div class="twelve columns justify">${strip_slashes(publication.reviews?first.text)?html}</div>
                             </div>
                         </div>
                         </div>

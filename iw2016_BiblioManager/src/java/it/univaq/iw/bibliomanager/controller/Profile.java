@@ -44,7 +44,7 @@ public class Profile extends BiblioManagerBaseController {
             for (History history : histories) {
                 //Type 0 == Insert
                 if (history.getType() == 0) {
-                    publications.add(history.getPublication());
+                    publications.add(getDataLayer().getPublication(history.getPublicationKey()));
                 }
             }
             if (!publications.isEmpty()) {

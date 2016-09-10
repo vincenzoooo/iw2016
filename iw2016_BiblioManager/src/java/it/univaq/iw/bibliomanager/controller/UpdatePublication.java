@@ -66,7 +66,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
         history.setEntry("Update");
         history.setType(1);
         history.setUser(user);
-        history.setPublication((Publication) request.getAttribute("publication"));
+        history.setPublicationKey((int)request.getAttribute("publication"));
         history.setDate(new java.sql.Timestamp(System.currentTimeMillis()));
         getDataLayer().storeHistory(history);
     }

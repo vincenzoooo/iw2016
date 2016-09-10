@@ -81,7 +81,7 @@ public class ComposePublication extends BiblioManagerBaseController {
         history.setEntry("inserito una pubblicazione");
         history.setType(0);
         history.setUser(user);
-        history.setPublication((Publication) request.getAttribute("publication"));
+        history.setPublicationKey(((Publication) request.getAttribute("publication")).getKey());
         history.setDate(new java.sql.Timestamp(System.currentTimeMillis()));
         getDataLayer().storeHistory(history);
     }

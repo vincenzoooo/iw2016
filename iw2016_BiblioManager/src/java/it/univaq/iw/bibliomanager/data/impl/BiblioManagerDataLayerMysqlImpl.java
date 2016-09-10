@@ -116,7 +116,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sAuthorByPublication = connection.prepareStatement("SELECT * FROM iw2016.autore JOIN autore_has_pubblicazione ON idautore = autore_idautore WHERE pubblicazione_idpubblicazione = ?");
             this.uAuthor = connection.prepareStatement("UPDATE iw2016.autore SET nome = ?, cognome = ? WHERE idautore = ?");
             this.iAuthor = connection.prepareStatement("INSERT INTO iw2016.autore (nome, cognome) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
-            this.sReviewsByPublication = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ? ORDER BY data_recensione");
+            this.sReviewsByPublication = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ? ORDER BY data_recensione DESC");
             this.sReviewById = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE idrecensione = ?");
             this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET testo = ?, moderata = ?, data_recensione = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
             this.iReview = connection.prepareStatement("INSERT INTO iw2016.recensione (testo, moderata, data_recensione, utente_autore, pubblicazione) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -216,6 +216,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             publication.setKeywords(getPublicationKeywords(rs.getInt("idpubblicazione")));
             publication.setReprints(getReprints(rs.getInt("idpubblicazione")));
             publication.setIndex(getChapters(rs.getInt("idpubblicazione")));
+            publication.setReviews(getReviews(rs.getInt("idpubblicazione")));
             publication.setIncomplete(rs.getBoolean("incompleta"));
             return publication;
         } catch (SQLException ex) {
@@ -293,7 +294,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             history.setEntry(rs.getString("entry"));
             history.setType(rs.getInt("tipo"));
             history.setDate(rs.getTimestamp("data_operazione"));
-            history.setPublication(getPublication(rs.getInt("pubblicazione")));
+            history.setPublicationKey(rs.getInt("pubblicazione"));
             history.setUser(getUser(rs.getInt("utente")));
             return history;
         } catch (SQLException ex) {
@@ -1692,7 +1693,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uHistory.setString(1, historia.getEntry());
                 uHistory.setInt(2, historia.getType());
                 uHistory.setTimestamp(3, historia.getDate());
-                uHistory.setInt(4, historia.getPublication().getKey());
+                uHistory.setInt(4, historia.getPublicationKey());
                 uHistory.setInt(5, historia.getUser().getKey());
                 uHistory.setInt(6, key);
 
@@ -1701,7 +1702,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 iHistory.setString(1, historia.getEntry());
                 iHistory.setInt(2, historia.getType());
                 iHistory.setTimestamp(3, historia.getDate());
-                iHistory.setInt(4, historia.getPublication().getKey());
+                iHistory.setInt(4, historia.getPublicationKey());
                 iHistory.setInt(5, historia.getUser().getKey());
 
                 if (iHistory.executeUpdate() == 1) {

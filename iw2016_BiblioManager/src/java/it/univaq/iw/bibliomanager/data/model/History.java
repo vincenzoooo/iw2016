@@ -31,9 +31,9 @@ public interface History {
 
     void setDate(Timestamp date);
 
-    Publication getPublication() throws DataLayerException;
+    int getPublicationKey();
 
-    void setPublication(Publication publication);
+    void setPublicationKey(int publication_key);
 
     User getUser() throws DataLayerException;
 

@@ -92,7 +92,7 @@ public class ComposeReview extends BiblioManagerBaseController {
         history.setEntry(result);
         history.setType(3);
         history.setUser(user);
-        history.setPublication(getDataLayer().getPublication(Integer.parseInt(request.getParameter("publicationId"))));
+        history.setPublicationKey(Integer.parseInt(request.getParameter("publicationId")));
         history.setDate(new java.sql.Timestamp(System.currentTimeMillis()));
         getDataLayer().storeHistory(history);
         return history;

@@ -24,7 +24,6 @@ public class HistoryImpl implements History {
     private int type;
     private Timestamp date;
     private int publication_key;
-    private Publication publication;
     private int user_key;
     private User user;
     protected BiblioManagerDataLayer ownerDataLayer;
@@ -36,7 +35,6 @@ public class HistoryImpl implements History {
         type = 0;
         date = null;
         publication_key = 0;
-        publication = null;
         user_key = 0;
         user = null;
     }
@@ -82,16 +80,13 @@ public class HistoryImpl implements History {
     }
 
     @Override
-    public Publication getPublication() throws DataLayerException {
-        if (publication == null && publication_key > 0) {
-            publication = ownerDataLayer.getPublication(publication_key);
-        }
-        return publication;
+    public int getPublicationKey(){
+        return publication_key;
     }
 
     @Override
-    public void setPublication(Publication publication) {
-        this.publication = publication;
+    public void setPublicationKey(int publication_key) {
+        this.publication_key = publication_key;
     }
 
     @Override
@@ -113,7 +108,7 @@ public class HistoryImpl implements History {
         entry = history.getEntry();
         type = history.getType();
         date = history.getDate();
-        publication_key = history.getPublication().getKey();
+        publication_key = history.getPublicationKey();
         user_key = history.getUser().getKey();
     }
 }

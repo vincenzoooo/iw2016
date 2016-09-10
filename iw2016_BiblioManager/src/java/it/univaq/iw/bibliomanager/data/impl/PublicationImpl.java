@@ -16,6 +16,7 @@ import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.Reprint;
 import it.univaq.iw.bibliomanager.data.model.Source;
 import it.univaq.iw.bibliomanager.data.model.Keyword;
+import it.univaq.iw.bibliomanager.data.model.Review;
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -41,6 +42,7 @@ public class PublicationImpl implements Publication {
     private List<Source> sources;
     private List<Keyword> keywords;
     private List<Reprint> reprints;
+    private List<Review> reviews;
     protected BiblioManagerDataLayer ownerDataLayer;
     protected boolean dirty;
 
@@ -62,6 +64,7 @@ public class PublicationImpl implements Publication {
         sources = null;
         keywords = null;
         reprints = null;
+        reviews = null;
         dirty = false;
     }
 
@@ -245,6 +248,16 @@ public class PublicationImpl implements Publication {
     }
 
     @Override
+    public List<Review> getReviews() throws DataLayerException {
+        return reviews;
+    }
+
+    @Override
+    public void setReviews(List<Review> reviews) {
+        this.reviews = reviews;
+    }
+
+    @Override
     public void setDirty(boolean dirty) {
         this.dirty = dirty;
     }
@@ -271,6 +284,7 @@ public class PublicationImpl implements Publication {
         sources = publication.getSources();
         keywords = publication.getKeywords();
         reprints = publication.getReprints();
+        reviews = publication.getReviews();
         this.dirty = true;
     }
 

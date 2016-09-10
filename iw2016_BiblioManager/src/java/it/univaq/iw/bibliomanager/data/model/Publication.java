@@ -79,6 +79,10 @@ public interface Publication {
     List<Reprint> getReprints() throws DataLayerException;
 
     void setReprints(List<Reprint> reprints);
+    
+    List<Review> getReviews() throws DataLayerException;
+
+    void setReviews(List<Review> reviews);
 
     //--
     void copyFrom(Publication publication) throws DataLayerException;
