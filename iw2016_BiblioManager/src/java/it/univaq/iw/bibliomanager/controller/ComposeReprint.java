@@ -100,6 +100,8 @@ public class ComposeReprint extends BiblioManagerBaseController {
                 }
                 List<Reprint> reprints = getDataLayer().getReprints((int) session.getAttribute("publicationId"));
                 request.setAttribute("reprints", reprints);
+                request.setAttribute("publicationId", session.getAttribute("publicationId"));
+                request.setAttribute("url", (String)session.getAttribute("url"));
                 res.activate("reprint.ftl.html", request, response);
             } else {
                 action_default(request, response);

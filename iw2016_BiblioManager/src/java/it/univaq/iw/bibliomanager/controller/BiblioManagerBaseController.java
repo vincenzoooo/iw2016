@@ -83,8 +83,9 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         (new FailureResult(getServletContext())).activate(message, request, response);
     }
 
-    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Login to Biblio");
+        getDataLayer().deleteIncompletePublication();
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("login.ftl.html", request, response);
     }

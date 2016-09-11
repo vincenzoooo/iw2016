@@ -9,7 +9,7 @@
                     <i class="fa fa-pencil fa-custom" aria-hidden="true"></i>
                 </a>
 
-                <a href="delatePublication?publicationId=${publication.key}" class="btn btn-default" title="Cancella">
+                <a href="managePublication?delete&publicationId=${publication.key}" class="btn btn-default" title="Cancella">
                     <i class="fa fa-trash-o fa-custom" aria-hidden="true"></i>
                 </a>
 
@@ -84,13 +84,7 @@
                         </span>
                     </div>
                     <div id="advicesPublication" class="margin-top-30">
-                        <#if advised??>
-                        <form method="post" action="details" name="votePublication" class="form-horizontal">
-                            <button class="btn btn-default" name="submitPublication" id="pulsante"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Vota</button>
-                        </form>
-                        <#else>
-                        <div class="margin-bottom-10"> Hai consigliato questa pubblicazione</div>
-                        </#if>
+                        <a href="details?like&publicationId=${publication.key}" class="btn btn-default"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Vota</a>
                         <div class="margin-bottom-10 bold"> 
                             <div>Numero consigli:&nbsp;<span id="numberAdvices">${publication.like}</span></div> 
                         </div>

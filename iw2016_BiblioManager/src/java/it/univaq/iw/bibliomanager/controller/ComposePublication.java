@@ -146,10 +146,21 @@ public class ComposePublication extends BiblioManagerBaseController {
             publication.setIncomplete(true);
             getDataLayer().storePublication(publication);
             session.setAttribute("publicationId", publication.getKey());
+            session.setAttribute("url", "publication");
         }
         action_redirect(request, response, url);
     }
 
+    private void action_unlinkAuthor (HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws DataLayerException {
+        getDataLayer().deleteAuthorFromPublication((int)session.getAttribute("publicationId"), Integer.parseInt(request.getParameter("unlinkAuthor")));
+    }
+    
+    private void action_unlinkKeyword (HttpServletRequest request, HttpServletResponse response, HttpSession session)
+            throws DataLayerException {
+        getDataLayer().deleteKeywordFromPublication((int)session.getAttribute("publicationId"), Integer.parseInt(request.getParameter("unlinkAuthor")));
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -199,6 +210,7 @@ public class ComposePublication extends BiblioManagerBaseController {
                     action_composePublication(request, response);
                     String url = "details?publicationId=" + session.getAttribute("publicationId");
                     session.removeAttribute("publicationId");
+                    session.removeAttribute("url");
                     response.sendRedirect(url);
                 }
                 if (request.getParameter("addEditor") != null) {
@@ -207,8 +219,14 @@ public class ComposePublication extends BiblioManagerBaseController {
                 if (request.getParameter("addAuthor") != null) {
                     action_savePartially(request, response, "/author", session, publication);
                 }
+                if (request.getParameter("unlinkAuthor") != null) {
+                    action_unlinkAuthor(request, response, session);
+                }
                 if (request.getParameter("addKeyword") != null) {
                     action_savePartially(request, response, "/keyword", session, publication);
+                }
+                if (request.getParameter("unlinkKeyword") != null) {
+                    action_unlinkKeyword(request, response, session);
                 }
                 if (request.getParameter("addIndex") != null) {
                     action_savePartially(request, response, "/index", session, publication);
@@ -218,6 +236,9 @@ public class ComposePublication extends BiblioManagerBaseController {
                 }
                 if (request.getParameter("addReprint") != null) {
                     action_savePartially(request, response, "/reprint", session, publication);
+                }
+                if(request.getParameter("deletePublication") != null){
+                    
                 }
                 TemplateResult res = new TemplateResult(getServletContext());
                 res.activate("publication.ftl.html", request, response);

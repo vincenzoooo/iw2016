@@ -78,7 +78,7 @@ public class Home extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | ServletException ex) {
-            action_error(request, response, "OPS: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 

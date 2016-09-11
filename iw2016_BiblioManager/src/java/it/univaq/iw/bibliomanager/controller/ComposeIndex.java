@@ -170,7 +170,8 @@ public class ComposeIndex extends BiblioManagerBaseController {
                     request.removeAttribute("sectionId");
                 }
                 List<Chapter> chapters = getDataLayer().getChapters((int) session.getAttribute("publicationId"));
-
+                request.setAttribute("publicationId", session.getAttribute("publicationId"));
+                request.setAttribute("url", (String)session.getAttribute("url"));
                 request.setAttribute("chapters", chapters);
 
                 res.activate("index.ftl.html", request, response);

@@ -17,6 +17,7 @@ import it.univaq.iw.bibliomanager.data.model.Reprint;
 import it.univaq.iw.bibliomanager.data.model.Source;
 import it.univaq.iw.bibliomanager.data.model.Keyword;
 import it.univaq.iw.bibliomanager.data.model.Review;
+import it.univaq.iw.bibliomanager.data.model.User;
 import java.sql.Date;
 import java.sql.Timestamp;
 
@@ -43,6 +44,7 @@ public class PublicationImpl implements Publication {
     private List<Keyword> keywords;
     private List<Reprint> reprints;
     private List<Review> reviews;
+    private List<User> usersLike;
     protected BiblioManagerDataLayer ownerDataLayer;
     protected boolean dirty;
 
@@ -65,6 +67,7 @@ public class PublicationImpl implements Publication {
         keywords = null;
         reprints = null;
         reviews = null;
+        usersLike = null;
         dirty = false;
     }
 
@@ -255,6 +258,16 @@ public class PublicationImpl implements Publication {
     @Override
     public void setReviews(List<Review> reviews) {
         this.reviews = reviews;
+    }
+
+    @Override
+    public List<User> getUserLike() throws DataLayerException {
+        return usersLike;
+    }
+
+    @Override
+    public void setUserLike(List<User> userLike) {
+        this.usersLike = userLike;
     }
 
     @Override

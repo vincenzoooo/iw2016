@@ -41,6 +41,8 @@ public class PublicationsList extends BiblioManagerBaseController {
             if (request.getAttribute("publications") == null) {
                 List<Publication> publications = getDataLayer().getPublicationsByFilters(filters);
                 request.setAttribute("publications", publications);
+//                int pages = publications.size() / 2;
+//                request.setAttribute("pages", pages);
             }
             res.activate("catalog.ftl.html", request, response);
         } catch (ServletException | DataLayerException ex) {
@@ -68,7 +70,7 @@ public class PublicationsList extends BiblioManagerBaseController {
             } else {
                 action_default(request, response);
             }
-        } catch (IOException | ServletException ex) {
+        } catch (DataLayerException | IOException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
     }

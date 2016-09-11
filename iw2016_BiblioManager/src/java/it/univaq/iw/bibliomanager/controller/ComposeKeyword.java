@@ -103,6 +103,8 @@ public class ComposeKeyword extends BiblioManagerBaseController {
                 List<Keyword> publicationKeywords = getDataLayer().getPublicationKeywords((int) session.getAttribute("publicationId"));
                 request.setAttribute("keywords", keywords);
                 request.setAttribute("publicationKeywords", publicationKeywords);
+                request.setAttribute("publicationId", session.getAttribute("publicationId"));
+                request.setAttribute("url", (String)session.getAttribute("url"));
                 res.activate("keyword.ftl.html", request, response);
 
             } else {

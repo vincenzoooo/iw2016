@@ -84,6 +84,10 @@ public interface Publication {
 
     void setReviews(List<Review> reviews);
 
+    List<User> getUserLike() throws DataLayerException;
+
+    void setUserLike(List<User> userLike);
+
     //--
     void copyFrom(Publication publication) throws DataLayerException;
 

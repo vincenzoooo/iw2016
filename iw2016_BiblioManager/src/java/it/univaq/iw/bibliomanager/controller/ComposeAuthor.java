@@ -61,6 +61,12 @@ public class ComposeAuthor extends BiblioManagerBaseController {
         }
     }
 
+    private void action_deleteAuthor(HttpServletRequest request, HttpServletResponse response)
+            throws DataLayerException {
+        Author author = getDataLayer().getAuthor((int)request.getAttribute("authorToDelete"));
+        getDataLayer().deleteAuthor(author);
+    }
+    
     private void action_LinkAuthor(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
         int pubId = (int) SecurityLayer.checkSession(request).getAttribute("publicationId");
@@ -100,6 +106,10 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                     action_updateAuthor(request, response);
                     request.removeAttribute("authorId");
                 }
+                if(request.getAttribute("authorToDelete") != null){
+                    request.setAttribute("authorToDelete", request.getParameter("authorToDelete"));
+                    action_deleteAuthor(request, response);
+                }
                 if (request.getParameter("linkAuthor") != null) {
                     action_LinkAuthor(request, response);
                 }
@@ -107,8 +117,9 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                 List<Author> publicationAuthors = getDataLayer().getPublicationAuthors((int) session.getAttribute("publicationId"));
                 request.setAttribute("authors", authors);
                 request.setAttribute("publicationAuthors", publicationAuthors);
+                request.setAttribute("publicationId", session.getAttribute("publicationId"));
+                request.setAttribute("url", (String)session.getAttribute("url"));
                 res.activate("author.ftl.html", request, response);
-
             } else {
                 action_default(request, response);
             }

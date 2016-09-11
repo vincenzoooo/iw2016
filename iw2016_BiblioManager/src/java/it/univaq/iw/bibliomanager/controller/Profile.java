@@ -20,7 +20,9 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import it.univaq.iw.bibliomanager.data.model.User;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  *
@@ -58,50 +60,65 @@ public class Profile extends BiblioManagerBaseController {
         }
     }
 
+    private void action_updateProfile(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException{
+        HttpSession session = SecurityLayer.checkSession(request);
+        User user = getDataLayer().getUser((int) session.getAttribute("userId"));
+        request.setAttribute("user", user);
+        TemplateResult res = new TemplateResult(getServletContext());
+        res.activate("manageProfile.ftl.html", request, response);
+    }
     private void action_save(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException, NoSuchAlgorithmException {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
             int userKey = (int) session.getAttribute("userId");
             User user = getDataLayer().getUser(userKey);
+            String password = Utils.checkString(request.getParameter("password"));
             TemplateResult res = new TemplateResult(getServletContext());
-            if (!validator(request, response)) {
-                String password = Utils.SHA1(request.getParameter("password"));
-                user.setName(request.getParameter("name"));
-                user.setSurname(request.getParameter("surname"));
-                user.setPassword(password);
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("name", Utils.checkString(request.getParameter("name")));
+            params.put("surname", Utils.checkString(request.getParameter("surname")));
+            params.put("email", Utils.checkString(request.getParameter("email")));
+            if (!validator(params, request, response)) {
+                user.setName(params.get("name"));
+                user.setSurname(params.get("surname"));
+                user.setEmail(params.get("email"));
+                if(!Utils.isNullOrEmpty(password)){
+                    password = Utils.SHA1(password);
+                    user.setPassword(password);
+                }
                 getDataLayer().storeUser(user);
                 request.setAttribute("user", user);
                 res.activate("profile.ftl.html", request, response);
             } else {
-                request.setAttribute("user", user);
-                res.activate("registration.ftl.html", request, response);
+                action_updateProfile(request, response);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 
-    private boolean validator(HttpServletRequest request, HttpServletResponse response) throws NoSuchAlgorithmException {
-        boolean error = false;
-        String name = Utils.checkString(request.getParameter("name"));
-        String surname = Utils.checkString(request.getParameter("surname"));
-        String password = Utils.encryptPassword(request.getParameter("password"));
-        String newPassword = Utils.encryptPassword(request.getParameter("newpassword"));
-        if (name == null) {
-            request.setAttribute("errorName", "Nome non valorizzato");
-            error = true;
-        }
-        if (surname == null) {
-            request.setAttribute("errorSurname", "Cognome non valorizzato");
-            error = true;
-        }
-        if (password == null) {
-            request.setAttribute("errorPassword", "Password o Repassword non valorizzato");
-            error = true;
-        }
-        if (newPassword == null) {
-            request.setAttribute("errorPassword", "Newpassword non valorizzato");
-            error = true;
+    @Override
+    protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
+        boolean error = super.validator(params, request, response);
+        if (!error) {
+            String password = Utils.checkString(request.getParameter("password"));
+            String repassword = Utils.checkString(request.getParameter("re-password"));
+            if(password != null && repassword == null){
+                request.setAttribute("errorPassword", "Ripetere la password");
+                error = true;
+            }
+            if(password == null && repassword != null){
+                request.setAttribute("errorPassword", "Inserire password valida");
+                error = true;
+            }
+            if(password != null && repassword != null && !password.equals(repassword)){
+                request.setAttribute("errorPassword", "Le password non corrispondono");
+                error = true;
+            }
+            if(!Utils.checkEmail(params.get("email"))){
+                request.setAttribute("errorEmail", "email non valida");
+                error = true;
+            }
         }
         return error;
     }
@@ -113,10 +130,15 @@ public class Profile extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
-                if (request.getParameter("submitRegistration") != null) {
+                if (request.getParameter("submitData") != null) {
                     action_save(request, response);
                 }
-                action_profile(request, response);
+                if(request.getParameter("update") != null){
+                    action_updateProfile(request, response);
+                }
+                else{
+                    action_profile(request, response);
+                }
             } else {
                 action_default(request, response);
             }

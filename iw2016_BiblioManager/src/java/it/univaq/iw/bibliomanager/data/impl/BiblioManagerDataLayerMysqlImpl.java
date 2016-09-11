@@ -43,28 +43,29 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement sUsers, sUserByEmail, sUserByEmailPassword, sUserById, sUserByNumberOfPublications, sUserAdministrator, sUsersByStatus;
     private PreparedStatement uUser, iUser;
     private PreparedStatement sHistories, sHistoriesByUser, sHistoriesByPublication, sHistoryById;
-    private PreparedStatement uHistory, iHistory;
-    private PreparedStatement sPublications, sPublicationById, sPublicationsByInsertDate, sPublicationsByUpdateDate, sPublicationsByFilters, sPublicationsByISBN;
+    private PreparedStatement uHistory, iHistory, dHistory, dHistoryByPublication;
+    private PreparedStatement sPublications, sPublicationById, sPublicationsByInsertDate, sPublicationsByUpdateDate, sPublicationsByFilters, sPublicationsByISBN, sIncompletePublications;
     private PreparedStatement uPublication, iPublication, dPublication, dIncompletePublication;
     private PreparedStatement sSources, sSourceById, sSourceByPublication;
-    private PreparedStatement uSource, iSource, dSource;
+    private PreparedStatement uSource, iSource, dSource, dSourceByPublication;
     private PreparedStatement sReprintsByPublication, sReprintById;
-    private PreparedStatement uReprint, iReprint, dReprint;
+    private PreparedStatement uReprint, iReprint, dReprint, dReprintByPublication;
     private PreparedStatement sEditors, sEditorsByName, sEditorById;
     private PreparedStatement uEditor, iEditor, dEditor;
     private PreparedStatement sAuthors, sAuthorsByName, sAuthorById, sAuthorByPublication;
     private PreparedStatement uAuthor, iAuthor, dAuthor;
     private PreparedStatement sReviewsByPublication, sReviewById, sLastModeratedReviews;
-    private PreparedStatement uReview, iReview, dReview;
+    private PreparedStatement uReview, iReview, dReview, dReviewByPublication;
     private PreparedStatement sKeywords, sKeywordsByPublication, sKeywordById;
     private PreparedStatement uKeyword, iKeyword, dKeyword;
     private PreparedStatement sChapters, sChapterById;
-    private PreparedStatement iChapter, uChapter, dChapter;
+    private PreparedStatement iChapter, uChapter, dChapter, dChapterByPublication;
     private PreparedStatement sSections, sSectionById;
-    private PreparedStatement iSection, uSection, dSection;
+    private PreparedStatement iSection, uSection, dSection, dSectionByChapter;
     private PreparedStatement iPublicationHasAuthor, iPublicationHasKeyword;
-    private PreparedStatement dPublicationHasAuthor, dPublicationHasKeyword;
-
+    private PreparedStatement dPublicationHasAuthor, dPublicationHasKeyword, dAuthorFromPublication, dKeywordFromPublication;
+    private PreparedStatement sUserLike, iUserLike, dUserLike;
+    
     public BiblioManagerDataLayerMysqlImpl(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
     }
@@ -89,56 +90,79 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sHistoryById = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE idstorico = ?");
             this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");
             this.iHistory = connection.prepareStatement("INSERT INTO iw2016.storico (entry, tipo, data_operazione, pubblicazione, utente) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.dHistory = connection.prepareStatement("DELETE FROM iw2016.storico WHERE idstorico = ?");
+            this.dHistoryByPublication = connection.prepareStatement("DELETE FROM iw2016.storico WHERE pubblicazione = ?");
             this.sPublications = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE incompleta = 0");
             this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
             this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 0");
             this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 1");
             this.sPublicationsByISBN = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE isbn = ? AND incompleta = 0");
+            this.sIncompletePublications = connection.prepareStatement("SELECT idpubblicazione FROM iw2016.pubblicazione WHERE incompleta = 1 AND data_pubblicazione < ?");
             this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, incompleta = ? WHERE idpubblicazione = ?");
             this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.dPublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
+            this.dIncompletePublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE incompleta = 1 AND data_pubblicazione < ? OR data_pubblicazione IS NULL");
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
             this.sSourceById = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE idsorgente = ?");
             this.sSourceByPublication = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE pubblicazione = ?");
             this.uSource = connection.prepareStatement("UPDATE iw2016.sorgente SET tipo = ?, URI = ?, formato = ?, descrizione = ?, pubblicazione = ? WHERE idsorgente = ?");
             this.iSource = connection.prepareStatement("INSERT INTO iw2016.sorgente (tipo, URI, formato, descrizione, pubblicazione) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.dSource = connection.prepareStatement("DELETE FROM iw2016.sorgente WHERE idsorgente = ?");
+            this.dSourceByPublication = connection.prepareStatement("DELETE FROM iw2016.sorgente WHERE pubblicazione = ?");
             this.sReprintsByPublication = connection.prepareStatement("SELECT * FROM iw2016.ristampa WHERE pubblicazione = ?");
             this.sReprintById = connection.prepareStatement("SELECT * FROM iw2016.ristampa WHERE idristampa = ?");
             this.uReprint = connection.prepareStatement("UPDATE iw2016.ristampa SET numero = ?, data = ?, pubblicazione = ? WHERE idristampa = ?");
             this.iReprint = connection.prepareStatement("INSERT INTO iw2016.ristampa (numero, data, pubblicazione) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.dReprint = connection.prepareStatement("DELETE FROM iw2016.ristampa WHERE idristampa = ?");
+            this.dReprintByPublication = connection.prepareStatement("DELETE FROM iw2016.ristampa WHERE pubblicazione = ?");
             this.sEditors = connection.prepareStatement("SELECT * FROM iw2016.editore ORDER BY nome");
             this.sEditorsByName = connection.prepareStatement("SELECT * FROM iw2016.editor WHERE nome LIKE '%?%'");
             this.sEditorById = connection.prepareStatement("SELECT * FROM iw2016.editore WHERE ideditore = ?");
             this.uEditor = connection.prepareStatement("UPDATE iw2016.editore SET nome = ? WHERE ideditore = ?");
             this.iEditor = connection.prepareStatement("INSERT INTO iw2016.editore (nome) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+            this.dEditor = connection.prepareStatement("DELETE FROM iw2016.editore WHERE ideditore = ? AND (SELECT COUNT(*) FROM pubblicazione WHERE editore = ?) = 0");
             this.sAuthors = connection.prepareStatement("SELECT * FROM iw2016.autore ORDER BY cognome, nome");
             this.sAuthorsByName = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE nome LIKE '%?%'");
             this.sAuthorById = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE idautore = ?");
             this.sAuthorByPublication = connection.prepareStatement("SELECT * FROM iw2016.autore JOIN autore_has_pubblicazione ON idautore = autore_idautore WHERE pubblicazione_idpubblicazione = ?");
             this.uAuthor = connection.prepareStatement("UPDATE iw2016.autore SET nome = ?, cognome = ? WHERE idautore = ?");
             this.iAuthor = connection.prepareStatement("INSERT INTO iw2016.autore (nome, cognome) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.dAuthor = connection.prepareStatement("DELETE FROM iw2016.autore WHERE idautore = ? AND (SELECT COUNT(*) FROM autore_has_pubblicazione WHERE autore_idautore = ?) = 0");
             this.sReviewsByPublication = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ? ORDER BY data_recensione DESC");
             this.sReviewById = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE idrecensione = ?");
             this.sLastModeratedReviews = connection.prepareStatement("SELECT * FROM iw2016.recensione WHERE pubblicazione = ? AND moderata = 1 ORDER BY data_recensione DESC LIMIT ?");
             this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET testo = ?, moderata = ?, data_recensione = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
             this.iReview = connection.prepareStatement("INSERT INTO iw2016.recensione (testo, moderata, data_recensione, utente_autore, pubblicazione) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.dReview = connection.prepareStatement("DELETE FROM iw2016.recensione WHERE idrecensione = ?");
+            this.dReviewByPublication = connection.prepareStatement("DELETE FROM iw2016.recensione WHERE pubblicazione = ?");
             this.sKeywords = connection.prepareStatement("SELECT * FROM iw2016.keyword ORDER BY nome");
             this.sKeywordById = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE idkeyword = ?");
             this.sKeywordsByPublication = connection.prepareStatement("SELECT * FROM iw2016.keyword JOIN pubblicazione_has_keyword ON idkeyword = keyword_idkeyword WHERE pubblicazione_idpubblicazione = ?");
             this.uKeyword = connection.prepareStatement("UPDATE iw2016.keyword SET nome = ? WHERE idkeyword = ?");
             this.iKeyword = connection.prepareStatement("INSERT INTO iw2016.keyword (nome) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
+            this.dKeyword = connection.prepareStatement("DELETE FROM iw2016.keyword WHERE idkeyword = ? AND (SELECT COUNT(*) FROM pubblicazione_has_keyword WHERE keyword_idkeyword = ?) = 0");
             this.sChapters = connection.prepareStatement("SELECT * FROM iw2016.capitolo WHERE pubblicazione = ? ORDER BY numero");
             this.sChapterById = connection.prepareStatement("SELECT * FROM iw2016.capitolo WHERE idcapitolo = ?");
             this.uChapter = connection.prepareStatement("UPDATE iw2016.capitolo SET numero = ?, titolo = ?, pubblicazione = ? WHERE idcapitolo = ?"); 
             this.iChapter = connection.prepareStatement("INSERT INTO iw2016.capitolo (numero,titolo,pubblicazione) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.dChapter = connection.prepareStatement("DELETE FROM iw2016.capitolo WHERE idcapitolo = ?");
+            this.dChapterByPublication = connection.prepareStatement("DELETE FROM iw2016.capitolo WHERE pubblicazione = ?");
             this.sSections = connection.prepareStatement("SELECT * FROM iw2016.sezione WHERE capitolo = ? ORDER BY numero");
             this.sSectionById = connection.prepareStatement("SELECT * FROM iw2016.sezione WHERE idsezione = ?");
             this.uSection = connection.prepareStatement("UPDATE iw2016.sezione SET numero = ?, titolo = ?, capitolo = ? WHERE idsezione = ?");
             this.iSection = connection.prepareStatement("INSERT INTO iw2016.sezione (numero, titolo, capitolo) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS); 
+            this.dSection = connection.prepareStatement("DELETE FROM iw2016.sezione WHERE idsezione = ?"); 
+            this.dSectionByChapter = connection.prepareStatement("DELETE FROM iw2016.sezione WHERE capitolo = ?");
             this.iPublicationHasAuthor = connection.prepareStatement("INSERT INTO iw2016.autore_has_pubblicazione(autore_idautore,pubblicazione_idpubblicazione) VALUES (?,?)");
             this.dPublicationHasAuthor = connection.prepareStatement("DELETE FROM iw2016.autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ?");
             this.iPublicationHasKeyword = connection.prepareStatement("INSERT INTO iw2016.pubblicazione_has_keyword (pubblicazione_idpubblicazione, keyword_idkeyword) VALUES (?,?)");
             this.dPublicationHasKeyword = connection.prepareStatement("DELETE FROM iw2016.pubblicazione_has_keyword WHERE pubblicazione_idpubblicazione = ?");
+            this.dAuthorFromPublication = connection.prepareStatement("DELETE FROM iw2016.autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ? AND autore_idautore = ?");
+            this.dKeywordFromPublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione_has_keyword WHERE pubblicazione_idpubblicazione = ? AND keyword_idkeyword = ?");
+            
+            this.sUserLike = connection.prepareStatement("SELECT * FROM iw2016.consigli_utente WHERE pubblicazione_idpubblicazione = ?");
+            this.iUserLike = connection.prepareStatement("INSERT INTO iw2016.consigli_utente (pubblicazione_idpubblicazione, utente_idutente) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS); 
+            this.dUserLike = connection.prepareStatement("DELETE FROM iw2016.consigli_utente WHERE pubblicazione_idpubblicazione = ?");
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         }
@@ -218,6 +242,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             publication.setReprints(getReprints(rs.getInt("idpubblicazione")));
             publication.setIndex(getChapters(rs.getInt("idpubblicazione")));
             publication.setReviews(getReviews(rs.getInt("idpubblicazione")));
+//            publication.setUserLike(getUsersLike(rs.getInt("idpubblicazione")));
             publication.setIncomplete(rs.getBoolean("incompleta"));
             return publication;
         } catch (SQLException ex) {
@@ -1272,7 +1297,32 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
+    
+    @Override
+    public List<User> getUsersLike(int publication_key) throws DataLayerException {
+        List<User> result = new ArrayList();
+        ResultSet rs = null;
+        try {
+            sUserLike.setInt(1, publication_key);
+            rs = sUserLike.executeQuery();
+            while (rs.next()) {
+                result.add(getUser(rs.getInt("utente_idutente")));
 
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load users", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+    
     @Override
     public Chapter getChapter(int chapter_key) throws DataLayerException {
         Chapter result = null;
@@ -1330,7 +1380,6 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             rs = sChapters.executeQuery();
             while (rs.next()) {
                 result.add(getChapter(rs.getInt("idcapitolo")));
-
             }
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to load chapters from publication", ex);
@@ -1382,7 +1431,6 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                if (!article.isDirty()) {
 //                    return;
 //                }
-                //TODO: Salvataggio anche per la tabella autore_has_pubblicazione
                 uAuthor.setString(1, author.getName());
                 uAuthor.setString(2, author.getSurname());
                 uAuthor.setInt(3, key);
@@ -1666,7 +1714,6 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 //                if (!article.isDirty()) {
 //                    return;
 //                }
-                //TODO: Salvataggio anche per la tabella pubblicazione_has_sorgente
                 uSource.setString(1, source.getType());
                 uSource.setString(2, source.getUri());
                 uSource.setString(3, source.getFormat());
@@ -1933,7 +1980,27 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             }
         }
     }
-
+    
+    @Override
+    public void deleteAuthorFromPublication(int idPublication, int idAuthor) throws DataLayerException {
+        ResultSet res = null;
+        try {
+            dAuthorFromPublication.setInt(1, idPublication);
+            dAuthorFromPublication.setInt(2, idAuthor);
+            dAuthorFromPublication.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete author relation", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+    }
+    
     @Override
     public void storePublicationHasKeyword(int idKeyword, int idPublication) throws DataLayerException {
         ResultSet res = null;
@@ -1974,13 +2041,33 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             }
         }
     }
-
+    
+    @Override
+    public void deleteKeywordFromPublication(int idPublication, int idKeyword) throws DataLayerException {
+        ResultSet res = null;
+        try {
+            dKeywordFromPublication.setInt(1, idPublication);
+            dKeywordFromPublication.setInt(2, idKeyword);
+            dKeywordFromPublication.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete keyword relation", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+    }
+    
     @Override
     public void deleteAuthor(Author author) throws DataLayerException {
         ResultSet res = null;
         try {
             dAuthor.setInt(1, author.getKey());
-            
+            dAuthor.setInt(2, author.getKey());
             dAuthor.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete author", ex);
@@ -1997,22 +2084,121 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
     @Override
     public void deleteEditor(Editor editor) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet res = null;
+        try {
+            dEditor.setInt(1, editor.getKey());
+            dEditor.setInt(2, editor.getKey());
+            dEditor.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete editor", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
     public void deleteKeyword(Keyword keyword) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet res = null;
+        try {
+            dKeyword.setInt(1, keyword.getKey());
+            dKeyword.setInt(2, keyword.getKey());
+            dKeyword.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete keyword", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
     public void deletePublication(Publication publication) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet res = null;
+        try {
+            if(publication.getIndex() != null){
+                for(Chapter chapter : publication.getIndex()){
+                    dSectionByChapter.setInt(1, chapter.getKey());
+                    dSectionByChapter.executeUpdate();
+                }
+            }
+            dChapterByPublication.setInt(1, publication.getKey());
+            dChapterByPublication.executeUpdate();
+            dSourceByPublication.setInt(1, publication.getKey());
+            dSourceByPublication.executeUpdate();
+            dReprintByPublication.setInt(1, publication.getKey());
+            dReprintByPublication.executeUpdate();
+            dReviewByPublication.setInt(1, publication.getKey());
+            dReviewByPublication.executeUpdate();
+            dHistoryByPublication.setInt(1, publication.getKey());
+            dHistoryByPublication.executeUpdate();
+            deletePublicationHasAuthor(publication.getKey());
+            deletePublicationHasKeyword(publication.getKey());
+            dPublication.setInt(1, publication.getKey());
+            dPublication.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete publication", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
-    public void deleteIncompletePublication(Publication publication) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    public void deleteIncompletePublication() throws DataLayerException {
+        ResultSet res = null;
+        try {
+            sIncompletePublications.setDate(1, new Date(System.currentTimeMillis()));
+            res = sIncompletePublications.executeQuery();
+            while (res.next()) {
+                List<Chapter> chap = getChapters(res.getInt("idpubblicazione"));
+                if(chap != null){
+                    for(Chapter chapter : chap){
+                        dSectionByChapter.setInt(1, chapter.getKey());
+                        dSectionByChapter.executeUpdate();
+                    }
+                }
+                dChapterByPublication.setInt(1, res.getInt("idpubblicazione"));
+                dChapterByPublication.executeUpdate();
+                dSourceByPublication.setInt(1, res.getInt("idpubblicazione"));
+                dSourceByPublication.executeUpdate();
+                dReprintByPublication.setInt(1, res.getInt("idpubblicazione"));
+                dReprintByPublication.executeUpdate();
+                dReviewByPublication.setInt(1, res.getInt("idpubblicazione"));
+                dReviewByPublication.executeUpdate();
+                dHistoryByPublication.setInt(1, res.getInt("idpubblicazione"));
+                dHistoryByPublication.executeUpdate();
+                deletePublicationHasAuthor(res.getInt("idpubblicazione"));
+                deletePublicationHasKeyword(res.getInt("idpubblicazione"));
+            }
+            dIncompletePublication.setDate(1, new java.sql.Date(System.currentTimeMillis()));
+            dIncompletePublication.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete incomplete publications", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
@@ -2037,21 +2223,142 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
     @Override
     public void deleteReprint(Reprint reprint) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet res = null;
+        try {
+            dReprint.setInt(1, reprint.getKey());
+            
+            dReprint.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete reprint", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
     public void deleteSource(Source source) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet res = null;
+        try {
+            dSource.setInt(1, source.getKey());
+            
+            dSource.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete source", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
     public void deleteChapter(Chapter chapter) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet res = null;
+        try {
+            dChapter.setInt(1, chapter.getKey());
+            
+            dChapter.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete chapter", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 
     @Override
     public void deleteSection(Section section) throws DataLayerException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        ResultSet res = null;
+        try {
+            dSection.setInt(1, section.getKey());
+            
+            dSection.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete section", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+    }
+
+    @Override
+    public void deleteHistory(History history) throws DataLayerException {
+        ResultSet res = null;
+        try {
+            dHistory.setInt(1, history.getKey());
+            
+            dHistory.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete history", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+    }
+    
+    @Override
+    public void storeLike(int publication_key, int user_key) throws DataLayerException {
+        ResultSet res = null;
+        try {
+            iUserLike.setInt(1, publication_key);
+            iUserLike.setInt(2, user_key);
+            
+            iUser.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot relate user with publication", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+    }
+
+    @Override
+    public void deletePublicationLike(int idPublication) throws DataLayerException {
+        ResultSet res = null;
+        try {
+            dUserLike.setInt(1, idPublication);
+            
+            dUserLike.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete like", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
     }
 }

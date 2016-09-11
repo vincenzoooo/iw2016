@@ -99,7 +99,7 @@
                             <#list authors as item>
                             <li class="list-group-item nodecoration">
                                 ${item.name!''?html}&nbsp;${item.surname!''?html}
-                                <a href="publication" name="delateAuthor"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
+                                <a href="publication?unlinkAuthor=${item.key}"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
                             </li>
                             </#list>
                         </ul>
@@ -125,7 +125,7 @@
                             <#list keywords as item>
                             <li class="list-group-item nodecoration">
                                 ${item.name!''?html}
-                                <a href="publication" name="delateKeyword"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
+                                <a href="publication?unlinkKeyword=${item.key}"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
                             </li>
                             </#list>
                         </ul>

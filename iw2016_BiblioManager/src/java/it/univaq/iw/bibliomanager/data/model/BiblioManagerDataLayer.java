@@ -119,6 +119,8 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     List<Section> getSections(int chapter_key) throws DataLayerException;
 
+    List<User> getUsersLike(int publication_key) throws DataLayerException;
+    
     void storeAuthor(Author author) throws DataLayerException;
 
     void storeEditor(Editor editor) throws DataLayerException;
@@ -140,6 +142,8 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeChapter(Chapter chapter) throws DataLayerException;
 
     void storeSection(Section section) throws DataLayerException;
+    
+    void storeLike(int publication_key, int user_key) throws DataLayerException;
 
     void deleteAuthor(Author author) throws DataLayerException;
 
@@ -149,7 +153,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     void deletePublication(Publication publication) throws DataLayerException;
 
-    void deleteIncompletePublication(Publication publication) throws DataLayerException;
+    void deleteIncompletePublication() throws DataLayerException;
 
     void deleteReview(Review review) throws DataLayerException;
 
@@ -160,6 +164,8 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deleteChapter(Chapter chapter) throws DataLayerException;
 
     void deleteSection(Section section) throws DataLayerException;
+    
+    void deleteHistory(History history) throws DataLayerException;
 
     void storePublicationHasAuthor(int idAuthor, int idPublication) throws DataLayerException;
 
@@ -168,4 +174,10 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storePublicationHasKeyword(int idKeyword, int idPublication) throws DataLayerException;
 
     void deletePublicationHasKeyword(int idPublication) throws DataLayerException;
+    
+    void deleteAuthorFromPublication(int idPublication, int idAuthor) throws DataLayerException;
+    
+    void deleteKeywordFromPublication(int idPublication, int idKeyword) throws DataLayerException;
+    
+    void deletePublicationLike(int idPublication) throws DataLayerException;
 }

@@ -48,7 +48,12 @@ public class PublicationDetails extends BiblioManagerBaseController {
         List<Review> reviews = getDataLayer().getReviews(Integer.parseInt(request.getParameter("publicationId")));
         request.setAttribute("reviews", reviews);
     }
-
+    
+    private void action_like(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
+        Publication publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("publicationId")));
+        publication.setLike(1);
+        getDataLayer().storePublication(publication);
+    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -65,6 +70,9 @@ public class PublicationDetails extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
+                if(request.getParameter("like") != null){
+                    action_like(request, response);
+                }
                 action_publication(request, response);
             } else {
                 action_default(request, response);

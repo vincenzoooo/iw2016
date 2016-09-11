@@ -100,7 +100,7 @@
                             <#list publication.authors as item>
                             <li class="list-group-item nodecoration">
                                 ${item.name!''?html}&nbsp;${item.surname!''?html}
-                                <a href="publication" name="delateAuthor"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
+                                <a href="managePublication?publicationId=${publication.key}&unlinkAuthor=${item.key}"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
                             </li>
                             </#list>
                         </ul>
@@ -126,7 +126,7 @@
                             <#list publication.keywords as item>
                             <li class="list-group-item nodecoration">
                                 ${item.name!''?html}
-                                <a href="publication" name="delateKeyword"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
+                                <a href="managePublication?publicationId=${publication.key}&unlinkKeyword=${item.key}"><i class="fa fa-times delateitem pull-right" aria-hidden="true"></i></a>
                             </li>
                             </#list>
                         </ul>
@@ -147,9 +147,9 @@
                 
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
-                        <a href="index" class="btn btn-default ">Modifica indice</a>
-                        <a href="source" class="btn btn-default col-sm-offset-1">Modifica risorse</a>
-                        <a href="reprint" class="btn btn-default col-sm-offset-1">Modifica ristampe</a>
+                        <input value="Modifica indice" name="addIndex" type="submit" class="btn btn-default"/>
+                        <input value="Modifica risorse" name="addSource" type="submit" class="btn btn-default"/>
+                        <input value="Modifica ristampe" name="addReprint" type="submit" class="btn btn-default"/>
                     </div>
                 </div>
                 

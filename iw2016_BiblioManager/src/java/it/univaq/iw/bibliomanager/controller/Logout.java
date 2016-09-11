@@ -6,6 +6,7 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
+import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.security.SecurityLayer;
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -18,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Logout extends BiblioManagerBaseController {
 
-    private void action_logout(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    private void action_logout(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, DataLayerException {
         SecurityLayer.disposeSession(request);
         action_default(request, response);
     }
@@ -40,7 +41,7 @@ public class Logout extends BiblioManagerBaseController {
             } else {
                 action_default(request, response);
             }
-        } catch (IOException | ServletException ex) {
+        } catch (DataLayerException | IOException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
     }

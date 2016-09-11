@@ -92,7 +92,8 @@ public class ComposeEditor extends BiblioManagerBaseController {
                 }
                 List<Editor> editors = getDataLayer().getEditors();
                 request.setAttribute("editors", editors);
-
+                request.setAttribute("publicationId", session.getAttribute("publicationId"));
+                request.setAttribute("url", (String)session.getAttribute("url"));
                 res.activate("editor.ftl.html", request, response);
             } else {
                 action_default(request, response);

@@ -118,6 +118,24 @@ public class UpdatePublication extends BiblioManagerBaseController {
         request.setAttribute("publication", publication);
         request.setAttribute("editors", editors);
     }
+    
+    private void action_unlinkAuthor (HttpServletRequest request, HttpServletResponse response)
+            throws DataLayerException {
+        getDataLayer().deleteAuthorFromPublication((int)request.getAttribute("publicationId"), Integer.parseInt(request.getParameter("unlinkAuthor")));
+    }
+    
+    private void action_unlinkKeyword (HttpServletRequest request, HttpServletResponse response)
+            throws DataLayerException {
+        getDataLayer().deleteKeywordFromPublication((int)request.getAttribute("publicationId"), Integer.parseInt(request.getParameter("unlinkKeyword")));
+    }
+    
+    private void action_deletePublication (HttpServletRequest request, HttpServletResponse response)
+            throws DataLayerException, ServletException, IOException {
+        Publication publication = getDataLayer().getPublication((int)request.getAttribute("publicationId"));
+        getDataLayer().deletePublication(publication);
+        action_redirect(request, response, "/catalog");
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -133,15 +151,12 @@ public class UpdatePublication extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Modifica Pubblicazione");
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
+                session.setAttribute("url", "managePublication");
                 if(request.getParameter("publicationId") != null){
                     request.setAttribute("publicationId", Integer.parseInt(request.getParameter("publicationId")));
                 }
                 if(session.getAttribute("publicationId") != null){
                     request.setAttribute("publicationId", (int) session.getAttribute("publicationId"));
-                    session.removeAttribute("publicationId");
-                }
-                if(session.getAttribute("publicationId") != null){
-                    request.setAttribute("publicationId", (int)session.getAttribute("publicationId"));
                     session.removeAttribute("publicationId");
                 }
                 if (request.getParameter("addEditor") != null) {
@@ -150,27 +165,38 @@ public class UpdatePublication extends BiblioManagerBaseController {
                 }
                 if (request.getParameter("addAuthor") != null) {
                     session.setAttribute("publicationId", Integer.parseInt(request.getParameter("publicationId")));
-                    response.sendRedirect("author");
+                    action_redirect(request, response, "/author");
+                }
+                if (request.getParameter("unlinkAuthor") != null) {
+                    action_unlinkAuthor(request, response);
                 }
                 if (request.getParameter("addKeyword") != null) {
                     session.setAttribute("publicationId", Integer.parseInt(request.getParameter("publicationId")));
-                    response.sendRedirect("keyword");
+                    action_redirect(request, response, "/keyword");
+                }
+                if (request.getParameter("unlinkKeyword") != null) {
+                    action_unlinkKeyword(request, response);
                 }
                 if (request.getParameter("addIndex") != null) {
                     session.setAttribute("publicationId", Integer.parseInt(request.getParameter("publicationId")));
-                    response.sendRedirect("index");
+                    action_redirect(request, response, "/index");
                 }
                 if (request.getParameter("addSource") != null) {
                     session.setAttribute("publicationId", Integer.parseInt(request.getParameter("publicationId")));
-                    response.sendRedirect("source");
+                    action_redirect(request, response, "/source");
                 }
                 if (request.getParameter("addReprint") != null) {
                     session.setAttribute("publicationId", Integer.parseInt(request.getParameter("publicationId")));
-                    response.sendRedirect("reprint");
+                    action_redirect(request, response, "/reprint");
+                }
+                if (request.getParameter("delete") != null) {
+                    action_deletePublication(request, response);
                 }
                 action_loadData(request, response);
                 if(request.getParameter("submitPublication") != null){
                     action_updatePublication(request, response);
+                    session.removeAttribute("publicationId");
+                    session.removeAttribute("url");
                 }
                 TemplateResult res = new TemplateResult(getServletContext());
                 res.activate("managePublication.ftl.html", request, response);
