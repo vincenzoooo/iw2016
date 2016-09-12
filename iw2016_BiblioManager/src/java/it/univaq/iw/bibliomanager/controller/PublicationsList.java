@@ -34,16 +34,25 @@ public class PublicationsList extends BiblioManagerBaseController {
         filters.put("order_by", orderField[orderBy]);
         int orderMode = request.getParameter("orderMode") != null ? Integer.parseInt(request.getParameter("orderMode")) : 0;
         filters.put("order_mode", orderType[orderMode]);
+        int offset = request.getParameter("offset") != null ? Integer.parseInt(request.getParameter("offset")) : 0;
         request.setAttribute("orderBy", orderBy);
         request.setAttribute("orderMode", orderMode);
+        filters.put("offset", Integer.toString(offset));
         TemplateResult res = new TemplateResult(getServletContext());
         try {
             if (request.getAttribute("publications") == null) {
                 List<Publication> publications = getDataLayer().getPublicationsByFilters(filters);
                 request.setAttribute("publications", publications);
-//                int pages = publications.size() / 2;
-//                request.setAttribute("pages", pages);
             }
+            int pages = getDataLayer().getPublications().size() / 4;
+            String[] urlPages = new String[pages];
+            offset = pages - 1;
+            while(pages > 0){    
+                urlPages[--pages] = "catalog?orderBy=" + orderBy + "&offset=" + offset;
+                offset-=4;
+            }
+
+            request.setAttribute("pages", urlPages);
             res.activate("catalog.ftl.html", request, response);
         } catch (ServletException | DataLayerException ex) {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage());
