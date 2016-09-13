@@ -160,7 +160,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.dAuthorFromPublication = connection.prepareStatement("DELETE FROM iw2016.autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ? AND autore_idautore = ?");
             this.dKeywordFromPublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione_has_keyword WHERE pubblicazione_idpubblicazione = ? AND keyword_idkeyword = ?");
             
-            this.sUserLike = connection.prepareStatement("SELECT * FROM iw2016.consigli_utente WHERE pubblicazione_idpubblicazione = ?");
+            this.sUserLike = connection.prepareStatement("SELECT * FROM iw2016.consigli_utente WHERE pubblicazione_idpubblicazione = ? AND utente_idutente = ?");
             this.iUserLike = connection.prepareStatement("INSERT INTO iw2016.consigli_utente (pubblicazione_idpubblicazione, utente_idutente) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS); 
             this.dUserLike = connection.prepareStatement("DELETE FROM iw2016.consigli_utente WHERE pubblicazione_idpubblicazione = ?");
         } catch (SQLException ex) {
@@ -1303,15 +1303,15 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
     
     @Override
-    public List<User> getUsersLike(int publication_key) throws DataLayerException {
-        List<User> result = new ArrayList();
+    public boolean getUsersLike(int publication_key, int user_key) throws DataLayerException {
         ResultSet rs = null;
+        boolean liked = false;
         try {
             sUserLike.setInt(1, publication_key);
+            sUserLike.setInt(2, user_key);
             rs = sUserLike.executeQuery();
             while (rs.next()) {
-                result.add(getUser(rs.getInt("utente_idutente")));
-
+                liked = true;
             }
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to load users", ex);
@@ -1324,7 +1324,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 //
             }
         }
-        return result;
+        return liked;
     }
     
     @Override
@@ -2332,7 +2332,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             iUserLike.setInt(1, publication_key);
             iUserLike.setInt(2, user_key);
             
-            iUser.executeUpdate();
+            iUserLike.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot relate user with publication", ex);
         } finally {

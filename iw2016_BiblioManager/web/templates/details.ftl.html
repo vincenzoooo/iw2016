@@ -84,7 +84,11 @@
                         </span>
                     </div>
                     <div id="advicesPublication" class="margin-top-30">
+                        <#if !like>
                         <a href="details?like&publicationId=${publication.key}" class="btn btn-default"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Vota</a>
+                        <#else>
+                        <div>Hai consigliato questa pubblicazione</div>
+                        </#if>
                         <div class="margin-bottom-10 bold"> 
                             <div>Numero consigli:&nbsp;<span id="numberAdvices">${publication.like}</span></div> 
                         </div>

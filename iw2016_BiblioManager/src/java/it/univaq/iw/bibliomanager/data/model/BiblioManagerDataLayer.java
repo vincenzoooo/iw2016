@@ -119,7 +119,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     List<Section> getSections(int chapter_key) throws DataLayerException;
 
-    List<User> getUsersLike(int publication_key) throws DataLayerException;
+    boolean getUsersLike(int publication_key, int user_key) throws DataLayerException;
     
     void storeAuthor(Author author) throws DataLayerException;
 

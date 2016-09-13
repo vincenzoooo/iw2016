@@ -28,6 +28,7 @@ public class PublicationDetails extends BiblioManagerBaseController {
     private void action_publication(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException, IOException, NumberFormatException, ServletException {
         TemplateResult res = new TemplateResult(getServletContext());
+        HttpSession session = SecurityLayer.checkSession(request);
         int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
         List<History> histories = getDataLayer().getHistoriesByPublication(publicationKey);
         for (History entry : histories) {
@@ -41,6 +42,8 @@ public class PublicationDetails extends BiblioManagerBaseController {
         request.setAttribute("publication", publication);
         List<Review> lastReviews = getDataLayer().getLastReviews(publicationKey, 1);
         request.setAttribute("lastReviews", lastReviews);
+        boolean liked = getDataLayer().getUsersLike(Integer.parseInt(request.getParameter("publicationId")), (int) session.getAttribute("userId"));
+        request.setAttribute("like", liked);
         res.activate("details.ftl.html", request, response);
     }
 
@@ -50,9 +53,14 @@ public class PublicationDetails extends BiblioManagerBaseController {
     }
     
     private void action_like(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
-        Publication publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("publicationId")));
-        publication.setLike(1);
-        getDataLayer().storePublication(publication);
+        HttpSession session = SecurityLayer.checkSession(request);
+        boolean liked = getDataLayer().getUsersLike(Integer.parseInt(request.getParameter("publicationId")), (int) session.getAttribute("userId"));
+        if(!liked){
+            Publication publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("publicationId")));
+            publication.setLike(1);
+            getDataLayer().storePublication(publication);
+            getDataLayer().storeLike(Integer.parseInt(request.getParameter("publicationId")), (int) session.getAttribute("userId"));
+        }
     }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
