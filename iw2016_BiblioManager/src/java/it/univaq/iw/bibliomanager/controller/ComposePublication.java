@@ -207,6 +207,7 @@ public class ComposePublication extends BiblioManagerBaseController {
                     request.setAttribute("currentEditor", publication.getEditor().getKey());
                 }
                 if (request.getParameter("submitPublication") != null) {
+                    //TODO: Far restituire un Publication ad action_composePublication()
                     action_composePublication(request, response);
                     String url = "details?publicationId=" + session.getAttribute("publicationId");
                     session.removeAttribute("publicationId");

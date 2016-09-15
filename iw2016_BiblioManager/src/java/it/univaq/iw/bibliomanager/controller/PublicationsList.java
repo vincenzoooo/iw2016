@@ -27,9 +27,12 @@ public class PublicationsList extends BiblioManagerBaseController {
 
     private final String[] orderField = new String[]{"titolo", "e.nome", "a.cognome", "data_pubblicazione", "n_consigli"};
     private final String[] orderType = new String[]{"ASC", "DESC"};
-
-    private void action_list(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Map<String, String> filters = new HashMap<String, String>();
+    private Map<String, String> filters = new HashMap<>();
+    private void action_list(HttpServletRequest request, HttpServletResponse response) throws IOException, DataLayerException {
+        if(request.getAttribute("filter") != null){
+            request.setAttribute("filter", request.getAttribute("filter"));
+            filters = getDataLayer().getFilters((int)request.getAttribute("filter"));
+        }
         int orderBy = request.getParameter("orderBy") != null ? Integer.parseInt(request.getParameter("orderBy")) : 0;
         filters.put("order_by", orderField[orderBy]);
         int orderMode = request.getParameter("orderMode") != null ? Integer.parseInt(request.getParameter("orderMode")) : 0;
@@ -40,10 +43,8 @@ public class PublicationsList extends BiblioManagerBaseController {
         filters.put("offset", Integer.toString(offset));
         TemplateResult res = new TemplateResult(getServletContext());
         try {
-            if (request.getAttribute("publications") == null) {
-                List<Publication> publications = getDataLayer().getPublicationsByFilters(filters);
-                request.setAttribute("publications", publications);
-            }
+            List<Publication> publications = getDataLayer().getPublicationsByFilters(filters);
+            request.setAttribute("publications", publications);
             int pages = getDataLayer().getPublications().size() / 4;
             String[] urlPages = new String[pages];
             offset = pages - 1;

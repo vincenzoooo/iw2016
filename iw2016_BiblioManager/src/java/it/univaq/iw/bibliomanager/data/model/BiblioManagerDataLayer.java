@@ -180,4 +180,10 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deleteKeywordFromPublication(int idPublication, int idKeyword) throws DataLayerException;
     
     void deletePublicationLike(int idPublication) throws DataLayerException;
+    
+    int storeFilters(Map<String, String> filters) throws DataLayerException;
+    
+    void deleteFilters() throws DataLayerException;
+    
+    Map<String, String> getFilters(int filter_key) throws DataLayerException;
 }

@@ -31,48 +31,49 @@ public class PublicationResearch extends BiblioManagerBaseController {
             Map<String, String> filters = new HashMap<String, String>();
             String isbn = request.getParameter("publicationIsbn");
             if (!Utils.isNullOrEmpty(isbn)) {
-                filters.put("publicationIsbn", isbn);
+                filters.put("isbn", isbn);
             }
             String title = request.getParameter("publicationTitle");
             if (!Utils.isNullOrEmpty(title)) {
-                filters.put("publicationTitle", title);
+                filters.put("titolo", title);
             }
             String authorName = request.getParameter("publicationAuthor");
             if (!Utils.isNullOrEmpty(authorName)) {
-                filters.put("publicationAuthor", authorName);
+                filters.put("autore", authorName);
             }
             String editorName = request.getParameter("publicationEditor");
             if (!Utils.isNullOrEmpty(authorName)) {
-                filters.put("publicationEditor", editorName);
+                filters.put("editore", editorName);
             }
             String date = request.getParameter("publicationYear");
             if (!Utils.isNullOrEmpty(date)) {
-                filters.put("publicationYear", date);
+                filters.put("anno_inizio", date);
                 String end = String.valueOf(Integer.parseInt(Utils.getArrayParameter(filters, "publicationYear")) + 1);
-                filters.put("publicationYearEnd", end);
+                filters.put("anno_fine", end);
             } else {
-                filters.put("publicationYear", String.valueOf(0));
+                filters.put("anno_inizio", String.valueOf(0));
                 int year = Calendar.getInstance().get(Calendar.YEAR);
-                filters.put("publicationYearEnd", String.valueOf(year + 1));
+                filters.put("anno_fine", String.valueOf(year + 1));
             }
             String keyword = request.getParameter("publicationKeyword");
             if (!Utils.isNullOrEmpty(keyword)) {
-                filters.put("publicationKeyword", keyword);
+                filters.put("keyword", keyword);
             }
             String language = request.getParameter("publicationLanguage");
             if (!Utils.isNullOrEmpty(language)) {
-                filters.put("publicationLanguage", language);
+                filters.put("lingua", language);
             }
             String download = request.getParameter("download");
             if (!Utils.isNullOrEmpty(download)) {
                 filters.put("download", "download");
             }
             if (request.getAttribute("publicationUser") != null) {
-                filters.put("publicationUser", request.getAttribute("publicationUser").toString());
+                filters.put("utente", request.getAttribute("publicationUser").toString());
             }
             filters.put("order_by", "titolo");
             filters.put("order_mode", "ASC");
-            request.setAttribute("publications", getDataLayer().getPublicationsByFilters(filters));
+            int filters_key = getDataLayer().storeFilters(filters);
+            request.setAttribute("filter", filters_key);
             request.setAttribute("isResearch", 1);
             getServletContext().getRequestDispatcher("/catalog").forward(request, response);
         } catch (DataLayerException ex) {

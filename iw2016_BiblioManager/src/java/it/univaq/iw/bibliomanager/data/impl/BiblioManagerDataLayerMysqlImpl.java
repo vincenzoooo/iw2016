@@ -31,6 +31,7 @@ import java.util.Calendar;
 import it.univaq.iw.bibliomanager.data.model.Keyword;
 import it.univaq.iw.bibliomanager.data.model.Section;
 import it.univaq.iw.framework.utils.Utils;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -65,6 +66,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement iPublicationHasAuthor, iPublicationHasKeyword;
     private PreparedStatement dPublicationHasAuthor, dPublicationHasKeyword, dAuthorFromPublication, dKeywordFromPublication;
     private PreparedStatement sUserLike, iUserLike, dUserLike;
+    private PreparedStatement sFilters, iFilters, dFilters;
     
     public BiblioManagerDataLayerMysqlImpl(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
@@ -159,10 +161,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.dPublicationHasKeyword = connection.prepareStatement("DELETE FROM iw2016.pubblicazione_has_keyword WHERE pubblicazione_idpubblicazione = ?");
             this.dAuthorFromPublication = connection.prepareStatement("DELETE FROM iw2016.autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ? AND autore_idautore = ?");
             this.dKeywordFromPublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione_has_keyword WHERE pubblicazione_idpubblicazione = ? AND keyword_idkeyword = ?");
-            
             this.sUserLike = connection.prepareStatement("SELECT * FROM iw2016.consigli_utente WHERE pubblicazione_idpubblicazione = ? AND utente_idutente = ?");
             this.iUserLike = connection.prepareStatement("INSERT INTO iw2016.consigli_utente (pubblicazione_idpubblicazione, utente_idutente) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS); 
             this.dUserLike = connection.prepareStatement("DELETE FROM iw2016.consigli_utente WHERE pubblicazione_idpubblicazione = ?");
+            this.sFilters = connection.prepareStatement("SELECT * FROM iw2016.filtri WHERE idfiltri = ?");
+            this.iFilters = connection.prepareStatement("INSERT INTO iw2016.filtri (isbn, titolo, autore, editore, anno_inizio, anno_fine, keyword, lingua, download, utente, timestamp) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.dFilters = connection.prepareStatement("DELETE FROM iw2016.filtri WHERE timestamp < ?");
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         }
@@ -679,34 +683,34 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                     "LEFT JOIN storico st ON st.pubblicazione = p.idpubblicazione LEFT JOIN utente u ON u.idutente = st.utente WHERE p.incompleta = 0 ";
             for (Map.Entry<String, String> entry : filters.entrySet())
             {
-                if(entry.getKey().equals("publicationIsbn") && entry.getValue() != null){
+                if(entry.getKey().equals("isbn") && entry.getValue() != null){
                     query += " AND p.isbn LIKE '%"+entry.getValue()+"%' ";
                 }
-                if(entry.getKey().equals("publicationTitle") && entry.getValue() != null){
+                if(entry.getKey().equals("titolo") && entry.getValue() != null){
                     query += " AND p.titolo LIKE '%"+entry.getValue()+"%' ";
                 }
-                if(entry.getKey().equals("publicationAuthor") && entry.getValue() != null){
+                if(entry.getKey().equals("autore") && entry.getValue() != null){
                     query += " AND concat(a.nome, ' ',a.cognome) LIKE '%"+entry.getValue()+"%' ";
                 }
-                if(entry.getKey().equals("publicationEditor") && entry.getValue() != null){
+                if(entry.getKey().equals("editore") && entry.getValue() != null){
                     query += " AND e.nome LIKE '%"+entry.getValue()+"%' ";
                 }
-                if(entry.getKey().equals("publicationKeyword") && entry.getValue() != null){
+                if(entry.getKey().equals("keyword") && entry.getValue() != null){
                     query += " AND k.nome LIKE '%"+entry.getValue()+"%' ";
                 }
-                if(entry.getKey().equals("publicationLanguage") && entry.getValue() != null){
+                if(entry.getKey().equals("lingua") && entry.getValue() != null){
                     query += " AND p.lingua LIKE '%"+entry.getValue()+"%' ";
                 }
-                if(entry.getKey().equals("publicationYear") && entry.getValue() != null){
+                if(entry.getKey().equals("anno_inizio") && entry.getValue() != null){
                     query += " AND p.data_pubblicazione >= '"+entry.getValue()+"' ";
                 }
-                if(entry.getKey().equals("publicationYearEnd") && entry.getValue() != null){
+                if(entry.getKey().equals("anno_fine") && entry.getValue() != null){
                     query += " AND p.data_pubblicazione < '"+entry.getValue()+"' ";
                 }
                 if(entry.getKey().equals("download") && entry.getValue() != null){
                     query += " AND sr.tipo = '"+entry.getValue()+"' ";
                 }
-                if(entry.getKey().equals("publicationUser") && entry.getValue() != null){
+                if(entry.getKey().equals("utente") && entry.getValue() != null){
                     query += " AND CONCAT(u.nome, ' ',u.cognome) LIKE '%"+entry.getValue()+"%' ";
                 }
             }
@@ -2365,4 +2369,101 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             }
         }
     }
+
+    @Override
+    public int storeFilters(Map<String, String> filters) throws DataLayerException {
+        ResultSet keys = null;
+        int key = 0;
+        try {
+             //insert
+              Calendar calendar = Calendar.getInstance();
+            calendar.add(Calendar.HOUR, 1);
+                iFilters.setString(1, Utils.getArrayParameter(filters, "isbn"));
+                iFilters.setString(2, Utils.getArrayParameter(filters, "titolo"));
+                iFilters.setString(3, Utils.getArrayParameter(filters, "autore"));
+                iFilters.setString(4, Utils.getArrayParameter(filters, "editore"));
+                iFilters.setString(5, Utils.getArrayParameter(filters, "anno_inizio"));
+                iFilters.setString(6, Utils.getArrayParameter(filters, "anno_fine"));
+                iFilters.setString(7, Utils.getArrayParameter(filters, "keyword"));
+                iFilters.setString(8, Utils.getArrayParameter(filters, "lingua"));
+                iFilters.setString(9, Utils.getArrayParameter(filters, "download"));
+                iFilters.setString(10, Utils.getArrayParameter(filters, "utente"));
+                iFilters.setTimestamp(11, new java.sql.Timestamp(calendar.getTime().getTime()));
+                if (iFilters.executeUpdate() == 1) {
+                    keys = iFilters.getGeneratedKeys();
+                    if (keys.next()) {
+                        key = keys.getInt(1);
+                    }
+                }
+            return key;
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to store filters", ex);
+        } finally {
+            try {
+                if (keys != null) {
+                    keys.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+    }
+
+    @Override
+    public void deleteFilters() throws DataLayerException {
+        //dFilters
+        ResultSet res = null;
+        try {
+            dFilters.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+            
+            dFilters.executeUpdate();
+        } catch (SQLException ex) {
+            throw new DataLayerException("Cannot delete filters", ex);
+        } finally {
+            try {
+                if (res != null) {
+                    res.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+    }
+
+    @Override
+    public Map<String, String> getFilters(int filter_key) throws DataLayerException {
+        //sFilters,
+        Map<String, String> result = new HashMap<>();
+        ResultSet rs = null;
+        try {
+            sFilters.setInt(1, filter_key);
+            rs = sFilters.executeQuery();
+            while (rs.next()) {
+                result.put("isbn", rs.getString("isbn"));
+                result.put("titolo", rs.getString("titolo"));
+                result.put("autore", rs.getString("autore"));
+                result.put("editore", rs.getString("editore"));
+                result.put("anno_inizio", rs.getString("anno_inizio"));
+                result.put("anno_fine", rs.getString("anno_fine"));
+                result.put("keyword", rs.getString("keyword"));
+                result.put("lingua", rs.getString("lingua"));
+                result.put("lingua", rs.getString("download"));
+                result.put("download", rs.getString("download"));
+                result.put("utente", rs.getString("utente"));
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to load filters", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //
+            }
+        }
+        return result;
+    }
+    
+    
 }
