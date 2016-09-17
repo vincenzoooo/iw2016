@@ -82,7 +82,7 @@
                                         <a href="author?authorId=${item.key}&currentNameAuthor=${item.name}&currentSurnameAuthor=${item.surname}#anchor">Modifica</a>
                                     </td>
                                     <td>
-                                        <input type="checkbox" class="form-control" name="authorSelected" value="${item.key}" <#list publicationAuthors as item1><#if (item.key == item1.key)>checked="checked"</#if></#list>/>
+                                        <input type="checkbox" class="form-control padding-all-0" name="authorSelected" value="${item.key}" <#list publicationAuthors as item1><#if (item.key == item1.key)>checked="checked"</#if></#list>/>
                                     </td>
                                 </tr>
                             </#list>

@@ -71,13 +71,7 @@
             </div>
             </#if>
         </div>
-        <nav aria-label="Page navigation">
-  <ul class="pagination">
-      <#list pages as item>
-    <li><a href="${item}">${item?index+1}</a></li>
-    </#list>
-  </ul>
-</nav>
+        
         <div class="section section-pageCatalog-publications"> 
             <#if (publications?? && publications?size>0)>
                 <#list publications as item>
@@ -119,6 +113,13 @@
             <#else>
             <div>Nessuna pubblicazione da visualizzare </div>
             </#if>
+            <nav aria-label="Page navigation">
+                <ul class="pagination">
+                    <#list pages as item>
+                  <li><a href="${item}">${item?index+1}</a></li>
+                  </#list>
+                </ul>
+            </nav>
         </div>
     </div>
 </div>
