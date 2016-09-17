@@ -27,6 +27,11 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeEditor extends BiblioManagerBaseController {
 
+    private int publicationId;
+    private String url;
+    private int editorId;
+    private String currentEditor;
+    
     private void action_composeEditor(HttpServletRequest request, HttpServletResponse response) {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
@@ -36,7 +41,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
             if (!validator(params, request, response)) {
                 editor.setName(params.get("editorName"));
                 getDataLayer().storeEditor(editor);
-                Publication publication = getDataLayer().getPublication((int) session.getAttribute("publicationId"));
+                Publication publication = getDataLayer().getPublication(publicationId);
                 publication.setEditor(editor);
                 getDataLayer().storePublication(publication);
             }
@@ -45,23 +50,34 @@ public class ComposeEditor extends BiblioManagerBaseController {
         }
     }
 
-    private Editor action_updateEditor(HttpServletRequest request, HttpServletResponse response) {
-        Editor editor = null;
+    private void action_updateEditor(HttpServletRequest request, HttpServletResponse response) {
         try {
-            editor = getDataLayer().getEditor(Integer.parseInt(request.getParameter("editorId")));
+            Editor editor = getDataLayer().getEditor(editorId);
             Map<String, String> params = new HashMap<String, String>();
             params.put("editorName", Utils.checkString(request.getParameter("editorName")));
             if (!validator(params, request, response)) {
                 editor.setName(params.get("editorName"));
                 getDataLayer().storeEditor(editor);
                 request.setAttribute("saveResult", "Salvataggio effettuato con successo");
+                editorId = 0;
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare l'editore: " + ex.getMessage());
         }
-        return editor;
     }
 
+    private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
+        request.setAttribute("page_title", "Gestione Editore");
+        TemplateResult res = new TemplateResult(getServletContext());
+        List<Editor> editors = getDataLayer().getEditors();
+        request.setAttribute("editors", editors);
+        request.setAttribute("publicationId", publicationId);
+        request.setAttribute("url", url);
+        request.setAttribute("editorId", editorId);
+        request.setAttribute("currentEditor", currentEditor);
+        res.activate("editor.ftl.html", request, response);
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -74,27 +90,28 @@ public class ComposeEditor extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            request.setAttribute("page_title", "Gestione Editore");
-            TemplateResult res = new TemplateResult(getServletContext());
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
+                if(request.getAttribute("publicationId") != null){
+                    publicationId = (int) request.getAttribute("publicationId");
+                }
+                if(request.getAttribute("url") != null){
+                    url = (String) request.getAttribute("url");
+                }
                 if (request.getParameter("editorId") != null) {
-                    request.setAttribute("currentEditor", request.getParameter("currentEditor"));
-                    request.setAttribute("editorId", request.getParameter("editorId"));
+                    currentEditor = request.getParameter("currentEditor");
+                    editorId = Integer.parseInt(request.getParameter("editorId"));
                 }
-                if (request.getParameter("submitEditor") != null && request.getAttribute("editorId") == null) {
-                    action_composeEditor(request, response);
+                if (request.getParameter("submitEditor") != null){
+                    if(editorId == 0) {
+                        action_composeEditor(request, response);
+                    }
+                    else{
+                        action_updateEditor(request, response);
+                    }
                 }
-                if (request.getParameter("submitEditor") != null && request.getAttribute("editorId") != null) {
-                    action_updateEditor(request, response);
-                    request.removeAttribute("editorId");
-                }
-                List<Editor> editors = getDataLayer().getEditors();
-                request.setAttribute("editors", editors);
-                request.setAttribute("publicationId", session.getAttribute("publicationId"));
-                request.setAttribute("url", (String)session.getAttribute("url"));
-                res.activate("editor.ftl.html", request, response);
+                action_view(request, response);
             } else {
                 action_default(request, response);
             }

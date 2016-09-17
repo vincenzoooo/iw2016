@@ -74,7 +74,7 @@ public class PublicationResearch extends BiblioManagerBaseController {
             filters.put("order_mode", "ASC");
             int filters_key = getDataLayer().storeFilters(filters);
             request.setAttribute("filter", filters_key);
-            request.setAttribute("isResearch", 1);
+            request.setAttribute("isResearch", true);
             getServletContext().getRequestDispatcher("/catalog").forward(request, response);
         } catch (DataLayerException ex) {
             action_error(request, response, "Unable to do the research: " + ex.getMessage());

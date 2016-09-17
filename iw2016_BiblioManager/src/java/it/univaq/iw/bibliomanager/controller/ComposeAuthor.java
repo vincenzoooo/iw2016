@@ -28,6 +28,12 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeAuthor extends BiblioManagerBaseController {
 
+    private int publicationId;
+    private String url;
+    private int authorId;
+    private String currentNameAuthor;
+    private String currentSurnameAuthor;
+    
     private void action_composeAuthor(HttpServletRequest request, HttpServletResponse response) {
         try {
             Author author = getDataLayer().createAuthor();
@@ -46,7 +52,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
 
     private void action_updateAuthor(HttpServletRequest request, HttpServletResponse response) {
         try {
-            Author author = getDataLayer().getAuthor(Integer.parseInt(request.getParameter("authorId")));
+            Author author = getDataLayer().getAuthor(authorId);
             Map<String, String> params = new HashMap<String, String>();
             params.put("authorName", Utils.checkString(request.getParameter("authorName")));
             params.put("authorSurname", Utils.checkString(request.getParameter("authorSurname")));
@@ -55,6 +61,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                 author.setSurname(params.get("authorSurname"));
                 getDataLayer().storeAuthor(author);
                 request.setAttribute("saveResult", "Salvataggio effettuato con successo");
+                authorId = 0;
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare l'autore: " + ex.getMessage());
@@ -69,14 +76,28 @@ public class ComposeAuthor extends BiblioManagerBaseController {
     
     private void action_LinkAuthor(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
-        int pubId = (int) SecurityLayer.checkSession(request).getAttribute("publicationId");
         List<String> values = new ArrayList<String>(Arrays.asList(request.getParameterValues("authorSelected")));
-        getDataLayer().deletePublicationHasAuthor(pubId);
+        getDataLayer().deletePublicationHasAuthor(publicationId);
         for (String value : values) {
-            getDataLayer().storePublicationHasAuthor(Integer.parseInt(value), pubId);
+            getDataLayer().storePublicationHasAuthor(Integer.parseInt(value), publicationId);
         }
     }
 
+    private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
+        request.setAttribute("page_title", "Gestione Autore");
+        TemplateResult res = new TemplateResult(getServletContext());
+        List<Author> authors = getDataLayer().getAuthors();
+        List<Author> publicationAuthors = getDataLayer().getPublicationAuthors(publicationId);
+        request.setAttribute("authors", authors);
+        request.setAttribute("publicationAuthors", publicationAuthors);
+        request.setAttribute("publicationId", publicationId);
+        request.setAttribute("url", url);
+        request.setAttribute("authorId", authorId);
+        request.setAttribute("currentNameAuthor", currentNameAuthor);
+        request.setAttribute("currentSurnameAuthor", currentSurnameAuthor);
+        res.activate("author.ftl.html", request, response);
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -89,23 +110,28 @@ public class ComposeAuthor extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            request.setAttribute("page_title", "Gestione Autore");
-            TemplateResult res = new TemplateResult(getServletContext());
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
+                if(request.getAttribute("publicationId") != null){
+                    publicationId = (int) request.getAttribute("publicationId");
+                }
+                if(request.getAttribute("url") != null){
+                    url = (String) request.getAttribute("url");
+                }
                 currentUser(request, response, session);
                 if (request.getParameter("authorId") != null) {
-                    request.setAttribute("currentNameAuthor", request.getParameter("currentNameAuthor"));
-                    request.setAttribute("currentSurnameAuthor", request.getParameter("currentSurnameAuthor"));
-                    request.setAttribute("authorId", request.getParameter("authorId"));
+                    currentNameAuthor = request.getParameter("currentNameAuthor");
+                    currentSurnameAuthor = request.getParameter("currentSurnameAuthor");
+                    authorId = Integer.parseInt(request.getParameter("authorId"));
                 }
-                if (request.getParameter("submitAuthor") != null && request.getAttribute("authorId") == null) {
-                    action_composeAuthor(request, response);
-                }
-                if (request.getParameter("submitAuthor") != null && request.getAttribute("authorId") != null) {
-                    action_updateAuthor(request, response);
-                    request.removeAttribute("authorId");
-                }
+                if (request.getParameter("submitAuthor") != null){
+                    if(authorId == 0) {
+                        action_composeAuthor(request, response);
+                    }
+                    else{
+                        action_updateAuthor(request, response);
+                    }
+                }                
                 if(request.getAttribute("authorToDelete") != null){
                     request.setAttribute("authorToDelete", request.getParameter("authorToDelete"));
                     action_deleteAuthor(request, response);
@@ -113,13 +139,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                 if (request.getParameter("linkAuthor") != null) {
                     action_LinkAuthor(request, response);
                 }
-                List<Author> authors = getDataLayer().getAuthors();
-                List<Author> publicationAuthors = getDataLayer().getPublicationAuthors((int) session.getAttribute("publicationId"));
-                request.setAttribute("authors", authors);
-                request.setAttribute("publicationAuthors", publicationAuthors);
-                request.setAttribute("publicationId", session.getAttribute("publicationId"));
-                request.setAttribute("url", (String)session.getAttribute("url"));
-                res.activate("author.ftl.html", request, response);
+                action_view(request, response);
             } else {
                 action_default(request, response);
             }

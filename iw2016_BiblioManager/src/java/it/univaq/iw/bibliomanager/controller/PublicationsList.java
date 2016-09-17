@@ -28,7 +28,12 @@ public class PublicationsList extends BiblioManagerBaseController {
     private final String[] orderField = new String[]{"titolo", "e.nome", "a.cognome", "data_pubblicazione", "n_consigli"};
     private final String[] orderType = new String[]{"ASC", "DESC"};
     private Map<String, String> filters = new HashMap<>();
+    private boolean isResearch = false;
+    
     private void action_list(HttpServletRequest request, HttpServletResponse response) throws IOException, DataLayerException {
+        if(request.getAttribute("isResearch") != null){
+            isResearch = (boolean) request.getAttribute("isResearch");
+        }
         if(request.getAttribute("filter") != null){
             request.setAttribute("filter", request.getAttribute("filter"));
             filters = getDataLayer().getFilters((int)request.getAttribute("filter"));
@@ -52,7 +57,7 @@ public class PublicationsList extends BiblioManagerBaseController {
                 urlPages[--pages] = "catalog?orderBy=" + orderBy + "&offset=" + offset;
                 offset-=4;
             }
-
+            request.setAttribute("isResearch", isResearch);
             request.setAttribute("pages", urlPages);
             res.activate("catalog.ftl.html", request, response);
         } catch (ServletException | DataLayerException ex) {

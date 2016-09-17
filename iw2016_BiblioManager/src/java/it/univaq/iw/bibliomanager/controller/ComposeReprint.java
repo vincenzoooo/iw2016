@@ -29,9 +29,13 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeReprint extends BiblioManagerBaseController {
 
+    private int publicationId;
+    private String url;
+    private int reprintId;
+    private Reprint currentReprint;
+    
     private void action_composeReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
         try {
-            HttpSession session = SecurityLayer.checkSession(request);
             Reprint reprint = getDataLayer().createReprint();
             Map<String, String> params = new HashMap<String, String>();
             params.put("reprintNumber", Utils.checkString(request.getParameter("reprintNumber")));
@@ -42,7 +46,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
                 java.util.Date date = format.parse(params.get("reprintDate"));
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 reprint.setDate(sqlDate);
-                reprint.setPublicationKey((int) session.getAttribute("publicationId"));
+                reprint.setPublicationKey(publicationId);
                 getDataLayer().storeReprint(reprint);
             }
         } catch (NumberFormatException | ParseException | DataLayerException ex) {
@@ -52,7 +56,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
 
     private void action_updateReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
         try {
-            Reprint reprint = getDataLayer().getReprint(Integer.parseInt("reprintId"));
+            Reprint reprint = getDataLayer().getReprint(reprintId);
             Map<String, String> params = new HashMap<String, String>();
             params.put("reprintNumber", Utils.checkString(request.getParameter("reprintNumber")));
             params.put("reprintDate", Utils.checkString(request.getParameter("reprintDate")));
@@ -63,12 +67,25 @@ public class ComposeReprint extends BiblioManagerBaseController {
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 reprint.setDate(sqlDate);
                 getDataLayer().storeReprint(reprint);
+                reprintId = 0;
             }
         } catch (NumberFormatException | ParseException | DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la ristampa:: " + ex.getMessage());
         }
     }
 
+    private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
+        request.setAttribute("page_title", "Gestione Ristampa");
+        TemplateResult res = new TemplateResult(getServletContext());
+        List<Reprint> reprints = getDataLayer().getReprints(publicationId);
+        request.setAttribute("reprints", reprints);
+        request.setAttribute("publicationId", publicationId);
+        request.setAttribute("url", url);
+        request.setAttribute("reprintId", reprintId);
+        request.setAttribute("reprint", currentReprint);
+        res.activate("reprint.ftl.html", request, response);
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -81,28 +98,28 @@ public class ComposeReprint extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            request.setAttribute("page_title", "Gestione Ristampa");
-            TemplateResult res = new TemplateResult(getServletContext());
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
+                if(request.getAttribute("publicationId") != null){
+                    publicationId = (int) request.getAttribute("publicationId");
+                }
+                if(request.getAttribute("url") != null){
+                    url = (String) request.getAttribute("url");
+                }
                 if (request.getParameter("reprintId") != null) {
-                    Reprint reprint = getDataLayer().getReprint(Integer.parseInt(request.getParameter("reprintId")));
-                    request.setAttribute("reprint", reprint);
-                    res.activate("reprint.ftl.html", request, response);//DA impostare il nome effettivamente usato
+                    reprintId = Integer.parseInt(request.getParameter("reprintId"));
+                    currentReprint = getDataLayer().getReprint(reprintId);
                 }
-                if (request.getParameter("submitReprint") != null && request.getParameter("reprintId") != null) {
-                    action_updateReprint(request, response);
-                    request.removeAttribute("reprintId");
+                if (request.getParameter("submitReprint") != null){
+                    if(reprintId == 0) {
+                        action_composeReprint(request, response);
+                    }
+                    else{
+                        action_updateReprint(request, response);
+                    }
                 }
-                if (request.getParameter("submitReprint") != null && request.getParameter("reprintId") == null) {
-                    action_composeReprint(request, response);
-                }
-                List<Reprint> reprints = getDataLayer().getReprints((int) session.getAttribute("publicationId"));
-                request.setAttribute("reprints", reprints);
-                request.setAttribute("publicationId", session.getAttribute("publicationId"));
-                request.setAttribute("url", (String)session.getAttribute("url"));
-                res.activate("reprint.ftl.html", request, response);
+                action_view(request, response);
             } else {
                 action_default(request, response);
             }

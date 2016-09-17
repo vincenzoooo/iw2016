@@ -28,6 +28,11 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeKeyword extends BiblioManagerBaseController {
 
+    private int publicationId;
+    private String url;
+    private int keywordId;
+    private String currentKeyword;
+    
     private void action_composeKeyword(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
         try {
@@ -46,13 +51,14 @@ public class ComposeKeyword extends BiblioManagerBaseController {
     private void action_updateKeyword(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
         try {
-            Keyword keyword = getDataLayer().getKeyword(Integer.parseInt(request.getParameter("keywordId")));
+            Keyword keyword = getDataLayer().getKeyword(keywordId);
             Map<String, String> params = new HashMap<String, String>();
             params.put("keyName", Utils.checkString(request.getParameter("keyName")));
             if (!validator(params, request, response)) {
                 keyword.setName(params.get("keyName"));
                 getDataLayer().storeKeyword(keyword);
                 request.setAttribute("saveResult", "Salvataggio effettuato con successo");
+                keywordId = 0;
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage());
@@ -60,14 +66,27 @@ public class ComposeKeyword extends BiblioManagerBaseController {
     }
 
     private void action_LinkKeyword(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
-        int pubId = (int) SecurityLayer.checkSession(request).getAttribute("publicationId");
         List<String> values = new ArrayList<String>(Arrays.asList(request.getParameterValues("keywordSelected")));
-        getDataLayer().deletePublicationHasKeyword(pubId);
+        getDataLayer().deletePublicationHasKeyword(publicationId);
         for (String value : values) {
-            getDataLayer().storePublicationHasKeyword(Integer.parseInt(value), pubId);
+            getDataLayer().storePublicationHasKeyword(Integer.parseInt(value), publicationId);
         }
     }
 
+    private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
+        request.setAttribute("page_title", "Gestione Parole Chiave");
+        TemplateResult res = new TemplateResult(getServletContext());
+        List<Keyword> keywords = getDataLayer().getKeywords();
+        List<Keyword> publicationKeywords = getDataLayer().getPublicationKeywords(publicationId);
+        request.setAttribute("keywords", keywords);
+        request.setAttribute("publicationKeywords", publicationKeywords);
+        request.setAttribute("publicationId", publicationId);
+        request.setAttribute("url", url);
+        request.setAttribute("keywordId", keywordId);
+        request.setAttribute("currentKeyword", currentKeyword);
+        res.activate("keyword.ftl.html", request, response);
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -80,33 +99,32 @@ public class ComposeKeyword extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            request.setAttribute("page_title", "Gestione Parole Chiave");
-            TemplateResult res = new TemplateResult(getServletContext());
+            
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
+                if(request.getAttribute("publicationId") != null){
+                    publicationId = (int) request.getAttribute("publicationId");
+                }
+                if(request.getAttribute("url") != null){
+                    url = (String) request.getAttribute("url");
+                }
                 if (request.getParameter("keywordId") != null) {
-                    request.setAttribute("currentKeyword", request.getParameter("currentKeyword"));
-                    request.setAttribute("keywordId", request.getParameter("keywordId"));
+                    currentKeyword = request.getParameter("currentKeyword");
+                    keywordId = Integer.parseInt(request.getParameter("keywordId"));
                 }
-                if (request.getParameter("submitKeyword") != null && request.getAttribute("keywordId") == null) {
-                    action_composeKeyword(request, response);
-                }
-                if (request.getParameter("submitKeyword") != null && request.getAttribute("keywordId") != null) {
-                    action_updateKeyword(request, response);
-                    request.removeAttribute("keywordId");
+                if (request.getParameter("submitKeyword") != null){
+                    if(keywordId == 0) {
+                        action_composeKeyword(request, response);
+                    }
+                    else{
+                        action_updateKeyword(request, response);
+                    }
                 }
                 if (request.getParameter("linkKeyword") != null) {
                     action_LinkKeyword(request, response);
                 }
-                List<Keyword> keywords = getDataLayer().getKeywords();
-                List<Keyword> publicationKeywords = getDataLayer().getPublicationKeywords((int) session.getAttribute("publicationId"));
-                request.setAttribute("keywords", keywords);
-                request.setAttribute("publicationKeywords", publicationKeywords);
-                request.setAttribute("publicationId", session.getAttribute("publicationId"));
-                request.setAttribute("url", (String)session.getAttribute("url"));
-                res.activate("keyword.ftl.html", request, response);
-
+                action_view(request, response);
             } else {
                 action_default(request, response);
             }

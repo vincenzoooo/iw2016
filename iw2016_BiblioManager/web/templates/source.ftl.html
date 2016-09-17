@@ -129,7 +129,7 @@
             </div>
         </div>
         
-        <#if sourceId??>
+        <#if (sourceId>0)>
         <a name="anchor"></a>
         <div class="section section-pageSource-editSources">
             <div class="row">
@@ -139,7 +139,7 @@
                         <div class="form-group">
                             <label for="updateSourceType" class="col-sm-2 control-label bold">Tipo</label>
                             <div class="col-sm-6">
-                                <input name="sourceId" value="${keywordId!''?html}" type="hidden"/>
+                                <input name="sourceId" value="${sourceId!''?html}" type="hidden"/>
                                 <input id="updateSourceType" class="form-control" name="sourceType" value="${currentTypeSource!''?html}" placeholder="Modifica il tipo" />
                             </div>
                         </div>

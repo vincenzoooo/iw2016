@@ -35,9 +35,10 @@ public class PublicationImpl implements Publication {
     private String isbn;
     private int pageNumber;
     private String language;
-    private Timestamp publicationDate;
+    private Date publicationDate;
     private Editor editor;
     private boolean incomplete;
+    private Timestamp timestamp;
     private Source cover;
     private List<Author> authors;
     private List<Source> sources;
@@ -61,6 +62,7 @@ public class PublicationImpl implements Publication {
         publicationDate = null;
         editor = null;
         incomplete = false;
+        timestamp = null;
         cover = null;
         authors = null;
         sources = null;
@@ -152,15 +154,25 @@ public class PublicationImpl implements Publication {
     }
 
     @Override
-    public Timestamp getPublicationDate() {
+    public Date getPublicationDate() {
         return publicationDate;
     }
 
     @Override
-    public void setPublicationDate(Timestamp date) {
+    public void setPublicationDate(Date date) {
         publicationDate = date;
     }
 
+    @Override
+    public Timestamp getTimestamp(){
+        return timestamp;
+    }
+    
+    @Override
+    public void setTimestamp(Timestamp timestamp){
+        this.timestamp = timestamp;
+    }
+    
     @Override
     public Editor getEditor() throws DataLayerException {
         return editor;
