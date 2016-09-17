@@ -99,7 +99,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE tipo = 0 ORDER BY data_operazione LIMIT 6");
             this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT DISTINCT pubblicazione FROM storico WHERE tipo = 1 ORDER BY data_operazione LIMIT 6");
             this.sPublicationsByISBN = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE isbn = ? AND incompleta = 0");
-            this.sIncompletePublications = connection.prepareStatement("SELECT idpubblicazione FROM iw2016.pubblicazione WHERE incompleta = 1 AND data_pubblicazione < ?");
+            this.sIncompletePublications = connection.prepareStatement("SELECT idpubblicazione FROM iw2016.pubblicazione WHERE incompleta = 1 AND timestamp < ?");
             this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, incompleta = ?, timestamp = ? WHERE idpubblicazione = ?");
             this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.dPublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
@@ -715,9 +715,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 }
             }
             query += "GROUP BY p.idpubblicazione ORDER BY " + Utils.getArrayParameter(filters, "order_by") + " " + Utils.getArrayParameter(filters, "order_mode");
-            query += " LIMIT 4";
+            query += " LIMIT 5 ";
             if(!Utils.isNullOrEmpty(Utils.getArrayParameter(filters, "offset")) && !"0".equals(Utils.getArrayParameter(filters, "offset"))){
-                query += ", " + Utils.getArrayParameter(filters, "offset");
+                query += "OFFSET " + Utils.getArrayParameter(filters, "offset");
             }
             this.sPublicationsByFilters = connection.prepareStatement(query);
             rs = sPublicationsByFilters.executeQuery();

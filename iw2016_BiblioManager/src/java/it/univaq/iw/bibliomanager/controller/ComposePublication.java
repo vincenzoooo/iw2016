@@ -42,8 +42,8 @@ public class ComposePublication extends BiblioManagerBaseController {
         try {
             Publication publication = getDataLayer().createPublication();
             HttpSession session = SecurityLayer.checkSession(request);
-            if (session.getAttribute("publicationId") != null) {
-                publication = getDataLayer().getPublication((int) session.getAttribute("publicationId"));
+            if (publicationId > 0) {
+                publication = getDataLayer().getPublication(publicationId);
             }
             Map<String, String> params = new HashMap<String, String>();
             params.put("publicationTitle", Utils.checkString(request.getParameter("publicationTitle")));
@@ -178,7 +178,6 @@ public class ComposePublication extends BiblioManagerBaseController {
             request.setAttribute("authors", authors);
             request.setAttribute("keywords", keywords);
             request.setAttribute("sources", sources);
-
             request.setAttribute("publicationTitle", publication.getTitle());
             request.setAttribute("publicationDescription", publication.getDescription());
             request.setAttribute("publicationLanguage", publication.getLanguage());
@@ -224,8 +223,7 @@ public class ComposePublication extends BiblioManagerBaseController {
                     action_composePublication(request, response);
                     if(publicationId > 0){
                         String url = "details?publicationId=" + publicationId;
-                        session.removeAttribute("publicationId");
-                        session.removeAttribute("url");
+                        publicationId = 0;
                         response.sendRedirect(url);
                     }
                 }

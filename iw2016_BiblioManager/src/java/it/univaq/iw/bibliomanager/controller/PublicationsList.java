@@ -29,10 +29,14 @@ public class PublicationsList extends BiblioManagerBaseController {
     private final String[] orderType = new String[]{"ASC", "DESC"};
     private Map<String, String> filters = new HashMap<>();
     private boolean isResearch = false;
+    private final int limit = 5;
     
     private void action_list(HttpServletRequest request, HttpServletResponse response) throws IOException, DataLayerException {
         if(request.getAttribute("isResearch") != null){
             isResearch = (boolean) request.getAttribute("isResearch");
+        }
+        else{
+            isResearch = false;
         }
         if(request.getAttribute("filter") != null){
             request.setAttribute("filter", request.getAttribute("filter"));
@@ -50,12 +54,16 @@ public class PublicationsList extends BiblioManagerBaseController {
         try {
             List<Publication> publications = getDataLayer().getPublicationsByFilters(filters);
             request.setAttribute("publications", publications);
-            int pages = getDataLayer().getPublications().size() / 4;
+            int publicationsNumber = getDataLayer().getPublications().size();
+            int pages = publicationsNumber / limit;
+            if(publicationsNumber%limit > 0){
+                pages++;
+            }
             String[] urlPages = new String[pages];
-            offset = pages - 1;
+            offset = (pages - 1) * limit;
             while(pages > 0){    
                 urlPages[--pages] = "catalog?orderBy=" + orderBy + "&offset=" + offset;
-                offset-=4;
+                offset-=limit;
             }
             request.setAttribute("isResearch", isResearch);
             request.setAttribute("pages", urlPages);
