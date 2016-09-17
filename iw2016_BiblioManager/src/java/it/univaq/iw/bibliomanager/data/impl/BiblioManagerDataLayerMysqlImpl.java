@@ -96,8 +96,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.dHistoryByPublication = connection.prepareStatement("DELETE FROM iw2016.storico WHERE pubblicazione = ?");
             this.sPublications = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE incompleta = 0");
             this.sPublicationById = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
-            this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 0");
-            this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 1");
+            this.sPublicationsByInsertDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE tipo = 0 ORDER BY data_operazione LIMIT 6");
+            this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT  DISTINCT pubblicazione FROM storico WHERE tipo = 1 ORDER BY data_operazione LIMIT 6");
             this.sPublicationsByISBN = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE isbn = ? AND incompleta = 0");
             this.sIncompletePublications = connection.prepareStatement("SELECT idpubblicazione FROM iw2016.pubblicazione WHERE incompleta = 1 AND data_pubblicazione < ?");
             this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, incompleta = ? WHERE idpubblicazione = ?");
@@ -791,12 +791,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         List<Publication> result = new ArrayList();
         ResultSet rs = null;
         try {
-            Date today = new Date(System.currentTimeMillis());
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(today);
-            cal.add(Calendar.DATE, -7);
-            sPublicationsByInsertDate.setDate(1, new Date(cal.getTimeInMillis()));
-            sPublicationsByInsertDate.setDate(2, today);
+//            Date today = new Date(System.currentTimeMillis());
+//            Calendar cal = Calendar.getInstance();
+//            cal.setTime(today);
+//            cal.add(Calendar.DATE, -7);
+//            sPublicationsByInsertDate.setDate(1, new Date(cal.getTimeInMillis()));
+//            sPublicationsByInsertDate.setDate(2, today);
             rs = sPublicationsByInsertDate.executeQuery();
             while (rs.next()) {
                 result.add(getPublication(rs.getInt("pubblicazione")));
@@ -820,12 +820,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         List<Publication> result = new ArrayList();
         ResultSet rs = null;
         try {
-            Date today = new Date(System.currentTimeMillis());
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(today);
-            cal.add(Calendar.DATE, -7);
-            sPublicationsByUpdateDate.setDate(1, new Date(cal.getTimeInMillis()));
-            sPublicationsByUpdateDate.setDate(2, today);
+//            Date today = new Date(System.currentTimeMillis());
+//            Calendar cal = Calendar.getInstance();
+//            cal.setTime(today);
+//            cal.add(Calendar.DATE, -7);
+//            sPublicationsByUpdateDate.setDate(1, new Date(cal.getTimeInMillis()));
+//            sPublicationsByUpdateDate.setDate(2, today);
             rs = sPublicationsByUpdateDate.executeQuery();
             while (rs.next()) {
                 result.add(getPublication(rs.getInt("pubblicazione")));
