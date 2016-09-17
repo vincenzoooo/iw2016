@@ -958,6 +958,17 @@ figure:hover:before {
     height: 100px;
 }
 
+.immagine{
+    display: block;
+}
+
+.imgHome{
+    width: 230px;
+    height: 230px;
+}
+
+
+
 /**
  * 4. Insert Pubblication
  * -----------------------------------------------------------------------------
@@ -1091,10 +1102,30 @@ label.error, span.error {
                                     
 
 
-@media (max-width: 768px) {}
-@media (min-width: 768px) {}
-@media (min-width: 992px) {}
-@media (min-width: 1200px) {}
+@media (max-width: 768px) {
+        
+
+    
+}
+
+
+@media (min-width: 768px) {
+    
+
+    
+}
+
+
+@media (min-width: 992px) {    
+
+
+}
+
+
+@media (min-width: 1200px) {
+        
+
+}
 
 
 
