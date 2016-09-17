@@ -100,10 +100,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sPublicationsByUpdateDate = connection.prepareStatement("SELECT pubblicazione FROM storico WHERE data_operazione >= ? AND data_operazione <= ? AND tipo = 1");
             this.sPublicationsByISBN = connection.prepareStatement("SELECT * FROM iw2016.pubblicazione WHERE isbn = ? AND incompleta = 0");
             this.sIncompletePublications = connection.prepareStatement("SELECT idpubblicazione FROM iw2016.pubblicazione WHERE incompleta = 1 AND data_pubblicazione < ?");
-            this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, incompleta = ? WHERE idpubblicazione = ?");
-            this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, incompleta = ?, timestamp = ? WHERE idpubblicazione = ?");
+            this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.dPublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
-            this.dIncompletePublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE incompleta = 1 AND data_pubblicazione < ? OR data_pubblicazione IS NULL");
+            this.dIncompletePublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE incompleta = 1 AND timestamp < ? OR timestamp IS NULL");
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
             this.sSourceById = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE idsorgente = ?");
             this.sSourceByPublication = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE pubblicazione = ?");
@@ -237,7 +237,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             publication.setLike(rs.getInt("n_consigli"));
             publication.setIsbn(rs.getString("isbn"));
             publication.setLanguage(rs.getString("lingua"));
-            publication.setPublicationDate(rs.getTimestamp("data_pubblicazione"));
+            publication.setPublicationDate(rs.getDate("data_pubblicazione"));
             publication.setPageNumber(rs.getInt("n_pagine"));
             publication.setEditor(getEditor(rs.getInt("editore")));
             publication.setAuthor(getPublicationAuthors(rs.getInt("idpubblicazione")));
@@ -246,8 +246,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             publication.setReprints(getReprints(rs.getInt("idpubblicazione")));
             publication.setIndex(getChapters(rs.getInt("idpubblicazione")));
             publication.setReviews(getReviews(rs.getInt("idpubblicazione")));
-//            publication.setUserLike(getUsersLike(rs.getInt("idpubblicazione")));
             publication.setIncomplete(rs.getBoolean("incompleta"));
+            publication.setTimestamp(rs.getTimestamp("timestamp"));
             return publication;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create publication object form ResultSet", ex);
@@ -1572,9 +1572,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uPublication.setString(5, publication.getIsbn());
                 uPublication.setInt(6, publication.getPageNumber());
                 uPublication.setString(7, publication.getLanguage());
-                uPublication.setTimestamp(8, publication.getPublicationDate());
+                uPublication.setDate(8, publication.getPublicationDate());
                 uPublication.setBoolean(9, publication.getIncomplete());
-                uPublication.setInt(10, key);
+                uPublication.setTimestamp(10, publication.getTimestamp());
+                uPublication.setInt(11, key);
 
                 uPublication.executeUpdate();
             } else { //insert
@@ -1585,8 +1586,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 iPublication.setString(5, publication.getIsbn());
                 iPublication.setInt(6, publication.getPageNumber());
                 iPublication.setString(7, publication.getLanguage());
-                iPublication.setTimestamp(8, publication.getPublicationDate());
+                iPublication.setDate(8, publication.getPublicationDate());
                 iPublication.setBoolean(9, publication.getIncomplete());
+                iPublication.setTimestamp(10, publication.getTimestamp());
 
                 if (iPublication.executeUpdate() == 1) {
                     keys = iPublication.getGeneratedKeys();
@@ -2193,9 +2195,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 dHistoryByPublication.executeUpdate();
                 deletePublicationHasAuthor(res.getInt("idpubblicazione"));
                 deletePublicationHasKeyword(res.getInt("idpubblicazione"));
+                dIncompletePublication.setDate(1, new java.sql.Date(System.currentTimeMillis()));
+                dIncompletePublication.executeUpdate();
             }
-            dIncompletePublication.setDate(1, new java.sql.Date(System.currentTimeMillis()));
-            dIncompletePublication.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete incomplete publications", ex);
         } finally {
