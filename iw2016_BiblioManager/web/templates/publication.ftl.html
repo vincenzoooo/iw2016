@@ -9,9 +9,9 @@
                         <input id="inputTitlePub" type="text" class="form-control" name="publicationTitle" value="${publicationTitle!''?html}" placeholder="Inserisci il titolo" />
                     </div>
                 </div>
-                <#if errorTitle??>
+                <#if errorPublicationTitle??>
                 <div class="error">
-                    ${errorTitle?html}
+                    ${errorPublicationTitle?html}
                 </div>
                 </#if>
                 <div class="form-group">
@@ -20,9 +20,9 @@
                         <input id="inputIsbnPub" type="text" class="form-control" name="publicationIsbn" value="${publicationIsbn!''?html}" placeholder="Inserisci l'isbn" />
                     </div>
                 </div>
-                <#if errorIsbn??>
+                <#if errorPublicationIsbn??>
                 <div class="error">
-                    ${errorIsbn?html}
+                    ${errorPublicationIsbn?html}
                 </div>
                 </#if>
                 <div class="form-group">
@@ -31,9 +31,9 @@
                         <input id="inputPageNumberPub" type="text" class="form-control" name="publicationPages" value="${publicationPages!''?html}" placeholder="Inserisci il numero delle pagine" />
                     </div>
                 </div>
-                <#if errorPageNumber??>
+                <#if errorPublicationPageNumber??>
                 <div class="error">
-                    ${errorPageNumber?html}
+                    ${errorPublicationPageNumber?html}
                 </div>
                 </#if>
                 <div class="form-group">
@@ -42,9 +42,9 @@
                         <textarea id="inputDescriptionPub" class="form-control" name="publicationDescription" rows="4" placeholder="Inserisci una descrizione">${publicationDescription!''?html}</textarea>
                     </div>
                 </div>
-                <#if errorDescription??>
+                <#if errorPublicationDescription??>
                 <div class="error">    
-                    ${errorDescription?html}    
+                    ${errorPublicationDescription?html}    
                 </div>
                 </#if>
                 <div class="form-group">
@@ -64,9 +64,9 @@
                         <input id="inputLanguagePub" type="text" class="form-control" name="publicationLanguage" value="${publicationLanguage!''?html}" placeholder="Inserisci la lingua" />
                     </div>
                 </div>
-                <#if errorLanguage??>
+                <#if errorPublicationLanguage??>
                 <div class="error">    
-                    ${errorLanguage?html}    
+                    ${errorPublicationLanguage?html}    
                 </div>
                 </#if>
                 
@@ -85,9 +85,9 @@
                         <input value='Aggiungi nuovo editore' name='addEditor' type='submit' class="btn btn-default"/>
                     </div>
                 </div>
-                <#if errorEditor??>  
+                <#if errorPublicationEditor??>  
                     <div class="error">
-                        ${errorEditor?html}      
+                        ${errorPublicationEditor?html}      
                       </div>
                 </#if>
                 
@@ -111,9 +111,9 @@
                         <input value="Seleziona autore" name="addAuthor" type="submit" class="btn btn-default"/>
                     </div>
                 </div>
-                <#if errorAuthor??>  
+                <#if errorPublicationAuthor??>  
                     <div class="error">
-                        ${errorAuthor?html}      
+                        ${errorPublicationAuthor?html}      
                       </div>
                 </#if>
                 
@@ -138,9 +138,9 @@
                         <input value="Seleziona parola chiave" name="addKeyword" type="submit" class="btn btn-default"/>
                     </div>
                 </div>
-                <#if errorKeyword??>  
+                <#if errorPublicationKeyword??>  
                     <div class="error">
-                        ${errorKeyword?html}      
+                        ${errorPublicationKeyword?html}      
                       </div>
                 </#if>
                 
