@@ -175,8 +175,8 @@
                                 <#list publication.sources as item>
                                     <#if item.type.equals("immagine")>
                                     <div class="col-xs-4">
-                                        <a class="thumbnail" href="#thumb"><img src="${strip_slashes(item.uri)?html}" />
-                                            <span><img src="${strip_slashes(item.uri)?html}" /><br />${strip_slashes(item.description)?html}</span>
+                                        <a class="thumbnail" href="#thumb"><img src="${strip_slashes(item.uri)?html}"/>
+                                            <span><img src="${strip_slashes(item.uri)?html}" class="img-responsive" /><br />${strip_slashes(item.description)?html}</span>
                                         </a>
                                     </div>
                                     </#if>
