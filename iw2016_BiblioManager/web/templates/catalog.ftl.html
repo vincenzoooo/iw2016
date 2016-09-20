@@ -104,7 +104,7 @@
                         </div>
                         <div class="col-lg-3 col-md-3 col-sm-3 hidden-xs margin-top-10 vertical-border">
                             <div class="editor font-2x"> ${strip_slashes(item.editor.name)!''?html} </div>
-                            <div class="date"> ${item.publicationDate!''} </div>
+                            <div class="date"> ${item.publicationDate?string["dd-MM-yyyy"]!''} </div>
                             <div class="isbn-pages"> pp. ${strip_slashes(item.pageNumber)!''?html}, isbn: ${strip_slashes(item.isbn)!''?html} </div>
                         </div>
                     </div>

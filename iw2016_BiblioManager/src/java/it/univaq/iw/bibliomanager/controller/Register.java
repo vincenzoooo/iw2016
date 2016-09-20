@@ -16,8 +16,11 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import it.univaq.iw.bibliomanager.data.model.User;
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -26,9 +29,8 @@ import java.util.Map;
 public class Register extends BiblioManagerBaseController {
 
     private void action_register(HttpServletRequest request, HttpServletResponse response)
-            throws IOException, ServletException, DataLayerException, NoSuchAlgorithmException, MessagingException {
+    {
         try {
-            TemplateResult res = new TemplateResult(getServletContext());
             Map<String, String> params = new HashMap<String, String>();
             params.put("name", Utils.checkString(request.getParameter("name")));
             params.put("surname", Utils.checkString(request.getParameter("surname")));
@@ -48,12 +50,13 @@ public class Register extends BiblioManagerBaseController {
             } else {
                 request.setAttribute("name", params.get("name"));
                 request.setAttribute("surname", params.get("surname"));
-                res.activate("registration.ftl.html", request, response);
             }
-        } catch (DataLayerException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
-        } catch (NullPointerException ex) {
-            action_error(request, response, "Something goes wrong");
+        } catch (NoSuchAlgorithmException | DataLayerException | ServletException ex) {
+            action_error(request, response, "Error register: " + ex.getMessage());
+        } catch (UnsupportedEncodingException ex) {
+            action_error(request, response, "Error register: " + ex.getMessage());
+        } catch (IOException ex) {
+            action_error(request, response, "Error register: " + ex.getMessage());
         }
     }
 
@@ -118,6 +121,15 @@ public class Register extends BiblioManagerBaseController {
         res.activate("registration.ftl.html", request, response);
     }
 
+    protected void action_view(HttpServletRequest request, HttpServletResponse response){
+        try {
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("registration.ftl.html", request, response);
+        } catch (ServletException | IOException ex) {
+            action_error(request, response, "Error build the template: " + ex.getMessage());
+        }
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -130,12 +142,13 @@ public class Register extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
+            action_view(request, response);
             if (request.getParameter("submitRegistration") != null) {
                 action_register(request, response);
             } else {
                 action_default(request, response);
             }
-        } catch (DataLayerException | IOException | MessagingException | NoSuchAlgorithmException | ServletException ex) {
+        } catch (IOException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
         }
 

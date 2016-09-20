@@ -14,6 +14,8 @@ import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import java.io.IOException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -25,26 +27,30 @@ import javax.servlet.http.HttpSession;
  */
 public class PublicationDetails extends BiblioManagerBaseController {
 
-    private void action_publication(HttpServletRequest request, HttpServletResponse response)
-            throws DataLayerException, IOException, NumberFormatException, ServletException {
-        TemplateResult res = new TemplateResult(getServletContext());
-        HttpSession session = SecurityLayer.checkSession(request);
-        int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
-        List<History> histories = getDataLayer().getHistoriesByPublication(publicationKey);
-        for (History entry : histories) {
-            if (entry.getType() == 0) {
-                request.setAttribute("publisher", entry.getUser());
+    private void action_view(HttpServletRequest request, HttpServletResponse response)
+    {
+        try {
+            TemplateResult res = new TemplateResult(getServletContext());
+            HttpSession session = SecurityLayer.checkSession(request);
+            int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
+            List<History> histories = getDataLayer().getHistoriesByPublication(publicationKey);
+            for (History entry : histories) {
+                if (entry.getType() == 0) {
+                    request.setAttribute("publisher", entry.getUser());
+                }
             }
+            request.setAttribute("histories", histories);
+            Publication publication = getDataLayer().getPublication(publicationKey);
+            this.action_viewReviews(request, response);
+            request.setAttribute("publication", publication);
+            List<Review> lastReviews = getDataLayer().getLastReviews(publicationKey, 1);
+            request.setAttribute("lastReviews", lastReviews);
+            boolean liked = getDataLayer().getUsersLike(Integer.parseInt(request.getParameter("publicationId")), (int) session.getAttribute("userId"));
+            request.setAttribute("like", liked);
+            res.activate("details.ftl.html", request, response);
+        } catch (DataLayerException | ServletException | IOException ex) {
+            action_error(request, response, "Error build the template: " + ex.getMessage());
         }
-        request.setAttribute("histories", histories);
-        Publication publication = getDataLayer().getPublication(publicationKey);
-        this.action_viewReviews(request, response);
-        request.setAttribute("publication", publication);
-        List<Review> lastReviews = getDataLayer().getLastReviews(publicationKey, 1);
-        request.setAttribute("lastReviews", lastReviews);
-        boolean liked = getDataLayer().getUsersLike(Integer.parseInt(request.getParameter("publicationId")), (int) session.getAttribute("userId"));
-        request.setAttribute("like", liked);
-        res.activate("details.ftl.html", request, response);
     }
 
     private void action_viewReviews(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
@@ -62,6 +68,7 @@ public class PublicationDetails extends BiblioManagerBaseController {
             getDataLayer().storeLike(Integer.parseInt(request.getParameter("publicationId")), (int) session.getAttribute("userId"));
         }
     }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -81,7 +88,7 @@ public class PublicationDetails extends BiblioManagerBaseController {
                 if(request.getParameter("like") != null){
                     action_like(request, response);
                 }
-                action_publication(request, response);
+                action_view(request, response);
             } else {
                 action_default(request, response);
             }

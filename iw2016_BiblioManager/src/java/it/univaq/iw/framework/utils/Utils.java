@@ -72,6 +72,7 @@ public class Utils {
     {
         return str.matches("[0-9]{2}-[0-9]{2}-[0-9]{4}");  //match a number with optional '-' and decimal.
     }
+    
     /**
      * Verifica la correttezza dell'email
      *

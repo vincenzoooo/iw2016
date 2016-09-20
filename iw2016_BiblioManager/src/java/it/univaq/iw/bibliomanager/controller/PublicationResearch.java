@@ -48,7 +48,7 @@ public class PublicationResearch extends BiblioManagerBaseController {
             String date = request.getParameter("publicationYear");
             if (!Utils.isNullOrEmpty(date)) {
                 filters.put("anno_inizio", date);
-                String end = String.valueOf(Integer.parseInt(Utils.getArrayParameter(filters, "publicationYear")) + 1);
+                String end = String.valueOf(Integer.parseInt(Utils.getArrayParameter(filters, "anno_inizio")) + 1);
                 filters.put("anno_fine", end);
             } else {
                 filters.put("anno_inizio", String.valueOf(0));
@@ -81,6 +81,16 @@ public class PublicationResearch extends BiblioManagerBaseController {
         }
     }
 
+    private void action_view(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            request.setAttribute("page_title", "Ricerca avanzata");
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("research.ftl.html", request, response);
+        } catch (ServletException | IOException ex) {
+            action_error(request, response, "Error build the template: " + ex.getMessage());
+        }
+    }
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -93,8 +103,6 @@ public class PublicationResearch extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            request.setAttribute("page_title", "Ricerca avanzata");
-            TemplateResult res = new TemplateResult(getServletContext());
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
@@ -109,7 +117,7 @@ public class PublicationResearch extends BiblioManagerBaseController {
                     }
 
                 }
-                res.activate("research.ftl.html", request, response);
+                action_view(request, response);
             } else {
                 action_default(request, response);
             }

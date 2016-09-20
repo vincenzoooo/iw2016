@@ -51,7 +51,7 @@
                 <div class="form-group">
                     <label for="editPublicationDatePub" class="col-sm-2 control-label bold">Data di pubblicazione</label>
                     <div class="col-sm-10 col-lg-6">
-                        <input id="editPublicationDatePub" type="text" class="form-control" name="publicationDate" value="${publication.publicationDate?date}" placeholder="Modifica l'anno di pubblicazione" />
+                        <input id="editPublicationDatePub" type="text" class="form-control" name="publicationDate" value="${publication.publicationDate?string["dd-MM-yyyy"]}" placeholder="Modifica l'anno di pubblicazione" />
                     </div>
                 </div>
                 <#if errorPublicationDate??>

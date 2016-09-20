@@ -16,6 +16,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import it.univaq.iw.bibliomanager.data.model.User;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,25 +25,30 @@ import it.univaq.iw.bibliomanager.data.model.User;
  */
 public class UserList extends BiblioManagerBaseController {
 
-    private void action_list(HttpServletRequest request, HttpServletResponse response)
-            throws DataLayerException, IOException, ServletException {
-        String filter = "%";
-        if (request.getParameter("filter") != null) {
-            filter = request.getParameter("filter") + "%";
+    private void action_view(HttpServletRequest request, HttpServletResponse response)
+    {
+        try{
+            String filter = "%";
+            if (request.getParameter("filter") != null) {
+                filter = request.getParameter("filter") + "%";
+            }
+            User admin = getDataLayer().getUserAdministrator();
+            List<User> activeUsers = getDataLayer().getUsersActive(filter);
+            List<User> passiveUsers = getDataLayer().getUsersPassive(filter);
+            request.setAttribute("admin", admin);
+            request.setAttribute("activeUsers", activeUsers);
+            request.setAttribute("passiveUsers", passiveUsers);
+            request.setAttribute("page_title", "Users Manage");
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("users.ftl.html", request, response);
+        } catch (ServletException | IOException | DataLayerException ex) {
+            action_error(request, response, "Error build the template: " + ex.getMessage());
         }
-        User admin = getDataLayer().getUserAdministrator();
-        List<User> activeUsers = getDataLayer().getUsersActive(filter);
-        List<User> passiveUsers = getDataLayer().getUsersPassive(filter);
-        request.setAttribute("admin", admin);
-        request.setAttribute("activeUsers", activeUsers);
-        request.setAttribute("passiveUsers", passiveUsers);
-        request.setAttribute("page_title", "Users Manage");
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("users.ftl.html", request, response);
+        
     }
 
     private void action_upgrade(HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
+    {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
@@ -55,12 +62,12 @@ public class UserList extends BiblioManagerBaseController {
                 }
             }
         } catch (DataLayerException | NumberFormatException ex) {
-            throw new Exception("Non puoi promuovere questo utente", ex);
+            action_error(request, response, "Error while upgrading an user: " + ex.getMessage());
         }
     }
 
     private void action_downgrade(HttpServletRequest request, HttpServletResponse response)
-            throws Exception {
+    {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
@@ -74,7 +81,7 @@ public class UserList extends BiblioManagerBaseController {
                 }
             }
         } catch (DataLayerException | NumberFormatException ex) {
-            throw new Exception("Non puoi degradare questo utente", ex);
+            action_error(request, response, "Error while downgrading an user: " + ex.getMessage());
         }
     }
 
@@ -102,12 +109,12 @@ public class UserList extends BiblioManagerBaseController {
                         action_downgrade(request, response);
                     }
                 }
-                action_list(request, response);
+                action_view(request, response);
             } else {
                 action_default(request, response);
             }
-        } catch (Exception ex) {
-            action_error(request, response, ex.getMessage());
+        } catch (IOException | DataLayerException ex) {
+            action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 

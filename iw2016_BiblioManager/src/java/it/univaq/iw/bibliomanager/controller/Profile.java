@@ -30,8 +30,9 @@ import java.util.Map;
  */
 public class Profile extends BiblioManagerBaseController {
 
-    private void action_profile(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException {
+    private void action_view(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException {
         try {
+            request.setAttribute("page_title", "Profile");
             HttpSession session = SecurityLayer.checkSession(request);
             int userKey;
             if (request.getParameter("userId") != null) {
@@ -56,7 +57,7 @@ public class Profile extends BiblioManagerBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("profile.ftl.html", request, response);
         } catch (DataLayerException | ServletException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Error build the template: " + ex.getMessage());
         }
     }
 
@@ -126,7 +127,6 @@ public class Profile extends BiblioManagerBaseController {
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         try {
-            request.setAttribute("page_title", "Profile");
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
@@ -137,13 +137,13 @@ public class Profile extends BiblioManagerBaseController {
                     action_updateProfile(request, response);
                 }
                 else{
-                    action_profile(request, response);
+                    action_view(request, response);
                 }
             } else {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | NoSuchAlgorithmException | ServletException ex) {
-            action_error(request, response, "OPS: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage());
         }
     }
 

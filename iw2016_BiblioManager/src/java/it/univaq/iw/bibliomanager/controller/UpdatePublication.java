@@ -25,8 +25,6 @@ import javax.servlet.http.HttpSession;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -36,39 +34,40 @@ public class UpdatePublication extends BiblioManagerBaseController {
 
     private int publicationId;
     private final String url = "managePublication";
-    
-    private void action_updatePublication(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, IOException, NumberFormatException, ServletException {
-        try{
-        if (request.getAttribute("publicationId") != null) {
-            Publication publication = getDataLayer().getPublication(publicationId);
-            Map<String, String> params = new HashMap<String, String>();
-            params.put("publicationTitle", Utils.checkString(request.getParameter("publicationTitle")));
-            params.put("publicationDescription", Utils.checkString(request.getParameter("publicationDescription")));
-            params.put("publicationLanguage", Utils.checkString(request.getParameter("publicationLanguage")));
-            params.put("publicationDate", Utils.checkString(request.getParameter("publicationDate")));
-            params.put("publicationIsbn", Utils.checkString(request.getParameter("publicationIsbn")));
-            params.put("publicationPages", Utils.checkString(request.getParameter("publicationPages")));
-            params.put("editors", request.getParameter("editors"));
-            if (!validator(params, request, response)) {
-                publication.setTitle(params.get("publicationTitle"));
-                publication.setDescription(params.get("publicationDescription"));
-                publication.setLanguage(params.get("publicationLanguage"));
-                DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-                java.util.Date date = df.parse(params.get("publicationDate"));
-                java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-                publication.setPublicationDate(sqlDate);
-                publication.setIsbn(params.get("publicationIsbn"));
-                publication.setPageNumber(Integer.parseInt(params.get("publicationPages")));
-                publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editors"))));
-                publication.setIncomplete(false);
-                getDataLayer().storePublication(publication);
-                this.action_updateHistory(request, response);
-                request.setAttribute("publicationId", publication.getKey());
-                action_redirect(request, response, "/details");
+
+    private void action_updatePublication(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            if (publicationId > 0) {
+                Publication publication = getDataLayer().getPublication(publicationId);
+                Map<String, String> params = new HashMap<String, String>();
+                params.put("publicationTitle", Utils.checkString(request.getParameter("publicationTitle")));
+                params.put("publicationDescription", Utils.checkString(request.getParameter("publicationDescription")));
+                params.put("publicationLanguage", Utils.checkString(request.getParameter("publicationLanguage")));
+                params.put("publicationDate", Utils.checkString(request.getParameter("publicationDate")));
+                params.put("publicationIsbn", Utils.checkString(request.getParameter("publicationIsbn")));
+                params.put("publicationPages", Utils.checkString(request.getParameter("publicationPages")));
+                params.put("editors", request.getParameter("editors"));
+                if (!validator(params, request, response)) {
+                    publication.setTitle(params.get("publicationTitle"));
+                    publication.setDescription(params.get("publicationDescription"));
+                    publication.setLanguage(params.get("publicationLanguage"));
+                    DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+                    java.util.Date date = df.parse(params.get("publicationDate"));
+                    java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+                    publication.setPublicationDate(sqlDate);
+                    publication.setIsbn(params.get("publicationIsbn"));
+                    publication.setPageNumber(Integer.parseInt(params.get("publicationPages")));
+                    publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editors"))));
+                    publication.setIncomplete(false);
+                    getDataLayer().storePublication(publication);
+                    this.action_updateHistory(request, response);
+                    request.setAttribute("publicationId", publication.getKey());
+                    publicationId = 0;
+                    action_redirect(request, response, "/details");
+                }
             }
-        }
-        }catch(DataLayerException | NumberFormatException | ParseException ex){
-            action_error(request, response, "Error: " + ex.getMessage());
+        } catch (ServletException | IOException | DataLayerException | NumberFormatException | ParseException ex) {
+            action_error(request, response, "Error while updating: " + ex.getMessage());
         }
     }
 
@@ -83,7 +82,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
         history.setDate(new java.sql.Timestamp(System.currentTimeMillis()));
         getDataLayer().storeHistory(history);
     }
-    
+
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = super.validator(params, request, response);
@@ -94,7 +93,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
                     request.setAttribute("errorPublicationIsbn", "Non è un codice valido");
                     error = true;
                 }
-                if (!getDataLayer().getPublication((int)request.getAttribute("publicationId")).getIsbn().equals(isbn) && getDataLayer().getPublicationByISBN(isbn) != null) {
+                if (!getDataLayer().getPublication(publicationId).getIsbn().equals(isbn) && getDataLayer().getPublicationByISBN(isbn) != null) {
                     request.setAttribute("errorPublicationIsbn", "ISBN già presente");
                     error = true;
                 }
@@ -112,42 +111,47 @@ public class UpdatePublication extends BiblioManagerBaseController {
         }
         return error;
     }
-    
-    private void action_unlinkAuthor (HttpServletRequest request, HttpServletResponse response)
+
+    private void action_unlinkAuthor(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
         getDataLayer().deleteAuthorFromPublication(publicationId, Integer.parseInt(request.getParameter("unlinkAuthor")));
     }
-    
-    private void action_unlinkKeyword (HttpServletRequest request, HttpServletResponse response)
+
+    private void action_unlinkKeyword(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
         getDataLayer().deleteKeywordFromPublication(publicationId, Integer.parseInt(request.getParameter("unlinkKeyword")));
     }
-    
-    private void action_deletePublication (HttpServletRequest request, HttpServletResponse response)
+
+    private void action_deletePublication(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException, ServletException, IOException {
         Publication publication = getDataLayer().getPublication(publicationId);
         getDataLayer().deletePublication(publication);
         action_redirect(request, response, "/catalog");
     }
-    
+
     @Override
     protected void action_redirect(HttpServletRequest request, HttpServletResponse response, String url) throws ServletException, IOException {
         request.setAttribute("publicationId", publicationId);
         request.setAttribute("url", this.url);
         super.action_redirect(request, response, url);
-        
+
     }
-    private void action_view (HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException{
-        List<Editor> editors = getDataLayer().getEditors();
-        Publication publication = getDataLayer().getPublication(publicationId);
-        request.setAttribute("publication", publication);
-        request.setAttribute("editors", editors);
-        request.setAttribute("publicationId", publicationId);
-        request.setAttribute("url", url);
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("managePublication.ftl.html", request, response);
+
+    private void action_view(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            List<Editor> editors = getDataLayer().getEditors();
+            Publication publication = getDataLayer().getPublication(publicationId);
+            request.setAttribute("publication", publication);
+            request.setAttribute("editors", editors);
+            request.setAttribute("publicationId", publicationId);
+            request.setAttribute("url", url);
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("managePublication.ftl.html", request, response);
+        } catch (DataLayerException | ServletException | IOException ex) {
+            action_error(request, response, "Error build the template: " + ex.getMessage());
+        }
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -163,7 +167,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Modifica Pubblicazione");
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
-                if(request.getParameter("publicationId") != null){
+                if (request.getParameter("publicationId") != null) {
                     publicationId = Integer.parseInt(request.getParameter("publicationId"));
                 }
                 if (request.getParameter("addEditor") != null) {
@@ -199,7 +203,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
                 if (request.getParameter("delete") != null) {
                     action_deletePublication(request, response);
                 }
-                if(request.getParameter("submitPublication") != null){
+                if (request.getParameter("submitPublication") != null) {
                     action_updatePublication(request, response);
                 }
                 action_view(request, response);

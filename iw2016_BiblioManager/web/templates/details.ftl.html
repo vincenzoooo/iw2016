@@ -67,7 +67,7 @@
                         <span class="">Isbn: </span> 
                         <span class='resume'>${publication.isbn?html}</span> 
                         <br/>
-                        <span class="resume">${publication.publicationDate?date}, pp. ${publication.pageNumber?html}</span>
+                        <span class="resume">${publication.publicationDate?string["dd-MM-yyyy"]}, pp. ${publication.pageNumber?html}</span>
                         <br/>
                         <span class="bold">Lingua: </span>
                         <span class="resume">${strip_slashes(publication.language)?html}</span> 

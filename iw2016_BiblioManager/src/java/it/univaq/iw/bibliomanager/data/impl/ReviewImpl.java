@@ -8,11 +8,9 @@ package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.framework.data.DataLayerException;
-import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.Review;
 import it.univaq.iw.bibliomanager.data.model.History;
 import it.univaq.iw.bibliomanager.data.model.User;
-import java.sql.Date;
 import java.sql.Timestamp;
 
 /**

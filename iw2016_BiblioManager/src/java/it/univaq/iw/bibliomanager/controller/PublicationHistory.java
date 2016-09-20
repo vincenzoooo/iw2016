@@ -23,13 +23,17 @@ import javax.servlet.http.HttpSession;
  */
 public class PublicationHistory extends BiblioManagerBaseController {
 
-    private void action_history(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, DataLayerException {
-        TemplateResult res = new TemplateResult(getServletContext());
-        int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
-        List<History> histories = getDataLayer().getHistoriesByPublication(publicationKey);
-        request.setAttribute("histories", histories);
-        request.setAttribute("publicationId", request.getParameter("publicationId"));
-        res.activate("history.ftl.html", request, response);//TODO: Definire pagina di storico
+    private void action_view(HttpServletRequest request, HttpServletResponse response){
+        try {
+            TemplateResult res = new TemplateResult(getServletContext());
+            int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
+            List<History> histories = getDataLayer().getHistoriesByPublication(publicationKey);
+            request.setAttribute("histories", histories);
+            request.setAttribute("publicationId", request.getParameter("publicationId"));
+            res.activate("history.ftl.html", request, response);//TODO: Definire pagina di storico
+        } catch (DataLayerException | ServletException | IOException ex) {
+            action_error(request, response, "Error build the template: " + ex.getMessage());
+        }
     }
 
     /**
@@ -48,7 +52,7 @@ public class PublicationHistory extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
-                action_history(request, response);
+                action_view(request, response);
             } else {
                 action_default(request, response);
             }

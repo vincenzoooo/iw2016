@@ -30,46 +30,54 @@ public class PublicationsList extends BiblioManagerBaseController {
     private Map<String, String> filters = new HashMap<>();
     private boolean isResearch = false;
     private final int limit = 5;
-    
-    private void action_list(HttpServletRequest request, HttpServletResponse response) throws IOException, DataLayerException {
-        if(request.getAttribute("isResearch") != null){
-            isResearch = (boolean) request.getAttribute("isResearch");
-        }
-        else{
-            isResearch = false;
-        }
-        if(request.getAttribute("filter") != null){
-            request.setAttribute("filter", request.getAttribute("filter"));
-            filters = getDataLayer().getFilters((int)request.getAttribute("filter"));
-        }
-        int orderBy = request.getParameter("orderBy") != null ? Integer.parseInt(request.getParameter("orderBy")) : 0;
-        filters.put("order_by", orderField[orderBy]);
-        int orderMode = request.getParameter("orderMode") != null ? Integer.parseInt(request.getParameter("orderMode")) : 0;
-        filters.put("order_mode", orderType[orderMode]);
-        int offset = request.getParameter("offset") != null ? Integer.parseInt(request.getParameter("offset")) : 0;
-        request.setAttribute("orderBy", orderBy);
-        request.setAttribute("orderMode", orderMode);
-        filters.put("offset", Integer.toString(offset));
-        TemplateResult res = new TemplateResult(getServletContext());
+
+    private void action_list(HttpServletRequest request, HttpServletResponse response) {
         try {
+            if (request.getAttribute("isResearch") != null) {
+                isResearch = (boolean) request.getAttribute("isResearch");
+            } else {
+                isResearch = false;
+            }
+            if (request.getAttribute("filter") != null) {
+                request.setAttribute("filter", request.getAttribute("filter"));
+                filters = getDataLayer().getFilters((int) request.getAttribute("filter"));
+            }
+            int orderBy = request.getParameter("orderBy") != null ? Integer.parseInt(request.getParameter("orderBy")) : 0;
+            filters.put("order_by", orderField[orderBy]);
+            int orderMode = request.getParameter("orderMode") != null ? Integer.parseInt(request.getParameter("orderMode")) : 0;
+            filters.put("order_mode", orderType[orderMode]);
+            int offset = request.getParameter("offset") != null ? Integer.parseInt(request.getParameter("offset")) : 0;
+            request.setAttribute("orderBy", orderBy);
+            request.setAttribute("orderMode", orderMode);
+            filters.put("offset", Integer.toString(offset));
+
             List<Publication> publications = getDataLayer().getPublicationsByFilters(filters);
             request.setAttribute("publications", publications);
             int publicationsNumber = getDataLayer().getPublications().size();
             int pages = publicationsNumber / limit;
-            if(publicationsNumber%limit > 0){
+            if (pages != 0 && publicationsNumber % limit > 0) {
                 pages++;
             }
             String[] urlPages = new String[pages];
             offset = (pages - 1) * limit;
-            while(pages > 0){    
+            while (pages > 0) {
                 urlPages[--pages] = "catalog?orderBy=" + orderBy + "&offset=" + offset;
-                offset-=limit;
+                offset -= limit;
             }
             request.setAttribute("isResearch", isResearch);
             request.setAttribute("pages", urlPages);
-            res.activate("catalog.ftl.html", request, response);
-        } catch (ServletException | DataLayerException ex) {
+            action_view(request, response);
+        } catch (DataLayerException ex) {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage());
+        }
+    }
+
+    private void action_view(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("catalog.ftl.html", request, response);
+        } catch (ServletException | IOException ex) {
+            action_error(request, response, "Error build the template: " + ex.getMessage());
         }
     }
 

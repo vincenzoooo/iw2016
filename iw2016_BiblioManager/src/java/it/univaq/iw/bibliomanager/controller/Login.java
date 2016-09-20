@@ -16,6 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import it.univaq.iw.bibliomanager.data.model.User;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -26,7 +28,6 @@ public class Login extends BiblioManagerBaseController {
     private void action_login(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, NoSuchAlgorithmException, DataLayerException {
         try {
-            TemplateResult res = new TemplateResult(getServletContext());
             String email = Utils.checkString(request.getParameter("email"));
             String password = Utils.checkString(request.getParameter("password"));
             if (!this.validator(request, response)) {
@@ -37,14 +38,12 @@ public class Login extends BiblioManagerBaseController {
                     request.setAttribute("page_title", "Benvenuto");
                     request.setAttribute("user", user);
                     response.sendRedirect("home");
-                    //res.activate("home.ftl.html", request, response);//TODO: Definire la home page
                 } else {
                     request.setAttribute("message", "Credenziali errate, si invita a riprovare o ad iscriversi");
-                    //res.activate("login.ftl.html", request, response);
-                    res.activate("registration.ftl.html", request, response);
+                    action_redirect(request, response, "/registration");
                 }
             } else {
-                res.activate("login.ftl.html", request, response);
+                
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel trovare l'utente: " + ex.getMessage());
@@ -70,6 +69,16 @@ public class Login extends BiblioManagerBaseController {
         return error;
     }
 
+    private void action_view(HttpServletRequest request, HttpServletResponse response)
+    {
+        try {
+            TemplateResult res = new TemplateResult(getServletContext());
+            res.activate("login.ftl.html", request, response);
+        } catch (ServletException | IOException ex) {
+            action_error(request, response, "Error build the template: " + ex.getMessage());
+        }
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -84,6 +93,7 @@ public class Login extends BiblioManagerBaseController {
         try {
             if (request.getParameter("submitLogin") != null && SecurityLayer.checkSession(request) == null) {
                 action_login(request, response);
+                action_view(request, response);
             } else {
                 action_default(request, response);
             }

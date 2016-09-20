@@ -25,32 +25,19 @@ import javax.servlet.http.HttpSession;
  */
 public class Home extends BiblioManagerBaseController {
 
-    @Override
-    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        request.setAttribute("page_title", "Home");
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("home.ftl.html", request, response);
-    }
-
-    private void action_anonymous(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        HTMLResult result = new HTMLResult(getServletContext());
-        request.setAttribute("page_title", "Homepage");
-        if (request.getParameter("passiveUser") != null) {
-            request.setAttribute("passiveUser", "");
-        }
-        if (request.getParameter("sesExp") != null) {
-            request.setAttribute("sesExp", "");
-        }
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("home.ftl.html", request, response);
-    }
-
-    private void action_logged(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, DataLayerException {
+    private void action_view(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, DataLayerException {
         request.setAttribute("page_title", "Homepage");
         TemplateResult res = new TemplateResult(getServletContext());
+        request.setAttribute("script", "script/ramdombox.js");
+        List<Publication> publicationsInsert = getDataLayer().getLastInsertedPublication();
+        List<Publication> publicationsUpdate = getDataLayer().getLastModifiedPublication();
+        List<User> activeUsers = getDataLayer().getMoreActiveUsers();
+        request.setAttribute("lastPublicationsInsert", publicationsInsert);
+        request.setAttribute("lastPublicationsUpdate", publicationsUpdate);
+        request.setAttribute("activeUsers", activeUsers);
         res.activate("home.ftl.html", request, response);
     }
-
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -63,19 +50,12 @@ public class Home extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            request.setAttribute("script", "script/ramdombox.js");
-            List<Publication> publicationsInsert = getDataLayer().getLastInsertedPublication();
-            List<Publication> publicationsUpdate = getDataLayer().getLastModifiedPublication();
-            List<User> activeUsers = getDataLayer().getMoreActiveUsers();
-            request.setAttribute("lastPublicationsInsert", publicationsInsert);
-            request.setAttribute("lastPublicationsUpdate", publicationsUpdate);
-            request.setAttribute("activeUsers", activeUsers);
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
-                action_logged(request, response);
+                action_view(request, response);
             } else {
-                action_default(request, response);
+                action_view(request, response);
             }
         } catch (DataLayerException | IOException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage());
