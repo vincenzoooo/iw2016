@@ -61,7 +61,7 @@
                                         <div class="thebox-image">
                                             <figure class="cover-pubb cap-bot imgHome">
                                                 <#if item.cover??>
-                                                <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive immagine"/>
+                                                <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive imageHome"/>
                                                 <#else>
                                                 <img src= "img/come.png" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
                                                 </#if>
@@ -128,7 +128,7 @@
                                 <ul class="nodecoration">
                                 <#list activeUsers as item>
                                     <li class="nodecoration">
-                                        <a href="research?userId=${item.key}" class="userProfileHome white">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
+                                        <a href="research?userId=${item.key}" class="userProfileHome itemMenu">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
                                     </li>
                                 </#list>
                                 </ul>

@@ -146,6 +146,7 @@ Professor: Giuseppe Della Penna
 .green {color:#9c6;}
 .black {color:black;}
 .white {color:#fff;}
+.lobster{color:#D94C3A}
 
 .font-2x {font-size: 1.2em;}
 .font-3x {font-size: 1.5em;}
@@ -663,15 +664,15 @@ header .navbar-header-menu {
 }
 
 .navbar-nav > li > a:hover{
-    color: #333 !important;
+    color: #5D1D17 !important;
 }
 
 .navbar-nav > li > a:focus{
-    color: #333 !important;
+    color: #5D1D17 !important;
 }
 
 .navbar-nav > li > a:active{
-    color: #333 !important;
+    color: #5D1D17!important;
 }
 
 .advance-search{
@@ -680,11 +681,11 @@ header .navbar-header-menu {
 }
 
 .advance-search:hover{
-    color: #333;
+    color: #5D1D17;
 }
 
 .advance-search:focus{
-    color: #333;
+    color: #5D1D17;
 }
 
 
@@ -747,7 +748,21 @@ header .navbar-header-menu {
    margin: 10px;
 }
 
+.itemMenu{
+    color: #EDDBC3;
+}
 
+.itemMenu:hover{
+    color: #D94C3A;
+}
+
+.itemLogin{
+    color: #5D1D17;
+}
+
+.itemLogin:hover{
+    color: #D94C3A;
+}
 
 
 /**
@@ -798,7 +813,7 @@ header .navbar-header-menu {
 
 .users-letter {
     font-size: 15px; 
-    margin-bottom: 36px;
+    margin-bottom: 15px;
     line-height: 32px;
     padding-top: 0;
     font-family: 'Libre Baskerville',georgia,serif;
@@ -811,12 +826,12 @@ header .navbar-header-menu {
      color: black; 
 }
 
-.users-letter>ul>li>a:active{
-     color: red!important; 
+.users-letter>ul>li>a:focus{
+     color: #D94C3A!important; 
 }
 
 .users-letter>ul>li>a:hover{
-     color: red; 
+     color: #D94C3A; 
 }
 
 .promote{
@@ -831,6 +846,9 @@ header .navbar-header-menu {
     color: #2b2b2b;
 }
 
+.itemCommunity:hover{
+     color: #D94C3A;
+}
 
 /**
  * 4. Details Publication
@@ -941,7 +959,7 @@ figure:hover:before {
  .caption{
     border-bottom-right-radius:5px;
     background-color: black;
-    padding-top:15px;
+    padding-top:16px;
     padding-bottom:15px;
     padding-left: 10px;
     height:40px;

@@ -98,7 +98,12 @@
                 </#if>
                  -->
                 <#else>
-                L'utente non ha inserito nessuna pubblicazione.
+                    <#if me.state==0 || me.state==1>
+                    L'utente non ha inserito nessuna pubblicazione.
+                    <#else>
+                    Bisogna essere un utente attivo per inserire una pubblicazione 
+                    <span class="info" title="Per diventare un utente attivo recensisci in modo chiaro e corretto le pubblicazioni del portale e sarai notato dai nostri operatori"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
+                    </#if>
                 </#if>
             </div>
             
@@ -138,7 +143,12 @@
                         </tbody>
                     </table>
                     <#else>
+                        <#if me.state==0 || me.state==1>
                         L'utente non ha effettuato alcuna azione sulle pubblicazioni.
+                        <#else>
+                        Bisogna essere un utente attivo per modificare una pubblicazione 
+                        <span class="info" title="Per diventare un utente attivo recensisci in modo chiaro e corretto le pubblicazioni del portale e sarai notato dai nostri operatori"><i class="fa fa-info-circle" aria-hidden="true"></i></span>
+                        </#if>
                     </#if>
                 </div>
             </div>

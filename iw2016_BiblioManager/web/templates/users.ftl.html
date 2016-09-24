@@ -45,15 +45,35 @@
                 </div>
             </div>
         </div>
-            
+        
+        <div class="section section-pageCommunity-legend"> 
+            <div class="row">
+                <div class="col-lg-12">
+                    <#if (me.state==0)>
+                    <div class="legend margin-bot-30">
+                        <span class="bold">Legenda: </span>
+                        <span>Cliccando su <i class="fa fa-lg fa-angle-double-down degrade" aria-hidden="true"></i> si fa retrocedere un utente.</span>
+                        <span>Cliccando su <i class="fa fa-lg fa-angle-double-up promote" aria-hidden="true"></i> si promuovere un utente.</span>
+                    </div>
+                    </#if>
+                    <#if (me.state==1)>
+                    <div class="legend margin-bot-30">
+                        <span class="bold">Legenda: </span>
+                        <span>Cliccando su <i class="fa fa-lg fa-angle-double-up promote" aria-hidden="true"></i> si promuovere un utente.</span>
+                    </div>
+                    </#if>
+                </div>
+            </div>
+        </div>
+        
         <div class="section section-pageCatalog-users">   
             <div class="bold">Utente amministratore</div>
             <div class="row"> 
                 <#if (admin??)>
                 <div class="col-lg-12">
                     <ul class="nodecoration">
-                        <li class="nodecoration">
-                            <a href="profile?userId=${admin.key}" class="community-user">${strip_slashes(admin.surname?html)?capitalize}&nbsp;${strip_slashes(admin.name?html)?capitalize}</a>
+                        <li class="nodecoration margin-bot-30">
+                            <a href="profile?userId=${admin.key}" class="community-user itemCommunity">${strip_slashes(admin.surname?html)?capitalize}&nbsp;${strip_slashes(admin.name?html)?capitalize}</a>
                         </li>
                     </ul>
                 </div>
@@ -64,14 +84,14 @@
             
             <div class="row">
                 <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <div class="bold">Utenti Attivi</div>
+                    <div class="bold">Utenti attivi</div>
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                             <ul class="nodecoration">
                             <#list activeUsers as item>
                                 <#if (item.state==1)>
                                     <li class="nodecoration">
-                                        <a href="profile?userId=${item.key}" class="community-user">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                        <a href="profile?userId=${item.key}" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
                                         <#if (me.state==0)>
                                         <a href="community?op=2&user=${item.key}">
                                             <i class="fa fa-angle-double-down degrade" aria-hidden="true"></i>
@@ -94,7 +114,7 @@
                             <#list passiveUsers as item>
                             <#if (item.state==2)>
                                 <li class="nodecoration">
-                                    <a href="profile?userId=${item.key}" class="community-user">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                    <a href="profile?userId=${item.key}" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
                                     <#if (me.state<2)>
                                     <a href="community?op=1&user=${item.key}">
                                         <i class="fa fa-angle-double-up promote" aria-hidden="true"></i>
