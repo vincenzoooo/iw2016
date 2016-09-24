@@ -57,6 +57,9 @@ public class PublicationsList extends BiblioManagerBaseController {
             List<Publication> publications = getDataLayer().getPublicationsByFilters(filters);
             request.setAttribute("publications", publications);
             int publicationsNumber = getDataLayer().getPublications().size();
+            if(filters.size() > 3){
+                publicationsNumber = publications.size();
+            }
             int pages = publicationsNumber / limit;
             if (pages != 0 && publicationsNumber % limit > 0) {
                 pages++;
