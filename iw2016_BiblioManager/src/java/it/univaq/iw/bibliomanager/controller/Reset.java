@@ -8,7 +8,6 @@ package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
-import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -16,7 +15,6 @@ import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import it.univaq.iw.bibliomanager.data.model.User;
 
 /**
@@ -25,35 +23,47 @@ import it.univaq.iw.bibliomanager.data.model.User;
  */
 public class Reset extends BiblioManagerBaseController {
 
+    private User user = null;
     private void action_reset(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, DataLayerException, NoSuchAlgorithmException {
-        HttpSession session = SecurityLayer.checkSession(request);
-        if (request.getAttribute("rs") == session.getAttribute("rs")) {
             TemplateResult res = new TemplateResult(getServletContext());
-            String newPassword = Utils.checkString(request.getParameter("new-password"));
-            User user = getDataLayer().getUser((int) session.getAttribute("userID"));
-            if (user != null) {
+            String newPassword = Utils.checkString(request.getParameter("password"));
+            String newRePassword = Utils.checkString(request.getParameter("re-password"));
+            if(newPassword.equals(newRePassword) && user != null){
                 user.setPassword(Utils.SHA1(newPassword));
                 getDataLayer().storeUser(user);
+                user = null;
+                action_redirect(request, response, "/login");
             }
-            res.activate("login.html", request, response); //TODO: redirect to login
-        } else {
-            throw new ServletException("No reset request found"); //TODO
-        }
+            else{
+                request.setAttribute("errorReset", "Le password non corrispondono");
+                action_default(request, response);
+            }
     }
 
     private void action_isUser(HttpServletRequest request, HttpServletResponse response)
-            throws DataLayerException, MessagingException {
-        HttpSession session = SecurityLayer.checkSession(request);
-        session.setAttribute("rs", (int) (Math.random() * 1000));
-        String email = Utils.checkString("email");
+            throws DataLayerException, MessagingException, ServletException, IOException {
+        String email = Utils.checkString(request.getParameter("email"));
         User user = getDataLayer().getUser(email);
         if (user != null) {
-            String text = "Here the link to reset your password: http://localhost:8084/bibliomanager/reset?rs=" + session.getAttribute("rs");
-            Utils.sendEmail(email, text);
+            this.user = user;
         }
+        else{
+            request.setAttribute("errorReset", "L'email non è stata registrata");
+        }
+        action_default(request, response);
     }
 
+    @Override
+    protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
+        request.setAttribute("page_title", "Reset");
+        TemplateResult res = new TemplateResult(getServletContext());
+        if(user != null){
+            request.setAttribute("showPass", "1");
+        }
+        res.activate("reset.ftl.html", request, response);
+    }
+    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -66,11 +76,15 @@ public class Reset extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            if (request.getParameter("email") != null) {
-                action_isUser(request, response);
-            } else if (request.getParameter("rs") != null && SecurityLayer.checkSession(request) != null) {
-                action_reset(request, response);
-            } else {
+            if (request.getParameter("submitReset") != null){
+                if (request.getParameter("email") != null) {
+                    action_isUser(request, response);
+                } 
+                if (this.user != null) {
+                    action_reset(request, response);
+                }
+            }
+            else {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | MessagingException | NoSuchAlgorithmException | ServletException ex) {
