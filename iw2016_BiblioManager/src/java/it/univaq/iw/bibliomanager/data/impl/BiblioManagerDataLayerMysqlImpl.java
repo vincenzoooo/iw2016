@@ -715,7 +715,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 }
             }
             query += "GROUP BY p.idpubblicazione ORDER BY " + Utils.getArrayParameter(filters, "order_by") + " " + Utils.getArrayParameter(filters, "order_mode");
-            query += " LIMIT 5 ";
+            if(!Utils.isNullOrEmpty(Utils.getArrayParameter(filters, "limit"))){
+                query += " LIMIT 5 ";
+            }
             if(!Utils.isNullOrEmpty(Utils.getArrayParameter(filters, "offset")) && !"0".equals(Utils.getArrayParameter(filters, "offset"))){
                 query += "OFFSET " + Utils.getArrayParameter(filters, "offset");
             }

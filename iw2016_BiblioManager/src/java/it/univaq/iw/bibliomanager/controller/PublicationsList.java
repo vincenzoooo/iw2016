@@ -53,13 +53,13 @@ public class PublicationsList extends BiblioManagerBaseController {
             request.setAttribute("orderBy", orderBy);
             request.setAttribute("orderMode", orderMode);
             filters.put("offset", Integer.toString(offset));
+            filters.put("limit", "1");
 
             List<Publication> publications = getDataLayer().getPublicationsByFilters(filters);
             request.setAttribute("publications", publications);
-            int publicationsNumber = getDataLayer().getPublications().size();
-            if(filters.size() > 3){
-                publicationsNumber = publications.size();
-            }
+            filters.remove("limit");
+            filters.remove("offset");
+            int publicationsNumber = getDataLayer().getPublicationsByFilters(filters).size();
             int pages = publicationsNumber / limit;
             if (pages != 0 && publicationsNumber % limit > 0) {
                 pages++;
