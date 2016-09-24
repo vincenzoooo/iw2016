@@ -42,6 +42,9 @@ public class PublicationsList extends BiblioManagerBaseController {
                 request.setAttribute("filter", request.getAttribute("filter"));
                 filters = getDataLayer().getFilters((int) request.getAttribute("filter"));
             }
+            else{
+                filters = new HashMap<>();
+            }
             int orderBy = request.getParameter("orderBy") != null ? Integer.parseInt(request.getParameter("orderBy")) : 0;
             filters.put("order_by", orderField[orderBy]);
             int orderMode = request.getParameter("orderMode") != null ? Integer.parseInt(request.getParameter("orderMode")) : 0;

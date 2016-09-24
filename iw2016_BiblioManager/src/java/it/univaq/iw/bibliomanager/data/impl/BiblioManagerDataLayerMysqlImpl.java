@@ -2440,7 +2440,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             sFilters.setInt(1, filter_key);
             rs = sFilters.executeQuery();
-            while (rs.next()) {
+            if (rs.next()) {
                 result.put("isbn", rs.getString("isbn"));
                 result.put("titolo", rs.getString("titolo"));
                 result.put("autore", rs.getString("autore"));
@@ -2449,7 +2449,6 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 result.put("anno_fine", rs.getString("anno_fine"));
                 result.put("keyword", rs.getString("keyword"));
                 result.put("lingua", rs.getString("lingua"));
-                result.put("lingua", rs.getString("download"));
                 result.put("download", rs.getString("download"));
                 result.put("utente", rs.getString("utente"));
             }

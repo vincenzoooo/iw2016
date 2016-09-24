@@ -42,7 +42,7 @@ public class PublicationResearch extends BiblioManagerBaseController {
                 filters.put("autore", authorName);
             }
             String editorName = request.getParameter("publicationEditor");
-            if (!Utils.isNullOrEmpty(authorName)) {
+            if (!Utils.isNullOrEmpty(editorName)) {
                 filters.put("editore", editorName);
             }
             String date = request.getParameter("publicationYear");
