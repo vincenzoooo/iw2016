@@ -35,14 +35,13 @@ public class PublicationsList extends BiblioManagerBaseController {
         try {
             if (request.getAttribute("isResearch") != null) {
                 isResearch = (boolean) request.getAttribute("isResearch");
-            } else {
-                isResearch = false;
             }
             if (request.getAttribute("filter") != null) {
                 request.setAttribute("filter", request.getAttribute("filter"));
                 filters = getDataLayer().getFilters((int) request.getAttribute("filter"));
             }
             else{
+                isResearch = false;
                 filters = new HashMap<>();
             }
             int orderBy = request.getParameter("orderBy") != null ? Integer.parseInt(request.getParameter("orderBy")) : 0;
