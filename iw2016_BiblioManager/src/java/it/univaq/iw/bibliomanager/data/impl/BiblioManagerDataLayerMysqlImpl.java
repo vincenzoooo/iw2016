@@ -1162,7 +1162,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-
+   
     @Override
     public User getUser(int user_key) throws DataLayerException {
         User result = null;

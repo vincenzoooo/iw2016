@@ -262,11 +262,6 @@
                         <#if (lastReviews?? && lastReviews?size>0)>
                         <#list lastReviews as item>
                         <div class="review row" id="lastReview${item.key}">
-<!--                        <div class="col-lg-2">
-                            <span>
-                                <img class="profile" src='img/user2.png' alt="Utente" />
-                            </span>
-                        </div>-->
                             <div class="col-lg-4">
                                 <span class="bold"> ${strip_slashes(item.author.name?html)?capitalize} ${strip_slashes(item.author.surname?html)?capitalize}</span> &nbsp;${item.reviewDate?datetime}
                             </div>
@@ -274,7 +269,7 @@
                                 <div class="twelve columns justify">${strip_slashes(item.text)?html}</div>
                             </div>
                         </div>
-                        </div>
+
                         </#list>
                         <#else>
                         <div id="lastReview">
@@ -283,76 +278,75 @@
                         </#if>
                     </div>
                 </div>
+            </div>
             
-                <div class="review row">
-                    <div class="col-lg-12">
-                    <form id="formAddReview" method="post" action="review" class="margin-top-10">
-                        <div class="form-group margin-top-5">
-                            <label for="comment">Aggiungine una:</label>
-                            <textarea class="form-control" id="textReview" name="textReview" rows="5" placeholder="Scrivi una Recensione"></textarea>
-                        </div>
-                        <#if errorReview??>
-                        <div class="error">
-                            ${errorReview?html}
-                        </div>
+            <div class="row">
+                <div class="col-lg-12">
+                <form id="formAddReview" method="post" action="review" class="margin-top-10">
+                    <div class="form-group margin-top-5">
+                        <label for="comment">Aggiungine una:</label>
+                        <textarea class="form-control" id="textReview" name="textReview" rows="5" placeholder="Scrivi una Recensione"></textarea>
+                    </div>
+                    <#if errorReview??>
+                    <div class="error">
+                        ${errorReview?html}
+                    </div>
+                    </#if>
+
+                    <div class="form-group">
+                        <input id="publicationId" type="hidden" name="publicationId" value="${publication.key}" />
+                        <span>
+                            <input type="submit" name="addReview" value="Inserisci recensione" class="btn btn-default" />
+                        </span>
+                        <#if (publication.reviews?? && publication.reviews?size>0)>
+                            <a href="review?publicationId=${publication.key}" class="btn btn-default" name="submitReview">Vedi tutte le recensioni
+                            <#if (me.state<2 && countReview>0) >
+                                <span class="badge badge-custom">${countReview?html}</span>
+                              </#if>
+
+                            </a>
                         </#if>
 
-                        <div class="form-group">
-                            <input id="publicationId" type="hidden" name="publicationId" value="${publication.key}" />
-                            <span>
-                                <input type="submit" name="addReview" value="Inserisci recensione" class="btn btn-default" />
-                            </span>
-                            <#if (publication.reviews?? && publication.reviews?size>0)>
-                                <a href="review?publicationId=${publication.key}" class="btn btn-default" name="submitReview">Vedi tutte le recensioni
-                                <#if (me.state<2 && countReview>0) >
-                                    <span class="badge badge-custom">${countReview?html}</span>
-                                  </#if>
-
-                                </a>
-                            </#if>
-
-                        </div>
-                    </form> 
                     </div>
+                </form> 
                 </div>
             </div>
         </div>
-
-        <!--
-        <div id="linkreviews" class="row margin10"> 
-        <#if ((numberReviewsToApprove??) && (numberReviewsToApprove>0)) && userRole >
-
-        <#if (numberReviewsToApprove>1) >
-            Ci sono ${numberReviewsToApprove} recensioni 
-        <#else>
-            C'&egrave; ${numberReviewsToApprove} recensione 
-        </#if>
-        da approvare. Clicca il link di seguito per andare alla pagina di tutte le recensioni ed approvarle&nbsp;
-
-        </#if>
-        <#if ((lastReview??) || (numberReviewsToApprove?? && numberReviewsToApprove>0))>
-        <a href="publicationReviews?publicationId=${publication.id}">Vedi tutte le recensioni</a>
-        </#if>
-        </div>
-
-        <div class="row">
-        <#if (userRole?? && userRole)>
-
-        <div class="three columns button">
-            <a id="deletePublication" href="?deletePublication&publicationId=${publication.id}">Elimina</a>
-        </div>
-
-        <div class="three columns button">
-            <a href="historyPublication?publicationId=${publication.id}">Vai allo storico</a>
-        </div>
-
-        </#if>
-        -->
-
-        </#if>
-        <div class="">
-            <a href="catalog" class="btn btn-default" name="submitCatalog">Torna al catalogo</a>
-        </div>
     </div>
+
+    <!--
+    <div id="linkreviews" class="row margin10"> 
+    <#if ((numberReviewsToApprove??) && (numberReviewsToApprove>0)) && userRole >
+
+    <#if (numberReviewsToApprove>1) >
+        Ci sono ${numberReviewsToApprove} recensioni 
+    <#else>
+        C'&egrave; ${numberReviewsToApprove} recensione 
+    </#if>
+    da approvare. Clicca il link di seguito per andare alla pagina di tutte le recensioni ed approvarle&nbsp;
+
+    </#if>
+    <#if ((lastReview??) || (numberReviewsToApprove?? && numberReviewsToApprove>0))>
+    <a href="publicationReviews?publicationId=${publication.id}">Vedi tutte le recensioni</a>
+    </#if>
+    </div>
+
+    <div class="row">
+    <#if (userRole?? && userRole)>
+
+    <div class="three columns button">
+        <a id="deletePublication" href="?deletePublication&publicationId=${publication.id}">Elimina</a>
+    </div>
+
+    <div class="three columns button">
+        <a href="historyPublication?publicationId=${publication.id}">Vai allo storico</a>
+    </div>
+
+    </#if>
+    -->
+
+    </#if>
+    <a href="catalog" class="btn btn-default" name="submitCatalog">Torna al catalogo</a>
 </div>
+
 
