@@ -45,8 +45,9 @@ public class PublicationDetails extends BiblioManagerBaseController {
             request.setAttribute("publication", publication);
             List<Review> lastReviews = getDataLayer().getLastReviews(publicationKey, 1);
             request.setAttribute("lastReviews", lastReviews);
-            boolean liked = getDataLayer().getUsersLike(Integer.parseInt(request.getParameter("publicationId")), (int) session.getAttribute("userId"));
+            boolean liked = getDataLayer().getUsersLike(publicationKey, (int) session.getAttribute("userId"));
             request.setAttribute("like", liked);
+            request.setAttribute("countReview", getDataLayer().getCountReview(publicationKey));
             res.activate("details.ftl.html", request, response);
         } catch (DataLayerException | ServletException | IOException ex) {
             action_error(request, response, "Error build the template: " + ex.getMessage());

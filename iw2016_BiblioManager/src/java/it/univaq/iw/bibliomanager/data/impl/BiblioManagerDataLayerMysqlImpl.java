@@ -56,7 +56,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement sAuthors, sAuthorsByName, sAuthorById, sAuthorByPublication;
     private PreparedStatement uAuthor, iAuthor, dAuthor;
     private PreparedStatement sReviewsByPublication, sReviewById, sLastModeratedReviews;
-    private PreparedStatement uReview, iReview, dReview, dReviewByPublication;
+    private PreparedStatement uReview, iReview, dReview, dReviewByPublication, cReview;
     private PreparedStatement sKeywords, sKeywordsByPublication, sKeywordById;
     private PreparedStatement uKeyword, iKeyword, dKeyword;
     private PreparedStatement sChapters, sChapterById;
@@ -136,6 +136,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.uReview = connection.prepareStatement("UPDATE iw2016.recensione SET testo = ?, moderata = ?, data_recensione = ?, utente_autore = ?, pubblicazione = ?, storico = ? WHERE idrecensione = ?");
             this.iReview = connection.prepareStatement("INSERT INTO iw2016.recensione (testo, moderata, data_recensione, utente_autore, pubblicazione) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.dReview = connection.prepareStatement("DELETE FROM iw2016.recensione WHERE idrecensione = ?");
+            this.cReview = connection.prepareStatement("SELECT COUNT(*) AS contatore FROM iw2016.recensione WHERE pubblicazione = ? AND moderata=0");
             this.dReviewByPublication = connection.prepareStatement("DELETE FROM iw2016.recensione WHERE pubblicazione = ?");
             this.sKeywords = connection.prepareStatement("SELECT * FROM iw2016.keyword ORDER BY nome");
             this.sKeywordById = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE idkeyword = ?");
@@ -671,6 +672,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
+    
+    
 
     @Override
     public List<Publication> getPublicationsByFilters(Map<String,String> filters) throws DataLayerException {
@@ -916,6 +919,31 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
+    
+    @Override
+    public int getCountReview(int publication_key) throws DataLayerException {
+        int result = 0;
+        ResultSet rs = null;
+        try {
+            cReview.setInt(1, publication_key);
+            rs = cReview.executeQuery();
+            if (rs.next()) {
+                result = rs.getInt("contatore") ;
+            }
+        } catch (SQLException ex) {
+            throw new DataLayerException("Unable to count review", ex);
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+            } catch (SQLException ex) {
+                //Nothing to return
+            }
+        }
+        return result;
+    }
+
 
     @Override
     public List<Review> getLastReviews(int publication_key, int limit) throws DataLayerException {

@@ -186,4 +186,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deleteFilters() throws DataLayerException;
     
     Map<String, String> getFilters(int filter_key) throws DataLayerException;
+    
+    int getCountReview(int publication_key) throws DataLayerException;
+
 }

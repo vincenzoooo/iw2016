@@ -146,7 +146,8 @@ Professor: Giuseppe Della Penna
 .green {color:#9c6;}
 .black {color:black;}
 .white {color:#fff;}
-.lobster{color:#D94C3A}
+.lobster{color:#D94C3A;}
+.lobsterBack{background-color: #D94C3A;}
 
 .font-2x {font-size: 1.2em;}
 .font-3x {font-size: 1.5em;}
@@ -756,11 +757,11 @@ header .navbar-header-menu {
     color: #D94C3A;
 }
 
-.itemLogin{
+.aItemCustom{
     color: #5D1D17;
 }
 
-.itemLogin:hover{
+.aItemCustom:hover{
     color: #D94C3A;
 }
 
@@ -805,6 +806,15 @@ header .navbar-header-menu {
     border-left: solid 1px;
     border-color: rgba(0, 0, 0, 0.1);
 }
+
+.customPagination{
+    color: #333!important;
+}
+
+.customPagination:hover{
+    color: #333!important;
+}
+
 
 /**
  * 4. Community
@@ -900,6 +910,10 @@ header .navbar-header-menu {
     left: 195px; /*position where enlarged image should offset horizontally */
     z-index: 50;
     width: 400px;
+}
+
+.badge-custom{
+    background-color: #D94C3A!IMPORTANT;
 }
 
 

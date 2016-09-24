@@ -39,8 +39,8 @@ public class Login extends BiblioManagerBaseController {
                     request.setAttribute("user", user);
                     response.sendRedirect("home");
                 } else {
-                    request.setAttribute("message", "Credenziali errate, si invita a riprovare o ad iscriversi");
-                    action_redirect(request, response, "/registration");
+                    request.setAttribute("errorLogin", "Credenziali errate, si invita a riprovare o ad iscriversi");
+                    action_default(request, response);
                 }
             } else {
                 
