@@ -32,7 +32,6 @@ public class Reset extends BiblioManagerBaseController {
             if(newPassword.equals(newRePassword) && user != null){
                 user.setPassword(Utils.SHA1(newPassword));
                 getDataLayer().storeUser(user);
-                user = null;
                 action_redirect(request, response, "/login");
             }
             else{
@@ -85,6 +84,7 @@ public class Reset extends BiblioManagerBaseController {
                 }
             }
             else {
+                user = null;
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | MessagingException | NoSuchAlgorithmException | ServletException ex) {
