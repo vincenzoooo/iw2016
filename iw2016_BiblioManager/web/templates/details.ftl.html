@@ -85,11 +85,11 @@
                     </div>
                     <div id="advicesPublication" class="margin-top-30">
                         <#if !like>
-                        <a href="details?like&publicationId=${publication.key}" class="btn btn-default"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Vota</a>
+                        <a href="details?like&publicationId=${publication.key}" class="btn btn-default margin-bot-10"><i class="fa fa-thumbs-up" aria-hidden="true"></i> Vota</a>
                         <#else>
-                        <div>Hai consigliato questa pubblicazione</div>
+                        <div class="alert alert-info" role="alert">Hai consigliato questa pubblicazione</div>
                         </#if>
-                        <div class="margin-bottom-10 bold"> 
+                        <div class="margin-bot-10 bold"> 
                             <div>Numero consigli:&nbsp;<span id="numberAdvices">${publication.like}</span></div> 
                         </div>
                    </div>
@@ -171,16 +171,21 @@
                     <div class="gallerycontainer">
                         <#if (publication.sources?? && publication.sources?size>0)>
                         <div class="row">
-                            <div class="col-xs-6">
+                            <div class="col-sm-6">
+                                <div class="row">
                                 <#list publication.sources as item>
                                     <#if item.type.equals("immagine")>
-                                    <div class="col-xs-4">
+                                    <div class="col-sm-4 col-xs-12">
                                         <a class="thumbnail" href="#thumb"><img src="${strip_slashes(item.uri)?html}"/>
-                                            <span><img src="${strip_slashes(item.uri)?html}" class="img-responsive" /><br />${strip_slashes(item.description)?html}</span>
+                                            <div class="no-img  hidden-xs"><img src="${strip_slashes(item.uri)?html}" class="img-responsive" /><br />${strip_slashes(item.description)?html}</div>
                                         </a>
                                     </div>
                                     </#if>
-                                 </#list>
+                                </#list>
+                                </div>
+                            </div>
+                            <div class="col-sm-6 hidden-xs gallery-info">
+                                <div class="alert alert-description">Qui di lato potete osservare la gallery di immagini relative alla pubblicazione. Potrete ingrandirle semplicemete passando il cursore del vostro mouse sull'immagine che vi interessa osservare meglio! <br/> Buona visione. </div>
                             </div>
                         </div>
                     </div>
@@ -300,10 +305,9 @@
                         </span>
                         <#if (publication.reviews?? && publication.reviews?size>0)>
                             <a href="review?publicationId=${publication.key}" class="btn btn-default" name="submitReview">Vedi tutte le recensioni
-                            <#if (me.state<2 && countReview>0) >
-                                <span class="badge badge-custom">${countReview?html}</span>
-                              </#if>
-
+                                <#if (me.state<2 && countReview>0) >
+                                <div class="badge badge-custom" title="Numero recensioni d'approvare">${countReview?html}</div>
+                                </#if>
                             </a>
                         </#if>
 

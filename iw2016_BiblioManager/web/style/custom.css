@@ -67,6 +67,7 @@ Professor: Giuseppe Della Penna
 .margin-bot-30 { margin-bottom:30px!important; }
 .margin-bot-40 { margin-bottom:40px!important; }
 .margin-bot-50 { margin-bottom:50px!important; }
+.margin-bot-100 { margin-bottom:100px!important; }
 
 .margin-left-5 { margin-left:5px!important; }
 .margin-left-10 { margin-left:10px!important; }
@@ -765,6 +766,12 @@ header .navbar-header-menu {
     color: #D94C3A;
 }
 
+.alert-description{
+    color: #666;
+    background-color: #f9f9f9;
+    border-color: #F1F1F1;
+}
+
 
 /**
  * 4. Catalog
@@ -791,12 +798,6 @@ header .navbar-header-menu {
     margin-top: -5px;
 }
 
-
-/**
- * 4. Catalog
- * -----------------------------------------------------------------------------
- */
-
 .catalog-item{
     margin-bottom: 50px;
 }
@@ -813,6 +814,14 @@ header .navbar-header-menu {
 
 .customPagination:hover{
     color: #333!important;
+}
+
+.customPagination:active{
+    color: #D94C3A!important;
+}
+
+.customPagination:focus{
+    color: #D94C3A!important;
 }
 
 
@@ -885,9 +894,9 @@ header .navbar-header-menu {
     background-color: transparent;
 }
 
-.thumbnail span{ /*CSS for enlarged image*/
+.thumbnail div{ 
     position: absolute;
-    background-color: lightyellow;
+    background-color: #F9F9F9;
     padding: 5px;
     left: -1000px;
     border: 1px solid gray;
@@ -899,23 +908,26 @@ header .navbar-header-menu {
     text-decoration: none;
 }
 
-.thumbnail span img{ /*CSS for enlarged image*/
+.thumbnail div img{ 
     border-width: 0;
     padding: 2px;
 }
 
-.thumbnail:hover span{ /*CSS for enlarged image*/
+.thumbnail:hover div{ 
     visibility: visible;
     top: 0;
-    left: 195px; /*position where enlarged image should offset horizontally */
+    left: 195px;
     z-index: 50;
     width: 400px;
 }
 
 .badge-custom{
-    background-color: #D94C3A!IMPORTANT;
+    background-color: #D94C3A!important;
 }
 
+.no-img{
+    width: 100px;
+}
 
 /**
  * 4. Home
@@ -1141,6 +1153,14 @@ label.error, span.error {
         height: 282px;
         width: 282px;
     }
+    
+    .thumbnail:hover div{ 
+        visibility: visible;
+        top: 0;
+        left: 120px;
+        z-index: 50;
+        width: 350px;
+    }
 }
 
 
@@ -1154,6 +1174,14 @@ label.error, span.error {
         height: 293px;
         width: 293px;
     }
+    
+    .thumbnail:hover div{ 
+        visibility: visible;
+        top: 0;
+        left: 175px; 
+        z-index: 50;
+        width: 400px;
+    }
 }
 
 
@@ -1166,6 +1194,14 @@ label.error, span.error {
     .imageCatalog{
         height: 262.5px;
         width: 262.5px;
+    }
+    
+    .thumbnail:hover div{ 
+        visibility: visible;
+        top: 0;
+        left: 210px; 
+        z-index: 50;
+        width: 450px;
     }
 }
 
