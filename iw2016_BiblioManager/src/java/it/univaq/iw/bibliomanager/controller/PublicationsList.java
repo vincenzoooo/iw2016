@@ -33,12 +33,10 @@ public class PublicationsList extends BiblioManagerBaseController {
 
     private void action_list(HttpServletRequest request, HttpServletResponse response) {
         try {
-            if (request.getAttribute("isResearch") != null) {
-                isResearch = (boolean) request.getAttribute("isResearch");
-            }
-            if (request.getAttribute("filter") != null) {
+            if (request.getAttribute("isResearch") != null && request.getAttribute("filter") != null) {
+                isResearch = Boolean.parseBoolean(request.getAttribute("isResearch").toString());
                 request.setAttribute("filter", request.getAttribute("filter"));
-                filters = getDataLayer().getFilters((int) request.getAttribute("filter"));
+                filters = getDataLayer().getFilters(Integer.parseInt(request.getAttribute("filter").toString()));
             }
             else{
                 isResearch = false;
@@ -66,7 +64,11 @@ public class PublicationsList extends BiblioManagerBaseController {
             String[] urlPages = new String[pages];
             offset = (pages - 1) * limit;
             while (pages > 0) {
-                urlPages[--pages] = "catalog?orderBy=" + orderBy + "&offset=" + offset;
+                String url = "catalog?orderBy=" + orderBy + "&offset=" + offset;
+                if (request.getAttribute("isResearch") != null && request.getAttribute("filter") != null) {
+                    url += "&isResearch=" + request.getAttribute("isResearch").toString()+"&filter="+request.getAttribute("filter").toString();
+                }
+                urlPages[--pages] = url;
                 offset -= limit;
             }
             request.setAttribute("isResearch", isResearch);
@@ -102,6 +104,10 @@ public class PublicationsList extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
+                if (request.getParameter("isResearch") != null && request.getParameter("filter") != null) {
+                    request.setAttribute("isResearch", request.getParameter("isResearch"));
+                    request.setAttribute("filter", request.getParameter("filter"));
+                }
                 action_list(request, response);
             } else {
                 action_default(request, response);
