@@ -87,7 +87,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.uUser = connection.prepareStatement("UPDATE iw2016.utente SET nome = ?, cognome = ?, password = ?, email = ?, stato = ? WHERE idutente = ?");
             this.iUser = connection.prepareStatement("INSERT INTO iw2016.utente (nome, cognome, password, email, stato) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.sHistories = connection.prepareStatement("SELECT * FROM iw2016.storico");
-            this.sHistoriesByUser = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE utente = ?");
+            this.sHistoriesByUser = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE utente = ? ORDER BY data_operazione DESC LIMIT 10");
             this.sHistoriesByPublication = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE pubblicazione = ?");
             this.sHistoryById = connection.prepareStatement("SELECT * FROM iw2016.storico WHERE idstorico = ?");
             this.uHistory = connection.prepareStatement("UPDATE iw2016.storico SET entry = ?, tipo = ?, data_operazione = ?, pubblicazione = ?, utente = ? WHERE idstorico = ?");

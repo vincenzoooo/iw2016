@@ -37,7 +37,8 @@ public class Login extends BiblioManagerBaseController {
                     SecurityLayer.createSession(request, email, user.getKey(), user.getState());
                     request.setAttribute("page_title", "Benvenuto");
                     request.setAttribute("user", user);
-                    response.sendRedirect("home");
+                    request.setAttribute("logged", 1);
+                    action_redirect(request, response, "/home");
                 } else {
                     request.setAttribute("errorLogin", "Credenziali errate, si invita a riprovare o ad iscriversi");
                     action_default(request, response);
@@ -94,7 +95,9 @@ public class Login extends BiblioManagerBaseController {
             if (request.getParameter("submitLogin") != null && SecurityLayer.checkSession(request) == null) {
                 action_login(request, response);
                 action_view(request, response);
+                
             } else {
+                request.setAttribute("isLogin", 1);
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | NoSuchAlgorithmException | ServletException ex) {

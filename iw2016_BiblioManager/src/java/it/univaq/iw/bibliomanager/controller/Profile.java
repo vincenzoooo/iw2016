@@ -54,6 +54,7 @@ public class Profile extends BiblioManagerBaseController {
                 request.setAttribute("publications", publications);
             }
             request.setAttribute("user", user);
+            request.setAttribute("userActions", getDataLayer().getHistoriesByUser(userKey));
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("profile.ftl.html", request, response);
         } catch (DataLayerException | ServletException ex) {
