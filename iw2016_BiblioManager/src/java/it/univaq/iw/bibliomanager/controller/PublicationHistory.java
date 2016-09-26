@@ -32,7 +32,7 @@ public class PublicationHistory extends BiblioManagerBaseController {
             request.setAttribute("publicationId", request.getParameter("publicationId"));
             res.activate("history.ftl.html", request, response);//TODO: Definire pagina di storico
         } catch (DataLayerException | ServletException | IOException ex) {
-            action_error(request, response, "Error build the template: " + ex.getMessage());
+            action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
         }
     }
 
@@ -57,7 +57,7 @@ public class PublicationHistory extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | ServletException ex) {
-            action_error(request, response, "Error" + ex.getMessage());
+            action_error(request, response, "Error" + ex.getMessage(), 501);
         }
     }
 

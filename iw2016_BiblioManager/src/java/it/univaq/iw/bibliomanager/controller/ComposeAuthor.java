@@ -46,7 +46,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                 getDataLayer().storeAuthor(author);
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare l'autore: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare l'autore: " + ex.getMessage(), 510);
         }
     }
 
@@ -64,7 +64,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                 authorId = 0;
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare l'autore: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare l'autore: " + ex.getMessage(), 510);
         }
     }
 
@@ -144,7 +144,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | ServletException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
 
     }

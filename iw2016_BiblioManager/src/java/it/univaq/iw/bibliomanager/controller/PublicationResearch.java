@@ -77,7 +77,7 @@ public class PublicationResearch extends BiblioManagerBaseController {
             request.setAttribute("isResearch", true);
             getServletContext().getRequestDispatcher("/catalog").forward(request, response);
         } catch (DataLayerException ex) {
-            action_error(request, response, "Unable to do the research: " + ex.getMessage());
+            action_error(request, response, "Unable to do the research: " + ex.getMessage(), 502);
         }
     }
 
@@ -87,7 +87,7 @@ public class PublicationResearch extends BiblioManagerBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("research.ftl.html", request, response);
         } catch (ServletException | IOException ex) {
-            action_error(request, response, "Error build the template: " + ex.getMessage());
+            action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
         }
     }
 
@@ -122,7 +122,7 @@ public class PublicationResearch extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | NumberFormatException | ServletException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
 

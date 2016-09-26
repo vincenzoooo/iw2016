@@ -42,7 +42,7 @@ public class UserList extends BiblioManagerBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("users.ftl.html", request, response);
         } catch (ServletException | IOException | DataLayerException ex) {
-            action_error(request, response, "Error build the template: " + ex.getMessage());
+            action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
         }
         
     }
@@ -62,7 +62,7 @@ public class UserList extends BiblioManagerBaseController {
                 }
             }
         } catch (DataLayerException | NumberFormatException ex) {
-            action_error(request, response, "Error while upgrading an user: " + ex.getMessage());
+            action_error(request, response, "Error while upgrading an user: " + ex.getMessage(), 510);
         }
     }
 
@@ -81,7 +81,7 @@ public class UserList extends BiblioManagerBaseController {
                 }
             }
         } catch (DataLayerException | NumberFormatException ex) {
-            action_error(request, response, "Error while downgrading an user: " + ex.getMessage());
+            action_error(request, response, "Error while downgrading an user: " + ex.getMessage(), 510);
         }
     }
 
@@ -114,7 +114,7 @@ public class UserList extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (IOException | DataLayerException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
 

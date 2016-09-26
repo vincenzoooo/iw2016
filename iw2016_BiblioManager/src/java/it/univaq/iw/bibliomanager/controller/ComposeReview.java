@@ -44,7 +44,7 @@ public class ComposeReview extends BiblioManagerBaseController {
                 getDataLayer().storeReview(review);
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare la recensione: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare la recensione: " + ex.getMessage(), 510);
         }
     }
 
@@ -65,7 +65,7 @@ public class ComposeReview extends BiblioManagerBaseController {
                 request.setAttribute("error", "Recensione non valida");
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare la recensione: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare la recensione: " + ex.getMessage(), 510);
         }
     }
 
@@ -83,7 +83,7 @@ public class ComposeReview extends BiblioManagerBaseController {
                 request.setAttribute("error", "Recensione non valida");
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare la recensione: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare la recensione: " + ex.getMessage(), 510);
         }
     }
 
@@ -135,7 +135,7 @@ public class ComposeReview extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException ex) {
-            action_error(request, response, "Errore: " + ex.getMessage());
+            action_error(request, response, "Errore: " + ex.getMessage(), 501);
         }
     }
 

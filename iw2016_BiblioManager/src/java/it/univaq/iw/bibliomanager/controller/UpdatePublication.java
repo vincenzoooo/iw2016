@@ -68,7 +68,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
                 }
             }
         } catch (ServletException | IOException | DataLayerException | NumberFormatException | ParseException ex) {
-            action_error(request, response, "Error while updating: " + ex.getMessage());
+            action_error(request, response, "Error while updating: " + ex.getMessage(), 510);
         }
     }
 
@@ -107,7 +107,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
                     error = true;
                 }
             } catch (DataLayerException ex) {
-                action_error(request, response, "Error query ISBN: " + ex.getMessage());
+                action_error(request, response, "Error query ISBN: " + ex.getMessage(), 503);
             }
         }
         return error;
@@ -149,7 +149,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("managePublication.ftl.html", request, response);
         } catch (DataLayerException | ServletException | IOException ex) {
-            action_error(request, response, "Error build the template: " + ex.getMessage());
+            action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
         }
     }
 
@@ -212,7 +212,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
 

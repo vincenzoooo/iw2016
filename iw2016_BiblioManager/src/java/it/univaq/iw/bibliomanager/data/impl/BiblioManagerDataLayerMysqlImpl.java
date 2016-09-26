@@ -30,6 +30,7 @@ import java.sql.Date;
 import java.util.Calendar;
 import it.univaq.iw.bibliomanager.data.model.Keyword;
 import it.univaq.iw.bibliomanager.data.model.Section;
+import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
 import java.util.HashMap;
 import java.util.Map;
@@ -687,37 +688,37 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             for (Map.Entry<String, String> entry : filters.entrySet())
             {
                 if(entry.getKey().equals("isbn") && entry.getValue() != null){
-                    query += " AND p.isbn LIKE '%"+entry.getValue()+"%' ";
+                    query += " AND p.isbn LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
                 }
                 if(entry.getKey().equals("titolo") && entry.getValue() != null){
-                    query += " AND p.titolo LIKE '%"+entry.getValue()+"%' ";
+                    query += " AND p.titolo LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
                 }
                 if(entry.getKey().equals("autore") && entry.getValue() != null){
-                    query += " AND concat(a.nome, ' ',a.cognome) LIKE '%"+entry.getValue()+"%' ";
+                    query += " AND concat(a.nome, ' ',a.cognome) LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
                 }
                 if(entry.getKey().equals("editore") && entry.getValue() != null){
-                    query += " AND e.nome LIKE '%"+entry.getValue()+"%' ";
+                    query += " AND e.nome LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
                 }
                 if(entry.getKey().equals("keyword") && entry.getValue() != null){
-                    query += " AND k.nome LIKE '%"+entry.getValue()+"%' ";
+                    query += " AND k.nome LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
                 }
                 if(entry.getKey().equals("lingua") && entry.getValue() != null){
-                    query += " AND p.lingua LIKE '%"+entry.getValue()+"%' ";
+                    query += " AND p.lingua LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
                 }
                 if(entry.getKey().equals("anno_inizio") && entry.getValue() != null){
-                    query += " AND p.data_pubblicazione >= '"+entry.getValue()+"' ";
+                    query += " AND p.data_pubblicazione >= '"+SecurityLayer.addSlashes(entry.getValue())+"' ";
                 }
                 if(entry.getKey().equals("anno_fine") && entry.getValue() != null){
-                    query += " AND p.data_pubblicazione < '"+entry.getValue()+"' ";
+                    query += " AND p.data_pubblicazione < '"+SecurityLayer.addSlashes(entry.getValue())+"' ";
                 }
                 if(entry.getKey().equals("download") && entry.getValue() != null){
-                    query += " AND sr.tipo = '"+entry.getValue()+"' ";
+                    query += " AND sr.tipo = '"+SecurityLayer.addSlashes(entry.getValue())+"' ";
                 }
                 if(entry.getKey().equals("utente") && entry.getValue() != null){
-                    query += " AND CONCAT(u.nome, ' ',u.cognome) LIKE '%"+entry.getValue()+"%' ";
+                    query += " AND CONCAT(u.nome, ' ',u.cognome) LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
                 }
             }
-            query += "GROUP BY p.idpubblicazione ORDER BY " + Utils.getArrayParameter(filters, "order_by") + " " + Utils.getArrayParameter(filters, "order_mode");
+            query += "GROUP BY p.idpubblicazione ORDER BY " + SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "order_by")) + " " + SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "order_mode"));
             if(!Utils.isNullOrEmpty(Utils.getArrayParameter(filters, "limit"))){
                 query += " LIMIT 5 ";
             }
@@ -2446,7 +2447,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         //dFilters
         ResultSet res = null;
         try {
-            dFilters.setTimestamp(1, new java.sql.Timestamp(System.currentTimeMillis()));
+            Calendar time = Calendar.getInstance();
+            dFilters.setTimestamp(1, new java.sql.Timestamp(time.getTimeInMillis()));
             
             dFilters.executeUpdate();
         } catch (SQLException ex) {

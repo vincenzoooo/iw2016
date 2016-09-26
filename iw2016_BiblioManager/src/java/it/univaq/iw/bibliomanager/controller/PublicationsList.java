@@ -75,7 +75,7 @@ public class PublicationsList extends BiblioManagerBaseController {
             request.setAttribute("pages", urlPages);
             action_view(request, response);
         } catch (DataLayerException ex) {
-            action_error(request, response, "Unable to get the publications: " + ex.getMessage());
+            action_error(request, response, "Unable to get the publications: " + ex.getMessage(), 502);
         }
     }
 
@@ -84,7 +84,7 @@ public class PublicationsList extends BiblioManagerBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("catalog.ftl.html", request, response);
         } catch (ServletException | IOException ex) {
-            action_error(request, response, "Error build the template: " + ex.getMessage());
+            action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
         }
     }
 
@@ -113,7 +113,7 @@ public class PublicationsList extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | ServletException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
 

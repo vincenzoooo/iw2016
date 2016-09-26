@@ -46,7 +46,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
                 getDataLayer().storePublication(publication);
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare l'editore: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare l'editore: " + ex.getMessage(), 510);
         }
     }
 
@@ -62,7 +62,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
                 editorId = 0;
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare l'editore: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare l'editore: " + ex.getMessage(), 510);
         }
     }
 
@@ -116,7 +116,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | ServletException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
 }

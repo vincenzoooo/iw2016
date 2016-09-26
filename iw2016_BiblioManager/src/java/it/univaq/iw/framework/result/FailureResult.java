@@ -37,14 +37,15 @@ public class FailureResult {
     }
 
     public void activate(Exception ex, HttpServletRequest request, HttpServletResponse response) {
-        activate(ex.toString(), request, response);
+        activate(500, ex.toString(), request, response);
     }
 
-    public void activate(String message, HttpServletRequest request, HttpServletResponse response) {
+    public void activate(int code, String message, HttpServletRequest request, HttpServletResponse response) {
         try {
             //se abbiamo registrato un template per i messaggi di errore, proviamo a usare quello
             //if an error template has been configured, try it
             if (context.getInitParameter("view.error_template") != null) {
+                request.setAttribute("errorCode", code);
                 request.setAttribute("error", message);
                 request.setAttribute("outline_tpl", "");
                 template.activate(context.getInitParameter("view.error_template"), request, response);

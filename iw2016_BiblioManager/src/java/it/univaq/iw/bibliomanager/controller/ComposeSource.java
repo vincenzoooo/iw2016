@@ -51,7 +51,7 @@ public class ComposeSource extends BiblioManagerBaseController {
                 getDataLayer().storeSource(source);
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage(), 510);
         }
     }
 
@@ -73,7 +73,7 @@ public class ComposeSource extends BiblioManagerBaseController {
                 sourceId = 0;
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage(), 510);
         }
     }
 
@@ -133,7 +133,7 @@ public class ComposeSource extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | ServletException ex) {
-            action_error(request, response, "Errore: " + ex.getMessage());
+            action_error(request, response, "Errore: " + ex.getMessage(), 501);
         }
     }
 

@@ -44,7 +44,7 @@ public class ComposeKeyword extends BiblioManagerBaseController {
                 getDataLayer().storeKeyword(keyword);
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare la parola chiave: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare la parola chiave: " + ex.getMessage(), 510);
         }
     }
 
@@ -61,7 +61,7 @@ public class ComposeKeyword extends BiblioManagerBaseController {
                 keywordId = 0;
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage(), 510);
         }
     }
 
@@ -129,7 +129,7 @@ public class ComposeKeyword extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | ServletException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
 

@@ -48,7 +48,7 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         } catch (Exception ex) {
             ex.printStackTrace(); //for debugging only
             (new FailureResult(getServletContext())).activate(
-                    (ex.getMessage() != null || ex.getCause() == null) ? ex.getMessage() : ex.getCause().getMessage(), request, response);
+                    500, (ex.getMessage() != null || ex.getCause() == null) ? ex.getMessage() : ex.getCause().getMessage(), request, response);
         } finally {
             if (datalayer != null) {
                 try {
@@ -79,8 +79,8 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         }
     }
 
-    protected void action_error(HttpServletRequest request, HttpServletResponse response, String message) {
-        (new FailureResult(getServletContext())).activate(message, request, response);
+    protected void action_error(HttpServletRequest request, HttpServletResponse response, String message, int code) {
+        (new FailureResult(getServletContext())).activate(code,message, request, response);
     }
 
     protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
@@ -102,6 +102,9 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
                 String fieldName = Character.toUpperCase(entry.getKey().charAt(0)) + entry.getKey().substring(1);
                 request.setAttribute("error" + fieldName, "Non valorizzato");
                 error = true;
+            }
+            else{
+                entry.setValue(SecurityLayer.addSlashes(entry.getValue()));
             }
         }
         return error;

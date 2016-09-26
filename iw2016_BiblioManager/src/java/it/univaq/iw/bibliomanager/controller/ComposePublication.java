@@ -71,7 +71,7 @@ public class ComposePublication extends BiblioManagerBaseController {
                 publicationId = publication.getKey();
             }
         } catch (DataLayerException | ParseException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare i dati: " + ex.getMessage(), 510);
         }
     }
 
@@ -110,7 +110,7 @@ public class ComposePublication extends BiblioManagerBaseController {
                     error = true;
                 }
             } catch (DataLayerException ex) {
-                action_error(request, response, "Error query ISBN: " + ex.getMessage());
+                action_error(request, response, "Error query ISBN: " + ex.getMessage(), 504);
             }
         }
         return error;
@@ -256,7 +256,7 @@ public class ComposePublication extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | ParseException | ServletException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
 

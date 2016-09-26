@@ -52,11 +52,11 @@ public class Register extends BiblioManagerBaseController {
                 request.setAttribute("surname", params.get("surname"));
             }
         } catch (NoSuchAlgorithmException | DataLayerException | ServletException ex) {
-            action_error(request, response, "Error register: " + ex.getMessage());
+            action_error(request, response, "Error register: " + ex.getMessage(), 510);
         } catch (UnsupportedEncodingException ex) {
-            action_error(request, response, "Error register: " + ex.getMessage());
+            action_error(request, response, "Error register: " + ex.getMessage(), 501);
         } catch (IOException ex) {
-            action_error(request, response, "Error register: " + ex.getMessage());
+            action_error(request, response, "Error register: " + ex.getMessage(), 501);
         }
     }
 
@@ -109,7 +109,7 @@ public class Register extends BiblioManagerBaseController {
             }
 
         } catch (DataLayerException ex) {
-            action_error(request, response, "Data layer exception: " + ex.getMessage());;
+            action_error(request, response, "Data layer exception: " + ex.getMessage(), 503);;
         }
         return error;
     }
@@ -126,7 +126,7 @@ public class Register extends BiblioManagerBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("registration.ftl.html", request, response);
         } catch (ServletException | IOException ex) {
-            action_error(request, response, "Error build the template: " + ex.getMessage());
+            action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
         }
     }
     
@@ -149,7 +149,7 @@ public class Register extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (IOException | ServletException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
 
     }

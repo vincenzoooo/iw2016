@@ -50,7 +50,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
                 getDataLayer().storeReprint(reprint);
             }
         } catch (NumberFormatException | ParseException | DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare la ristampa: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare la ristampa: " + ex.getMessage(), 510);
         }
     }
 
@@ -70,7 +70,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
                 reprintId = 0;
             }
         } catch (NumberFormatException | ParseException | DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare la ristampa:: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare la ristampa:: " + ex.getMessage(), 510);
         }
     }
 
@@ -124,7 +124,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | NumberFormatException | ParseException | ServletException ex) {
-            action_error(request, response, "Errore: " + ex.getMessage());
+            action_error(request, response, "Errore: " + ex.getMessage(), 501);
         }
 
     }

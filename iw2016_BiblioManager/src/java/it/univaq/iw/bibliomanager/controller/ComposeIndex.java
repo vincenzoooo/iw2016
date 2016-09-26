@@ -45,7 +45,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 getDataLayer().storeChapter(chapter);
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare il capitolo: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare il capitolo: " + ex.getMessage(), 510);
         }
     }
 
@@ -63,7 +63,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 chapterId = 0;
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare il capitolo: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare il capitolo: " + ex.getMessage(), 510);
         }
     }
 
@@ -81,7 +81,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 getDataLayer().storeSection(section);
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare il sezione: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare il sezione: " + ex.getMessage(), 510);
         }
     }
 
@@ -100,7 +100,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 sectorId = 0;
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel salvare il sezione: " + ex.getMessage());
+            action_error(request, response, "Errore nel salvare il sezione: " + ex.getMessage(), 510);
         }
     }
 
@@ -137,7 +137,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 }
 
             } catch (DataLayerException ex) {
-                action_error(request, response, "Error to get chapter or section: " + ex.getMessage());
+                action_error(request, response, "Error to get chapter or section: " + ex.getMessage(), 502);
             }
         }
         return error;
@@ -201,7 +201,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | ServletException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
 

@@ -6,6 +6,8 @@
 package it.univaq.iw.bibliomanager.controller;
 
 import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,9 +29,12 @@ public class PageNotFound extends BiblioManagerBaseController {
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
-        /**
-         * response.sendRedirect("status?pageNotFound");*
-         */
+        
+        try {
+            response.sendRedirect("status?pageNotFound");
+        } catch (IOException ex) {
+            Logger.getLogger(PageNotFound.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

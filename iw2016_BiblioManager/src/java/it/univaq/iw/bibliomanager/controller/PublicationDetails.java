@@ -50,7 +50,7 @@ public class PublicationDetails extends BiblioManagerBaseController {
             request.setAttribute("countReview", getDataLayer().getCountReview(publicationKey));
             res.activate("details.ftl.html", request, response);
         } catch (DataLayerException | ServletException | IOException ex) {
-            action_error(request, response, "Error build the template: " + ex.getMessage());
+            action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
         }
     }
 
@@ -94,7 +94,7 @@ public class PublicationDetails extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | NumberFormatException | ServletException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
 

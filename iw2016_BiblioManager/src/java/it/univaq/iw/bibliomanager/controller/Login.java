@@ -47,7 +47,7 @@ public class Login extends BiblioManagerBaseController {
                 
             }
         } catch (DataLayerException ex) {
-            action_error(request, response, "Errore nel trovare l'utente: " + ex.getMessage());
+            action_error(request, response, "Errore nel trovare l'utente: " + ex.getMessage(), 502);
         }
     }
 
@@ -76,7 +76,7 @@ public class Login extends BiblioManagerBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("login.ftl.html", request, response);
         } catch (ServletException | IOException ex) {
-            action_error(request, response, "Error build the template: " + ex.getMessage());
+            action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
         }
     }
     
@@ -101,7 +101,7 @@ public class Login extends BiblioManagerBaseController {
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | NoSuchAlgorithmException | ServletException ex) {
-            action_error(request, response, "Error: " + ex.getMessage());
+            action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
 
     }
