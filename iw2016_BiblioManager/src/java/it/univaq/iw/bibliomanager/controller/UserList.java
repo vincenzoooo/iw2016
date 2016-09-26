@@ -58,10 +58,12 @@ public class UserList extends BiblioManagerBaseController {
                     if (user.getState() == 2) {
                         user.setState(1);
                         getDataLayer().storeUser(user);
+                        request.setAttribute("userUpgraded", user);
+                        action_redirect(request, response, "/community");
                     }
                 }
             }
-        } catch (DataLayerException | NumberFormatException ex) {
+        } catch (DataLayerException | NumberFormatException | IOException | ServletException ex) {
             action_error(request, response, "Error while upgrading an user: " + ex.getMessage());
         }
     }
@@ -77,10 +79,12 @@ public class UserList extends BiblioManagerBaseController {
                     if (user.getState() == 1) {
                         user.setState(2);
                         getDataLayer().storeUser(user);
+                        request.setAttribute("userDowngraded", user);
+                        action_redirect(request, response, "/community");
                     }
                 }
             }
-        } catch (DataLayerException | NumberFormatException ex) {
+        } catch (DataLayerException | NumberFormatException | IOException | ServletException ex) {
             action_error(request, response, "Error while downgrading an user: " + ex.getMessage());
         }
     }
