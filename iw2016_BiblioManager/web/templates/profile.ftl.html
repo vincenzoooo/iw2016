@@ -110,7 +110,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h2>Ultime azioni effettuate</h2>
-                    <#if (historyUser?? && historyUser?size>0)>
+                    <#if (userActions?? && userActions?size>0)>
                     <table class="table">
                         <thead>
                             <tr>
@@ -126,17 +126,17 @@
                             </tr>
                         </thead>
                         <tbody>
-                        <#list historyUser as item>
+                        <#list userActions as item>
                             <tr>
                                 <td>
                                     ${item.date?datetime}
                                 </td>
 
                                 <td>
-                                    ${item.description?html}
+                                    ${item.entry?html}
                                 </td>
                                 <td>
-                                    <#if item.publication??><a href="publicationDetails?publicationId=${item.publication.id}">${item.publication.title}</a></#if>
+                                    <#if item.publicationTitle??><a href="publicationDetails?publicationId=${item.publicationKey}" class="aItemCustom bold" >${item.publicationTitle}</a></#if>
                                 </td>
                             </tr>
                         </#list>

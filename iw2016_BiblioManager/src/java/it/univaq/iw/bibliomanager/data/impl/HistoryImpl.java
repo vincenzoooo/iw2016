@@ -23,6 +23,7 @@ public class HistoryImpl implements History {
     private int type;
     private Timestamp date;
     private int publication_key;
+    private String publication_title;
     private int user_key;
     private User user;
     protected BiblioManagerDataLayer ownerDataLayer;
@@ -87,6 +88,17 @@ public class HistoryImpl implements History {
     public void setPublicationKey(int publication_key) {
         this.publication_key = publication_key;
     }
+
+    @Override
+    public String getPublicationTitle() {
+        return publication_title;
+    }
+
+    @Override
+    public void setPublicationTitle(String publication_key) {
+       this.publication_title = publication_key; 
+    }
+ 
 
     @Override
     public User getUser() throws DataLayerException {

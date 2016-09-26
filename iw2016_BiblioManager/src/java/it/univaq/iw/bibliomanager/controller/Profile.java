@@ -49,12 +49,13 @@ public class Profile extends BiblioManagerBaseController {
                 if (history.getType() == 0) {
                     publications.add(getDataLayer().getPublication(history.getPublicationKey()));
                 }
+                history.setPublicationTitle(getDataLayer().getPublication(history.getPublicationKey()).getTitle());
             }
             if (!publications.isEmpty()) {
                 request.setAttribute("publications", publications);
             }
             request.setAttribute("user", user);
-            request.setAttribute("userActions", getDataLayer().getHistoriesByUser(userKey));
+            request.setAttribute("userActions", histories);
             TemplateResult res = new TemplateResult(getServletContext());
             res.activate("profile.ftl.html", request, response);
         } catch (DataLayerException | ServletException ex) {

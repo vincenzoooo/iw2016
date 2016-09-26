@@ -34,6 +34,10 @@ public interface History {
     int getPublicationKey();
 
     void setPublicationKey(int publication_key);
+    
+    String getPublicationTitle();
+
+    void setPublicationTitle(String publication_key);
 
     User getUser() throws DataLayerException;
 
