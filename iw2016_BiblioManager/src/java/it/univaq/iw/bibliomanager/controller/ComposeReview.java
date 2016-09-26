@@ -57,6 +57,7 @@ public class ComposeReview extends BiblioManagerBaseController {
                     History history = this.action_composeHistory(request, response, "recensione approvata");
                     review.setHistory(history);
                     review.setStatus(true);
+                    request.setAttribute("reviewApproved", 1);
                     getDataLayer().storeReview(review);
                 }
             } else {
@@ -74,6 +75,7 @@ public class ComposeReview extends BiblioManagerBaseController {
                 Review review = getDataLayer().getReview(Integer.parseInt(request.getParameter("reviewId")));
                 HttpSession session = SecurityLayer.checkSession(request);
                 if (review.getAuthor().getKey() != (int) session.getAttribute("userId")) {
+                    request.setAttribute("reviewRejected", 1);
                     getDataLayer().deleteReview(review);
                 }
             } else {

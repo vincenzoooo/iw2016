@@ -32,7 +32,7 @@
                             </td>
                             <td>
                                 <#if item.user??>
-                                <a href="profile?userId=${item.user.key}">${strip_slashes(item.user.name)?html} ${strip_slashes(item.user.surname)?html}</a>
+                                <a href="profile?userId=${item.user.key}" class="aItemCustom bold">${strip_slashes(item.user.name?html)?capitalize} ${strip_slashes(item.user.surname?html)?capitalize}</a>
                                 </#if>
                             </td>
                             <td>

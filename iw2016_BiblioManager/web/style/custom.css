@@ -22,6 +22,7 @@ Professor: Giuseppe Della Penna
  *  4. - Community
  *  4. - Details Publication
  *  4. - Home
+ *  4. - Review
  * 5.0 - Section
  *  - Footer
  *  - Other
@@ -690,12 +691,23 @@ header .navbar-header-menu {
     color: #5D1D17;
 }
 
+.container > .navbar-collapse{
+    margin-left: -15px;
+}
 
 
 /**
  * 4.0 Content
  * -----------------------------------------------------------------------------
  */
+.user-name:hover{
+     color: #D94C3A;
+}
+
+.user-name{
+     color: #2b2b2b;
+}
+
 .pageContent{
     margin-top: 130px;
     min-height: 770px;
@@ -708,7 +720,7 @@ header .navbar-header-menu {
 }
 
 .error{
-    color: #e1621b;
+    color: #D94C3A;
     font-weight: bold;
     margin-left: 1%;
 }
@@ -869,6 +881,7 @@ header .navbar-header-menu {
      color: #D94C3A;
 }
 
+
 /**
  * 4. Details Publication
  * -----------------------------------------------------------------------------
@@ -1021,6 +1034,35 @@ figure:hover:before {
     margin-bottom: 0px;
 }
 
+
+
+
+/**
+ * 4. Review
+ * -----------------------------------------------------------------------------
+ */
+
+.notApprovedReview {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius:    4px;
+    background-color: #fcf8e3;
+    border-color: #faebcc;
+}
+
+.approvedReview {
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid transparent;
+    border-radius: 4px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius:    4px;
+    background-color: #f9f9f9;
+    border-color: #F1F1F1;
+}
 
 
 /**

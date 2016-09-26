@@ -32,10 +32,11 @@ public class Reset extends BiblioManagerBaseController {
             if(newPassword.equals(newRePassword) && user != null){
                 user.setPassword(Utils.SHA1(newPassword));
                 getDataLayer().storeUser(user);
+                request.setAttribute("resetted", 1);
                 action_redirect(request, response, "/login");
             }
             else{
-                request.setAttribute("errorReset", "Le password non corrispondono");
+                request.setAttribute("errorReset", "Le password non corrispondono. Reinserire le password.");
                 action_default(request, response);
             }
     }
@@ -48,7 +49,7 @@ public class Reset extends BiblioManagerBaseController {
             this.user = user;
         }
         else{
-            request.setAttribute("errorReset", "L'email non è stata registrata");
+            request.setAttribute("errorReset", "L'email non è stata registrata. Immetere una e-mail valita.");
         }
         action_default(request, response);
     }
@@ -58,7 +59,7 @@ public class Reset extends BiblioManagerBaseController {
         request.setAttribute("page_title", "Reset");
         TemplateResult res = new TemplateResult(getServletContext());
         if(user != null){
-            request.setAttribute("showPass", "1");
+            request.setAttribute("showPass","1");
         }
         res.activate("reset.ftl.html", request, response);
     }

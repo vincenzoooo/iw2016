@@ -7,6 +7,29 @@
                 </div>
             </div>
         </div>
+        
+        <div class="section section-pageReview-allert">
+            <#if reviewApproved??>
+            <div class="row">
+                <div class="col-lg-12">
+                     <div class="alert alert-success">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        Recensione approvata.
+                     </div>
+                </div>
+            </div>
+            </#if>
+            <#if reviewRejected??>
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="alert alert-danger">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        Recensione rigettata.
+                    </div>
+                </div>
+            </div>
+            </#if>
+        </div>
 
         <div class="section section-pageReview-listReview"> 
             <div class="listReviews">
@@ -27,13 +50,13 @@
                         </div>
                         <#else>
                             <#if me.state<2 >
-                        <div class="review notApprovedReview margin-bot-20">
+                        <div class="review alert notApprovedReview margin-bot-20">
                             <div class="row">
                                 <div class="col-lg-12">
                                     <span class="bold">
                                         <a href="profile?userId=${item.key}" class="aItemCustom"> ${strip_slashes(item.author.name?html)?capitalize} ${strip_slashes(item.author.surname?html)?capitalize}</a>
                                     </span> &nbsp;${item.reviewDate} 
-                                    <span>- Da moderare</span>
+                                    - <span class="bold">Da moderare</span>
                                     <div>${strip_slashes(item.text)?html}</div>                  
                                     <#if item.author.key != me.key>
                                         <div class="">

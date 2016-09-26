@@ -63,6 +63,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
                     this.action_updateHistory(request, response);
                     request.setAttribute("publicationId", publication.getKey());
                     publicationId = 0;
+                    request.setAttribute("publicationUpdated", 1);
                     action_redirect(request, response, "/details");
                 }
             }
