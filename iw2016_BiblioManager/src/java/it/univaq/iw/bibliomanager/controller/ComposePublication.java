@@ -66,6 +66,7 @@ public class ComposePublication extends BiblioManagerBaseController {
                 publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editors"))));
                 publication.setIncomplete(false);
                 getDataLayer().storePublication(publication);
+                request.setAttribute("publicationAdded",1);
                 request.setAttribute("publication", publication);
                 this.action_composeHistory(request, response);
                 publicationId = publication.getKey();
@@ -79,7 +80,7 @@ public class ComposePublication extends BiblioManagerBaseController {
         HttpSession session = SecurityLayer.checkSession(request);
         User user = getDataLayer().getUser((int) session.getAttribute("userId"));
         History history = getDataLayer().createHistory();
-        history.setEntry("inserita una pubblicazione");
+        history.setEntry("Inserita una pubblicazione");
         history.setType(0);
         history.setUser(user);
         history.setPublicationKey(((Publication) request.getAttribute("publication")).getKey());
@@ -156,6 +157,7 @@ public class ComposePublication extends BiblioManagerBaseController {
 //            session.setAttribute("publicationId", publication.getKey());
 //            session.setAttribute("url", "publication");
         }
+        request.setAttribute("publicationPartial",1);
         action_redirect(request, response, url);
     }
 

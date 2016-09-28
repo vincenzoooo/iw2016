@@ -73,7 +73,7 @@
                 <div class="form-group">
                     <label class="bold col-sm-2 control-label">Editore</label>
                     <div class="col-sm-6">
-                        <select class="form-control" name="editors" >
+                        <select class="form-control" name="editors" title="Selezione un editore, nel caso inseritene uno nuovo mediante il pulsante qui di lato." >
                         <#if (editors?? && editors?size>0)>
                             <#list editors as item>
                             <option value="${item.key!''?html}" <#if (currentEditor?? && currentEditor == item.key)>selected="selected"</#if>>${item.name!''?html}</option>
@@ -81,8 +81,8 @@
                         </#if>
                         </select>
                     </div>
-                    <div class="col-sm-2">
-                        <input value='Aggiungi nuovo editore' name='addEditor' type='submit' class="btn btn-default"/>
+                    <div class="col-sm-4">
+                        <input value='Aggiungi nuovo editore' name='addEditor' type='submit' class="btn btn-default btn-pub"/>
                     </div>
                 </div>
                 <#if errorPublicationEditor??>  
@@ -107,8 +107,8 @@
                         <div class="padding-top-5">Nessun autore selezionato</div>
                         </#if>
                     </div>
-                    <div class="col-sm-2">
-                        <input value="Seleziona autore" name="addAuthor" type="submit" class="btn btn-default"/>
+                    <div class="col-sm-4">
+                        <input value="Seleziona autore" name="addAuthor" type="submit" class="btn btn-default btn-pub"/>
                     </div>
                 </div>
                 <#if errorPublicationAuthor??>  
@@ -134,8 +134,8 @@
                         </#if>
 
                     </div>
-                    <div class="col-sm-2">
-                        <input value="Seleziona parola chiave" name="addKeyword" type="submit" class="btn btn-default"/>
+                    <div class="col-sm-4">
+                        <input value="Seleziona parola chiave" name="addKeyword" type="submit" class="btn btn-default btn-pub"/>
                     </div>
                 </div>
                 <#if errorPublicationKeyword??>  

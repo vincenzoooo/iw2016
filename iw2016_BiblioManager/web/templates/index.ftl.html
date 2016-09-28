@@ -7,6 +7,30 @@
                 </div>
             </div>
         </div>
+        
+        <div class="section section-pageIndex-allert">
+            <#if pippo??>    
+            <div class="row margin-top-20">
+                <div class="col-xs-12">
+                    <div class="alert alert-success alert-dismissible fadeIn animated">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        Inserimento del capitolo avvenuto con successo.
+                    </div>
+                </div>
+            </div>
+            </#if>
+            <#if pluto??>    
+            <div class="row margin-top-20">
+                <div class="col-xs-12">
+                    <div class="alert alert-success alert-dismissible fadeIn animated">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        Inserimento della sezione avvenutoa con successo.
+                    </div>
+                </div>
+            </div>
+            </#if>
+        </div>
+        
         <div class="section section-pageIndex-insertChapter">
             <div class="row">
                 <div class="col-lg-12">   
@@ -144,6 +168,7 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h3 class=""> Lista delle sezioni</h3>
+<!--                    <#if chapters??>-->
                     <table id="allChapters" class="table">
                         <tr>
                             <th>Numero</th>
@@ -166,16 +191,16 @@
                             </#list>
                         </#list>
                     </table>
-                    <!--
+<!--                    <#else>
                     <span class="bold">Nessuna sezione presente.</span>
-                    -->
+                    </#if>-->
                 </div>
             </div>
         </div>
         </#if>
-        <div class="margin-top-20">
+        <div class="margin-top-20 margin-bot-50">
             <span>
-                <a href="${url}?publicationId=${publicationId}" class="btn btn-default">Torna alla pubblicazione</a>
+                <a href="${url}?publicationId=${publicationId}" class="btn btn-default" title="Tornando alla pubblicazione, e una volta salvata, potrai visualizzare l'indice appena inserito">Torna alla pubblicazione</a>
             </span>
         </div>
     </div>
