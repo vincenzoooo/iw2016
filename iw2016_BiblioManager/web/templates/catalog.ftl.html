@@ -98,8 +98,8 @@
                                     </#list>
                                 </div>
                                 <h2 class="title">${strip_slashes(item.title)?html}</h2>
-
-                                <div class="description"> ${strip_slashes(item.description!'Nessuna descrizione.')?html} </div>
+                                <#if (item.description?length>256)><div class="description">${item.description[0..252]?html}...</div><#else><div class="description">${item.description?html}</div></#if>
+<!--                                <div class="description"> ${strip_slashes(item.description!'Nessuna descrizione.')?html} </div>-->
                                 <div class="likes margin-top-20"> <span class="bold">Numero consigli: </span> ${strip_slashes(item.like)?html} </div>
                             </div> 
                         </div>

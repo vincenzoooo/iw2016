@@ -54,7 +54,7 @@ public class ComposeReview extends BiblioManagerBaseController {
                 HttpSession session = SecurityLayer.checkSession(request);
                 Review review = getDataLayer().getReview(Integer.parseInt(request.getParameter("reviewId")));
                 if (review.getAuthor().getKey() != (int) session.getAttribute("userId")) {
-                    History history = this.action_composeHistory(request, response, "recensione approvata");
+                    History history = this.action_composeHistory(request, response, "Recensione approvata");
                     review.setHistory(history);
                     review.setStatus(true);
                     request.setAttribute("reviewApproved", 1);

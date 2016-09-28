@@ -6,7 +6,7 @@
                     <h1 class="center">Scheda utente
                         <#if !displaynone??>
                         <span>
-                            <a href="profile?update" class="aItemCustom">
+                            <a href="profile?update" class="aItemCustom" title="Modifica profilo">
                                 <i class="fa fa-pencil" aria-hidden="true"></i>
                             </a>
                         </span>
@@ -14,6 +14,19 @@
                     </h1>
                 </div>
             </div>
+        </div>
+        
+        <div class="section section-pageEditor-allert">
+            <#if pippo??>    
+            <div class="row margin-top-20">
+                <div class="col-xs-12">
+                    <div class="alert alert-success alert-dismissible fadeIn animated">
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        Modifica del rpfilo avvenuta con successo.
+                    </div>
+                </div>
+            </div>
+            </#if>
         </div>
         
         <#if user??>
@@ -64,7 +77,7 @@
                 <#if (publications?? && publications?size>0) >
                 <div id="listPublicationUser" class="row">
                 <#list publications as item>
-                    <div class="col-lg-4 userPublication">
+<!--                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 userPublication">
                         <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
                             <figure class="cover-pubb">
                                 <#if item.cover??>
@@ -79,6 +92,33 @@
                                 </figcaption>
                             </figure>
                         </a>
+                    </div>-->
+                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                        <div class="thebox-container">
+                            <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
+                                <div class="thebox">
+                                    <div class="thebox-image">
+                                        <figure class="cover-pubb cap-bot imgHome">
+                                            <#if item.cover??>
+                                            <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
+                                            <#else>
+                                            <img src= "img/come.png" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
+                                            </#if>
+                                            <figcaption class="caption thebox-content">
+                                                <#if (item.title?length>45)><div class="bold">${item.title[0..41]?html}...</div><#else><div class="bold">${item.title?html}</div></#if>
+                                                <div class="padding-top-5">
+                                                    <#if (item.authors?? && item.authors?size>0)>
+                                                    <#list item.authors as item2>
+                                                        ${strip_slashes(item2.name!'')?html} ${strip_slashes(item2.surname!'')?html}<#if item2.key != item.authors?last.key>,</#if> 
+                                                    </#list>
+                                                    </#if>
+                                                </div>
+                                            </figcaption>
+                                        </figure>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
                     </div>
                 </#list>
                 </div>
@@ -107,7 +147,7 @@
                 </#if>
             </div>
             
-            <div class="row">
+            <div class="row margin-bot-30">
                 <div class="col-lg-12">
                     <h2>Ultime azioni effettuate</h2>
                     <#if (userActions?? && userActions?size>0)>
@@ -136,7 +176,7 @@
                                     ${item.entry?html}
                                 </td>
                                 <td>
-                                    <#if item.publicationTitle??><a href="publicationDetails?publicationId=${item.publicationKey}" class="aItemCustom bold" >${item.publicationTitle}</a></#if>
+                                    <#if item.publicationTitle??><a href="details?publicationId=${item.publicationKey}" class="aItemCustom bold" >${item.publicationTitle}</a></#if>
                                 </td>
                             </tr>
                         </#list>
