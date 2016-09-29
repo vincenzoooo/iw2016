@@ -91,7 +91,8 @@ public class Profile extends BiblioManagerBaseController {
                 }
                 getDataLayer().storeUser(user);
                 request.setAttribute("user", user);
-                res.activate("profile.ftl.html", request, response);
+                action_view(request, response);
+//                res.activate("profile.ftl.html", request, response);
             } else {
                 action_updateProfile(request, response);
             }

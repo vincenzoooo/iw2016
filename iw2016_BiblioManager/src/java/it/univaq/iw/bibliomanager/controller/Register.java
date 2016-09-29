@@ -11,7 +11,6 @@ import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -19,8 +18,6 @@ import it.univaq.iw.bibliomanager.data.model.User;
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -34,8 +31,8 @@ public class Register extends BiblioManagerBaseController {
             Map<String, String> params = new HashMap<String, String>();
             params.put("name", Utils.checkString(request.getParameter("name")));
             params.put("surname", Utils.checkString(request.getParameter("surname")));
-            params.put("password", Utils.SHA1(request.getParameter("password")));
-            params.put("re-password", Utils.SHA1(request.getParameter("re-password")));
+            params.put("password", Utils.checkString(request.getParameter("password")));
+            params.put("re-password", Utils.checkString(request.getParameter("re-password")));
             params.put("email", Utils.checkString(request.getParameter("email")));
             params.put("re-email", Utils.checkString(request.getParameter("re-email")));
             params.put("privacy", Utils.checkString(request.getParameter("privacy")));
@@ -43,7 +40,7 @@ public class Register extends BiblioManagerBaseController {
                 User newUser = getDataLayer().createUser();
                 newUser.setName(params.get("name"));
                 newUser.setSurname(params.get("surname"));
-                newUser.setPassword(params.get("password"));
+                newUser.setPassword(Utils.SHA1(params.get("password")));
                 newUser.setEmail(params.get("email"));
                 getDataLayer().storeUser(newUser);
                 request.setAttribute("registered", 1);
@@ -51,6 +48,7 @@ public class Register extends BiblioManagerBaseController {
             } else {
                 request.setAttribute("name", params.get("name"));
                 request.setAttribute("surname", params.get("surname"));
+                action_default(request, response);
             }
         } catch (NoSuchAlgorithmException | DataLayerException | ServletException ex) {
             action_error(request, response, "Error register: " + ex.getMessage(), 510);
@@ -63,7 +61,8 @@ public class Register extends BiblioManagerBaseController {
 
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
-        boolean error = false;
+        boolean error = super.validator(params, request, response);
+        if(!error){
         User user = null;
         try {
             String password = params.get("password");
@@ -108,9 +107,9 @@ public class Register extends BiblioManagerBaseController {
                 request.setAttribute("errorEmail", "Questa email è già registrata");
                 error = true;
             }
-
         } catch (DataLayerException ex) {
             action_error(request, response,"Data layer exception: " + ex.getMessage(), 503);;
+        }
         }
         return error;
     }

@@ -148,7 +148,7 @@ Professor: Giuseppe Della Penna
 .green {color:#9c6;}
 .black {color:black;}
 .white {color:#fff;}
-.lobster{color:#D94C3A;}
+.lobster{color:#D94C3A!important;}
 .lobsterBack{background-color: #D94C3A;}
 
 .font-2x {font-size: 1.2em;}

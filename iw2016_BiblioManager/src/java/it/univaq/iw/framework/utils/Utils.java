@@ -34,7 +34,7 @@ public class Utils {
      * @return string
      */
     public static String checkString(String string) {
-        if (isNullOrEmpty(string)) {
+        if (!isNullOrEmpty(string)) {
             //string = string.toLowerCase();
             string = string.trim();
         }

@@ -127,7 +127,7 @@
                         </li>
                         </#if>
                         <#list pages as item>
-                        <li><a class="customPagination" href="${item.value}">${item.key+1}</a></li>
+                        <li><a class="<#if (curr==item.key)>lobster</#if>" href="${item.value}">${item.key+1}</a></li>
                         </#list>
                         <#if next??>
                         <li>

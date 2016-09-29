@@ -55,7 +55,6 @@ public class PublicationsList extends BiblioManagerBaseController {
             filters.put("order_by", orderField[orderBy]);
             int orderMode = request.getParameter("orderMode") != null ? Integer.parseInt(request.getParameter("orderMode")) : 0;
             filters.put("order_mode", orderType[orderMode]);
-//            int offset = request.getParameter("offset") != null ? Integer.parseInt(request.getParameter("offset")) : 0;
             request.setAttribute("orderBy", orderBy);
             request.setAttribute("orderMode", orderMode);
             filters.put("offset", Integer.toString(offset));
@@ -71,7 +70,6 @@ public class PublicationsList extends BiblioManagerBaseController {
                 pageNumber++;
             }
             int totOffset = (pageNumber - 1) * limit;
-//            pages = new ArrayList<String>();
             for (int i = pageNumber-1; i >= 0; --i) {
                 String url = "catalog?orderBy=" + orderBy + "&offset=" + totOffset;
                 if (request.getAttribute("isResearch") != null && request.getAttribute("filter") != null) {
@@ -80,15 +78,46 @@ public class PublicationsList extends BiblioManagerBaseController {
                 pages.put(i, url);
                 totOffset -= limit;
             }
-            if(offset/limit+1 > (slice/2+1) && end != pageNumber){
-                start++;
-                end++;
+            int page = offset/limit;
+            if(page+1 > (slice/2+1) && end != pageNumber){
+                int step = page+1 - (slice/2+1);
+                if(step > 1){
+                    if(end + step > pageNumber){
+                        start = pageNumber - slice;
+                        end = pageNumber;
+                    }
+                    else{
+                        start = step;
+                        end = slice + step;
+                    }
+                }
+                else{
+                    start++;
+                    end++;
+                }
             }
-            if(offset/limit+1 == 1){
+            if(page+1 < (slice/2+1) && end != slice){
+                int step = (slice/2+1) - (page+1);
+                if(step > 1){
+                    if(start + step < slice){
+                        start = 0;
+                        end = slice;
+                    }
+                    else{
+                        start = step;
+                        end = slice + step;
+                    }
+                }
+                else{
+                    start--;
+                    end--;
+                }
+            }
+            if(page+1 == 1){
                 start=0;
                 end=slice;
             }
-            if(offset/limit+1 == pageNumber){
+            if(page+1 == pageNumber){
                 start=pageNumber-slice;
                 end=pageNumber;
             }
@@ -96,13 +125,13 @@ public class PublicationsList extends BiblioManagerBaseController {
             request.setAttribute("pages", getSlice(pages, start, end).entrySet());
             request.setAttribute("first", pages.get(0));
             request.setAttribute("last", pages.get(pages.size()-1));
-            if(offset/limit > 0){
-                request.setAttribute("previous", pages.get((offset/limit)-1));
+            if(page > 0){
+                request.setAttribute("previous", pages.get(page-1));
             }
-            if(offset/limit < pageNumber){
-                request.setAttribute("next", pages.get((offset/limit)+1));
+            if(page < pageNumber){
+                request.setAttribute("next", pages.get(page+1));
             }
-            request.setAttribute("curr", offset/limit);
+            request.setAttribute("curr", page);
             action_view(request, response);
         } catch (DataLayerException ex) {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage(), 502);
