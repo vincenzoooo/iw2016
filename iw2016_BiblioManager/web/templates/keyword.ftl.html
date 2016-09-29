@@ -51,14 +51,12 @@
                             <div class="col-sm-6">
                                 <input id="inputKeywordName" class="form-control" name="keyName" placeholder="Inserisci la parola chiave" />
                             </div>
+                            <#if errorKeywordName??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorKeywordName?html}
+                            </div>
+                            </#if>
                         </div>
-
-                        <#if errorKeywordName??>
-                        <div class="error">
-                            ${errorKeywordName?html}
-                        </div>
-                        </#if>
-
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>

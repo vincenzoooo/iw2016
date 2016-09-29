@@ -41,25 +41,23 @@
                             <div class="col-sm-6">
                                 <input id="inputReprintNumber" class="form-control" name="reprintNumber" value="${reprintNumber!''?html}" placeholder="Inserisci numero ristampa" />
                             </div>
-                        </div>        
-                        <#if errorReprintNumber??>
-                        <div class="error">
-                            ${errorReprintNumber?html}
-                        </div>
-                        </#if>
-
+                            <#if errorReprintNumber??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorReprintNumber?html}
+                            </div>
+                            </#if>
+                        </div> 
                         <div class="form-group">
                             <label for="inputReprintDate" class="col-sm-2 control-label bold">Data ristampa</label>
                             <div class="col-sm-6">
                                 <input id="inputReprintDate" class="form-control" name="reprintDate" value="${reprintDate!''?html}" placeholder="Inserisci data ristampa" />
                             </div>
-                        </div>        
-                        <#if errorReprintDate??>
-                        <div class="error">
-                            ${errorReprintDate?html}
-                        </div>
-                        </#if>
-
+                            <#if errorReprintDate??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorReprintDate?html}
+                            </div>
+                            </#if>
+                        </div> 
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>

@@ -722,7 +722,7 @@ header .navbar-header-menu {
 .error{
     color: #D94C3A;
     font-weight: bold;
-    margin-left: 1%;
+    margin-bottom: 5px;
 }
 
 .profile{

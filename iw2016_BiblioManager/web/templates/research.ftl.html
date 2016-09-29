@@ -14,12 +14,12 @@
                     <div class="col-sm-10 col-lg-6">
                         <input id="inputSearchIsbn" type="text" class="form-control" name="publicationIsbn" value="${publicationIsbn!''?html}" placeholder="Inserisci l'ISBN" />
                     </div>
+                    <#if searchErrorIsbn??>
+                    <div class="error col-sm-offset-2 col-sm-10">
+                        ${searchErrorIsbn?html}
+                    </div>
+                    </#if>
                 </div>
-                <#if searchErrorIsbn??>
-                <div class="error">
-                    ${searchErrorIsbn?html}
-                </div>
-                </#if>
                 <div class="form-group">
                     <label for="inputSearchAuthor" class="col-sm-2 control-label bold">Autore</label>
                     <div class="col-sm-10 col-lg-6">
@@ -37,12 +37,12 @@
                     <div class="col-sm-10 col-lg-6">
                         <input id="inputSearchPubyear" type="text" class="form-control" name="publicationYear" value="${publicationYear!''?html}" placeholder="Inserisci l'anno di pubblicazione" />
                     </div>
+                    <#if errorSearchYear??>
+                    <div class="error col-sm-offset-2 col-sm-10">    
+                        ${errorSearchYear?html}    
+                    </div>
+                    </#if>
                 </div>
-                <#if errorSearchYear??>
-                <div class="error">    
-                    ${errorSearchYear?html}    
-                </div>
-                </#if>
                 <div class="form-group">
                     <label for="inputSearchKeyword" class="col-sm-2 control-label bold">Parola chiave</label>
                     <div class="col-sm-10 col-lg-6">

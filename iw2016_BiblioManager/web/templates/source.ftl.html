@@ -40,48 +40,48 @@
                             <div class="col-sm-6">
                                 <input id="inputSourceType" class="form-control" name="sourceType" placeholder="Inserisci il tipo" />
                             </div>
+                            <#if errorType??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorType?html}
+                            </div>
+                            </#if>
                         </div>
-                        <#if errorType??>
-                        <div class="error">
-                            ${errorType?html}
-                        </div>
-                        </#if>
 
                         <div class="form-group">
                             <label for="inputSourceUri" class="col-sm-2 control-label bold">Indirizzo risorsa</label>
                             <div class="col-sm-6">
                                 <input id="inputSourceUri" class="form-control" name="sourceUri" placeholder="Inserisci indirizzo risorsa" />
                             </div>
+                            <#if errorUri??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorUri?html}
+                            </div>
+                            </#if>
                         </div>
-                        <#if errorUri??>
-                        <div class="error">
-                            ${errorUri?html}
-                        </div>
-                        </#if>
 
                         <div class="form-group">
                             <label for="inputSourceFormat" class="col-sm-2 control-label bold">Formato</label>
                             <div class="col-sm-6">
                                 <input id="inputSourceFormat" class="form-control" name="sourceFormat" placeholder="Inserisci il formato" />
                             </div>
+                            <#if errorFormat??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorFormat?html}
+                            </div>
+                            </#if>
                         </div>
-                        <#if errorFormat??>
-                        <div class="error">
-                            ${errorFormat?html}
-                        </div>
-                        </#if>
 
                         <div class="form-group">
                             <label for="inputSourceDescription" class="col-sm-2 control-label bold">Descrizione</label>
                             <div class="col-sm-6">
                                 <textarea id="inputSourceDescription" class="form-control" name="sourceDescription" rows="4" placeholder="Inserisci una descrizione"></textarea>
                             </div>
+                            <#if errorDescription??>
+                            <div class="error col-sm-offset-2 col-sm-10">    
+                                ${errorDescription?html}    
+                            </div>
+                            </#if>
                         </div>
-                        <#if errorDescription??>
-                        <div class="error">    
-                            ${errorDescription?html}    
-                        </div>
-                        </#if>
 
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">

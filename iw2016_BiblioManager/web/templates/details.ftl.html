@@ -1,5 +1,5 @@
 <div class="container">
-    <div class="pagePublicationDetails  margin-top-50">
+    <div class="pagePublicationDetails  margin-top-50 margin-bot-30">
         <div class="section section-homePage-allert"> 
             <#if publicationUpdated??>
             <div class="row margin-top-20">
@@ -52,6 +52,7 @@
             </div>
             </#if>
         </div>
+        
         <div class="section section-publication-conten margin-top-30">
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-4">
@@ -151,6 +152,7 @@
                 </div>
             </div>
         </div>
+        
         <div class="section section-publication-sources">
             <div class="row">
                 <div class="col-lg-12">
@@ -310,8 +312,8 @@
 
                         </#list>
                         <#else>
-                        <div id="lastReview">
-                            Non ci sono ancora recensioni.
+                        <div id="lastReview" class="bold"> 
+                            Non sono presenti recensioni.
                         </div>
                         </#if>
                     </div>
@@ -349,6 +351,10 @@
                 </div>
             </div>
         </div>
+        <#else>
+        <div>Si è verificato un errore, riprovare!</div>
+        </#if>
+        <a href="catalog" class="btn btn-default" name="submitCatalog">Torna al catalogo</a>
     </div>
 
     <!--
@@ -380,10 +386,8 @@
     </div>
 
     </#if>
+ 
     -->
-
-    </#if>
-    <a href="catalog" class="btn btn-default" name="submitCatalog">Torna al catalogo</a>
 </div>
 
 

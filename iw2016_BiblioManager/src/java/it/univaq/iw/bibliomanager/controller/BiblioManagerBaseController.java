@@ -100,7 +100,7 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (entry.getValue() == null || entry.getValue().equals("")) {
                 String fieldName = Character.toUpperCase(entry.getKey().charAt(0)) + entry.getKey().substring(1);
-                request.setAttribute("error" + fieldName, "Non valorizzato");
+                request.setAttribute("error" + fieldName, "Campo non  valorizzato");
                 error = true;
             }
             else{

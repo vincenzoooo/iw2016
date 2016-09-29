@@ -46,6 +46,7 @@ public class Register extends BiblioManagerBaseController {
                 newUser.setPassword(params.get("password"));
                 newUser.setEmail(params.get("email"));
                 getDataLayer().storeUser(newUser);
+                request.setAttribute("registered", 1);
                 action_redirect(request, response, "/login");
             } else {
                 request.setAttribute("name", params.get("name"));
@@ -100,7 +101,7 @@ public class Register extends BiblioManagerBaseController {
                 error = true;
             }
             if (!Utils.checkEmail(email)) {
-                request.setAttribute("errorEmail", "L'Email passata non è valida");
+                request.setAttribute("errorEmail", "L'Email inserita non è valida");
                 error = true;
             }
             if (user != null) {
@@ -109,7 +110,7 @@ public class Register extends BiblioManagerBaseController {
             }
 
         } catch (DataLayerException ex) {
-            action_error(request, response, "Data layer exception: " + ex.getMessage(), 503);;
+            action_error(request, response,"Data layer exception: " + ex.getMessage(), 503);;
         }
         return error;
     }

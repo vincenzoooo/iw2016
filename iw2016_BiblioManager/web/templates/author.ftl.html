@@ -51,25 +51,25 @@
                             <div class="col-sm-6">
                                 <input id="inputAuthorName" class="form-control" name="authorName" value="${name!''?html}" placeholder="Inserisci il mone dell'autore" />
                             </div>
-                        </div>        
-                        <#if errorAuthorName??>
-                        <div class="error">
-                            ${errorAuthorName?html}
-                        </div>
-                        </#if>
+                            <#if errorAuthorName??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorAuthorName?html}
+                            </div>
+                            </#if>
+                        </div> 
 
                         <div class="form-group">
                             <label for="inputAuthorSurname" class="col-sm-2 control-label bold">Cognome</label>
                             <div class="col-sm-6">
                                 <input id="inputAuthorSurname" class="form-control" name="authorSurname" value="${surname!''?html}" placeholder="Inserisci il cognome dell'autore" />
                             </div>
-                        </div>        
-                        <#if errorAuthorSurname??>
-                        <div class="error">
-                            ${errorAuthorSurname?html}
-                        </div>
-                        </#if>
-
+                            <#if errorAuthorSurname??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorAuthorSurname?html}
+                            </div>
+                            </#if>
+                        </div> 
+                        
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>

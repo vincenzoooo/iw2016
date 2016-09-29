@@ -41,25 +41,23 @@
                             <div class="col-sm-6">
                                 <input id="inputNumberC" class="form-control" name="chapterNumber" placeholder="Inserisci il numero del capitolo" />
                             </div>
+                            <#if errorChapterNumber??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorChapterNumber?html}
+                            </div>
+                            </#if>
                         </div>
-                        <#if errorChapterNumber??>
-                        <div class="error">
-                            ${errorChapterNumber?html}
-                        </div>
-                        </#if>
-                        
                         <div class="form-group">
                             <label for="inputTitleC" class="col-sm-2 control-label bold">Titolo capitolo</label>
                             <div class="col-sm-6">
                                 <input id="inputTitleC" class="form-control" name="chapterTitle" placeholder="Inserisci il titolo del capitolo" />
                             </div>
+                            <#if errorChapterTitle??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorChapterTitle?html}
+                            </div>
+                            </#if>
                         </div>
-                        <#if errorChapterTitle??>
-                        <div class="error">
-                            ${errorChapterTitle?html}
-                        </div>
-                        </#if>
-
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>
@@ -131,24 +129,23 @@
                             <div class="col-sm-6">
                                 <input id="inputNumberS" class="form-control" name="sectionNumber" placeholder="Inserisci il numero del capitolo" />
                             </div>
+                            <#if errorSectionNumber??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorSectionNumber?html}
+                            </div>
+                            </#if>
                         </div>
-                        <#if errorSectionNumber??>
-                        <div class="error">
-                            ${errorSectionNumber?html}
-                        </div>
-                        </#if>
-                        
                         <div class="form-group">
                             <label for="inputTitleS" class="col-sm-2 control-label bold">Titolo sezione</label>
                             <div class="col-sm-6">
                                 <input id="insertTitleS" class="form-control" name="sectionTitle" placeholder="Inserisci il titolo del capitolo" />
                             </div>
+                            <#if errorSectionTitle??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorSectionTitle?html}
+                            </div>
+                            </#if>
                         </div>
-                        <#if errorSectionTitle??>
-                        <div class="error">
-                            ${errorSectionTitle?html}
-                        </div>
-                        </#if>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>
