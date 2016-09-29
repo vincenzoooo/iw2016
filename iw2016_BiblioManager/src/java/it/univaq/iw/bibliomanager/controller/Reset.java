@@ -76,14 +76,12 @@ public class Reset extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            if (request.getParameter("submitReset") != null){
-                if (request.getParameter("email") != null) {
+            if (request.getParameter("submitEmailReset") != null){
                     action_isUser(request, response);
                 } 
-                if (this.user != null) {
+            else if (request.getParameter("submitPassReset") != null) {
                     action_reset(request, response);
                 }
-            }
             else {
                 user = null;
                 action_default(request, response);

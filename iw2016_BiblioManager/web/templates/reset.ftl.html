@@ -61,9 +61,15 @@
                         </#if>
                         <div class="form-group">
                           <div class="col-sm-offset-2 col-sm-10">
+                              <#if showPass??>
                                 <span>
-                                    <input type="submit" value="Reset" name="submitReset" class="btn btn-default">
+                                    <input type="submit" value="Reset" name="submitPassReset" class="btn btn-default">
                                 </span>
+                              <#else>
+                                <span>
+                                    <input type="submit" value="Reset" name="submitEmailReset" class="btn btn-default">
+                                </span>
+                              </#if>
                           </div>
                         </div>
                     </form>
