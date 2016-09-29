@@ -8,68 +8,67 @@
                     <div class="col-sm-10 col-lg-6">
                         <input id="inputTitlePub" type="text" class="form-control" name="publicationTitle" value="${publicationTitle!''?html}" placeholder="Inserisci il titolo" />
                     </div>
+                    <#if errorPublicationTitle??>
+                    <div class="error col-sm-offset-2 col-sm-10">
+                        ${errorPublicationTitle?html}
+                    </div>
+                    </#if>
                 </div>
-                <#if errorPublicationTitle??>
-                <div class="error">
-                    ${errorPublicationTitle?html}
-                </div>
-                </#if>
                 <div class="form-group">
                     <label for="inputIsbnPub" class="col-sm-2 control-label bold">ISBN (13 cifre)</label>
                     <div class="col-sm-10 col-lg-6">
                         <input id="inputIsbnPub" type="text" class="form-control" name="publicationIsbn" value="${publicationIsbn!''?html}" placeholder="Inserisci l'isbn" />
                     </div>
+                    <#if errorPublicationIsbn??>
+                    <div class="error col-sm-offset-2 col-sm-10">
+                        ${errorPublicationIsbn?html}
+                    </div>
+                    </#if>
                 </div>
-                <#if errorPublicationIsbn??>
-                <div class="error">
-                    ${errorPublicationIsbn?html}
-                </div>
-                </#if>
                 <div class="form-group">
                     <label for="inputPageNumberPub" class="col-sm-2 control-label bold">Numero pagine</label>
                     <div class="col-sm-10 col-lg-6">
                         <input id="inputPageNumberPub" type="text" class="form-control" name="publicationPages" value="${publicationPages!''?html}" placeholder="Inserisci il numero delle pagine" />
                     </div>
+                    <#if errorPublicationPages??>
+                    <div class="error col-sm-offset-2 col-sm-10">
+                        ${errorPublicationPages?html}
+                    </div>
+                    </#if>
                 </div>
-                <#if errorPublicationPageNumber??>
-                <div class="error">
-                    ${errorPublicationPageNumber?html}
-                </div>
-                </#if>
                 <div class="form-group">
                     <label for="inputDescriptionPub" class="col-sm-2 control-label bold">Descrizione</label>
                     <div class="col-sm-10 col-lg-6">
                         <textarea id="inputDescriptionPub" class="form-control" name="publicationDescription" rows="4" placeholder="Inserisci una descrizione">${publicationDescription!''?html}</textarea>
                     </div>
+                    <#if errorPublicationDescription??>
+                    <div class="error col-sm-offset-2 col-sm-10">    
+                        ${errorPublicationDescription?html}    
+                    </div>
+                    </#if>
                 </div>
-                <#if errorPublicationDescription??>
-                <div class="error">    
-                    ${errorPublicationDescription?html}    
-                </div>
-                </#if>
                 <div class="form-group">
                     <label for="inputPublicationDatePub" class="col-sm-2 control-label bold">Data di pubblicazione</label>
                     <div class="col-sm-10 col-lg-6">
                         <input id="inputPublicationDatePub" type="text" class="form-control" name="publicationDate" value="${publicationDate!''?html}" placeholder="Inserisci l'anno di pubblicazione" />
                     </div>
+                    <#if errorPublicationDate??>
+                    <div class="error col-sm-offset-2 col-sm-10">    
+                        ${errorPublicationDate?html}    
+                    </div>
+                    </#if>
                 </div>
-                <#if errorPublicationDate??>
-                <div class="error">    
-                    ${errorPublicationDate?html}    
-                </div>
-                </#if>
                 <div class="form-group">
                     <label for="inputLanguagePub" class="col-sm-2 control-label bold">Lingua</label>
                     <div class="col-sm-10 col-lg-6">
                         <input id="inputLanguagePub" type="text" class="form-control" name="publicationLanguage" value="${publicationLanguage!''?html}" placeholder="Inserisci la lingua" />
                     </div>
+                    <#if errorPublicationLanguage??>
+                    <div class="error col-sm-offset-2 col-sm-10">    
+                        ${errorPublicationLanguage?html}    
+                    </div>
+                    </#if>
                 </div>
-                <#if errorPublicationLanguage??>
-                <div class="error">    
-                    ${errorPublicationLanguage?html}    
-                </div>
-                </#if>
-                
                 <div class="form-group">
                     <label class="bold col-sm-2 control-label">Editore</label>
                     <div class="col-sm-6">
@@ -82,15 +81,14 @@
                         </select>
                     </div>
                     <div class="col-sm-4">
-                        <input value='Aggiungi nuovo editore' name='addEditor' type='submit' class="btn btn-default btn-pub"/>
+                        <input value="Aggiungi nuovo editore" name="addEditor" type="submit" class="btn btn-default btn-pub"/>
                     </div>
+                    <#if errorPublicationEditor??>  
+                        <div class="error col-sm-offset-2 col-sm-10">
+                            ${errorPublicationEditor?html}      
+                          </div>
+                    </#if>
                 </div>
-                <#if errorPublicationEditor??>  
-                    <div class="error">
-                        ${errorPublicationEditor?html}      
-                      </div>
-                </#if>
-                
                 <div class="form-group">
                     <label class="bold col-sm-2 control-label">Autore/i</label>
                     <div class="col-sm-6">
@@ -110,13 +108,12 @@
                     <div class="col-sm-4">
                         <input value="Seleziona autore" name="addAuthor" type="submit" class="btn btn-default btn-pub"/>
                     </div>
+                    <#if errorPublicationAuthor??>  
+                        <div class="error col-sm-offset-2 col-sm-10">
+                            ${errorPublicationAuthor?html}      
+                          </div>
+                    </#if>
                 </div>
-                <#if errorPublicationAuthor??>  
-                    <div class="error">
-                        ${errorPublicationAuthor?html}      
-                      </div>
-                </#if>
-                
                 <div class="form-group">
                     <label class="bold col-sm-2 control-label">Keyword</label>
                     <div class="col-sm-6">
@@ -137,13 +134,12 @@
                     <div class="col-sm-4">
                         <input value="Seleziona parola chiave" name="addKeyword" type="submit" class="btn btn-default btn-pub"/>
                     </div>
+                    <#if errorPublicationKeyword??>  
+                        <div class="error col-sm-offset-2 col-sm-10">
+                            ${errorPublicationKeyword?html}      
+                          </div>
+                    </#if>
                 </div>
-                <#if errorPublicationKeyword??>  
-                    <div class="error">
-                        ${errorPublicationKeyword?html}      
-                      </div>
-                </#if>
-                
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <input value="Aggiungi indice" name="addIndex" type="submit" class="btn btn-default"/>
@@ -155,7 +151,7 @@
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <span>
-                            <input value='Salva' name='submitPublication' type='submit' class="btn btn-default"/>
+                            <input value="Salva" name="submitPublication" type="submit" class="btn btn-default"/>
                         </span>
                     </div>
                 </div>

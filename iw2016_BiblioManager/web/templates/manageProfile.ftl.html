@@ -8,65 +8,63 @@
                     <div class="col-sm-10">
                         <input id="editUserName" type="text" class="form-control" name="name" value="${user.name!''?html}" required="required" placeholder="Modifica il nome" />
                     </div>
+                    <#if errorName??>
+                    <div class="error col-sm-offset-2 col-sm-10">
+                        ${errorName?html}
+                    </div>
+                    </#if>
                 </div>
-                <#if errorName??>
-                <div class="error">
-                    ${errorName?html}
-                </div>
-                </#if>
                 <div class="form-group">
                     <label for="editUserSurname" class="col-sm-2 control-label bold">Cognome</label> 
                     <div class="col-sm-10">
                         <input id="editUserSurname" type="text" class="form-control" name="surname" value="${user.surname!''?html}" required="required" placeholder="Modifica il cognome" />
                     </div>
+                    <#if errorSurname??>
+                    <div class="error col-sm-offset-2 col-sm-10">
+                        ${errorSurname?html}
+                    </div>
+                    </#if>
                 </div>
-                <#if errorSurname??>
-                <div class="error">
-                    ${errorSurname?html}
-                </div>
-                </#if>
                 <div class="form-group">
                     <label for="editUserEmail" class="col-sm-2 control-label bold">Email</label> 
                     <div class="col-sm-10">
                         <input id="editUserEmail" type="email" class="form-control" name="email" value="${user.email!''?html}" required="required" placeholder="user@mail.it" />
                     </div>
+                    <#if errorEmail??>
+                    <div class="error col-sm-offset-2 col-sm-10">
+                        ${errorEmail?html}
+                    </div>
+                    </#if>
                 </div>
-                <#if errorEmail??>
-                <div class="error">
-                    ${errorEmail?html}
-                </div>
-                </#if>
                 <div class="form-group">
                     <label for="editUserPassword" class="col-sm-2 control-label bold">Password</label> 
                     <div class="col-sm-10">
                         <input id="editUserPassword" type="password" class="form-control" name="password" placeholder="modifica password" />
                     </div>
+                    <#if errorPassword??>
+                    <div class="error col-sm-offset-2 col-sm-10">
+                        ${errorPassword?html}
+                    </div>
+                    </#if>
                 </div>
-                <#if errorPassword??>
-                <div class="error">
-                    ${errorPassword?html}
-                </div>
-                </#if>
                 <div class="form-group">
                     <label for="editUserRePassword" class="col-sm-2 control-label bold">Reinserire Password</label>
                     <div class="col-sm-10">
                         <input id="editUserRePasswordR" type="password" class="form-control" name="re-password" placeholder="Ripeti password" />
                     </div>
+                    <#if errorPassword??>
+                    <div class="error col-sm-offset-2 col-sm-10">
+                        ${errorPassword?html}
+                    </div>
+                    </#if>
                 </div>
-                <#if errorPassword??>
-                <div class="error">
-                    ${errorPassword?html}
-                </div>
-                </#if>
-                
                 <div class="form-group">
                     <div class="col-sm-offset-2 col-sm-10">
                         <span>
                             <input type="submit" value="Aggiorna i dati" name="submitData" class="btn btn-default">
                         </span>
                     </div>
-                </div>
-                
+                </div>  
             </form>
         </div>
     </div>

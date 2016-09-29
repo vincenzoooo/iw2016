@@ -41,14 +41,13 @@
                             <div class="col-sm-6">
                                 <input id="inputEditorName" class="form-control" name="editorName"  placeholder="Inserisci l'editore" />
                             </div>
+                            <#if errorEditorName??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorEditorName?html}
+                            </div>
+                            </#if>
                         </div>
-
-                        <#if errorEditorName??>
-                        <div class="error">
-                            ${errorEditorName?html}
-                        </div>
-                        </#if>
-
+                        
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>
