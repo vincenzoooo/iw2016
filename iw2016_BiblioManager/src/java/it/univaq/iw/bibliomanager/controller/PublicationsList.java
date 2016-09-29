@@ -96,7 +96,7 @@ public class PublicationsList extends BiblioManagerBaseController {
                     end++;
                 }
             }
-            if(page+1 < (slice/2+1) && end != slice){
+            if(page+1 < (pageNumber-(slice/2+1)) && end != slice){
                 int step = (slice/2+1) - (page+1);
                 if(step > 1){
                     if(start + step < slice){
