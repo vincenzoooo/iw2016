@@ -6,15 +6,11 @@
  */
 package it.univaq.iw.bibliomanager.controller;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +32,7 @@ public class PublicationsList extends BiblioManagerBaseController {
     private final int limit = 5;
     private int offset = 0;
     private Map<Integer, String> pages = new HashMap<>();
-    private final int slice = 10;
+    private int slice = 10;
     private int start = 0;
     private int end = slice;
     
@@ -66,6 +62,9 @@ public class PublicationsList extends BiblioManagerBaseController {
             filters.remove("offset");
             int publicationsNumber = getDataLayer().getPublicationsByFilters(filters).size();
             int pageNumber = publicationsNumber / limit;
+            if(pageNumber < slice){
+                slice = pageNumber+1;
+            }
             if (pageNumber != 0 && publicationsNumber % limit > 0) {
                 pageNumber++;
             }
