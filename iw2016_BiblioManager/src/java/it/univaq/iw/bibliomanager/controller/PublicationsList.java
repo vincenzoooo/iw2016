@@ -102,6 +102,7 @@ public class PublicationsList extends BiblioManagerBaseController {
             if(offset/limit < pageNumber){
                 request.setAttribute("next", pages.get((offset/limit)+1));
             }
+            request.setAttribute("curr", offset/limit);
             action_view(request, response);
         } catch (DataLayerException ex) {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage(), 502);
