@@ -46,7 +46,7 @@ public class Register extends BiblioManagerBaseController {
                 newUser.setPassword(params.get("password"));
                 newUser.setEmail(params.get("email"));
                 getDataLayer().storeUser(newUser);
-                action_redirect(request, response, "/home");
+                action_redirect(request, response, "/login");
             } else {
                 request.setAttribute("name", params.get("name"));
                 request.setAttribute("surname", params.get("surname"));
@@ -120,15 +120,6 @@ public class Register extends BiblioManagerBaseController {
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("registration.ftl.html", request, response);
     }
-
-    protected void action_view(HttpServletRequest request, HttpServletResponse response){
-        try {
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("registration.ftl.html", request, response);
-        } catch (ServletException | IOException ex) {
-            action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
-        }
-    }
     
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -142,7 +133,6 @@ public class Register extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            action_view(request, response);
             if (request.getParameter("submitRegistration") != null) {
                 action_register(request, response);
             } else {
