@@ -11,10 +11,9 @@
                 </div>
             </div>
         </div>
-        
-        <#if isResearch>
-        <#else>
-        <div class="section section-pageCatalog-tools margin-bot-30">  
+        <div class="section section-pageCatalog-tools margin-bot-30"> 
+            <#if isResearch>
+            <#else>
             <div class="row">
                 <div class="col-sm-9">
                     <form class="form-inline" method="post" action="catalog">
@@ -71,8 +70,8 @@
               
             </div>
             <hr>
+            </#if>
         </div>
-        </#if>
         
         <div class="section section-pageCatalog-publications"> 
             <#if (publications?? && publications?size>0)>
@@ -128,7 +127,7 @@
                         </li>
                         </#if>
                         <#list pages as item>
-                        <li><a class="customPagination" href="${item}">${item.key+1}</a></li>
+                        <li><a class="customPagination" href="${item.value}">${item.key+1}</a></li>
                         </#list>
                         <#if next??>
                         <li>
@@ -143,8 +142,8 @@
                             </a>
                         </li>
                     </ul>
+                    </#if>
                 </nav>
-                </#if>
             <#else>
             <div>Nessuna pubblicazione da visualizzare </div>
             </#if>
