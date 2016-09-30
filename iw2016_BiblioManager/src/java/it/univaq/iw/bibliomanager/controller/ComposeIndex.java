@@ -43,6 +43,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 chapter.setTitle(params.get("chapterTitle"));
                 chapter.setPublicationKey(publicationId);
                 getDataLayer().storeChapter(chapter);
+                request.setAttribute("chapterAdded",1);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare il capitolo: " + ex.getMessage(), 510);
@@ -60,6 +61,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 chapter.setNumber(Integer.parseInt(params.get("chapterNumber")));
                 chapter.setTitle(params.get("chapterTitle"));
                 getDataLayer().storeChapter(chapter);
+                request.setAttribute("chapterUpdated",1);
                 chapterId = 0;
             }
         } catch (DataLayerException ex) {
@@ -79,6 +81,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 section.setTitle(params.get("sectionTitle"));
                 section.setChapterKey(Integer.parseInt(params.get("chapter")));
                 getDataLayer().storeSection(section);
+                request.setAttribute("sectionUpdated",1);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare il sezione: " + ex.getMessage(), 510);

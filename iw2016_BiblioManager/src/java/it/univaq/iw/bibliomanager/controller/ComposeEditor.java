@@ -41,6 +41,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
             if (!validator(params, request, response)) {
                 editor.setName(params.get("editorName"));
                 getDataLayer().storeEditor(editor);
+                request.setAttribute("editorAdded", 1);
                 Publication publication = getDataLayer().getPublication(publicationId);
                 publication.setEditor(editor);
                 getDataLayer().storePublication(publication);
@@ -58,6 +59,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
             if (!validator(params, request, response)) {
                 editor.setName(params.get("editorName"));
                 getDataLayer().storeEditor(editor);
+                request.setAttribute("editorUpdated", 1);
                 request.setAttribute("saveResult", "Salvataggio effettuato con successo");
                 editorId = 0;
             }

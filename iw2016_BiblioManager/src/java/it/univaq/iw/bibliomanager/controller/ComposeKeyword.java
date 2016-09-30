@@ -42,6 +42,7 @@ public class ComposeKeyword extends BiblioManagerBaseController {
             if (!validator(params, request, response)) {
                 keyword.setName(params.get("keyName"));
                 getDataLayer().storeKeyword(keyword);
+                request.setAttribute("keywordAdded", 1);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la parola chiave: " + ex.getMessage(), 510);
@@ -57,6 +58,7 @@ public class ComposeKeyword extends BiblioManagerBaseController {
             if (!validator(params, request, response)) {
                 keyword.setName(params.get("keyName"));
                 getDataLayer().storeKeyword(keyword);
+                request.setAttribute("keywordUpdated", 1);
                 request.setAttribute("saveResult", "Salvataggio effettuato con successo");
                 keywordId = 0;
             }
@@ -70,6 +72,7 @@ public class ComposeKeyword extends BiblioManagerBaseController {
         getDataLayer().deletePublicationHasKeyword(publicationId);
         for (String value : values) {
             getDataLayer().storePublicationHasKeyword(Integer.parseInt(value), publicationId);
+            request.setAttribute("keywordConnected", 1);
         }
     }
 

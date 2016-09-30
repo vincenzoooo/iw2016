@@ -49,6 +49,7 @@ public class ComposeSource extends BiblioManagerBaseController {
                 source.setDescription(params.get("sourceDescription"));
                 source.setPublication(getDataLayer().getPublication(publicationId));
                 getDataLayer().storeSource(source);
+                request.setAttribute("sourceAdded",1);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage(), 510);
@@ -70,6 +71,7 @@ public class ComposeSource extends BiblioManagerBaseController {
                 source.setDescription(params.get("sourceDescription"));
                 source.setPublication(getDataLayer().getPublication(publicationId));
                 getDataLayer().storeSource(source);
+                request.setAttribute("sourceUpdated",1);
                 sourceId = 0;
             }
         } catch (DataLayerException ex) {

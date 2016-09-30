@@ -44,6 +44,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                 author.setName(params.get("authorName"));
                 author.setSurname(params.get("authorSurname"));
                 getDataLayer().storeAuthor(author);
+                request.setAttribute("authorAdded", 1);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare l'autore: " + ex.getMessage(), 510);
@@ -60,6 +61,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                 author.setName(params.get("authorName"));
                 author.setSurname(params.get("authorSurname"));
                 getDataLayer().storeAuthor(author);
+                request.setAttribute("authorUpdated", 1);
                 request.setAttribute("saveResult", "Salvataggio effettuato con successo");
                 authorId = 0;
             }
@@ -80,6 +82,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
         getDataLayer().deletePublicationHasAuthor(publicationId);
         for (String value : values) {
             getDataLayer().storePublicationHasAuthor(Integer.parseInt(value), publicationId);
+            request.setAttribute("authorConnected", 1);
         }
     }
 

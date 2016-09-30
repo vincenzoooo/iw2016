@@ -48,6 +48,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
                 reprint.setDate(sqlDate);
                 reprint.setPublicationKey(publicationId);
                 getDataLayer().storeReprint(reprint);
+                request.setAttribute("reprintAdded",1);
             }
         } catch (NumberFormatException | ParseException | DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la ristampa: " + ex.getMessage(), 510);
@@ -67,6 +68,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 reprint.setDate(sqlDate);
                 getDataLayer().storeReprint(reprint);
+                request.setAttribute("reprintUpdated",1);
                 reprintId = 0;
             }
         } catch (NumberFormatException | ParseException | DataLayerException ex) {
