@@ -68,6 +68,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement dPublicationHasAuthor, dPublicationHasKeyword, dAuthorFromPublication, dKeywordFromPublication;
     private PreparedStatement sUserLike, iUserLike, dUserLike;
     private PreparedStatement sFilters, iFilters, dFilters;
+    private PreparedStatement dLikeByPublication;
     
     public BiblioManagerDataLayerMysqlImpl(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
@@ -104,7 +105,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, incompleta = ?, timestamp = ? WHERE idpubblicazione = ?");
             this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.dPublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
-            this.dIncompletePublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE incompleta = 1 AND timestamp < ? OR timestamp IS NULL");
+            this.dIncompletePublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE incompleta = 1 AND (timestamp < ? OR timestamp IS NULL)");
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
             this.sSourceById = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE idsorgente = ?");
             this.sSourceByPublication = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE pubblicazione = ?");
@@ -169,6 +170,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sFilters = connection.prepareStatement("SELECT * FROM iw2016.filtri WHERE idfiltri = ?");
             this.iFilters = connection.prepareStatement("INSERT INTO iw2016.filtri (isbn, titolo, autore, editore, anno_inizio, anno_fine, keyword, lingua, download, utente, timestamp) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.dFilters = connection.prepareStatement("DELETE FROM iw2016.filtri WHERE timestamp < ?");
+            this.dLikeByPublication = connection.prepareStatement("DELETE FROM iw2016.consigli_utente WHERE pubblicazione_idpubblicazione = ?");
         } catch (SQLException ex) {
             throw new DataLayerException("Error initializing newspaper data layer", ex);
         }
@@ -2224,6 +2226,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 dReviewByPublication.executeUpdate();
                 dHistoryByPublication.setInt(1, res.getInt("idpubblicazione"));
                 dHistoryByPublication.executeUpdate();
+                dLikeByPublication.setInt(1, res.getInt("idpubblicazione"));
+                dLikeByPublication.execute();
                 deletePublicationHasAuthor(res.getInt("idpubblicazione"));
                 deletePublicationHasKeyword(res.getInt("idpubblicazione"));
                 dIncompletePublication.setDate(1, new java.sql.Date(System.currentTimeMillis()));

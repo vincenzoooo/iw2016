@@ -10,6 +10,7 @@ import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
+import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -29,12 +30,8 @@ public class PublicationsList extends BiblioManagerBaseController {
     private final String[] orderType = new String[]{"ASC", "DESC"};
     private Map<String, String> filters = new HashMap<>();
     private boolean isResearch = false;
-    private final int limit = 5;
-    private int offset = 0;
     private Map<Integer, String> pages = new HashMap<>();
-    private int slice = 10;
-    private int start = 0;
-    private int end = slice;
+    private Map<String, Integer> options = new HashMap<>();
     
     private void action_list(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -53,7 +50,7 @@ public class PublicationsList extends BiblioManagerBaseController {
             filters.put("order_mode", orderType[orderMode]);
             request.setAttribute("orderBy", orderBy);
             request.setAttribute("orderMode", orderMode);
-            filters.put("offset", Integer.toString(offset));
+            filters.put("offset", Integer.toString(options.get("offset")));
             filters.put("limit", "1");
 
             List<Publication> publications = getDataLayer().getPublicationsByFilters(filters);
@@ -61,69 +58,25 @@ public class PublicationsList extends BiblioManagerBaseController {
             filters.remove("limit");
             filters.remove("offset");
             int publicationsNumber = getDataLayer().getPublicationsByFilters(filters).size();
-            int pageNumber = publicationsNumber / limit;
-            if(pageNumber < slice){
-                slice = pageNumber+1;
+            int pageNumber = publicationsNumber / options.get("limit");
+            if(pageNumber < options.get("slice")){
+                options.put("slice", pageNumber+1);
             }
-            if (pageNumber != 0 && publicationsNumber % limit > 0) {
+            if (pageNumber != 0 && publicationsNumber % options.get("limit") > 0) {
                 pageNumber++;
             }
-            int totOffset = (pageNumber - 1) * limit;
-            for (int i = pageNumber-1; i >= 0; --i) {
-                String url = "catalog?orderBy=" + orderBy + "&offset=" + totOffset;
-                if (request.getAttribute("isResearch") != null && request.getAttribute("filter") != null) {
-                    url += "&isResearch=" + request.getAttribute("isResearch").toString()+"&filter="+request.getAttribute("filter").toString();
-                }
-                pages.put(i, url);
-                totOffset -= limit;
-            }
-            int page = offset/limit;
-            if(page+1 > (slice/2+1) && end != pageNumber){
-                int step = page+1 - (slice/2+1);
-                if(step > 1){
-                    if(end + step > pageNumber){
-                        start = pageNumber - slice;
-                        end = pageNumber;
-                    }
-                    else{
-                        start = step;
-                        end = slice + step;
-                    }
-                }
-                else{
-                    start++;
-                    end++;
-                }
-            }
-            if(page+1 < (pageNumber-(slice/2+1)) && end != slice){
-                int step = (slice/2+1) - (page+1);
-                if(step > 1){
-                    if(start + step < slice){
-                        start = 0;
-                        end = slice;
-                    }
-                    else{
-                        start = step;
-                        end = slice + step;
-                    }
-                }
-                else{
-                    start--;
-                    end--;
-                }
-            }
-            if(page+1 == 1){
-                start=0;
-                end=slice;
-            }
-            if(page+1 == pageNumber){
-                start=pageNumber-slice;
-                end=pageNumber;
-            }
+            pages = action_pagination(request, response, "catalog", pageNumber, orderBy, options.get("limit"));
+            
+            action_pagination_next(options, pageNumber);
+            action_pagination_previous(options, pageNumber);
+            action_pagination_first(options);
+            action_pagination_last(options, pageNumber);
+            
             request.setAttribute("isResearch", isResearch);
-            request.setAttribute("pages", getSlice(pages, start, end).entrySet());
+            request.setAttribute("pages", getSlice(pages, options.get("start"), options.get("end")).entrySet());
             request.setAttribute("first", pages.get(0));
             request.setAttribute("last", pages.get(pages.size()-1));
+            int page = options.get("offset")/options.get("limit");
             if(page > 0){
                 request.setAttribute("previous", pages.get(page-1));
             }
@@ -136,16 +89,7 @@ public class PublicationsList extends BiblioManagerBaseController {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage(), 502);
         }
     }
-
-    private Map<Integer, String> getSlice(Map<Integer, String> map, int start, int end){
-        Map<Integer, String> slice = new HashMap<>();
-        if(map.size()>0){
-        for (int i = start; i < end; i++) {
-            slice.put(i, map.get(i));
-        }
-        }
-        return slice;
-    }
+            
     private void action_view(HttpServletRequest request, HttpServletResponse response) {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
@@ -176,13 +120,15 @@ public class PublicationsList extends BiblioManagerBaseController {
                     request.setAttribute("filter", request.getParameter("filter"));
                 }
                  if (request.getParameter("offset") != null){
-                     offset = Integer.parseInt(request.getParameter("offset"));
+                    options.put("offset", Integer.parseInt(request.getParameter("offset")));
                  }
                  else{
-                     pages = new HashMap<>();
-                     offset = 0;
-                     start = 0;
-                     end = slice;
+                    pages.clear();
+                    options.put("limit", 5);
+                    options.put("offset", 0);
+                    options.put("slice", 10);
+                    options.put("start", 0);
+                    options.put("end", 10);
                  }
                 action_list(request, response);
             } else {

@@ -9,6 +9,7 @@ import it.univaq.iw.framework.result.SplitSlashesFmkExt;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -110,6 +111,105 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         return error;
     }
 
+    protected Map<Integer, String> action_pagination(HttpServletRequest request, HttpServletResponse response, String pageName, int pageNumber, int orderBy, int  limit){
+        Map<Integer, String> pagesUrl = new HashMap<>();
+        int totOffset = (pageNumber - 1) * limit;
+        for (int i = pageNumber-1; i >= 0; --i) {
+            String url = pageName + "?offset=" + totOffset;
+            if(orderBy < 1){
+                url += "&orderBy=" + orderBy;
+            }
+            if (request.getAttribute("isResearch") != null && request.getAttribute("filter") != null) {
+                url += "&isResearch=" + request.getAttribute("isResearch").toString()+"&filter="+request.getAttribute("filter").toString();
+            }
+            pagesUrl.put(i, url);
+            totOffset -= limit;
+        }
+        return pagesUrl;
+    }
+    
+    protected Map<Integer, String> getSlice(Map<Integer, String> map, int start, int end){
+        Map<Integer, String> slice = new HashMap<>();
+        if(map.size()>0){
+            for (int i = start; i < end; i++) {
+                slice.put(i, map.get(i));
+            }
+        }
+        return slice;
+    }
+    
+    protected void action_pagination_first(Map<String, Integer> options){
+        int page = options.get("offset")/options.get("limit");
+        if(page+1 == 1){
+            options.put("start", 0);
+            options.put("end", options.get("slice"));
+        }
+    }
+    
+    protected void action_pagination_last(Map<String, Integer> options, int pageNumber){
+        int page = options.get("offset")/options.get("limit");
+        if(page+1 == pageNumber){
+            options.put("start", pageNumber-options.get("slice"));
+            options.put("end", pageNumber);
+        }
+    }
+    
+    protected void action_pagination_next(Map<String, Integer> options,  int pageNumber){
+        int offset = options.get("offset");
+        int limit = options.get("limit");
+        int slice = options.get("slice");
+        int start = options.get("start");
+        int end = options.get("end");
+        int page = offset/limit;
+        int step = page+1 - (slice/2+1);
+        if(page+1 > (slice/2+1) && end != pageNumber){
+            if(step > 1){
+                if(end + step > pageNumber){
+                    start = pageNumber - slice;
+                    end = pageNumber;
+                }
+                else{
+                    start = step;
+                    end = slice + step;
+                }
+            }
+            else{
+                start++;
+                end++;
+            }
+        }
+        options.put("start", start);
+        options.put("end", end);
+    }
+
+    protected void action_pagination_previous(Map<String, Integer> options, int pageNumber){
+        int offset = options.get("offset");
+        int limit = options.get("limit");
+        int slice = options.get("slice");
+        int start = options.get("start");
+        int end = options.get("end");  
+        int page = offset/limit;
+        int step = (slice/2+1) - (page+1);
+        if(page+1 < (pageNumber-(slice/2+1)) && end != slice){
+            if(step > 1){
+                if(start + step < slice){
+                    start = 0;
+                    end = slice;
+                }
+                else{
+                    start = step;
+                    end = slice + step;
+                }
+            }
+            else{
+                start--;
+                end--;
+            }
+        }
+        options.put("start", start);
+        options.put("end", end);
+    }
+    
     public BiblioManagerDataLayer getDataLayer() {
         return datalayer;
     }
