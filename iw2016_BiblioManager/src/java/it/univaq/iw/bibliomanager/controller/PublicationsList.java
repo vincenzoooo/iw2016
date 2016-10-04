@@ -30,8 +30,8 @@ public class PublicationsList extends BiblioManagerBaseController {
     private final String[] orderType = new String[]{"ASC", "DESC"};
     private Map<String, String> filters = new HashMap<>();
     private boolean isResearch = false;
-    private Map<Integer, String> pages = new HashMap<>();
-    private Map<String, Integer> options = new HashMap<>();
+    private final Map<Integer, String> pages = new HashMap<>();
+    private final Map<String, Integer> options = new HashMap<>();
     
     private void action_list(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -65,8 +65,19 @@ public class PublicationsList extends BiblioManagerBaseController {
             if (pageNumber != 0 && publicationsNumber % options.get("limit") > 0) {
                 pageNumber++;
             }
-            pages = action_pagination(request, response, "catalog", pageNumber, orderBy, options.get("limit"));
             
+            int totOffset = (pageNumber - 1) * options.get("limit");
+            for (int i = pageNumber-1; i >= 0; --i) {
+                String url ="catalog?offset=" + totOffset;
+                if(orderBy < 1){
+                    url += "&orderBy=" + orderBy;
+                }
+                if (request.getAttribute("isResearch") != null && request.getAttribute("filter") != null) {
+                    url += "&isResearch=" + request.getAttribute("isResearch").toString()+"&filter="+request.getAttribute("filter").toString();
+                }
+                pages.put(i, url);
+                totOffset -= options.get("limit");
+            }
             action_pagination_next(options, pageNumber);
             action_pagination_previous(options, pageNumber);
             action_pagination_first(options);
@@ -119,17 +130,17 @@ public class PublicationsList extends BiblioManagerBaseController {
                     request.setAttribute("isResearch", request.getParameter("isResearch"));
                     request.setAttribute("filter", request.getParameter("filter"));
                 }
-                 if (request.getParameter("offset") != null){
-                    options.put("offset", Integer.parseInt(request.getParameter("offset")));
-                 }
-                 else{
-                    pages.clear();
-                    options.put("limit", 5);
-                    options.put("offset", 0);
-                    options.put("slice", 10);
-                    options.put("start", 0);
-                    options.put("end", 10);
-                 }
+                if (request.getParameter("offset") != null){
+                   options.put("offset", Integer.parseInt(request.getParameter("offset")));
+                }
+                else{
+                   pages.clear();
+                   options.put("limit", 5);
+                   options.put("offset", 0);
+                   options.put("slice", 10);
+                   options.put("start", 0);
+                   options.put("end", 10);
+                }
                 action_list(request, response);
             } else {
                 action_default(request, response);

@@ -73,7 +73,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     Review getReview(int review_key) throws DataLayerException;
 
-    List<Review> getReviews(int publication_key) throws DataLayerException;
+    List<Review> getReviews(int publication_key, int limit, int offset) throws DataLayerException;
     
     List<Review> getLastReviews(int publication_key, int limit) throws DataLayerException;
 
@@ -93,7 +93,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     List<History> getHistoriesByUser(int user_key) throws DataLayerException;
 
-    List<History> getHistoriesByPublication(int publication_key) throws DataLayerException;
+    List<History> getHistoriesByPublication(int publication_key, int limit, int offset) throws DataLayerException;
 
     User getUser(int user_key) throws DataLayerException;
 

@@ -28,6 +28,55 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeReview extends BiblioManagerBaseController {
 
+    private final Map<Integer, String> pages = new HashMap<>();
+    private final Map<String, Integer> options = new HashMap<>();
+    
+    private void action_view(HttpServletRequest request, HttpServletResponse response){
+        try {
+            request.setAttribute("page_title", "Gestione Recensioni");
+            TemplateResult res = new TemplateResult(getServletContext());
+            int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
+            List<Review> reviews = getDataLayer().getReviews(publicationKey, options.get("limit"), options.get("offset"));
+            int reviewsNumber = getDataLayer().getReviews(publicationKey, 0, 0).size();
+            if(reviewsNumber < options.get("end")){
+                options.put("end", reviewsNumber);
+            }
+            int pageNumber = reviewsNumber / options.get("limit");
+            if(pageNumber < options.get("slice")){
+                options.put("slice", pageNumber+1);
+            }
+            if (pageNumber != 0 && reviewsNumber % options.get("limit") > 0) {
+                pageNumber++;
+            }
+            int totOffset = (pageNumber - 1) * options.get("limit");
+            for (int i = pageNumber-1; i >= 0; --i) {
+                String url = "review?publicationId=" + publicationKey + "&offset=" + totOffset;
+                pages.put(i, url);
+                totOffset -= options.get("limit");
+            }
+            action_pagination_next(options, pageNumber);
+            action_pagination_previous(options, pageNumber);
+            action_pagination_first(options);
+            action_pagination_last(options, pageNumber);
+            request.setAttribute("pages", getSlice(pages, options.get("start"), options.get("end")).entrySet());
+            request.setAttribute("first", pages.get(0));
+            request.setAttribute("last", pages.get(pages.size()-1));
+            int page = options.get("offset")/options.get("limit");
+            if(page > 0){
+                request.setAttribute("previous", pages.get(page-1));
+            }
+            if(page < pageNumber){
+                request.setAttribute("next", pages.get(page+1));
+            }
+            request.setAttribute("curr", page);
+            request.setAttribute("reviews", reviews);
+            request.setAttribute("publicationId", publicationKey);
+            res.activate("review.ftl.html", request, response);
+        } catch (DataLayerException | ServletException | IOException ex) {
+            action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
+        }
+    }
+    
     private void action_composeReview(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
             Review review = getDataLayer().createReview();
@@ -112,8 +161,6 @@ public class ComposeReview extends BiblioManagerBaseController {
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
         try {
-            request.setAttribute("page_title", "Gestione Recensioni");
-            TemplateResult res = new TemplateResult(getServletContext());
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
@@ -127,10 +174,18 @@ public class ComposeReview extends BiblioManagerBaseController {
                         action_rejectReview(request, response);
                     }
                 }
-                List<Review> reviews = getDataLayer().getReviews(Integer.parseInt(request.getParameter("publicationId")));
-                request.setAttribute("reviews", reviews);
-                request.setAttribute("publicationId", request.getParameter("publicationId"));
-                res.activate("review.ftl.html", request, response);
+                if (request.getParameter("offset") != null){
+                   options.put("offset", Integer.parseInt(request.getParameter("offset")));
+                }
+                else{
+                   pages.clear();
+                   options.put("limit", 7);
+                   options.put("offset", 0);
+                   options.put("slice", 10);
+                   options.put("start", 0);
+                   options.put("end", 10);
+                }
+                action_view(request, response);
             } else {
                 action_default(request, response);
             }

@@ -111,23 +111,6 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         return error;
     }
 
-    protected Map<Integer, String> action_pagination(HttpServletRequest request, HttpServletResponse response, String pageName, int pageNumber, int orderBy, int  limit){
-        Map<Integer, String> pagesUrl = new HashMap<>();
-        int totOffset = (pageNumber - 1) * limit;
-        for (int i = pageNumber-1; i >= 0; --i) {
-            String url = pageName + "?offset=" + totOffset;
-            if(orderBy < 1){
-                url += "&orderBy=" + orderBy;
-            }
-            if (request.getAttribute("isResearch") != null && request.getAttribute("filter") != null) {
-                url += "&isResearch=" + request.getAttribute("isResearch").toString()+"&filter="+request.getAttribute("filter").toString();
-            }
-            pagesUrl.put(i, url);
-            totOffset -= limit;
-        }
-        return pagesUrl;
-    }
-    
     protected Map<Integer, String> getSlice(Map<Integer, String> map, int start, int end){
         Map<Integer, String> slice = new HashMap<>();
         if(map.size()>0){

@@ -14,8 +14,6 @@ import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import java.io.IOException;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -33,7 +31,7 @@ public class PublicationDetails extends BiblioManagerBaseController {
             TemplateResult res = new TemplateResult(getServletContext());
             HttpSession session = SecurityLayer.checkSession(request);
             int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
-            List<History> histories = getDataLayer().getHistoriesByPublication(publicationKey);
+            List<History> histories = getDataLayer().getHistoriesByPublication(publicationKey, 0, 0);
             for (History entry : histories) {
                 if (entry.getType() == 0) {
                     request.setAttribute("publisher", entry.getUser());
@@ -55,7 +53,7 @@ public class PublicationDetails extends BiblioManagerBaseController {
     }
 
     private void action_viewReviews(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
-        List<Review> reviews = getDataLayer().getReviews(Integer.parseInt(request.getParameter("publicationId")));
+        List<Review> reviews = getDataLayer().getReviews(Integer.parseInt(request.getParameter("publicationId")),0,0);
         request.setAttribute("reviews", reviews);
     }
     

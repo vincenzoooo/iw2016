@@ -76,21 +76,39 @@
                          <#else>
                             <div class="margin-bot-30">Nessuna recensione presente.</div>
                         </#if>
-                        <!--
-                        <#if (totpages?? && totpages>1)>
-                        <div class="row pageBar">Vai alla pagina:         
-                            <span id="paging">
-                                <#list 1..totpages as page>
-                                <#if (page == curpage)>
-                                <span class="pagerCurrent">${page}</span>
-                                <#else>
-                                <a class="pagerLink" href="?page=${page}">${page}</a>
-                                </#if>       
-                                </#list>
-                            </span>
-                        </div>
+                        <#if (pages??&&pages.size()>0)>
+                            <nav aria-label="Page navigation">
+                                <ul class="pagination">
+                                    <li>
+                                        <a href="${first}" class="customPagination">
+                                            <i class="fa fa-angle-double-left" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                    <#if previous??>
+                                    <li>
+                                        <a href="${previous}" class="customPagination">
+                                            <i class="fa fa-angle-left" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                    </#if>
+                                    <#list pages as item>
+                                    <li><a class="customPagination <#if (curr==item.key)>beigeBack</#if>" href="${item.value}">${item.key+1}</a></li>
+                                    </#list>
+                                    <#if next??>
+                                    <li>
+                                        <a href="${next}" class="customPagination">
+                                            <i class="fa fa-angle-right" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                    </#if>
+                                    <li>
+                                        <a href="${last}" class="customPagination">
+                                            <i class="fa fa-angle-double-right" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </nav>
                         </#if>
-                        -->
                     <a href="details?publicationId=${publicationId}" class="btn btn-default">Torna alla scheda bibliografica</a>
                 </div>
             </div>  
