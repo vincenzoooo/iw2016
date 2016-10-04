@@ -211,8 +211,8 @@
                                 <#list publication.sources as item>
                                     <#if item.type.equals("immagine")>
                                     <div class="col-sm-4 col-xs-12">
-                                        <a class="thumbnail" href="#thumb"><img src="${strip_slashes(item.uri)?html}"/>
-                                            <div class="no-img hidden-xs"><img src="${strip_slashes(item.uri)?html}" class="img-responsive"/><br/>${strip_slashes(item.description)?html}</div>
+                                        <a class="thumbnail" href="#thumb"><img src="${strip_slashes(item.uri)?html}" alt="immagine galleria"/>
+                                            <div class="no-img hidden-xs"><img src="${strip_slashes(item.uri)?html}" class="img-responsive" alt="immagine galleria"/><br/>${strip_slashes(item.description)?html}</div>
                                         </a>
                                     </div>
                                     </#if>

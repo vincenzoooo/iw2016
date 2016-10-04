@@ -53,27 +53,26 @@
         
         <nav class="navbar navbar-default navbar-header-menu">
             <div class="container">
+                <input type="checkbox" id="navbar-toggle-cbox">
                 <div class="row">
                     <div class="col-lg-12">
                         <div class="navbar-header">
-                            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                            <label for="navbar-toggle-cbox" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                                 <span class="sr-only">Toggle navigation</span>
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
                                 <span class="icon-bar"></span>
-                            </button>
+                            </lable>
                         </div>
                     </div>
                 </div>
 
                 <!-- Collect the nav links, forms, and other content for toggling -->
-                <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+                <div class="collapse navbar-collapse" id="navbar">
                     <ul class="nav navbar-nav">
-                        
                         <#list menu as item>
                             <li class=""><a class="" href="${item.link}">${item.label}</a></li>
                         </#list>
-                    
                     </ul>
                     <a title="Ricerca avanzata" href="research" class="advance-search navbar-right">
                         <i class="fa fa-search  fa-2x" aria-hidden="true"></i>

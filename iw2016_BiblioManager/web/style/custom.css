@@ -659,10 +659,6 @@ header .navbar-header-menu {
     box-shadow: rgba(0, 0, 0, 0.2)0 0 5px;
 }
 
-.navbar-nav{
-    
-}
-
 .navbar-nav > li > a{
     color: #EDDBC3 !important;
 }
@@ -694,6 +690,26 @@ header .navbar-header-menu {
 
 .container > .navbar-collapse{
     margin-left: -15px;
+}
+
+#navbar-toggle-cbox:checked ~ .collapse {
+    display: block;
+}
+
+#navbar-toggle-cbox {
+  display:none;
+}
+
+.navbar-default .navbar-toggle .icon-bar{
+    background-color: #5D1D17;
+}
+
+.navbar-default .navbar-toggle {
+    border-color: #EDDBC3;
+}
+
+.navbar-default .navbar-toggle:hover {
+    background-color: #EDDBC3;
 }
 
 
