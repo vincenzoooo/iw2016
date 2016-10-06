@@ -93,7 +93,7 @@
                                     ${strip_slashes(item.title)!"''"?html}
                                 </td>
                                 <td>
-                                    <a class="deleteChapter aItemCustom" href="#">Elimina</a>
+                                    <a class="deleteChapter aItemCustom" href="index?idChapter=${item.key}">Elimina</a>
                                 </td>
                             </tr>
                         </#list>
@@ -105,7 +105,7 @@
             </div>
         </div>
         
-        <#if chapters??>
+        <#if (chapters?? && chapters?size>0)>
         <div class="section section-pageIndex-insertSection">
             <div class="row">
                 <div class="col-lg-12">   
@@ -166,6 +166,7 @@
                 <div class="col-lg-12">
                     <h3 class=""> Lista delle sezioni</h3>
 <!--                    <#if chapters??>-->
+                    <#if (chapters[0].sections.size()>0)>
                     <table id="allChapters" class="table">
                         <tr>
                             <th>Numero</th>
@@ -182,15 +183,16 @@
                                     ${strip_slashes(item2.title)!"''"?html}
                                 </td>
                                 <td>
-                                    <a class="deleteSection" href="#">Elimina</a>
+                                    <a class="deleteSection" href="index?idSection=${item2.key}">Elimina</a>
                                 </td>
                             </tr>
                             </#list>
                         </#list>
                     </table>
-<!--                    <#else>
+                   <#else>
                     <span class="bold">Nessuna sezione presente.</span>
-                    </#if>-->
+                    </#if>
+                    </#if>
                 </div>
             </div>
         </div>

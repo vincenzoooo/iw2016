@@ -146,6 +146,21 @@ public class ComposeIndex extends BiblioManagerBaseController {
         return error;
     }
 
+    private void action_deleteChapter(HttpServletRequest request, HttpServletResponse response) throws DataLayerException{
+        Chapter chapter = getDataLayer().getChapter((int)request.getAttribute("idChapter"));
+        if(chapter.getSections().size()>0){
+            for (Section section : chapter.getSections()) {
+                request.setAttribute("idSection", section.getKey());
+            }
+        }
+        getDataLayer().deleteChapter(chapter);
+    }
+    
+    private void action_deleteSection(HttpServletRequest request, HttpServletResponse response) throws DataLayerException{
+        Section section = getDataLayer().getSection((int)request.getAttribute("idSection"));
+        getDataLayer().deleteSection(section);
+    }
+    
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Gestione Indice");
         TemplateResult res = new TemplateResult(getServletContext());
@@ -198,6 +213,14 @@ public class ComposeIndex extends BiblioManagerBaseController {
                     else{
                         action_updateSection(request, response);
                     }
+                }
+                if(request.getParameter("idChapter") != null){
+                    request.setAttribute("idChapter", Integer.parseInt(request.getParameter("idChapter")));
+                    action_deleteChapter(request, response);
+                }
+                if(request.getParameter("idSection") != null){
+                    request.setAttribute("idSection", Integer.parseInt(request.getParameter("idSection")));
+                    action_deleteSection(request, response);
                 }
                 action_view(request, response);
             } else {
