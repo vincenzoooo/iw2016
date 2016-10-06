@@ -33,6 +33,8 @@ public class ComposeSource extends BiblioManagerBaseController {
     private String currentUriSource;
     private String currentFormatSource;
     private String currentDescriptionSource;
+    private final Map<Integer, String> pages = new HashMap<>();
+    private final Map<String, Integer> options = new HashMap<>();
     
     private void action_composeSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
@@ -82,7 +84,41 @@ public class ComposeSource extends BiblioManagerBaseController {
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Gestione Sorgenti");
         TemplateResult res = new TemplateResult(getServletContext());
-        List<Source> sources = getDataLayer().getPublicationSources(publicationId);
+        List<Source> sources = getDataLayer().getPublicationSources(publicationId,options.get("limit"), options.get("offset"));
+        
+        int sourcesNumber = getDataLayer().getPublicationSources(publicationId, 0, 0).size();
+        if(sourcesNumber < options.get("end")){
+            options.put("end", sourcesNumber);
+        }
+        int pageNumber = sourcesNumber / options.get("limit");
+        if(pageNumber < options.get("slice")){
+            options.put("slice", pageNumber+1);
+        }
+        if (pageNumber != 0 && sourcesNumber % options.get("limit") > 0) {
+            pageNumber++;
+        }
+        int totOffset = (pageNumber - 1) * options.get("limit");
+        for (int i = pageNumber-1; i >= 0; --i) {
+            String editorUrl = "source?offset=" + totOffset;
+            pages.put(i, editorUrl);
+            totOffset -= options.get("limit");
+        }
+        action_pagination_next(options, pageNumber);
+        action_pagination_previous(options, pageNumber);
+        action_pagination_first(options);
+        action_pagination_last(options, pageNumber);
+        request.setAttribute("pages", getSlice(pages, options.get("start"), options.get("end")).entrySet());
+        request.setAttribute("first", pages.get(0));
+        request.setAttribute("last", pages.get(pages.size()-1));
+        int page = options.get("offset")/options.get("limit");
+        if(page > 0){
+            request.setAttribute("previous", pages.get(page-1));
+        }
+        if(page < pageNumber){
+            request.setAttribute("next", pages.get(page+1));
+        }
+        request.setAttribute("curr", page);
+        
         request.setAttribute("sources", sources);
         request.setAttribute("publicationId", publicationId);
         request.setAttribute("url", url);
@@ -129,6 +165,17 @@ public class ComposeSource extends BiblioManagerBaseController {
                     else{
                         action_updateSource(request, response);
                     }
+                }
+                if (request.getParameter("offset") != null){
+                   options.put("offset", Integer.parseInt(request.getParameter("offset")));
+                }
+                else{
+                   pages.clear();
+                   options.put("limit", 10);
+                   options.put("offset", 0);
+                   options.put("slice", 10);
+                   options.put("start", 0);
+                   options.put("end", 10);
                 }
                 action_view(request, response);
             } else {

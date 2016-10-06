@@ -32,6 +32,8 @@ public class ComposeKeyword extends BiblioManagerBaseController {
     private String url;
     private int keywordId;
     private String currentKeyword;
+    private final Map<Integer, String> pages = new HashMap<>();
+    private final Map<String, Integer> options = new HashMap<>();
     
     private void action_composeKeyword(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
@@ -79,8 +81,42 @@ public class ComposeKeyword extends BiblioManagerBaseController {
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Gestione Parole Chiave");
         TemplateResult res = new TemplateResult(getServletContext());
-        List<Keyword> keywords = getDataLayer().getKeywords();
+        List<Keyword> keywords = getDataLayer().getKeywords(options.get("limit"), options.get("offset"));
         List<Keyword> publicationKeywords = getDataLayer().getPublicationKeywords(publicationId);
+        
+        int keywordsNumber = getDataLayer().getKeywords(0, 0).size();
+        if(keywordsNumber < options.get("end")){
+            options.put("end", keywordsNumber);
+        }
+        int pageNumber = keywordsNumber / options.get("limit");
+        if(pageNumber < options.get("slice")){
+            options.put("slice", pageNumber+1);
+        }
+        if (pageNumber != 0 && keywordsNumber % options.get("limit") > 0) {
+            pageNumber++;
+        }
+        int totOffset = (pageNumber - 1) * options.get("limit");
+        for (int i = pageNumber-1; i >= 0; --i) {
+            String editorUrl = "keyword?offset=" + totOffset;
+            pages.put(i, editorUrl);
+            totOffset -= options.get("limit");
+        }
+        action_pagination_next(options, pageNumber);
+        action_pagination_previous(options, pageNumber);
+        action_pagination_first(options);
+        action_pagination_last(options, pageNumber);
+        request.setAttribute("pages", getSlice(pages, options.get("start"), options.get("end")).entrySet());
+        request.setAttribute("first", pages.get(0));
+        request.setAttribute("last", pages.get(pages.size()-1));
+        int page = options.get("offset")/options.get("limit");
+        if(page > 0){
+            request.setAttribute("previous", pages.get(page-1));
+        }
+        if(page < pageNumber){
+            request.setAttribute("next", pages.get(page+1));
+        }
+        request.setAttribute("curr", page);
+        
         request.setAttribute("keywords", keywords);
         request.setAttribute("publicationKeywords", publicationKeywords);
         request.setAttribute("publicationId", publicationId);
@@ -126,6 +162,17 @@ public class ComposeKeyword extends BiblioManagerBaseController {
                 }
                 if (request.getParameter("linkKeyword") != null) {
                     action_LinkKeyword(request, response);
+                }
+                if (request.getParameter("offset") != null){
+                   options.put("offset", Integer.parseInt(request.getParameter("offset")));
+                }
+                else{
+                   pages.clear();
+                   options.put("limit", 10);
+                   options.put("offset", 0);
+                   options.put("slice", 10);
+                   options.put("start", 0);
+                   options.put("end", 10);
                 }
                 action_view(request, response);
             } else {

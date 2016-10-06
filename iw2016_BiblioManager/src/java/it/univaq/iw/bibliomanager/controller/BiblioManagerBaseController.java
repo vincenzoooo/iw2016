@@ -96,7 +96,7 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         dispatcher.forward(request, response);
     }
 
-    protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
+    protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response){
         boolean error = false;
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (entry.getValue() == null || entry.getValue().equals("")) {
@@ -105,12 +105,23 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
                 error = true;
             }
             else{
+                noAction(entry.getValue(), request, response);
                 entry.setValue(SecurityLayer.addSlashes(entry.getValue()));
             }
         }
         return error;
     }
 
+    protected void noAction(String param, HttpServletRequest request, HttpServletResponse response){
+        if((param.contains("SELECT")&&param.contains("FROM"))||param.contains("DELETE FROM")||param.contains("INSERT INTO")||(param.contains("UPDATE")&&param.contains("SET"))||param.contains("CREATE TABLE")){
+            try {
+                request.setAttribute("noOperation", 1);
+                action_redirect(request, response, "/logout");
+            } catch (ServletException | IOException ex) {
+                action_error(request, response, ex.getMessage(), 500);
+            }
+        }
+    }
     protected Map<Integer, String> getSlice(Map<Integer, String> map, int start, int end){
         Map<Integer, String> slice = new HashMap<>();
         if(map.size()>0){

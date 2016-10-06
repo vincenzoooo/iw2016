@@ -107,24 +107,20 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.dIncompletePublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE incompleta = 1 AND (timestamp < ? OR timestamp IS NULL)");
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
             this.sSourceById = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE idsorgente = ?");
-            this.sSourceByPublication = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE pubblicazione = ?");
             this.uSource = connection.prepareStatement("UPDATE iw2016.sorgente SET tipo = ?, URI = ?, formato = ?, descrizione = ?, pubblicazione = ? WHERE idsorgente = ?");
             this.iSource = connection.prepareStatement("INSERT INTO iw2016.sorgente (tipo, URI, formato, descrizione, pubblicazione) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.dSource = connection.prepareStatement("DELETE FROM iw2016.sorgente WHERE idsorgente = ?");
             this.dSourceByPublication = connection.prepareStatement("DELETE FROM iw2016.sorgente WHERE pubblicazione = ?");
-            this.sReprintsByPublication = connection.prepareStatement("SELECT * FROM iw2016.ristampa WHERE pubblicazione = ?");
             this.sReprintById = connection.prepareStatement("SELECT * FROM iw2016.ristampa WHERE idristampa = ?");
             this.uReprint = connection.prepareStatement("UPDATE iw2016.ristampa SET numero = ?, data = ?, pubblicazione = ? WHERE idristampa = ?");
             this.iReprint = connection.prepareStatement("INSERT INTO iw2016.ristampa (numero, data, pubblicazione) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.dReprint = connection.prepareStatement("DELETE FROM iw2016.ristampa WHERE idristampa = ?");
             this.dReprintByPublication = connection.prepareStatement("DELETE FROM iw2016.ristampa WHERE pubblicazione = ?");
-            this.sEditors = connection.prepareStatement("SELECT * FROM iw2016.editore ORDER BY nome");
             this.sEditorsByName = connection.prepareStatement("SELECT * FROM iw2016.editor WHERE nome LIKE '%?%'");
             this.sEditorById = connection.prepareStatement("SELECT * FROM iw2016.editore WHERE ideditore = ?");
             this.uEditor = connection.prepareStatement("UPDATE iw2016.editore SET nome = ? WHERE ideditore = ?");
             this.iEditor = connection.prepareStatement("INSERT INTO iw2016.editore (nome) VALUES (?)", Statement.RETURN_GENERATED_KEYS);
             this.dEditor = connection.prepareStatement("DELETE FROM iw2016.editore WHERE ideditore = ? AND (SELECT COUNT(*) FROM pubblicazione WHERE editore = ?) = 0");
-            this.sAuthors = connection.prepareStatement("SELECT * FROM iw2016.autore ORDER BY cognome, nome");
             this.sAuthorsByName = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE nome LIKE '%?%'");
             this.sAuthorById = connection.prepareStatement("SELECT * FROM iw2016.autore WHERE idautore = ?");
             this.sAuthorByPublication = connection.prepareStatement("SELECT * FROM iw2016.autore JOIN autore_has_pubblicazione ON idautore = autore_idautore WHERE pubblicazione_idpubblicazione = ?");
@@ -138,7 +134,6 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.dReview = connection.prepareStatement("DELETE FROM iw2016.recensione WHERE idrecensione = ?");
             this.cReview = connection.prepareStatement("SELECT COUNT(*) AS contatore FROM iw2016.recensione WHERE pubblicazione = ? AND moderata=0");
             this.dReviewByPublication = connection.prepareStatement("DELETE FROM iw2016.recensione WHERE pubblicazione = ?");
-            this.sKeywords = connection.prepareStatement("SELECT * FROM iw2016.keyword ORDER BY nome");
             this.sKeywordById = connection.prepareStatement("SELECT * FROM iw2016.keyword WHERE idkeyword = ?");
             this.sKeywordsByPublication = connection.prepareStatement("SELECT * FROM iw2016.keyword JOIN pubblicazione_has_keyword ON idkeyword = keyword_idkeyword WHERE pubblicazione_idpubblicazione = ?");
             this.uKeyword = connection.prepareStatement("UPDATE iw2016.keyword SET nome = ? WHERE idkeyword = ?");
@@ -243,9 +238,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             publication.setPageNumber(rs.getInt("n_pagine"));
             publication.setEditor(getEditor(rs.getInt("editore")));
             publication.setAuthor(getPublicationAuthors(rs.getInt("idpubblicazione")));
-            publication.setSources(getPublicationSources(rs.getInt("idpubblicazione")));
+            publication.setSources(getPublicationSources(rs.getInt("idpubblicazione"),0,0));
             publication.setKeywords(getPublicationKeywords(rs.getInt("idpubblicazione")));
-            publication.setReprints(getReprints(rs.getInt("idpubblicazione")));
+            publication.setReprints(getReprints(rs.getInt("idpubblicazione"),0,0));
             publication.setIndex(getChapters(rs.getInt("idpubblicazione")));
             publication.setReviews(getReviews(rs.getInt("idpubblicazione"),0,0));
             publication.setIncomplete(rs.getBoolean("incompleta"));
@@ -415,10 +410,18 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<Author> getAuthors() throws DataLayerException {
+    public List<Author> getAuthors(int limit, int offset) throws DataLayerException {
         List<Author> result = new ArrayList();
         ResultSet rs = null;
         try {
+            String query = "SELECT * FROM iw2016.autore ORDER BY cognome, nome";
+            if(limit > 0){
+                query += " LIMIT 10 ";
+            }
+            if(offset > 0){
+                query += "OFFSET " + offset;
+            }
+            sAuthors = connection.prepareStatement(query);
             rs = sAuthors.executeQuery();
             while (rs.next()) {
                 result.add(getAuthor(rs.getInt("idautore")));
@@ -486,10 +489,18 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<Editor> getEditors() throws DataLayerException {
+    public List<Editor> getEditors(int limit, int offset) throws DataLayerException {
         List<Editor> result = new ArrayList();
         ResultSet rs = null;
         try {
+            String query = "SELECT * FROM iw2016.editore ORDER BY nome";
+            if(limit > 0){
+                query += " LIMIT 10 ";
+            }
+            if(offset > 0){
+                query += "OFFSET " + offset;
+            }
+            sEditors = connection.prepareStatement(query);
             rs = sEditors.executeQuery();
             while (rs.next()) {
                 result.add(getEditor(rs.getInt("ideditore")));
@@ -557,10 +568,18 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<Keyword> getKeywords() throws DataLayerException {
+    public List<Keyword> getKeywords(int limit, int offset) throws DataLayerException {
         List<Keyword> result = new ArrayList();
         ResultSet rs = null;
         try {
+            String query = "SELECT * FROM iw2016.keyword ORDER BY nome";
+            if(limit > 0){
+                query += " LIMIT 10 ";
+            }
+            if(offset > 0){
+                query += "OFFSET " + offset;
+            }
+            sKeywords = connection.prepareStatement(query);
             rs = sKeywords.executeQuery();
             while (rs.next()) {
                 result.add(getKeyword(rs.getInt("idkeyword")));
@@ -769,10 +788,18 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<Source> getPublicationSources(int publication_key) throws DataLayerException {
+    public List<Source> getPublicationSources(int publication_key, int limit, int offset) throws DataLayerException {
         List<Source> result = new ArrayList();
         ResultSet rs = null;
         try {
+            String query = "SELECT * FROM iw2016.sorgente WHERE pubblicazione = ?";
+            if(limit > 0){
+                query += " LIMIT 10 ";
+            }
+            if(offset > 0){
+                query += "OFFSET " + offset;
+            }
+            sSourceByPublication = connection.prepareStatement(query);
             sSourceByPublication.setInt(1, publication_key);
             rs = sSourceByPublication.executeQuery();
             while (rs.next()) {
@@ -1004,10 +1031,18 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public List<Reprint> getReprints(int publication_key) throws DataLayerException {
+    public List<Reprint> getReprints(int publication_key, int limit, int offset) throws DataLayerException {
         List<Reprint> result = new ArrayList();
         ResultSet rs = null;
         try {
+            String query = "SELECT * FROM iw2016.ristampa WHERE pubblicazione = ?";
+            if(limit > 0){
+                query += " LIMIT 10 ";
+            }
+            if(offset > 0){
+                query += "OFFSET " + offset;
+            }
+            sReprintsByPublication = connection.prepareStatement(query);
             sReprintsByPublication.setInt(1, publication_key);
             rs = sReprintsByPublication.executeQuery();
             while (rs.next()) {

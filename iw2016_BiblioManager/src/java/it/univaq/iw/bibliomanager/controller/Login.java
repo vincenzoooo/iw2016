@@ -16,8 +16,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import it.univaq.iw.bibliomanager.data.model.User;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  *
@@ -28,13 +28,14 @@ public class Login extends BiblioManagerBaseController {
     private void action_login(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, NoSuchAlgorithmException, DataLayerException {
         try {
-            String email = Utils.checkString(request.getParameter("email"));
-            String password = Utils.checkString(request.getParameter("password"));
-            if (!this.validator(request, response)) {
-                String passEncrypted = Utils.SHA1(password);
-                User user = getDataLayer().getUser(email, passEncrypted);
+            Map<String, String> params = new HashMap<String, String>();
+            params.put("email", Utils.checkString(request.getParameter("email")));
+            params.put("password", Utils.checkString(request.getParameter("password")));
+            if (!validator(params, request, response)) {
+                String passEncrypted = Utils.SHA1(params.get("password"));
+                User user = getDataLayer().getUser(params.get("email"), passEncrypted);
                 if (user != null) {
-                    SecurityLayer.createSession(request, email, user.getKey(), user.getState());
+                    SecurityLayer.createSession(request, params.get("email"), user.getKey(), user.getState());
                     request.setAttribute("page_title", "Benvenuto");
                     request.setAttribute("user", user);
                     request.setAttribute("logged", 1);
@@ -51,21 +52,14 @@ public class Login extends BiblioManagerBaseController {
         }
     }
 
-    private boolean validator(HttpServletRequest request, HttpServletResponse response) {
-        boolean error = false;
-        String email = Utils.checkString(request.getParameter("email"));
-        String password = Utils.checkString(request.getParameter("password"));
-        if (email == null) {
-            request.setAttribute("errorEmail", "Email non valorizzato");
-            error = true;
-        }
-        if (password == null) {
-            request.setAttribute("errorPassword", "Password non valorizzato");
-            error = true;
-        }
-        if (!Utils.checkEmail(email)) {
-            request.setAttribute("errorEmail", "L'Email non è nel formato corretto");
-            error = true;
+    @Override
+    protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
+        boolean error = super.validator(params, request, response);
+        if(!error){
+            if (!Utils.checkEmail(params.get("email"))) {
+                request.setAttribute("errorEmail", "L'Email non è nel formato corretto");
+                error = true;
+            }
         }
         return error;
     }

@@ -213,7 +213,7 @@ public class PublicationImpl implements Publication {
     @Override
     public List<Author> getAuthors() throws DataLayerException {
         if (authors == null) {
-            authors = ownerDataLayer.getAuthors();
+            authors = ownerDataLayer.getAuthors(0,0);
         }
         return authors;
     }
@@ -226,7 +226,7 @@ public class PublicationImpl implements Publication {
     @Override
     public List<Source> getSources() throws DataLayerException {
         if (sources == null) {
-            sources = ownerDataLayer.getPublicationSources(key);
+            sources = ownerDataLayer.getPublicationSources(key,0,0);
         }
         return sources;
     }
@@ -252,7 +252,7 @@ public class PublicationImpl implements Publication {
     @Override
     public List<Reprint> getReprints() throws DataLayerException {
         if (reprints == null) {
-            reprints = ownerDataLayer.getReprints(key);
+            reprints = ownerDataLayer.getReprints(key,0,0);
         }
         return reprints;
     }

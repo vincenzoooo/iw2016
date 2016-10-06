@@ -41,7 +41,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     Author getAuthor(int author_key) throws DataLayerException;
 
-    List<Author> getAuthors() throws DataLayerException;
+    List<Author> getAuthors(int limit, int offset) throws DataLayerException;
 
     List<Author> getPublicationAuthors(int publication_key) throws DataLayerException;
 
@@ -49,13 +49,13 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     Editor getEditor(int editor_key) throws DataLayerException;
 
-    List<Editor> getEditors() throws DataLayerException;
+    List<Editor> getEditors(int limit, int offset) throws DataLayerException;
 
     List<Editor> getEditorsByName(String name) throws DataLayerException;
 
     Keyword getKeyword(int keyword_key) throws DataLayerException;
 
-    List<Keyword> getKeywords() throws DataLayerException;
+    List<Keyword> getKeywords(int limit, int offset) throws DataLayerException;
 
     List<Keyword> getPublicationKeywords(int publication_key) throws DataLayerException;
 
@@ -79,13 +79,13 @@ public interface BiblioManagerDataLayer extends DataLayer {
 
     Reprint getReprint(int reprint_key) throws DataLayerException;
 
-    List<Reprint> getReprints(int publication_key) throws DataLayerException;
+    List<Reprint> getReprints(int publication_key, int limit, int offset) throws DataLayerException;
 
     Source getSource(int source_key) throws DataLayerException;
 
     List<Source> getSources() throws DataLayerException;
 
-    List<Source> getPublicationSources(int publication_key) throws DataLayerException;
+    List<Source> getPublicationSources(int publication_key, int limit, int offset) throws DataLayerException;
 
     History getHistory(int historia_key) throws DataLayerException;
 

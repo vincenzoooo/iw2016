@@ -140,7 +140,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
 
     private void action_view(HttpServletRequest request, HttpServletResponse response) {
         try {
-            List<Editor> editors = getDataLayer().getEditors();
+            List<Editor> editors = getDataLayer().getEditors(0,0);
             Publication publication = getDataLayer().getPublication(publicationId);
             request.setAttribute("publication", publication);
             request.setAttribute("editors", editors);

@@ -10,7 +10,7 @@
             </div>
         </div>
         <div class="section section-pageLogin-allert"> 
-            <#if !isLogin??>
+            <#if !isLogin?? && !noOperation??>
             <div class="row">
                 <div class="col-xs-12">
                     <div class="alert alert-warning alert-dismissible fadeIn animated">
@@ -40,16 +40,16 @@
                 </div>
             </div>
             </#if>            
-<!--            <#if errorLogin??>
+            <#if noOperation??>
             <div class="row">
                 <div class="col-xs-12">
-                    <div class="alert alert-danger alert-dismissible" role="alert">
+                    <div class="alert alert-danger fadeIn animated">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        ${errorLogin?html}
+                        Operazione non consentita.
                     </div>
                 </div>
             </div>
-            </#if>-->
+            </#if>
         </div>
         
         <div class="section section-pageLogin-action">     

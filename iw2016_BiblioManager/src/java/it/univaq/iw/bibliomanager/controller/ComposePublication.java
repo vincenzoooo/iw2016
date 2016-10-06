@@ -117,19 +117,22 @@ public class ComposePublication extends BiblioManagerBaseController {
         return error;
     }
 
-    private void action_savePartially(HttpServletRequest request, HttpServletResponse response, String url, HttpSession session, Publication publication) throws DataLayerException, ServletException, IOException, ParseException {
+    private void action_savePartially(HttpServletRequest request, HttpServletResponse response, String url, Publication publication) throws DataLayerException, ServletException, IOException, ParseException {
         if (publication == null) {
             publication = getDataLayer().createPublication();
             if (publicationId > 0) {
                 publication = getDataLayer().getPublication(publicationId);
             }
             if (!request.getParameter("publicationTitle").isEmpty()) {
+                noAction(request.getParameter("publicationTitle"), request, response);
                 publication.setTitle(Utils.checkString(request.getParameter("publicationTitle")));
             }
             if (!request.getParameter("publicationDescription").isEmpty()) {
+                noAction(request.getParameter("publicationDescription"), request, response);
                 publication.setDescription(Utils.checkString(request.getParameter("publicationDescription")));
             }
             if (!request.getParameter("publicationLanguage").isEmpty()) {
+                noAction(request.getParameter("publicationLanguage"), request, response);
                 publication.setLanguage(Utils.checkString(request.getParameter("publicationLanguage")));
             }
             if (!request.getParameter("publicationDate").isEmpty() && Utils.isDate(request.getParameter("publicationDate"))) {
@@ -154,8 +157,6 @@ public class ComposePublication extends BiblioManagerBaseController {
             publicationId = publication.getKey();
             request.setAttribute("publicationId", publicationId);
             request.setAttribute("url", this.url);
-//            session.setAttribute("publicationId", publication.getKey());
-//            session.setAttribute("url", "publication");
         }
         request.setAttribute("publicationPartial",1);
         action_redirect(request, response, url);
@@ -176,7 +177,7 @@ public class ComposePublication extends BiblioManagerBaseController {
         if (publication != null && publication.getIncomplete()) {
             List<Author> authors = getDataLayer().getPublicationAuthors(publicationId);
             List<Keyword> keywords = getDataLayer().getPublicationKeywords(publicationId);
-            List<Source> sources = getDataLayer().getPublicationSources(publicationId);
+            List<Source> sources = getDataLayer().getPublicationSources(publicationId,0,0);
             request.setAttribute("authors", authors);
             request.setAttribute("keywords", keywords);
             request.setAttribute("sources", sources);
@@ -210,7 +211,7 @@ public class ComposePublication extends BiblioManagerBaseController {
             if (session != null) {
                 currentUser(request, response, session);
                 request.setAttribute("page_title", "Nuova Pubblicazione");
-                List<Editor> editors = getDataLayer().getEditors();
+                List<Editor> editors = getDataLayer().getEditors(0,0);
 
                 request.setAttribute("authors", "");
                 request.setAttribute("editors", editors);
@@ -224,35 +225,35 @@ public class ComposePublication extends BiblioManagerBaseController {
                 if (request.getParameter("submitPublication") != null) {
                     action_composePublication(request, response);
                     if(publicationId > 0){
-                        String url = "/details?publicationId=" + publicationId;
+                        String detailUrl = "/details?publicationId=" + publicationId;
                         publicationId = 0;
                          request.setAttribute("publicationAdded", 1);
-                        action_redirect(request, response, url);
+                        action_redirect(request, response, detailUrl);
                     }
                 }
                 if (request.getParameter("addEditor") != null) {
-                    action_savePartially(request, response, "/editor", session, publication);
+                    action_savePartially(request, response, "/editor", publication);
                 }
                 if (request.getParameter("addAuthor") != null) {
-                    action_savePartially(request, response, "/author", session, publication);
+                    action_savePartially(request, response, "/author", publication);
                 }
                 if (request.getParameter("unlinkAuthor") != null) {
                     action_unlinkAuthor(request, response, session);
                 }
                 if (request.getParameter("addKeyword") != null) {
-                    action_savePartially(request, response, "/keyword", session, publication);
+                    action_savePartially(request, response, "/keyword", publication);
                 }
                 if (request.getParameter("unlinkKeyword") != null) {
                     action_unlinkKeyword(request, response, session);
                 }
                 if (request.getParameter("addIndex") != null) {
-                    action_savePartially(request, response, "/index", session, publication);
+                    action_savePartially(request, response, "/index", publication);
                 }
                 if (request.getParameter("addSource") != null) {
-                    action_savePartially(request, response, "/source", session, publication);
+                    action_savePartially(request, response, "/source", publication);
                 }
                 if (request.getParameter("addReprint") != null) {
-                    action_savePartially(request, response, "/reprint", session, publication);
+                    action_savePartially(request, response, "/reprint", publication);
                 }
                 action_view(request, response);
             } else {

@@ -31,22 +31,27 @@ public class PublicationResearch extends BiblioManagerBaseController {
             Map<String, String> filters = new HashMap<String, String>();
             String isbn = request.getParameter("publicationIsbn");
             if (!Utils.isNullOrEmpty(isbn)) {
+                noAction(isbn, request, response);
                 filters.put("isbn", isbn);
             }
             String title = request.getParameter("publicationTitle");
             if (!Utils.isNullOrEmpty(title)) {
+                noAction(title, request, response);
                 filters.put("titolo", title);
             }
             String authorName = request.getParameter("publicationAuthor");
             if (!Utils.isNullOrEmpty(authorName)) {
+                noAction(authorName, request, response);
                 filters.put("autore", authorName);
             }
             String editorName = request.getParameter("publicationEditor");
             if (!Utils.isNullOrEmpty(editorName)) {
+                noAction(editorName, request, response);
                 filters.put("editore", editorName);
             }
             String date = request.getParameter("publicationYear");
             if (!Utils.isNullOrEmpty(date)) {
+                noAction(date, request, response);
                 filters.put("anno_inizio", date);
                 String end = String.valueOf(Integer.parseInt(Utils.getArrayParameter(filters, "anno_inizio")) + 1);
                 filters.put("anno_fine", end);
@@ -57,14 +62,17 @@ public class PublicationResearch extends BiblioManagerBaseController {
             }
             String keyword = request.getParameter("publicationKeyword");
             if (!Utils.isNullOrEmpty(keyword)) {
+                noAction(keyword, request, response);
                 filters.put("keyword", keyword);
             }
             String language = request.getParameter("publicationLanguage");
             if (!Utils.isNullOrEmpty(language)) {
+                noAction(language, request, response);
                 filters.put("lingua", language);
             }
             String download = request.getParameter("download");
             if (!Utils.isNullOrEmpty(download)) {
+                noAction(download, request, response);
                 filters.put("download", "download");
             }
             if (request.getAttribute("publicationUser") != null) {
