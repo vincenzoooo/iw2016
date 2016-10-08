@@ -80,7 +80,7 @@
                     <div class="row">
                         <div class="col-lg-3 col-md-4 col-sm-5 col-xs-12">
                             <a href="details?publicationId=${item.key}" class="relative">
-                            <figure class="imageCatalog">
+                            <figure class="imageCard">
                             <#if item.cover??>
                                 <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive imageCatalog"/>
                             <#else>
