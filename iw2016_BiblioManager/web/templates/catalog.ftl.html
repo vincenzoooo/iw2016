@@ -92,10 +92,14 @@
                         <div class="col-lg-6 col-md-5 col-sm-4 col-xs-12">
                             <div class="important-info">
                                 <div class="author margin-top-10"> 
-                                    <span class="bold"> Autori:</span>
+                                    <span class="bold"> Autore/i:</span>
+                                    <#if (item.authors?? && item.authors?size>0)>
                                     <#list item.authors as item2>
                                         ${strip_slashes(item2.name!'')?html} ${strip_slashes(item2.surname!'')?html}<#if item2.key != item.authors?last.key>,</#if>                                      
                                     </#list>
+                                    <#else>
+                                    Nessun autore indicato
+                                    </#if>
                                 </div>
                                 <h2 class="title">${strip_slashes(item.title)?html}</h2>
                                 <#if (item.description?length>256)><div class="description">${item.description[0..252]?html}...</div><#else><div class="description">${item.description?html}</div></#if>

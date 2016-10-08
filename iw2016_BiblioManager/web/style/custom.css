@@ -254,7 +254,7 @@ a:active {
 
 a:active,
 a:hover {
-    color: #266a88;
+    color: #5D1D17;
 }
 
 h1,
@@ -712,6 +712,10 @@ header .navbar-header-menu {
     background-color: #EDDBC3;
 }
 
+.navbar-default .navbar-collapse, .navbar-default .navbar-form {
+    border-color: #5D1D17;
+}
+
 
 /**
  * 4.0 Content
@@ -958,6 +962,17 @@ header .navbar-header-menu {
 .no-img{
     width: 100px;
 }
+
+.indexcontainer>.panel-group>.panel>.panel-heading:hover{
+    background-color: #F1F1F1;
+}
+
+.indexcontainer>.panel-group>.panel>.panel-heading{
+    background-color: #F9F9F9;
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
+}
+
 
 /**
  * 4. Home

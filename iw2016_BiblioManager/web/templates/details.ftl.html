@@ -148,20 +148,20 @@
                 <div class="col-lg-12">
                     <h2>Sorgenti:</h2>
                     <#if (publication.sources?? && publication.sources?size>0)>
-                        <table id="allSources"  class="table table-responsive">
+                        <table id="allSources"  class="table ">
                             <tr>
-                                <th>
+                                <td>
                                     Tipo
-                                </th>
-                                <th class="hidden-xs">
+                                </td>
+                                <td class="hidden-xs">
                                     URI
-                                </th>
-                                <th class="smallhidden">
+                                </td>
+                                <td class="smallhidden">
                                     Formato
-                                </th>
-                                <th class="smallhidden">
+                                </td>
+                                <td class="smallhidden">
                                     Descrizione
-                                </th>
+                                </td>
                             </tr>
                             <#list publication.sources as item>
                             <tr>
@@ -213,10 +213,10 @@
                                 <div class="alert alert-description">Qui di lato potete osservare la gallery di immagini relative alla pubblicazione. Potrete ingrandirle semplicemete passando il cursore del vostro mouse sull'immagine che vi interessa osservare meglio! <br/> Buona visione. </div>
                             </div>
                         </div>
+                        <#else>
+                            <span class="bold">Nessuna immagine presente.</span>
+                        </#if>
                     </div>
-                    <#else>
-                        <span>Nessuna immagine presente.</span>
-                    </#if>
                     </#if>
                 </div>
             </div>
@@ -226,8 +226,10 @@
             <div class="row">
                 <div class="col-lg-12">
                     <h2>Indice</h2>
-                    <#if publication.index??>
+<!--                    <#if publication.index??>
+                    <div class="indexcontainer">
                         <#if (publication.index?? && publication.index?size>0)>
+                        <div class="indexcontainer">
                             <#list publication.index as item>
                             <ul class="nodecoration">
                                 <li class="chapter-title">
@@ -244,9 +246,42 @@
                                 </#if> 
                             </ul>
                             </#list>
+                        </div>
                         <#else>
-                        <span class='bold'> Nessun indice presente per la pubblicazione</span>
+                        <span class="bold"> Nessun indice presente per la pubblicazione</span>
                         </#if>
+                    </#if>-->
+                    <#if publication.index??>
+                    <div class="indexcontainer">
+                        <#if (publication.index?? && publication.index?size>0)>
+                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                            <div class="panel panel-default">
+                            <#list publication.index as item>
+                            
+                                <div class="panel-heading" role="tab" id="heading${item.key}">
+                                    <h4 class="panel-title">
+                                    <a class="chapter-title" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse${item.key}" aria-expanded="true" aria-controls="collapse${item.key}">
+                                        ${item.number!"''"?html}&nbsp;&nbsp;${strip_slashes(item.title)!"''"?html}
+                                    </a>
+                                    </h4>
+                                </div>
+                                <#if (item.sections?? && item.sections?size>0) >
+                                <div id="collapse${item.key}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading">
+                                <#list item.sections as item2>
+                                    <div class="panel-body">
+                                        ${item.number!"''"?html}.${item2.number!"''"?html}&nbsp;${strip_slashes(item2.title)!"''"?html}
+                                    </div>
+                                </#list>
+                                </div>
+                                </#if>
+                           
+                            </#list>
+                             </div>
+                        </div>
+                        <#else>
+                        <span class="bold"> Nessun indice presente per la pubblicazione</span>
+                        </#if>
+                    </div>
                     </#if>
                 </div>
             </div>
