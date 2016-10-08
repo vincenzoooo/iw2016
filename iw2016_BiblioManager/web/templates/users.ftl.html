@@ -97,7 +97,11 @@
                 <div class="col-lg-12">
                     <ul class="nodecoration">
                         <li class="nodecoration margin-bot-30">
-                            <a href="profile?userId=${admin.key}" class="community-user itemCommunity">${strip_slashes(admin.surname?html)?capitalize}&nbsp;${strip_slashes(admin.name?html)?capitalize}</a>
+                            <#if admin.key==me.key>
+                                <a href="profile" class="community-user itemCommunity">${strip_slashes(admin.surname?html)?capitalize}&nbsp;${strip_slashes(admin.name?html)?capitalize}</a>
+                            <#else>
+                                <a href="profile?userId=${admin.key}" class="community-user itemCommunity">${strip_slashes(admin.surname?html)?capitalize}&nbsp;${strip_slashes(admin.name?html)?capitalize}</a>
+                            </#if>
                         </li>
                     </ul>
                 </div>
@@ -115,7 +119,11 @@
                             <#list activeUsers as item>
                                 <#if (item.state==1)>
                                     <li class="nodecoration">
-                                        <a href="profile?userId=${item.key}" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                        <#if item.key==me.key>
+                                            <a href="profile" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                        <#else>
+                                            <a href="profile?userId=${item.key}" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                        </#if>
                                         <#if (me.state==0)>
                                         <a href="community?op=2&user=${item.key}">
                                             <i class="fa fa-angle-double-down degrade" aria-hidden="true"></i>
@@ -138,7 +146,11 @@
                             <#list passiveUsers as item>
                             <#if (item.state==2)>
                                 <li class="nodecoration">
-                                    <a href="profile?userId=${item.key}" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                    <#if item.key==me.key>
+                                        <a href="profile" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                    <#else>
+                                        <a href="profile?userId=${item.key}" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                    </#if>
                                     <#if (me.state<2)>
                                     <a href="community?op=1&user=${item.key}">
                                         <i class="fa fa-angle-double-up promote" aria-hidden="true"></i>
