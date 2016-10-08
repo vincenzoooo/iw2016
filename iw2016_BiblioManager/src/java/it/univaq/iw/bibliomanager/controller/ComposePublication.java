@@ -124,20 +124,24 @@ public class ComposePublication extends BiblioManagerBaseController {
                 publication = getDataLayer().getPublication(publicationId);
             }
             if (!request.getParameter("publicationTitle").isEmpty()) {
-                noAction(request.getParameter("publicationTitle"), request, response);
-                publication.setTitle(Utils.checkString(request.getParameter("publicationTitle")));
+                String title = Utils.checkString(request.getParameter("publicationTitle"));
+                noAction(title, request, response);
+                publication.setTitle(title);
             }
             if (!request.getParameter("publicationDescription").isEmpty()) {
-                noAction(request.getParameter("publicationDescription"), request, response);
-                publication.setDescription(Utils.checkString(request.getParameter("publicationDescription")));
+                String description = Utils.checkString(request.getParameter("publicationDescription"));
+                noAction(description, request, response);
+                publication.setDescription(description);
             }
             if (!request.getParameter("publicationLanguage").isEmpty()) {
-                noAction(request.getParameter("publicationLanguage"), request, response);
-                publication.setLanguage(Utils.checkString(request.getParameter("publicationLanguage")));
+                String language = Utils.checkString(request.getParameter("publicationLanguage"));
+                noAction(language, request, response);
+                publication.setLanguage(language);
             }
             if (!request.getParameter("publicationDate").isEmpty() && Utils.isDate(request.getParameter("publicationDate"))) {
+                String publicationDate = request.getParameter("publicationDate");
                 DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
-                java.util.Date date = df.parse(request.getParameter("publicationDate"));
+                java.util.Date date = df.parse(publicationDate);
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
                 publication.setPublicationDate(sqlDate);
             }
@@ -147,8 +151,12 @@ public class ComposePublication extends BiblioManagerBaseController {
             if (!request.getParameter("publicationPages").isEmpty() && Utils.isNumeric(request.getParameter("publicationPages"))) {
                 publication.setPageNumber(Integer.parseInt(request.getParameter("publicationPages")));
             }
-            if (!request.getParameter("editors").isEmpty()) {
+            if (request.getParameter("editors") != null && !request.getParameter("editors").isEmpty()) {
                 Editor editor = getDataLayer().getEditor(Integer.parseInt(request.getParameter("editors")));
+                publication.setEditor(editor);
+            }
+            else{
+                Editor editor = getDataLayer().createEditor();
                 publication.setEditor(editor);
             }
             publication.setIncomplete(true);
@@ -166,7 +174,7 @@ public class ComposePublication extends BiblioManagerBaseController {
             throws DataLayerException {
         getDataLayer().deleteAuthorFromPublication((int)session.getAttribute("publicationId"), Integer.parseInt(request.getParameter("unlinkAuthor")));
     }
-    
+
     private void action_unlinkKeyword (HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws DataLayerException {
         getDataLayer().deleteKeywordFromPublication((int)session.getAttribute("publicationId"), Integer.parseInt(request.getParameter("unlinkAuthor")));

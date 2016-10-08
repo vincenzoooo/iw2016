@@ -47,7 +47,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement sHistories, sHistoriesByUser, sHistoriesByPublication, sHistoryById;
     private PreparedStatement uHistory, iHistory, dHistory, dHistoryByPublication;
     private PreparedStatement sPublications, sPublicationById, sPublicationsByInsertDate, sPublicationsByUpdateDate, sPublicationsByFilters, sPublicationsByISBN, sIncompletePublications;
-    private PreparedStatement uPublication, iPublication, dPublication, dIncompletePublication;
+    private PreparedStatement uPublication, iPublication, iPublicationNoEditor, dPublication, dIncompletePublication;
     private PreparedStatement sSources, sSourceById, sSourceByPublication;
     private PreparedStatement uSource, iSource, dSource, dSourceByPublication;
     private PreparedStatement sReprintsByPublication, sReprintById;
@@ -103,6 +103,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sIncompletePublications = connection.prepareStatement("SELECT idpubblicazione FROM iw2016.pubblicazione WHERE incompleta = 1 AND timestamp < ?");
             this.uPublication = connection.prepareStatement("UPDATE iw2016.pubblicazione SET titolo = ?, descrizione = ?, editore = ?, n_consigli = ? , isbn = ?, n_pagine = ?, lingua = ?, data_pubblicazione = ?, incompleta = ?, timestamp = ? WHERE idpubblicazione = ?");
             this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.iPublicationNoEditor = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.dPublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
             this.dIncompletePublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE incompleta = 1 AND (timestamp < ? OR timestamp IS NULL)");
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
@@ -1661,21 +1662,40 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
                 uPublication.executeUpdate();
             } else { //insert
-                iPublication.setString(1, publication.getTitle());
-                iPublication.setString(2, publication.getDescription());
-                iPublication.setInt(3, publication.getEditor().getKey());
-                iPublication.setInt(4, publication.getLike());
-                iPublication.setString(5, publication.getIsbn());
-                iPublication.setInt(6, publication.getPageNumber());
-                iPublication.setString(7, publication.getLanguage());
-                iPublication.setDate(8, publication.getPublicationDate());
-                iPublication.setBoolean(9, publication.getIncomplete());
-                iPublication.setTimestamp(10, publication.getTimestamp());
+                if(publication.getEditor().getKey() == 0){
+                    iPublicationNoEditor.setString(1, publication.getTitle());
+                    iPublicationNoEditor.setString(2, publication.getDescription());
+                    iPublicationNoEditor.setInt(3, publication.getLike());
+                    iPublicationNoEditor.setString(4, publication.getIsbn());
+                    iPublicationNoEditor.setInt(5, publication.getPageNumber());
+                    iPublicationNoEditor.setString(6, publication.getLanguage());
+                    iPublicationNoEditor.setDate(7, publication.getPublicationDate());
+                    iPublicationNoEditor.setBoolean(8, publication.getIncomplete());
+                    iPublicationNoEditor.setTimestamp(9, publication.getTimestamp());
+                    if (iPublicationNoEditor.executeUpdate() == 1) {
+                        keys = iPublicationNoEditor.getGeneratedKeys();
+                        if (keys.next()) {
+                            key = keys.getInt(1);
+                        }
+                    }
+                }
+                else{
+                    iPublication.setString(1, publication.getTitle());
+                    iPublication.setString(2, publication.getDescription());
+                    iPublication.setInt(3, publication.getEditor().getKey());
+                    iPublication.setInt(4, publication.getLike());
+                    iPublication.setString(5, publication.getIsbn());
+                    iPublication.setInt(6, publication.getPageNumber());
+                    iPublication.setString(7, publication.getLanguage());
+                    iPublication.setDate(8, publication.getPublicationDate());
+                    iPublication.setBoolean(9, publication.getIncomplete());
+                    iPublication.setTimestamp(10, publication.getTimestamp());
 
-                if (iPublication.executeUpdate() == 1) {
-                    keys = iPublication.getGeneratedKeys();
-                    if (keys.next()) {
-                        key = keys.getInt(1);
+                    if (iPublication.executeUpdate() == 1) {
+                        keys = iPublication.getGeneratedKeys();
+                        if (keys.next()) {
+                            key = keys.getInt(1);
+                        }
                     }
                 }
             }
