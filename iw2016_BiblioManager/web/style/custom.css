@@ -1198,14 +1198,6 @@ label.error, span.error {
  * -----------------------------------------------------------------------------
  */
 
-@-ms-viewport {
-	width: device-width;
-}
-
-@viewport {
-	width: device-width;
-}
-
 @media screen and (max-width: 400px) {}
 @media screen and (min-width: 401px) {}
 @media screen and (min-width: 594px) {}
