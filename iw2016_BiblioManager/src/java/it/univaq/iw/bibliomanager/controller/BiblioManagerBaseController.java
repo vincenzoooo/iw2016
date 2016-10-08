@@ -124,7 +124,7 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
     }
     protected Map<Integer, String> getSlice(Map<Integer, String> map, int start, int end){
         Map<Integer, String> slice = new HashMap<>();
-        if(map.size()>0){
+        if(map.size()>1){
             for (int i = start; i < end; i++) {
                 slice.put(i, map.get(i));
             }
