@@ -138,7 +138,7 @@
                             <#if (activeUsers?? && activeUsers?size>0)>
                                 <ul class="nodecoration">
                                 <#list activeUsers as item>
-                                    <li class="nodecoration">
+                                    <li class="nodecoration" title="Si effettua una ricerca per utente">
                                         <a href="research?userId=${item.key}" class="userProfileHome itemMenu">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
                                     </li>
                                 </#list>

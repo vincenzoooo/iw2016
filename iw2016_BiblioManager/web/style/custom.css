@@ -973,6 +973,10 @@ header .navbar-header-menu {
     border-top-right-radius: 0px;
 }
 
+.imageCard{
+    width: 100%;
+}
+
 
 /**
  * 4. Home
