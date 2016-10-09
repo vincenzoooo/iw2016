@@ -74,7 +74,7 @@
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>
                                     <input value='Aggiungi' name='submitAuthor' type='submit' class="btn btn-default"/>
-                                    <a href="${url}?publicationId=${publicationId}" class="btn btn-default col-xs-offset-1" title="Tornando alla pubblicazione, spotrai vedere gli autori collegate alla pubblicazione">Torna alla pubblicazione</a>
+                                    <a href="${url}?publicationId=${publicationId}" class="btn btn-default col-sm-offset-1" title="Tornando alla pubblicazione, spotrai vedere gli autori collegate alla pubblicazione">Torna alla pubblicazione</a>
                                 </span>
                             </div>
                         </div>            
@@ -90,36 +90,40 @@
                     <form method="post" action="author" id="formSelectedAuthor" class="form-horizontal">     
                         <#if (authors?? && authors?size>0)>
                         <table id="allAuthors" class="table-responsive table-hover table">
-                            <tr>
-                                <th>
-                                    Nome
-                                </th>
-                                <th>
-                                    Cognome
-                                </th>
-                                <th class="col-edit">
-                                    Gestisci
-                                </th>
-                                <th class="col-selection">
-                                    Seleziona
-                                </th>
-                            </tr>
-                            <#list authors as item>
+                            <thead>
                                 <tr>
-                                    <td>
-                                        ${strip_slashes(item.name)!"''"?html}
-                                    </td>
-                                    <td>
-                                        ${strip_slashes(item.surname)!"''"?html}
-                                    </td>
-                                    <td>
-                                        <a href="author?authorId=${item.key}&currentNameAuthor=${item.name}&currentSurnameAuthor=${item.surname}#anchor" class="aItemCustom">Modifica</a>
-                                    </td>
-                                    <td>
-                                        <input title="Seleziona per collegare alla pubblicazione" type="checkbox" class="form-control padding-all-0" name="authorSelected" value="${item.key}" <#list publicationAuthors as item1><#if (item.key == item1.key)>checked="checked"</#if></#list>/>
-                                    </td>
+                                    <th>
+                                        Nome
+                                    </th>
+                                    <th>
+                                        Cognome
+                                    </th>
+                                    <th class="col-edit">
+                                        Gestisci
+                                    </th>
+                                    <th class="col-selection">
+                                        Seleziona
+                                    </th>
                                 </tr>
-                            </#list>
+                            </thead>
+                            <tbody>
+                                <#list authors as item>
+                                    <tr>
+                                        <td>
+                                            ${strip_slashes(item.name)!"''"?html}
+                                        </td>
+                                        <td>
+                                            ${strip_slashes(item.surname)!"''"?html}
+                                        </td>
+                                        <td>
+                                            <a href="author?authorId=${item.key}&currentNameAuthor=${item.name}&currentSurnameAuthor=${item.surname}#anchor" class="aItemCustom bold">Modifica</a>
+                                        </td>
+                                        <td>
+                                            <input title="Seleziona per collegare alla pubblicazione" type="checkbox" class="form-control padding-all-0" name="authorSelected" value="${item.key}" <#list publicationAuthors as item1><#if (item.key == item1.key)>checked="checked"</#if></#list>/>
+                                        </td>
+                                    </tr>
+                                </#list>
+                            </tbody>
                             <tr>
                                 <td></td>
                                 <td></td>

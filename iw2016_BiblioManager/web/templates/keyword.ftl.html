@@ -61,7 +61,7 @@
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>
                                     <input value='Aggiungi' name='submitKeyword' type='submit' class="btn btn-default"/>
-                                    <a href="${url}?publicationId=${publicationId}" class="btn btn-default col-xs-offset-1" title="Tornando alla pubblicazione, potrai vedere le parole chiavi collegate alla pubblicazione">Torna alla pubblicazione</a>
+                                    <a href="${url}?publicationId=${publicationId}" class="btn btn-default col-sm-offset-1" title="Tornando alla pubblicazione, potrai vedere le parole chiavi collegate alla pubblicazione">Torna alla pubblicazione</a>
                                 </span>
                             </div>
                         </div>
@@ -76,31 +76,35 @@
                     <h3> Lista delle parole chiave</h3>
                     <form method="post" action="keyword" id="formSelectedKeyword" class="form-horizontal">
                         <#if (keywords?? && keywords?size>0)>
-                        <table id="allKeywords" class="table table-responsive">
-                            <tr>
-                                <th>
-                                    Parola chiave
-                                </th>
-                                <th class="col-edit">
-                                    Gestisci
-                                </th>
-                                <th class="col-selection">
-                                    Seleziona
-                                </th>
-                            </tr>
-                            <#list keywords as item>
-                            <tr>
-                                <td>
-                                    ${strip_slashes(item.name)!"''"?html}
-                                </td>
-                                <td>
-                                    <a href="keyword?keywordId=${item.key}&currentKeyword=${item.name}#anchor" class="aItemCustom">Modifica</a>
-                                </td>
-                                <td>
-                                    <input title="Seleziona per collegare alla pubblicazione" type="checkbox" class="form-control" name="keywordSelected" value="${item.key}" <#list publicationKeywords as item1><#if (item.key == item1.key)>checked="checked"</#if></#list>/>
-                                </td>
-                            </tr>
-                            </#list>
+                        <table id="allKeywords" class="table table-responsive table-hover">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Parola chiave
+                                    </th>
+                                    <th class="col-edit">
+                                        Gestisci
+                                    </th>
+                                    <th class="col-selection">
+                                        Seleziona
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <#list keywords as item>
+                                <tr>
+                                    <td>
+                                        ${strip_slashes(item.name)!"''"?html}
+                                    </td>
+                                    <td>
+                                        <a href="keyword?keywordId=${item.key}&currentKeyword=${item.name}#anchor" class="aItemCustom bold">Modifica</a>
+                                    </td>
+                                    <td>
+                                        <input title="Seleziona per collegare alla pubblicazione" type="checkbox" class="form-control" name="keywordSelected" value="${item.key}" <#list publicationKeywords as item1><#if (item.key == item1.key)>checked="checked"</#if></#list>/>
+                                    </td>
+                                </tr>
+                                </#list>
+                            </tbody>
                             <tr>
                                 <td></td>
                                 <td></td>

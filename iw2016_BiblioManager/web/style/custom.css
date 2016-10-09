@@ -245,6 +245,7 @@ a {
 
 a:focus {
     outline: thin dotted;
+    color: #54A992;
 }
 
 a:hover,
@@ -809,7 +810,7 @@ header .navbar-header-menu {
 }
 
 .col-edit{
-    width: 100px;
+    width: 120px;
 }
 
 .fa-custom{

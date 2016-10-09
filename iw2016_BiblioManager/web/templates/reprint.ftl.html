@@ -62,7 +62,7 @@
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>
                                     <input value="Aggiungi" name="submitReprint" type="submit" class="btn btn-default"/>
-                                    <a href="${url}?publicationId=${publicationId}" class="btn btn-default col-xs-offset-1" name="submitPublication" title="Tornando alla pubblicazione, e una volta salvata, potrai visualizzare la lista delle ristampe">Torna alla pubblicazione</a>
+                                    <a href="${url}?publicationId=${publicationId}" class="btn btn-default col-sm-offset-1" name="submitPublication" title="Tornando alla pubblicazione, e una volta salvata, potrai visualizzare la lista delle ristampe">Torna alla pubblicazione</a>
                                 </span>
                             </div>
                         </div>
@@ -77,31 +77,34 @@
                     <h3> Lista delle ristampe</h3>
                     <form method="post" action="reprint" id="formSelectedReprint" class="form-horizontal">
                         <#if (reprints?? && reprints?size>0)>
-                        <table id="allReprints" class="table table-responsive">
-                            <tr>
-                                <th>
-                                    Numero
-                                </th>
-                                <th>
-                                    Data
-                                </th>
-                                <th class="col-edit">
-                                    Gestisci
-                                </th>
-
-                            </tr>
-                            <#list reprints as item>
-                            <tr>
-                                <td>
-                                    ${strip_slashes(item.number)!"''"?html}
-                                </td>
-                                <td class="hidden-xs">
-                                    ${strip_slashes(item.date)!"''"?html}
-                                <td>
-                                    <a href="reprint?reprintId=${item.key}&currentNumberReprint=${item.number}&currentDateReprint=${item.date}#anchor" class="aItemCustom">Modifica</a>
-                                </td>
-                            </tr>
-                            </#list>
+                        <table id="allReprints" class="table table-responsive table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Numero
+                                    </th>
+                                    <th>
+                                        Data
+                                    </th>
+                                    <th class="col-edit">
+                                        Gestisci
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <#list reprints as item>
+                                <tr>
+                                    <td>
+                                        ${strip_slashes(item.number)!"''"?html}
+                                    </td>
+                                    <td class="hidden-xs">
+                                        ${strip_slashes(item.date)!"''"?html}
+                                    <td>
+                                        <a href="reprint?reprintId=${item.key}&currentNumberReprint=${item.number}&currentDateReprint=${item.date}#anchor" class="aItemCustom bold">Modifica</a>
+                                    </td>
+                                </tr>
+                                </#list>
+                            </tbody>
                         </table>
                         <#else>
                         <span class="bold">Nessuna ristampa presente.</span>

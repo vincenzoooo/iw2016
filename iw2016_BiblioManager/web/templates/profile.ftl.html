@@ -77,22 +77,6 @@
                 <#if (publications?? && publications?size>0) >
                 <div id="listPublicationUser" class="row">
                 <#list publications as item>
-<!--                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12 userPublication">
-                        <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
-                            <figure class="cover-pubb">
-                                <#if item.cover??>
-                                <img src="${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
-                                <#else>
-                                <img src="img/cover-cs.jpg" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
-                                </#if>
-                                <figcaption class="caption">
-                                    <#if (item.title?length>38)>
-                                        ${item.title[0..34]?html}...<#else>${item.title?html}
-                                    </#if>
-                                </figcaption>
-                            </figure>
-                        </a>
-                    </div>-->
                     <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                         <div class="thebox-container">
                             <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
@@ -151,7 +135,7 @@
                 <div class="col-lg-12">
                     <h2>Ultime azioni effettuate</h2>
                     <#if (userActions?? && userActions?size>0)>
-                    <table class="table">
+                    <table class="table table-striped">
                         <thead>
                             <tr>
                                 <th>

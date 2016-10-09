@@ -78,13 +78,16 @@
                 <div class="col-lg-12">
                     <h3 class=""> Lista dei capitoli</h3>
                     <#if (chapters?? && chapters?size>0)>
-                    <table id="allChapters" class="table">
-                        <tr>
-                            <th>Numero</th>
-                            <th>Titolo</th>
-                            <th>Gestione</th>
-                        </tr>
-                        <#list chapters as item>
+                    <table id="allChapters" class="table table-responsive table-striped">
+                        <thead>
+                            <tr>
+                                <th class="col-edit">Numero</th>
+                                <th>Titolo</th>
+                                <th class="col-edit">Gestione</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <#list chapters as item>
                             <tr>
                                 <td>
                                     ${item.number!"''"?html}
@@ -93,10 +96,11 @@
                                     ${strip_slashes(item.title)!"''"?html}
                                 </td>
                                 <td>
-                                    <a class="deleteChapter aItemCustom" href="index?idChapter=${item.key}">Elimina</a>
+                                    <a class="deleteChapter aItemCustom bold" href="index?idChapter=${item.key}">Elimina</a>
                                 </td>
                             </tr>
-                        </#list>
+                            </#list>
+                        </tbody>
                     </table>
                     <#else>
                     <span class="bold">Nessun capitolo presente.</span>
@@ -167,27 +171,31 @@
                     <h3 class=""> Lista delle sezioni</h3>
 <!--                    <#if chapters??>-->
                     <#if (chapters[0].sections.size()>0)>
-                    <table id="allChapters" class="table">
-                        <tr>
-                            <th>Numero</th>
-                            <th>Titolo</th>
-                            <th>Gestione</th>
-                        </tr>
-                        <#list chapters as item>
-                            <#list item.sections as item2>
+                    <table id="allChapters" class="table table-responsive table-striped">
+                        <thead>
                             <tr>
-                                <td>
-                                    ${item.number!"''"?html}.${item2.number!"''"?html}
-                                </td>
-                                <td>
-                                    ${strip_slashes(item2.title)!"''"?html}
-                                </td>
-                                <td>
-                                    <a class="deleteSection aItemCustom" href="index?idSection=${item2.key}">Elimina</a>
-                                </td>
+                                <th class="col-edit">Numero</th>
+                                <th>Titolo</th>
+                                <th class="col-edit">Gestione</th>
                             </tr>
+                        </thead>
+                        <tbody>
+                            <#list chapters as item>
+                                <#list item.sections as item2>
+                                <tr>
+                                    <td>
+                                        ${item.number!"''"?html}.${item2.number!"''"?html}
+                                    </td>
+                                    <td>
+                                        ${strip_slashes(item2.title)!"''"?html}
+                                    </td>
+                                    <td>
+                                        <a class="deleteSection aItemCustom bold" href="index?idSection=${item2.key}">Elimina</a>
+                                    </td>
+                                </tr>
+                                </#list>
                             </#list>
-                        </#list>
+                        </tbody>
                     </table>
                    <#else>
                     <span class="bold">Nessuna sezione presente.</span>

@@ -25,9 +25,10 @@
 
         <#if publication??>
         <div class="section section-publication-tools">
-            <#if (me.state==0 || (me.state == 1 && me.key == publisher.key))>
+            <#if me.state<2>
             <span class="custom-title">Gestione pubblicazione:</span>
             <div class="btn-group me-line" role="group" aria-label="...">
+                <#if (me.state==0 || (me.state == 1 && me.key == publisher.key))>
                 <a href="managePublication?publicationId=${publication.key}" class="btn btn-default" title="Modifica">
                     <i class="fa fa-pencil fa-custom" aria-hidden="true"></i>
                 </a>
@@ -35,7 +36,7 @@
                 <a href="managePublication?delete&publicationId=${publication.key}" class="btn btn-default" title="Cancella">
                     <i class="fa fa-trash-o fa-custom" aria-hidden="true"></i>
                 </a>
-
+                </#if>
                 <a href="history?publicationId=${publication.key}" class="btn btn-default" title="Storico">
                     <i class="fa fa-history fa-custom" aria-hidden="true"></i>
                 </a>
@@ -122,7 +123,7 @@
             <div class="row">
                 <div class="col-lg-4 col-md-4 col-sm-4">
                     <div class="margin-top-30">
-                        <h2>Autori:</h2>
+                        <h2>Autori</h2>
                         <#if (publication.authors?? && publication.authors?size>0)>
                             <ul class="nodecoration">
                                 <#list publication.authors as item>
@@ -146,39 +147,45 @@
         <div class="section section-publication-sources">
             <div class="row">
                 <div class="col-lg-12">
-                    <h2>Sorgenti:</h2>
+                    <h2>Sorgenti</h2>
                     <#if (publication.sources?? && publication.sources?size>0)>
-                        <table id="allSources"  class="table ">
-                            <tr>
-                                <td>
-                                    Tipo
-                                </td>
-                                <td class="hidden-xs">
-                                    URI
-                                </td>
-                                <td class="smallhidden">
-                                    Formato
-                                </td>
-                                <td class="smallhidden">
-                                    Descrizione
-                                </td>
-                            </tr>
-                            <#list publication.sources as item>
-                            <tr>
-                                <td>
-                                    ${strip_slashes(item.type)!"''"?html}
-                                </td>
-                                <td class="hidden-xs">
-                                    ${strip_slashes(item.uri)!"''"?html}
-                                </td>
-                                <td class="smallhidden">
-                                    ${strip_slashes(item.format)!"''"?html}
-                                </td>
-                                <td class="smallhidden">
-                                    ${strip_slashes(item.description)!"''"?html}
-                                </td>
-                            </tr>
-                            </#list>
+                        <table id="allSources"  class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Tipo
+                                    </th>
+                                    <th>
+                                        URI
+                                    </th>
+                                    <th>
+                                        Formato
+                                    </th>
+                                    <th>
+                                        Descrizione
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <#list publication.sources as item>
+                                <tr>
+                                    <td>
+                                        ${strip_slashes(item.type)!"''"?html}
+                                    </td>
+                                    <td>
+                                        <a href="${strip_slashes(item.uri)}"  class="aItemCustom bold" target="_blank" name="submitReview">
+                                        sorgente
+                                        </a>
+                                    </td>
+                                    <td>
+                                        ${strip_slashes(item.format)!"''"?html}
+                                    </td>
+                                    <td>
+                                        ${strip_slashes(item.description)!"''"?html}
+                                    </td>
+                                </tr>
+                                </#list>
+                            </tbody>
                         </table>
 
                     <#else>
@@ -222,99 +229,108 @@
             </div>
         </div>
         
-        <div class="section section-publication-index">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2>Indice</h2>
-<!--                    <#if publication.index??>
-                    <div class="indexcontainer">
-                        <#if (publication.index?? && publication.index?size>0)>
-                        <div class="indexcontainer">
-                            <#list publication.index as item>
-                            <ul class="nodecoration">
-                                <li class="chapter-title">
-                                    ${item.number!"''"?html}&nbsp;&nbsp;${strip_slashes(item.title)!"''"?html}
-                                </li>
-                                <#if (item.sections?? && item.sections?size>0) >
-                                    <#list item.sections as item2>
-                                        <ul class="nodecoration">
-                                            <li>
-                                                ${item.number!"''"?html}.${item2.number!"''"?html}&nbsp;${strip_slashes(item2.title)!"''"?html}
-                                            </li>
-                                        </ul>
+        <div class="row">
+            <div class="col-lg-7">
+                <div class="section section-publication-index">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2>Indice</h2>
+        <!--                    <#if publication.index??>
+                            <div class="indexcontainer">
+                                <#if (publication.index?? && publication.index?size>0)>
+                                <div class="indexcontainer">
+                                    <#list publication.index as item>
+                                    <ul class="nodecoration">
+                                        <li class="chapter-title">
+                                            ${item.number!"''"?html}&nbsp;&nbsp;${strip_slashes(item.title)!"''"?html}
+                                        </li>
+                                        <#if (item.sections?? && item.sections?size>0) >
+                                            <#list item.sections as item2>
+                                                <ul class="nodecoration">
+                                                    <li>
+                                                        ${item.number!"''"?html}.${item2.number!"''"?html}&nbsp;${strip_slashes(item2.title)!"''"?html}
+                                                    </li>
+                                                </ul>
+                                            </#list>
+                                        </#if> 
+                                    </ul>
                                     </#list>
-                                </#if> 
-                            </ul>
-                            </#list>
-                        </div>
-                        <#else>
-                        <span class="bold"> Nessun indice presente per la pubblicazione</span>
-                        </#if>
-                    </#if>-->
-                    <#if publication.index??>
-                    <div class="indexcontainer">
-                        <#if (publication.index?? && publication.index?size>0)>
-                        <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
-                            <div class="panel panel-default">
-                            <#list publication.index as item>
-                            
-                                <div class="panel-heading" role="tab" id="heading${item.key}">
-                                    <h4 class="panel-title">
-                                    <a class="chapter-title" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse${item.key}" aria-expanded="true" aria-controls="collapse${item.key}">
-                                        ${item.number!"''"?html}&nbsp;&nbsp;${strip_slashes(item.title)!"''"?html}
-                                    </a>
-                                    </h4>
                                 </div>
-                                <#if (item.sections?? && item.sections?size>0) >
-                                <div id="collapse${item.key}" class="panel-collapse collapse" role="tabpanel" aria-labelledby="heading">
-                                <#list item.sections as item2>
-                                    <div class="panel-body">
-                                        ${item.number!"''"?html}.${item2.number!"''"?html}&nbsp;${strip_slashes(item2.title)!"''"?html}
-                                    </div>
-                                </#list>
-                                </div>
+                                <#else>
+                                <span class="bold"> Nessun indice presente per la pubblicazione</span>
                                 </#if>
-                           
-                            </#list>
-                             </div>
+                            </#if>-->
+                            <#if publication.index??>
+                            <div class="indexcontainer">
+                                <#if (publication.index?? && publication.index?size>0)>
+                                <div class="panel-group" id="accordion" role="tablist" aria-multiselectable="true">
+                                    <div class="panel panel-default">
+                                    <#list publication.index as item>
+
+                                        <div class="panel-heading" role="tab" id="heading${item.key}">
+                                            <h4 class="panel-title">
+                                            <a class="chapter-title" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapse${item.key}" aria-expanded="true" aria-controls="collapse${item.key}">
+                                                ${item.number!"''"?html}&nbsp;&nbsp;${strip_slashes(item.title)!"''"?html}
+                                            </a>
+                                            </h4>
+                                        </div>
+                                        <#if (item.sections?? && item.sections?size>0) >
+                                        <div id="collapse${item.key}" class="panel-collapse collapse <#if item?is_first>in</#if>" role="tabpanel" aria-labelledby="heading">
+                                        <#list item.sections as item2>
+                                            <div class="panel-body">
+                                                ${item.number!"''"?html}.${item2.number!"''"?html}&nbsp;${strip_slashes(item2.title)!"''"?html}
+                                            </div>
+                                        </#list>
+                                        </div>
+                                        </#if>
+
+                                    </#list>
+                                     </div>
+                                </div>
+                                <#else>
+                                <span class="bold"> Nessun indice presente per la pubblicazione</span>
+                                </#if>
+                            </div>
+                            </#if>
                         </div>
-                        <#else>
-                        <span class="bold"> Nessun indice presente per la pubblicazione</span>
-                        </#if>
                     </div>
-                    </#if>
                 </div>
-            </div>
-        </div>
-        
-        <div class="section section-publication-reprint">
-            <div class="row">
-                <div class="col-lg-12">
-                    <h2>Ristampe:</h2>
-                    <#if (publication.reprints?? && publication.reprints?size>0) >
-                    <table id="allReprints">
-                        <tr>
-                            <th>
-                                Numero
-                            </th>
-                            <th>
-                                Data
-                            </th>
-                        </tr>    
-                        <#list publication.reprints as item>
-                        <tr>
-                            <td>
-                                ${item.number!"''"?html}
-                            </td>
-                            <td>
-                                ${item.date!"''"?html}
-                            </td>
-                        </tr>
-                        </#list>      
-                    </table>
-                    <#else>
-                    <span class="bold"> Non sono presenti ristampe.</span>
-                    </#if>
+            </div>    
+            <div class="col-lg-offset-1 col-lg-4">
+                <div class="section section-publication-reprint">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <h2>Ristampe</h2>
+                            <#if (publication.reprints?? && publication.reprints?size>0) >
+                            <table id="allReprints" class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Numero
+                                        </th>
+                                        <th>
+                                            Data
+                                        </th>
+                                    </tr>   
+                                </thead>
+                                <tbody>
+                                <#list publication.reprints as item>
+                                    <tr>
+                                        <td>
+                                            ${item.number!"''"?html}
+                                        </td>
+                                        <td>
+                                            ${item.date!"''"?html}
+                                        </td>
+                                    </tr>
+                                </#list>    
+                                </tbody>
+                            </table>
+                            <#else>
+                            <span class="bold"> Non sono presenti ristampe.</span>
+                            </#if>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -381,38 +397,6 @@
         </#if>
         <a href="catalog" class="btn btn-default" name="submitCatalog">Torna al catalogo</a>
     </div>
-
-    <!--
-    <div id="linkreviews" class="row margin10"> 
-    <#if ((numberReviewsToApprove??) && (numberReviewsToApprove>0)) && userRole >
-
-    <#if (numberReviewsToApprove>1) >
-        Ci sono ${numberReviewsToApprove} recensioni 
-    <#else>
-        C'&egrave; ${numberReviewsToApprove} recensione 
-    </#if>
-    da approvare. Clicca il link di seguito per andare alla pagina di tutte le recensioni ed approvarle&nbsp;
-
-    </#if>
-    <#if ((lastReview??) || (numberReviewsToApprove?? && numberReviewsToApprove>0))>
-    <a href="publicationReviews?publicationId=${publication.id}">Vedi tutte le recensioni</a>
-    </#if>
-    </div>
-
-    <div class="row">
-    <#if (userRole?? && userRole)>
-
-    <div class="three columns button">
-        <a id="deletePublication" href="?deletePublication&publicationId=${publication.id}">Elimina</a>
-    </div>
-
-    <div class="three columns button">
-        <a href="historyPublication?publicationId=${publication.id}">Vai allo storico</a>
-    </div>
-
-    </#if>
- 
-    -->
 </div>
 
 

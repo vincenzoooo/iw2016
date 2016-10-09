@@ -87,7 +87,7 @@
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>
                                     <input value="Aggiungi" name="submitSource" type="submit" class="btn btn-default"/>
-                                    <a href="${url}?publicationId=${publicationId}" class="btn btn-default col-xs-offset-1" name="submitPublication" title="Tornando alla pubblicazione, e una volta salvata, potrai visualizzare la lista delle risorse">Torna alla pubblicazione</a>
+                                    <a href="${url}?publicationId=${publicationId}" class="btn btn-default col-sm-offset-1" name="submitPublication" title="Tornando alla pubblicazione, e una volta salvata, potrai visualizzare la lista delle risorse">Torna alla pubblicazione</a>
                                 </span>
                             </div>
                         </div>
@@ -102,45 +102,47 @@
                     <h3> Lista delle risorse</h3>
                     <form method="post" action="source" id="formSelectedSource" class="form-horizontal">
                         <#if (sources?? && sources?size>0)>
-                        <table id="allSources" class="table table-responsive">
-                            <tr>
-                                <th>
-                                    Tipo
-                                </th>
-                                <th class="hidden-xs">
-                                    URI
-                                </th>
-                                <th class="smallhidden">
-                                    Formato
-                                </th>
-                                <th class="smallhidden">
-                                    Descrizione
-                                </th>
-                                <th class="col-edit hidden-xs">
-                                    Gestisci
-                                </th>
-
-                            </tr>
-                            <#list sources as item>
-                            <tr>
-                                <td>
-                                    ${strip_slashes(item.type)!"''"?html}
-                                </td>
-                                <td class="hidden-xs">
-                                    ${strip_slashes(item.uri)!"''"?html}
-                                </td>
-                                <td class="smallhidden">
-                                    ${strip_slashes(item.format)!"''"?html}
-                                </td>
-                                <td class="smallhidden hidden-xs">
-                                    ${strip_slashes(item.description)!"''"?html}
-                                </td>
-                                <td>
-                                    <a href="source?sourceId=${item.key}&currentTypeSource=${item.type}&currentUriSource=${item.uri}&currentFormatSource=${item.format}&currentDescriptionSource=${item.description}#anchor" class="aItemCustom">Modifica</a>
-                                </td>
-                            </tr>
-                            </#list>
-
+                        <table id="allSources" class="table table-responsive table-striped">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        Tipo
+                                    </th>
+                                    <th class="hidden-xs">
+                                        URI
+                                    </th>
+                                    <th>
+                                        Formato
+                                    </th>
+                                    <th class="hidden-xs">
+                                        Descrizione
+                                    </th>
+                                    <th class="col-edit">
+                                        Gestisci
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <#list sources as item>
+                                <tr>
+                                    <td>
+                                        ${strip_slashes(item.type)!"''"?html}
+                                    </td>
+                                    <td class="hidden-xs">
+                                        ${strip_slashes(item.uri)!"''"?html}
+                                    </td>
+                                    <td class="smallhidden">
+                                        ${strip_slashes(item.format)!"''"?html}
+                                    </td>
+                                    <td class="smallhidden hidden-xs">
+                                        ${strip_slashes(item.description)!"''"?html}
+                                    </td>
+                                    <td>
+                                        <a href="source?sourceId=${item.key}&currentTypeSource=${item.type}&currentUriSource=${item.uri}&currentFormatSource=${item.format}&currentDescriptionSource=${item.description}#anchor" class="aItemCustom bold">Modifica</a>
+                                    </td>
+                                </tr>
+                                </#list>
+                            </tbody>
                         </table>
                         <#else>
                         <span class="bold">Nessuna risorsa presente.</span>
