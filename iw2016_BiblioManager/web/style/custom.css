@@ -1230,7 +1230,19 @@ label.error, span.error {
 }
 
 
-@media (max-width: 768px) {}
+@media (max-width: 768px) {
+    .imageHome{
+        width: 100%;
+    }   
+    
+    .imageCatalog{
+        width: 100%;
+    }
+    
+    .imageProfile{
+        width: 100%;
+    }
+}
 
 
 @media (min-width: 768px) {
@@ -1297,8 +1309,8 @@ label.error, span.error {
     }
     
     .imageProfile{
-        height: 360px;
-        width: 360px;
+        height: 262.5px;
+        width: 262.5px;
     }
     
     .thumbnail:hover div{ 
