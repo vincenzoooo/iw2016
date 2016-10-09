@@ -624,11 +624,8 @@ header .navbar-header-menu {
 
 .logo{
     position: fixed;
-    top: 20px; 
-    z-index: 100;
-    width: 50px;
-    height:40px;
-    color: #ffffff;
+    top: 5px; 
+    width: auto;
 }
 
 .uppermenu{
@@ -1213,6 +1210,25 @@ label.error, span.error {
 @media screen and (min-width: 1218px) {}
 @media screen and (min-width: 1260px) {}
                                     
+
+
+@media (max-width: 480px) {
+    .logo{
+        width:50%;
+        top:2%;
+    }
+}
+
+@media (max-width: 400px) {
+    .logo{
+        width:50%;
+        top:3%;
+    }
+    
+    .logoutCustom{
+        width: 100%;
+    }
+}
 
 
 @media (max-width: 768px) {}
