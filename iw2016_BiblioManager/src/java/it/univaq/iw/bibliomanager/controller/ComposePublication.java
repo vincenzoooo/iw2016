@@ -175,12 +175,12 @@ public class ComposePublication extends BiblioManagerBaseController {
 
     private void action_unlinkAuthor (HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws DataLayerException {
-        getDataLayer().deleteAuthorFromPublication((int)session.getAttribute("publicationId"), Integer.parseInt(request.getParameter("unlinkAuthor")));
+        getDataLayer().deleteAuthorFromPublication(publicationId, Integer.parseInt(request.getParameter("unlinkAuthor")));
     }
 
     private void action_unlinkKeyword (HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws DataLayerException {
-        getDataLayer().deleteKeywordFromPublication((int)session.getAttribute("publicationId"), Integer.parseInt(request.getParameter("unlinkAuthor")));
+        getDataLayer().deleteKeywordFromPublication(publicationId, Integer.parseInt(request.getParameter("unlinkAuthor")));
     }
     
     private void action_view (HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException{
