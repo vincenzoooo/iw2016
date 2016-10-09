@@ -71,6 +71,9 @@ public class ComposePublication extends BiblioManagerBaseController {
                 this.action_composeHistory(request, response);
                 publicationId = publication.getKey();
             }
+            else{
+                request.setAttribute("redirect", false);
+            }
         } catch (DataLayerException | ParseException ex) {
             action_error(request, response, "Errore nel salvare i dati: " + ex.getMessage(), 510);
         }
@@ -232,7 +235,11 @@ public class ComposePublication extends BiblioManagerBaseController {
                 }
                 if (request.getParameter("submitPublication") != null) {
                     action_composePublication(request, response);
-                    if(publicationId > 0){
+                    boolean redirect = true;
+                    if(request.getAttribute("redirect") != null){
+                        redirect = (boolean)request.getAttribute("redirect");
+                    }
+                    if(redirect && publicationId > 0){
                         String detailUrl = "/details?publicationId=" + publicationId;
                         publicationId = 0;
                          request.setAttribute("publicationAdded", 1);
