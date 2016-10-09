@@ -80,11 +80,16 @@ public class ComposeAuthor extends BiblioManagerBaseController {
     
     private void action_LinkAuthor(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
-        List<String> values = new ArrayList<String>(Arrays.asList(request.getParameterValues("authorSelected")));
-        getDataLayer().deletePublicationHasAuthor(publicationId);
-        for (String value : values) {
-            getDataLayer().storePublicationHasAuthor(Integer.parseInt(value), publicationId);
-            request.setAttribute("authorConnected", 1);
+        if(request.getParameterValues("authorSelected") != null){
+            List<String> values = new ArrayList<String>(Arrays.asList(request.getParameterValues("authorSelected")));
+            getDataLayer().deletePublicationHasAuthor(publicationId);
+            for (String value : values) {
+                getDataLayer().storePublicationHasAuthor(Integer.parseInt(value), publicationId);
+                request.setAttribute("authorConnected", 1);
+            }
+        }
+        else{
+            getDataLayer().deletePublicationHasAuthor(publicationId);
         }
     }
 
