@@ -540,11 +540,6 @@ textarea {
     vertical-align: top;
 }
 
-table,
-th,
-td {
-    border: 1px solid rgba(0, 0, 0, 0.1);
-}
 
 table {
     border-collapse: separate;
@@ -564,6 +559,7 @@ td {
 th {
     border-width: 0 1px 1px 0;
     font-weight: bold;
+    background-color: #EDDBC3;
 }
 
 td {
@@ -580,6 +576,7 @@ hr {
     height: 1px;
     margin-bottom: 23px;
 }
+
 
 
 /**
@@ -802,7 +799,6 @@ header .navbar-header-menu {
     border-color: #F1F1F1;
 }
 
-
 /**
  * 4. Catalog
  * -----------------------------------------------------------------------------
@@ -953,7 +949,7 @@ header .navbar-header-menu {
 }
 
 .badge-custom{
-    background-color: #D94C3A!important;
+    background-color: #54A992!important;
 }
 
 .no-img{
@@ -1226,6 +1222,10 @@ label.error, span.error {
     
     .logoutCustom{
         width: 100%;
+    }
+    
+    .table{
+        font-size: 13px;
     }
 }
 
