@@ -78,6 +78,22 @@ public class ComposeReprint extends BiblioManagerBaseController {
         }
     }
 
+    @Override
+    protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
+        boolean error = super.validator(params, request, response);
+        if (!error) {
+                if (!Utils.isNumeric(params.get("reprintNumber"))) {
+                    request.setAttribute("errorReprintNumber", "Non è un numero valido");
+                    error = true;
+                }
+                if (!Utils.isDate(params.get("reprintDate"))) {
+                    request.setAttribute("errorReprintDate", "Non è una data valida, si aspetta il formato dd-mm-yyyy");
+                    error = true;
+                }
+        }
+        return error;
+    }
+    
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Gestione Ristampa");
         TemplateResult res = new TemplateResult(getServletContext());

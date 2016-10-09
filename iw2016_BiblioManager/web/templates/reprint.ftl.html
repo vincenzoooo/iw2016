@@ -159,10 +159,9 @@
                             </div>
                         </div>
                         <div class="form-group">
-                            <label for="updateReprintNumber" class="col-sm-2 control-label bold">Data</label>
+                            <label for="updateReprintDate" class="col-sm-2 control-label bold">Data</label>
                             <div class="col-sm-6">
-                                <input name="reprintId" value="${reprintId!''?html}" type="hidden"/>
-                                <input id="updateReprintNumber" class="form-control" name="reprintNumber" value="${reprint.date!''?html}" placeholder="Modifica la data di ristampa" />
+                                <input id="updateReprintDate" class="form-control" name="reprintDate" value="${reprint.date?string["dd-MM-yyyy"]}" placeholder="Modifica la data di ristampa" />
                             </div>
                         </div>
                         <div class="form-group">
