@@ -16,19 +16,19 @@
             </div>
         </div>
         
-<!--        <div class="section section-pageEditor-allert">
-            <#if pippo??>    
+        <div class="section section-pageEditor-allert">
+            <#if userUpdated??>    
             <div class="row margin-top-20">
                 <div class="col-xs-12">
                     <div class="alert alert-success alert-dismissible fadeIn animated">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Modifica del rpfilo avvenuta con successo.
+                        Modifica del profilo avvenuta con successo.
                     </div>
                 </div>
             </div>
             </#if>
         </div>
-        -->
+        
         <#if user??>
         <div class="section section-profile-info">
             <div class="row">
@@ -93,14 +93,14 @@
                             </figure>
                         </a>
                     </div>-->
-                    <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
+                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
                         <div class="thebox-container">
                             <a href="details?publicationId=${item.key}" class="publicationDetailsHome">
                                 <div class="thebox">
                                     <div class="thebox-image">
                                         <figure class="cover-pubb cap-bot imgHome imageCard">
                                             <#if item.cover??>
-                                            <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive"/>
+                                            <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive imageProfile"/>
                                             <#else>
                                             <img src= "img/come.png" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
                                             </#if>

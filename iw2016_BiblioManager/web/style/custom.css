@@ -1211,7 +1211,6 @@ label.error, span.error {
 @media screen and (min-width: 1260px) {}
                                     
 
-
 @media (max-width: 480px) {
     .logo{
         width:50%;
@@ -1231,7 +1230,19 @@ label.error, span.error {
 }
 
 
-@media (max-width: 768px) {}
+@media (max-width: 768px) {
+    .imageHome{
+        width: 100%;
+    }   
+    
+    .imageCatalog{
+        width: 100%;
+    }
+    
+    .imageProfile{
+        width: 100%;
+    }
+}
 
 
 @media (min-width: 768px) {
@@ -1240,9 +1251,14 @@ label.error, span.error {
         width: 345px;
     }   
     
-     .imageCatalog{
+    .imageCatalog{
         height: 282px;
         width: 282px;
+    }
+    
+    .imageProfile{
+        height: 345px;
+        width: 345px;
     }
     
     .thumbnail:hover div{ 
@@ -1266,6 +1282,11 @@ label.error, span.error {
         width: 293px;
     }
     
+    .imageProfile{
+        height: 293px;
+        width: 293px;
+    }
+    
     .thumbnail:hover div{ 
         visibility: visible;
         top: 0;
@@ -1283,6 +1304,11 @@ label.error, span.error {
     }   
     
     .imageCatalog{
+        height: 262.5px;
+        width: 262.5px;
+    }
+    
+    .imageProfile{
         height: 262.5px;
         width: 262.5px;
     }

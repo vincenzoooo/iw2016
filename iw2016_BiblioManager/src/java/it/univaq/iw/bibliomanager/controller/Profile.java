@@ -90,6 +90,7 @@ public class Profile extends BiblioManagerBaseController {
                     user.setPassword(password);
                 }
                 getDataLayer().storeUser(user);
+                request.setAttribute("userUpdated", 1);
                 request.setAttribute("user", user);
                 action_view(request, response);
 //                res.activate("profile.ftl.html", request, response);
