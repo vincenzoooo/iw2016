@@ -105,7 +105,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.iPublication = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, editore, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.iPublicationNoEditor = connection.prepareStatement("INSERT INTO iw2016.pubblicazione (titolo, descrizione, n_consigli, isbn, n_pagine, lingua, data_pubblicazione, incompleta, timestamp) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.dPublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE idpubblicazione = ?");
-            this.dIncompletePublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE incompleta = 1 AND (timestamp < ? OR timestamp IS NULL)");
+            this.dIncompletePublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE incompleta = 1 AND idPubblicazione = ? AND (timestamp < ? OR timestamp IS NULL)");
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
             this.sSourceById = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE idsorgente = ?");
             this.uSource = connection.prepareStatement("UPDATE iw2016.sorgente SET tipo = ?, URI = ?, formato = ?, descrizione = ?, pubblicazione = ? WHERE idsorgente = ?");
@@ -2299,7 +2299,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 dLikeByPublication.execute();
                 deletePublicationHasAuthor(res.getInt("idpubblicazione"));
                 deletePublicationHasKeyword(res.getInt("idpubblicazione"));
-                dIncompletePublication.setDate(1, new java.sql.Date(System.currentTimeMillis()));
+                dIncompletePublication.setInt(1, res.getInt("idpubblicazione"));
+                dIncompletePublication.setDate(2, new java.sql.Date(System.currentTimeMillis()));
                 dIncompletePublication.executeUpdate();
             }
         } catch (SQLException ex) {
