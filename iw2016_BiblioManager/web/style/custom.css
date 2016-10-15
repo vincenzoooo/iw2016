@@ -179,6 +179,7 @@ body {
 }
 
 
+
 /**
  * 1.0 Reset
  * -----------------------------------------------------------------------------
@@ -517,7 +518,7 @@ input[disabled] {
     cursor: default;
 }
 
-input[type="checkbox"],
+
 input[type="radio"] {
 	padding: 0;
 }
@@ -726,7 +727,7 @@ header .navbar-header-menu {
 
 .pageContent{
     margin-top: 130px;
-    min-height: 770px;
+    min-height: 755px;
 }
 
 .title-site{
@@ -758,7 +759,7 @@ header .navbar-header-menu {
 }
 
 .search-box{
-    color: #fff;
+    color: #EDDBC3;
     background: -moz-linear-gradient(-45deg,rgba(89,24,21,1) 0,rgba(144,85,48,1) 100%);
     background: -webkit-gradient(linear,left top,right bottom,color-stop(0,rgba(89,24,21,1)),color-stop(100%,rgba(144,85,48,1)));
     background: -o-linear-gradient(-45deg,rgba(89,24,21,1) 0,rgba(144,85,48,1) 100%);
@@ -914,6 +915,23 @@ header .navbar-header-menu {
     position: relative;
 }
 
+.info{
+    background-color: #54A992;
+    visibility: hidden;
+    width: auto;
+    text-decoration: none;
+    position:relative;
+    width: 100px;
+    
+}
+
+.info:hover{
+    -webkit-animation-name: fadeIn;
+    animation-name: fadeIn;
+    visibility: visible;
+}
+
+
 .thumbnail img{
     margin: 0 5px 5px 0;
 }
@@ -934,6 +952,7 @@ header .navbar-header-menu {
     visibility: hidden;
     color: black;
     text-decoration: none;
+
 }
 
 .thumbnail div img{ 
@@ -942,6 +961,8 @@ header .navbar-header-menu {
 }
 
 .thumbnail:hover div{ 
+    -webkit-animation-name: fadeIn;
+    animation-name: fadeIn;
     visibility: visible;
     top: 0;
     left: 195px;
@@ -1132,6 +1153,7 @@ footer{
     clear: both;
     padding-top:15px;
     padding-bottom:5px;
+
 }
 
 
