@@ -89,7 +89,7 @@
                     <h3 class=""> Lista degli autori</h3>
                     <form method="post" action="author" id="formSelectedAuthor" class="form-horizontal">     
                         <#if (authors?? && authors?size>0)>
-                        <table id="allAuthors" class="table-responsive table-hover table">
+                        <table id="allAuthors" class="table-responsive table-hover table pippo">
                             <thead>
                                 <tr>
                                     <th>
@@ -119,7 +119,7 @@
                                             <a href="author?authorId=${item.key}&currentNameAuthor=${item.name}&currentSurnameAuthor=${item.surname}#anchor" class="aItemCustom bold">Modifica</a>
                                         </td>
                                         <td>
-                                            <input title="Seleziona per collegare alla pubblicazione" type="checkbox" class="form-control padding-all-0" name="authorSelected" value="${item.key}" <#list publicationAuthors as item1><#if (item.key == item1.key)>checked="checked"</#if></#list>/>
+                                            <input title="Seleziona per collegare alla pubblicazione" type="checkbox" class="form-control padding-all-0 checkbox" name="authorSelected" value="${item.key}" <#list publicationAuthors as item1><#if (item.key == item1.key)>checked="checked"</#if></#list>/>
                                         </td>
                                     </tr>
                                 </#list>

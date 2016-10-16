@@ -81,3 +81,10 @@
   animation-name: fadeIn;
 }
 
+.anima{
+  -webkit-animation-duration: 0.7s;
+  animation-duration: 0.7s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+

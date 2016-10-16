@@ -34,7 +34,7 @@
                                                     <#if item.cover??>
                                                     <img src= "${strip_slashes(item.cover.uri)?html}" alt="${strip_slashes(item.cover.description)?html}" class="img-thumbnail img-responsive imageHome"/>
                                                     <#else>
-                                                    <img src= "img/come.png" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
+                                                    <img src= "img/come.png" alt="Copertina Defualt" class="img-thumbnail img-responsive imageHome"/>
                                                     </#if>
                                                     <figcaption class="caption thebox-content">
                                                         <#if (item.title?length>45)><div class="bold">${item.title[0..41]?html}...</div><#else><div class="bold">${item.title?html}</div></#if>
@@ -139,7 +139,7 @@
                                 <ul class="nodecoration">
                                 <#list activeUsers as item>
                                     <li class="nodecoration" title="Si effettua una ricerca per utente">
-                                        <a href="research?userId=${item.key}" class="userProfileHome itemMenu">${strip_slashes(item.name)}&nbsp;${strip_slashes(item.surname)}</a>
+                                        <a href="research?userId=${item.key}" class="userProfileHome itemMenu">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
                                     </li>
                                 </#list>
                                 </ul>
