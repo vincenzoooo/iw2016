@@ -11,7 +11,8 @@ var pageWidth = $(window).width();
 
 function dimentionScreen() {
     if( pageWidth > 768 ) {	
-        $('.pageContent').height(pageHeight-220);
+        var valore= pageHeight-220;
+        document.getElementById("pageContent").style.minHeight = valore+"px";
     }
 }
 
