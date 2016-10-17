@@ -76,7 +76,6 @@ public class Profile extends BiblioManagerBaseController {
             int userKey = (int) session.getAttribute("userId");
             User user = getDataLayer().getUser(userKey);
             String password = Utils.checkString(request.getParameter("password"));
-            TemplateResult res = new TemplateResult(getServletContext());
             Map<String, String> params = new HashMap<String, String>();
             params.put("name", Utils.checkString(request.getParameter("name")));
             params.put("surname", Utils.checkString(request.getParameter("surname")));
@@ -92,8 +91,6 @@ public class Profile extends BiblioManagerBaseController {
                 getDataLayer().storeUser(user);
                 request.setAttribute("userUpdated", 1);
                 request.setAttribute("user", user);
-                action_view(request, response);
-//                res.activate("profile.ftl.html", request, response);
             } else {
                 action_updateProfile(request, response);
             }
@@ -140,9 +137,7 @@ public class Profile extends BiblioManagerBaseController {
                 if(request.getParameter("update") != null){
                     action_updateProfile(request, response);
                 }
-                else{
-                    action_view(request, response);
-                }
+                action_view(request, response);
             } else {
                 action_default(request, response);
             }
