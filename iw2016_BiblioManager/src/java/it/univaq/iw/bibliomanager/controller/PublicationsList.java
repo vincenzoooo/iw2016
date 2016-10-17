@@ -57,53 +57,21 @@ public class PublicationsList extends BiblioManagerBaseController {
             request.setAttribute("publications", publications);
             filters.remove("limit");
             filters.remove("offset");
-            int publicationsNumber = getDataLayer().getPublicationsByFilters(filters).size();
-            int pageNumber = publicationsNumber / options.get("limit");
-            if(pageNumber < options.get("slice")){
-                options.put("slice", pageNumber+1);
-            }
-            if (pageNumber != 0 && publicationsNumber % options.get("limit") > 0) {
-                pageNumber++;
-            }
-            
-            int totOffset = (pageNumber - 1) * options.get("limit");
-            for (int i = pageNumber-1; i >= 0; --i) {
-                String url ="catalog?offset=" + totOffset;
-                if(orderBy < 1){
-                    url += "&orderBy=" + orderBy;
-                }
-                if (request.getAttribute("isResearch") != null && request.getAttribute("filter") != null) {
-                    url += "&isResearch=" + request.getAttribute("isResearch").toString()+"&filter="+request.getAttribute("filter").toString();
-                }
-                pages.put(i, url);
-                totOffset -= options.get("limit");
-            }
-            action_pagination_next(options, pageNumber);
-            action_pagination_previous(options, pageNumber);
-            action_pagination_first(options);
-            action_pagination_last(options, pageNumber);
-            
             request.setAttribute("isResearch", isResearch);
-            request.setAttribute("pages", getSlice(pages, options.get("start"), options.get("end")).entrySet());
-            request.setAttribute("first", pages.get(0));
-            request.setAttribute("last", pages.get(pages.size()-1));
-            int page = options.get("offset")/options.get("limit");
-            if(page > 0){
-                request.setAttribute("previous", pages.get(page-1));
-            }
-            if(page < pageNumber){
-                request.setAttribute("next", pages.get(page+1));
-            }
-            request.setAttribute("curr", page);
             action_view(request, response);
         } catch (DataLayerException ex) {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage(), 502);
         }
     }
             
-    private void action_view(HttpServletRequest request, HttpServletResponse response) {
+    private void action_view(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
+            
+            request.setAttribute("totElements", getDataLayer().getPublicationsByFilters(filters).size());
+            request.setAttribute("paginationUrl", "catalog");
+            pagination(request, response, pages, options);
+            
             res.activate("catalog.ftl.html", request, response);
         } catch (ServletException | IOException ex) {
             action_error(request, response, "Error build the template: " + ex.getMessage(), 511);

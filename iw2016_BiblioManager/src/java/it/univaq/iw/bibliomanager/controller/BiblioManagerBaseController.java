@@ -69,21 +69,41 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         }
     }
 
+    /**
+     * Get the logged user from the SESSION and set it in the request
+     * @param request 
+     * @param response
+     * @param session 
+     */
     protected void currentUser(HttpServletRequest request, HttpServletResponse response, HttpSession session) {
         try {
             int userId = (int) session.getAttribute("userId");
-            int status = (int) session.getAttribute("userStatus");
             User user = getDataLayer().getUser(userId);
             request.setAttribute("me", user);
         } catch (DataLayerException ex) {
-
+            action_error(request, response, ex.getMessage(), 500);
         }
     }
 
+    /**
+     * Set error message and code for to display it
+     * @param request
+     * @param response
+     * @param message
+     * @param code 
+     */
     protected void action_error(HttpServletRequest request, HttpServletResponse response, String message, int code) {
         (new FailureResult(getServletContext())).activate(code,message, request, response);
     }
 
+    /**
+     * Default action of the site
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     * @throws DataLayerException 
+     */
     protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Login to Biblio");
         getDataLayer().deleteIncompletePublication();
@@ -91,11 +111,26 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         res.activate("login.ftl.html", request, response);
     }
 
+    /**
+     * Redirect to the specified url
+     * @param request
+     * @param response
+     * @param url
+     * @throws ServletException
+     * @throws IOException 
+     */
     protected void action_redirect(HttpServletRequest request, HttpServletResponse response, String url) throws ServletException, IOException {
         RequestDispatcher dispatcher = getServletContext().getRequestDispatcher(url);
         dispatcher.forward(request, response);
     }
 
+    /**
+     * Verify if the passed params are empty, in that case return an error
+     * @param params
+     * @param request
+     * @param response
+     * @return 
+     */
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response){
         boolean error = false;
         for (Map.Entry<String, String> entry : params.entrySet()) {
@@ -112,6 +147,12 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         return error;
     }
 
+    /**
+     * Secure all the query from SQL injection
+     * @param param
+     * @param request
+     * @param response 
+     */
     protected void noAction(String param, HttpServletRequest request, HttpServletResponse response){
         if((param.contains("SELECT")&&param.contains("FROM"))||param.contains("DELETE FROM")||param.contains("INSERT INTO")||(param.contains("UPDATE")&&param.contains("SET"))||param.contains("CREATE TABLE")){
             try {
@@ -122,6 +163,55 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
             }
         }
     }
+    
+    /**
+     * Paginate function
+     * @param request
+     * @param response
+     * @param pages
+     * @param options 
+     */
+    protected void pagination(HttpServletRequest request, HttpServletResponse response, Map<Integer, String> pages, Map<String, Integer> options){
+        int totElements = (int)request.getAttribute("totElements");
+        int pageNumber = totElements / options.get("limit");
+        int totOffset = 0;
+        int page = options.get("offset")/options.get("limit");
+        if(totElements < options.get("end")){
+            options.put("end", totElements);
+        }
+        if(pageNumber < options.get("slice")){
+            options.put("slice", pageNumber+1);
+        }
+        for (int i = 0; i <= pageNumber; i++){
+            String editorUrl = request.getAttribute("paginationUrl") + "?offset=" + totOffset;
+            pages.put(i, editorUrl);
+            totOffset += options.get("limit");
+        }
+        action_pagination_next(options, pageNumber);
+        action_pagination_previous(options, pageNumber);
+        action_pagination_first(options);
+        action_pagination_last(options, pageNumber);
+
+        request.setAttribute("pages", getSlice(pages, options.get("start"), options.get("end")).entrySet());
+        request.setAttribute("first", pages.get(0));
+        request.setAttribute("last", pages.get(pages.size()-1));
+        
+        if(page > 0){
+            request.setAttribute("previous", pages.get(page-1));
+        }
+        if(page < pageNumber){
+            request.setAttribute("next", pages.get(page+1));
+        }
+        request.setAttribute("curr", page);
+    }
+    
+    /**
+     * Get only a portion of all calculated pages
+     * @param map
+     * @param start Start page of the pagination
+     * @param end End page of the pagination
+     * @return 
+     */
     protected Map<Integer, String> getSlice(Map<Integer, String> map, int start, int end){
         Map<Integer, String> slice = new HashMap<>();
         if(map.size()>1){
@@ -132,22 +222,41 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         return slice;
     }
     
+    /**
+     * Recalc the pagination in case of return to the first page
+     * @param options 
+     */
     protected void action_pagination_first(Map<String, Integer> options){
         int page = options.get("offset")/options.get("limit");
-        if(page+1 == 1){
+        if(page == 0){
             options.put("start", 0);
             options.put("end", options.get("slice"));
         }
     }
     
+    /**
+     * Recalc the pagination in case of go to the last page
+     * @param options
+     * @param pageNumber 
+     */
     protected void action_pagination_last(Map<String, Integer> options, int pageNumber){
         int page = options.get("offset")/options.get("limit");
-        if(page+1 == pageNumber){
-            options.put("start", pageNumber-options.get("slice"));
-            options.put("end", pageNumber);
+        if(page == pageNumber){
+            int start = pageNumber-options.get("slice");
+            if(start < 0){
+                start = 0;
+            }
+            options.put("start", start);
+            //TODO: da rivedere se invece serve pageNumber
+            options.put("end", options.get("slice"));
         }
     }
     
+    /**
+     * Recalc the pagination in case of go to next page
+     * @param options
+     * @param pageNumber 
+     */
     protected void action_pagination_next(Map<String, Integer> options,  int pageNumber){
         int offset = options.get("offset");
         int limit = options.get("limit");
@@ -176,6 +285,11 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         options.put("end", end);
     }
 
+    /**
+     * Recalc the pagination in case of go to previous page
+     * @param options
+     * @param pageNumber 
+     */
     protected void action_pagination_previous(Map<String, Integer> options, int pageNumber){
         int offset = options.get("offset");
         int limit = options.get("limit");

@@ -74,39 +74,10 @@ public class ComposeEditor extends BiblioManagerBaseController {
         TemplateResult res = new TemplateResult(getServletContext());
         List<Editor> editors = getDataLayer().getEditors(options.get("limit"), options.get("offset"));
         
-        int editorsNumber = getDataLayer().getEditors(0, 0).size();
-        if(editorsNumber < options.get("end")){
-            options.put("end", editorsNumber);
-        }
-        int pageNumber = editorsNumber / options.get("limit");
-        if(pageNumber < options.get("slice")){
-            options.put("slice", pageNumber+1);
-        }
-        if (pageNumber != 0 && editorsNumber % options.get("limit") > 0) {
-            pageNumber++;
-        }
-        int totOffset = (pageNumber - 1) * options.get("limit");
-        for (int i = pageNumber-1; i >= 0; --i) {
-            String editorUrl = "editor?offset=" + totOffset;
-            pages.put(i, editorUrl);
-            totOffset -= options.get("limit");
-        }
-        action_pagination_next(options, pageNumber);
-        action_pagination_previous(options, pageNumber);
-        action_pagination_first(options);
-        action_pagination_last(options, pageNumber);
-        request.setAttribute("pages", getSlice(pages, options.get("start"), options.get("end")).entrySet());
-        request.setAttribute("first", pages.get(0));
-        request.setAttribute("last", pages.get(pages.size()-1));
-        int page = options.get("offset")/options.get("limit");
-        if(page > 0){
-            request.setAttribute("previous", pages.get(page-1));
-        }
-        if(page < pageNumber){
-            request.setAttribute("next", pages.get(page+1));
-        }
-        request.setAttribute("curr", page);
-            
+        request.setAttribute("totElements", getDataLayer().getEditors(0, 0).size());
+        request.setAttribute("paginationUrl", "editor");
+        pagination(request, response, pages, options);
+        
         request.setAttribute("editors", editors);
         request.setAttribute("publicationId", publicationId);
         request.setAttribute("url", url);
