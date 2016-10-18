@@ -637,6 +637,10 @@ header .navbar-header-menu {
     background-color: #D94C3A;
 }
 
+#navbar{
+    background-color: #D94C3A;
+}
+
 .navbar{
     border-style: none;
     border-radius: 0px; 
