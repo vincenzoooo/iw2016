@@ -168,6 +168,7 @@ public class UpdatePublication extends BiblioManagerBaseController {
             request.setAttribute("page_title", "Modifica Pubblicazione");
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
+                currentUser(request, response, session);
                 if (request.getParameter("publicationId") != null) {
                     publicationId = Integer.parseInt(request.getParameter("publicationId"));
                 }
