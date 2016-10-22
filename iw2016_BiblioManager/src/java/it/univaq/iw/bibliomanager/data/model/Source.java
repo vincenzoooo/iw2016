@@ -33,7 +33,15 @@ public interface Source {
     String getDescription();
 
     void setDescription(String description);
+    
+    boolean getCover();
+    
+    void setCover(boolean cover);
 
+    boolean getDownload();
+    
+    void setDownload(boolean download);
+    
     Publication getPublication() throws DataLayerException;
 
     void setPublication(Publication publication);

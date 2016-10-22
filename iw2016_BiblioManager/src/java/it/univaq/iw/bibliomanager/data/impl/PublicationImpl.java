@@ -197,7 +197,7 @@ public class PublicationImpl implements Publication {
     public Source getCover() throws DataLayerException {
         if (cover == null && sources != null) {
             for (Source source : sources) {
-                if (source.getDescription().equals("copertina")) {
+                if (source.getCover()) {
                     cover = source;
                 }
             }

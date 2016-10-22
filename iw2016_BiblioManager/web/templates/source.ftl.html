@@ -84,6 +84,17 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="inputSourceCover" class="col-sm-2 control-label bold">Copertina</label>
+                            <div class="col-sm-1">
+                                <input type="checkbox" id="inputSourceCover" class="form-control" name="sourceCover" value="1"/>
+                            </div>
+                            <label for="inputSourceDownload" class="col-sm-2 control-label bold">Download</label>
+                            <div class="col-sm-1">
+                                <input type="checkbox" id="inputSourceDownload" class="form-control" name="sourceDownload" value="1"/>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">
                                 <span>
                                     <input value="Aggiungi" name="submitSource" type="submit" class="btn btn-default"/>
@@ -138,7 +149,7 @@
                                         ${strip_slashes(item.description)!"''"?html}
                                     </td>
                                     <td>
-                                        <a href="source?sourceId=${item.key}&currentTypeSource=${item.type}&currentUriSource=${item.uri}&currentFormatSource=${item.format}&currentDescriptionSource=${item.description}#anchor" class="aItemCustom bold">Modifica</a>
+                                        <a href="source?sourceId=${item.key}&currentTypeSource=${item.type}&currentUriSource=${item.uri}&currentFormatSource=${item.format}&currentDescriptionSource=${item.description}&currentCoverSource=${item.cover?then(1, 0)}&currentDownloadSource=${item.download?then(1, 0)}#anchor" class="aItemCustom bold">Modifica</a>
                                     </td>
                                 </tr>
                                 </#list>
@@ -215,6 +226,16 @@
                             <label for="updateSourceDescription" class="col-sm-2 control-label bold">Descrizione</label>
                             <div class="col-sm-6">
                                 <input id="updateSourceDescription" class="form-control" name="sourceDescription" value="${currentDescriptionSource!''?html}" placeholder="Modifica la descrizione" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="updateSourceCover" class="col-sm-2 control-label bold">Copertina</label>
+                            <div class="col-sm-1">
+                                <input type="checkbox" id="updateSourceCover" class="form-control" name="sourceCover" value="1" <#if currentCoverSource>checked="checked"</#if>/>
+                            </div>
+                            <label for="updateSourceDownload" class="col-sm-2 control-label bold">Download</label>
+                            <div class="col-sm-1">
+                                <input type="checkbox" id="updateSourceDownload" class="form-control" name="sourceDownload" value="1" <#if currentDownloadSource>checked="checked"</#if>/>
                             </div>
                         </div>
                         <div class="form-group">

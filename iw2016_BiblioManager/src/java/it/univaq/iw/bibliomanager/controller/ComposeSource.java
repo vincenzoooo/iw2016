@@ -33,12 +33,22 @@ public class ComposeSource extends BiblioManagerBaseController {
     private String currentUriSource;
     private String currentFormatSource;
     private String currentDescriptionSource;
+    private Boolean currentCoverSource;
+    private Boolean currentDownloadSource;
     private final Map<Integer, String> pages = new HashMap<>();
     private final Map<String, Integer> options = new HashMap<>();
     
     private void action_composeSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
             Source source = getDataLayer().createSource();
+            boolean isCover = false;
+            if(request.getParameter("sourceCover") != null){
+                isCover = true;
+            }
+            boolean isDownload = false;
+            if(request.getParameter("sourceDownload") != null){
+                isDownload = true;
+            }
             Map<String, String> params = new HashMap<String, String>();
             params.put("sourceType", Utils.checkString(request.getParameter("sourceType")));
             params.put("sourceUri", Utils.checkString(request.getParameter("sourceUri")));
@@ -49,6 +59,8 @@ public class ComposeSource extends BiblioManagerBaseController {
                 source.setUri(params.get("sourceUri"));
                 source.setFormat(params.get("sourceFormat"));
                 source.setDescription(params.get("sourceDescription"));
+                source.setCover(isCover);
+                source.setDownload(isDownload);
                 source.setPublication(getDataLayer().getPublication(publicationId));
                 getDataLayer().storeSource(source);
                 request.setAttribute("sourceAdded",1);
@@ -61,6 +73,14 @@ public class ComposeSource extends BiblioManagerBaseController {
     private void action_updateSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
             Source source = getDataLayer().getSource(sourceId);
+            boolean isCover = false;
+            if(request.getParameter("sourceCover") != null){
+                isCover = true;
+            }
+            boolean isDownload = false;
+            if(request.getParameter("sourceDownload") != null){
+                isDownload = true;
+            }
             Map<String, String> params = new HashMap<String, String>();
             params.put("sourceType", Utils.checkString(request.getParameter("sourceType")));
             params.put("sourceUri", Utils.checkString(request.getParameter("sourceUri")));
@@ -71,6 +91,8 @@ public class ComposeSource extends BiblioManagerBaseController {
                 source.setUri(params.get("sourceUri"));
                 source.setFormat(params.get("sourceFormat"));
                 source.setDescription(params.get("sourceDescription"));
+                source.setCover(isCover);
+                source.setDownload(isDownload);
                 source.setPublication(getDataLayer().getPublication(publicationId));
                 getDataLayer().storeSource(source);
                 request.setAttribute("sourceUpdated",1);
@@ -94,10 +116,14 @@ public class ComposeSource extends BiblioManagerBaseController {
         request.setAttribute("publicationId", publicationId);
         request.setAttribute("url", url);
         request.setAttribute("sourceId", sourceId);
-        request.setAttribute("currentDescriptionSource", currentDescriptionSource);
-        request.setAttribute("currentFormatSource", currentFormatSource);
-        request.setAttribute("currentTypeSource", currentTypeSource);
-        request.setAttribute("currentUriSource", currentUriSource);
+        if(sourceId != 0){
+            request.setAttribute("currentDescriptionSource", currentDescriptionSource);
+            request.setAttribute("currentFormatSource", currentFormatSource);
+            request.setAttribute("currentTypeSource", currentTypeSource);
+            request.setAttribute("currentUriSource", currentUriSource);
+            request.setAttribute("currentCoverSource", currentCoverSource);
+            request.setAttribute("currentDownloadSource", currentDownloadSource);
+        }
         res.activate("source.ftl.html", request, response);
     }
     
@@ -127,6 +153,12 @@ public class ComposeSource extends BiblioManagerBaseController {
                     currentUriSource = request.getParameter("currentUriSource");
                     currentFormatSource = request.getParameter("currentFormatSource");
                     currentDescriptionSource = request.getParameter("currentDescriptionSource");
+                    if(request.getParameter("currentCoverSource") != null){
+                        currentCoverSource = 1==Integer.parseInt(request.getParameter("currentCoverSource"));
+                    }
+                    if(request.getParameter("currentDownloadSource") != null){
+                        currentDownloadSource = 1==Integer.parseInt(request.getParameter("currentDownloadSource"));
+                    }
                     sourceId = Integer.parseInt(request.getParameter("sourceId"));
                 }
                 if (request.getParameter("submitSource") != null){
