@@ -22,6 +22,8 @@ public class SourceImpl implements Source {
     private String uri;
     private String format;
     private String description;
+    private boolean cover;
+    private boolean download;
     private int publication_key;
     private Publication publication;
     protected BiblioManagerDataLayer ownerDataLayer;
@@ -35,6 +37,8 @@ public class SourceImpl implements Source {
         publication_key = 0;
         publication = null;
         description = "";
+        cover = false;
+        download = false;
     }
 
     @Override
@@ -87,6 +91,26 @@ public class SourceImpl implements Source {
         this.description = description;
     }
 
+    @Override
+    public boolean getCover(){
+        return cover;
+    }
+    
+    @Override
+    public void setCover(boolean cover){
+        this.cover = cover;
+    }
+    
+    @Override
+    public boolean getDownload(){
+        return download;
+    }
+    
+    @Override
+    public void setDownload(boolean download){
+        this.download = download;
+    }
+    
     @Override
     public Publication getPublication() throws DataLayerException {
         if (publication == null && publication_key > 0) {

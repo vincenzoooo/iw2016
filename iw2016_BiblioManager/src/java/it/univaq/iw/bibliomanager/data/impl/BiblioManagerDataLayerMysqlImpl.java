@@ -108,8 +108,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.dIncompletePublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione WHERE incompleta = 1 AND idPubblicazione = ? AND (timestamp < ? OR timestamp IS NULL)");
             this.sSources = connection.prepareStatement("SELECT * FROM iw2016.sorgente");
             this.sSourceById = connection.prepareStatement("SELECT * FROM iw2016.sorgente WHERE idsorgente = ?");
-            this.uSource = connection.prepareStatement("UPDATE iw2016.sorgente SET tipo = ?, URI = ?, formato = ?, descrizione = ?, pubblicazione = ? WHERE idsorgente = ?");
-            this.iSource = connection.prepareStatement("INSERT INTO iw2016.sorgente (tipo, URI, formato, descrizione, pubblicazione) VALUES (?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.uSource = connection.prepareStatement("UPDATE iw2016.sorgente SET tipo = ?, URI = ?, formato = ?, descrizione = ?, copertina=?, download=?, pubblicazione = ? WHERE idsorgente = ?");
+            this.iSource = connection.prepareStatement("INSERT INTO iw2016.sorgente (tipo, URI, formato, descrizione, copertina, download, pubblicazione) VALUES (?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.dSource = connection.prepareStatement("DELETE FROM iw2016.sorgente WHERE idsorgente = ?");
             this.dSourceByPublication = connection.prepareStatement("DELETE FROM iw2016.sorgente WHERE pubblicazione = ?");
             this.sReprintById = connection.prepareStatement("SELECT * FROM iw2016.ristampa WHERE idristampa = ?");
@@ -304,6 +304,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             source.setUri(rs.getString("URI"));
             source.setFormat(rs.getString("formato"));
             source.setDescription(rs.getString("descrizione"));
+            source.setCover(rs.getBoolean("copertina"));
             return source;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
@@ -732,7 +733,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                     query += " AND p.data_pubblicazione < '"+SecurityLayer.addSlashes(entry.getValue())+"' ";
                 }
                 if(entry.getKey().equals("download") && entry.getValue() != null){
-                    query += " AND sr.tipo = '"+SecurityLayer.addSlashes(entry.getValue())+"' ";
+                    query += " AND sr.download = 1 ";
                 }
                 if(entry.getKey().equals("utente") && entry.getValue() != null){
                     query += " AND CONCAT(u.nome, ' ',u.cognome) LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
@@ -1830,8 +1831,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uSource.setString(2, source.getUri());
                 uSource.setString(3, source.getFormat());
                 uSource.setString(4, source.getDescription());
-                uSource.setInt(5, source.getPublication().getKey());
-                uSource.setInt(6, key);
+                uSource.setBoolean(5, source.getCover());
+                uSource.setBoolean(6, source.getDownload());
+                uSource.setInt(7, source.getPublication().getKey());
+                uSource.setInt(8, key);
 
                 uSource.executeUpdate();
             } else { //insert
@@ -1839,7 +1842,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 iSource.setString(2, source.getUri());
                 iSource.setString(3, source.getFormat());
                 iSource.setString(4, source.getDescription());
-                iSource.setInt(5, source.getPublication().getKey());
+                iSource.setBoolean(5, source.getCover());
+                iSource.setBoolean(6, source.getDownload());
+                iSource.setInt(7, source.getPublication().getKey());
 
                 if (iSource.executeUpdate() == 1) {
                     keys = iSource.getGeneratedKeys();

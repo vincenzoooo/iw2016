@@ -51,7 +51,7 @@
                         <#if publication.cover??>
                         <img src= "${strip_slashes(publication.cover.uri)?html}" alt="${strip_slashes(publication.cover.description)?html}" class="img-thumbnail img-responsive"/>
                         <#else>
-                        <img src="img/book.png" alt="Copertina Defualt" class="img-thumbnail img-responsive"/>
+                        <img src="img/book.png" alt="Copertina Default" class="img-thumbnail img-responsive"/>
                         </#if>
                     </figure>
                 </div>
@@ -68,16 +68,6 @@
                     <div class="titlePublication">
                         <h1 class="title">
                             ${strip_slashes(publication.title!'')?html}
-                            
-                            <!--
-                            <#if (userStatus?? && userStatus)>
-                            <span>
-                            <a href="managePublication?generalData&publicationId=${publication.key}">
-                                <i class="fa fa-pencil" aria-hidden="true"></i>
-                            </a>
-                            </span>
-                            </#if>
-                            -->
                         </h1>
                     </div>
                     <div class="publiher margin-top-10">
