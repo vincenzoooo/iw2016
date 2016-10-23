@@ -14,12 +14,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.Session;
-import javax.mail.Transport;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 
 /**
  *
@@ -131,42 +125,6 @@ public class Utils {
         byte[] salt = new byte[16];
         sr.nextBytes(salt);
         return salt;
-    }
-
-    /**
-     * Funzione per l'invio della email
-     *
-     * @param emailTo
-     * @param text
-     * @throws MessagingException
-     */
-    public static void sendEmail(String emailTo, String text) throws MessagingException {
-        if (checkEmail(emailTo)) {
-
-            // Sender's email ID needs to be mentioned
-            String from = "web@gmail.com"; //TODO
-
-            String host = "localhost";
-
-            Properties properties = System.getProperties();
-
-            properties.setProperty("mail.smtp.host", host);
-
-            Session session = Session.getDefaultInstance(properties);
-
-            MimeMessage message = new MimeMessage(session);
-
-            message.setFrom(new InternetAddress(from));
-
-            message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailTo));
-
-            message.setSubject("Reset password for Bibliomanager");
-
-            message.setText(text);
-
-            Transport.send(message);
-
-        }
     }
 
     private static String convertToHex(byte[] data) {

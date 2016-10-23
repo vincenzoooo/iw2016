@@ -11,7 +11,6 @@ import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
-import javax.mail.MessagingException;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,7 +41,7 @@ public class Reset extends BiblioManagerBaseController {
     }
 
     private void action_isUser(HttpServletRequest request, HttpServletResponse response)
-            throws DataLayerException, MessagingException, ServletException, IOException {
+            throws DataLayerException, ServletException, IOException {
         String email = Utils.checkString(request.getParameter("email"));
         User user = getDataLayer().getUser(email);
         if (user != null) {
@@ -86,7 +85,7 @@ public class Reset extends BiblioManagerBaseController {
                 user = null;
                 action_default(request, response);
             }
-        } catch (DataLayerException | IOException | MessagingException | NoSuchAlgorithmException | ServletException ex) {
+        } catch (DataLayerException | IOException |  NoSuchAlgorithmException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
 
