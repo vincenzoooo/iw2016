@@ -106,7 +106,7 @@
                     </ul>
                 </div>
                 <#else>
-                    Nessun utente presente.
+                    Nessun utente amministratore presente.
                 </#if>
             </div>
             
@@ -116,24 +116,26 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                             <ul class="nodecoration">
-                            <#list activeUsers as item>
-                                <#if (item.state==1)>
-                                    <li class="nodecoration">
-                                        <#if item.key==me.key>
-                                            <a href="profile" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
-                                        <#else>
-                                            <a href="profile?userId=${item.key}" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
-                                        </#if>
-                                        <#if (me.state==0)>
-                                        <a href="community?op=2&user=${item.key}">
-                                            <i class="fa fa-angle-double-down degrade" aria-hidden="true"></i>
-                                        </a>
-                                        </#if>
-                                    </li>
-                                </#if>
+                            <#if (activeUsers?? && activeUsers?size>0)>
+                                <#list activeUsers as item>
+                                    <#if (item.state==1)>
+                                        <li class="nodecoration">
+                                            <#if item.key==me.key>
+                                                <a href="profile" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                            <#else>
+                                                <a href="profile?userId=${item.key}" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                            </#if>
+                                            <#if (me.state==0)>
+                                            <a href="community?op=2&user=${item.key}">
+                                                <i class="fa fa-angle-double-down degrade" aria-hidden="true"></i>
+                                            </a>
+                                            </#if>
+                                        </li>
+                                    </#if>
+                                </#list>
                             <#else>
-                                <li class="nodecoration">Nessun utente presente.</li>
-                            </#list>
+                                <li class="nodecoration">Nessun utente attivo presente.</li>
+                            </#if>
                             </ul>
                         </div>
                     </div>
@@ -143,24 +145,26 @@
                     <div class="row">
                         <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
                             <ul class="nodecoration">
-                            <#list passiveUsers as item>
-                            <#if (item.state==2)>
-                                <li class="nodecoration">
-                                    <#if item.key==me.key>
-                                        <a href="profile" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
-                                    <#else>
-                                        <a href="profile?userId=${item.key}" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                            <#if (activeUsers?? && activeUsers?size>0)>
+                                <#list passiveUsers as item>
+                                    <#if (item.state==2)>
+                                        <li class="nodecoration">
+                                            <#if item.key==me.key>
+                                                <a href="profile" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                            <#else>
+                                                <a href="profile?userId=${item.key}" class="community-user itemCommunity">${strip_slashes(item.surname?html)?capitalize}&nbsp;${strip_slashes(item.name?html)?capitalize}</a>
+                                            </#if>
+                                            <#if (me.state<2)>
+                                            <a href="community?op=1&user=${item.key}">
+                                                <i class="fa fa-angle-double-up promote" aria-hidden="true"></i>
+                                            </a>
+                                            </#if>
+                                        </li>
                                     </#if>
-                                    <#if (me.state<2)>
-                                    <a href="community?op=1&user=${item.key}">
-                                        <i class="fa fa-angle-double-up promote" aria-hidden="true"></i>
-                                    </a>
-                                    </#if>
-                                </li>
-                            </#if>
+                                </#list>
                             <#else>
-                                <li class="nodecoration">Nessun utente presente.</li>
-                            </#list>
+                                <li class="nodecoration">Nessun utente passivo presente.</li>
+                            </#if>
                             </ul>
                         </div>
                     </div>
