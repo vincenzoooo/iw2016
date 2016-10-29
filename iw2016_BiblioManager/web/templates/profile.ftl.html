@@ -36,7 +36,7 @@
                     <div class="col-lg-2 col-md-3 col-sm-3">
                         <img src="img/user2.png" alt="Foto profilo utente" class="imgprofile margin-bot-20">
                     </div>
-                    <div class="col-sm-3">
+                    <div class="col-sm-6">
                         <div class="padding-bottom-10">
                             <span class="bold">Nome:</span>
                             <span class="">${strip_slashes(user.name?html)?capitalize}</span>
@@ -106,21 +106,6 @@
                     </div>
                 </#list>
                 </div>
-                 <!--
-                <#if (totpages?? && totpages>1)>
-                    <div class="row clear padding10">Vai alla pagina:         
-                        <span id="paging">
-                            <#list 1..totpages as page>
-                            <#if (page == curpage)>
-                            <span class="pagerCurrent">${page}</span>
-                            <#else>
-                            <a class="pagerLink" href="?page=${page}&userId=${user.id}#link">${page}</a>
-                            </#if>       
-                            </#list>
-                        </span>
-                    </div>
-                </#if>
-                 -->
                 <#else>
                     <#if me.state==0 || me.state==1>
                     L'utente non ha inserito nessuna pubblicazione.
