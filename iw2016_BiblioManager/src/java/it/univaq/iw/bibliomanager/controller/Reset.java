@@ -22,14 +22,27 @@ import it.univaq.iw.bibliomanager.data.model.User;
  */
 public class Reset extends BiblioManagerBaseController {
 
+    /**
+     * Utente
+     */
     private User user = null;
+    
+    /**
+     * Verifica e modifica la password dell'utente
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException
+     * @throws DataLayerException
+     * @throws NoSuchAlgorithmException 
+     */
     private void action_reset(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, DataLayerException, NoSuchAlgorithmException {
-            TemplateResult res = new TemplateResult(getServletContext());
             String newPassword = Utils.checkString(request.getParameter("password"));
             String newRePassword = Utils.checkString(request.getParameter("re-password"));
             if(newPassword.equals(newRePassword) && user != null){
                 user.setPassword(Utils.SHA1(newPassword));
+                user.setDirty(true);
                 getDataLayer().storeUser(user);
                 request.setAttribute("resetted", 1);
                 action_redirect(request, response, "/login");
@@ -40,12 +53,20 @@ public class Reset extends BiblioManagerBaseController {
             }
     }
 
+    /**
+     * Verifica se l'email passata corrisponde ad un utente registrato
+     * @param request
+     * @param response
+     * @throws DataLayerException
+     * @throws ServletException
+     * @throws IOException 
+     */
     private void action_isUser(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException, ServletException, IOException {
         String email = Utils.checkString(request.getParameter("email"));
-        User user = getDataLayer().getUser(email);
-        if (user != null) {
-            this.user = user;
+        User registeredUser = getDataLayer().getUser(email);
+        if (registeredUser != null) {
+            this.user = registeredUser;
         }
         else{
             request.setAttribute("errorReset", "L'email non è stata registrata. Immetere una e-mail valita.");
@@ -53,6 +74,14 @@ public class Reset extends BiblioManagerBaseController {
         action_default(request, response);
     }
 
+    /**
+     * Compila il template di default da restituire a video
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     * @throws DataLayerException 
+     */
     @Override
     protected void action_default(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Reset");
@@ -88,17 +117,5 @@ public class Reset extends BiblioManagerBaseController {
         } catch (DataLayerException | IOException |  NoSuchAlgorithmException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
-
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }
-
 }

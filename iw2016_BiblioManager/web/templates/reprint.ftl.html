@@ -8,28 +8,7 @@
             </div>
         </div>
         
-        <div class="section section-pageReprint-allert">
-            <#if reprintUpdated??>    
-            <div class="row margin-top-20">
-                <div class="col-xs-12">
-                    <div class="alert alert-success alert-dismissible fadeIn animated">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Modifica avvenuta con successo.
-                    </div>
-                </div>
-            </div>
-            </#if>
-            <#if reprintAdded??>    
-            <div class="row margin-top-20">
-                <div class="col-xs-12">
-                    <div class="alert alert-success alert-dismissible fadeIn animated">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Inserimento avvenuto con successo.
-                    </div>
-                </div>
-            </div>
-            </#if>
-        </div>
+        <#include "/commons/notifyMessage.ftl.html">
         
         <div class="section section-pageReprint-insertReprint">
             <div class="row">
@@ -101,6 +80,7 @@
                                         ${strip_slashes(item.date)!"''"?html}
                                     <td>
                                         <a href="reprint?reprintId=${item.key}&currentNumberReprint=${item.number}&currentDateReprint=${item.date}#anchor" class="aItemCustom bold">Modifica</a>
+                                        <a href="reprint?reprintToDelete=${item.key}" class="aItemCustom bold">Elimina</a>
                                     </td>
                                 </tr>
                                 </#list>
@@ -158,14 +138,24 @@
                             <label for="updateReprintNumber" class="col-sm-2 control-label bold">Numero</label>
                             <div class="col-sm-6">
                                 <input name="reprintId" value="${reprintId!''?html}" type="hidden"/>
-                                <input id="updateReprintNumber" class="form-control" name="reprintNumber" value="${reprint.number!''?html}" placeholder="Modifica il numero di ristampa" />
+                                <input id="updateReprintNumber" class="form-control" name="reprintNumber" value="<#if reprint.number==0><#else>${reprint.number!''?html}</#if>" placeholder="Modifica il numero di ristampa" />
                             </div>
+                            <#if errorUpdateReprintNumber??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorUpdateReprintNumber?html}
+                            </div>
+                            </#if>
                         </div>
                         <div class="form-group">
                             <label for="updateReprintDate" class="col-sm-2 control-label bold">Data</label>
                             <div class="col-sm-6">
-                                <input id="updateReprintDate" class="form-control" name="reprintDate" value="${reprint.date?string["dd-MM-yyyy"]}" placeholder="Modifica la data di ristampa" />
+                                <input id="updateReprintDate" class="form-control" name="reprintDate" value="<#if reprint.date??>${reprint.date?string['dd-MM-yyyy']}</#if>" placeholder="Modifica la data di ristampa" />
                             </div>
+                            <#if errorUpdateReprintDate??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorUpdateReprintDate?html}
+                            </div>
+                            </#if>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">

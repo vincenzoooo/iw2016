@@ -24,6 +24,14 @@ import javax.servlet.http.HttpSession;
  */
 public class Home extends BiblioManagerBaseController {
 
+    /**
+     * Compila i template da restituire a video
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException
+     * @throws DataLayerException 
+     */
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, DataLayerException {
         request.setAttribute("page_title", "Homepage");
         TemplateResult res = new TemplateResult(getServletContext());
@@ -61,15 +69,4 @@ public class Home extends BiblioManagerBaseController {
             action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

@@ -23,4 +23,9 @@ public interface Keyword {
     void setName(String name);
 
     void copyFrom(Keyword metadata) throws DataLayerException;
+    
+    void setDirty(boolean dirty);
+
+    boolean isDirty();
+    
 }

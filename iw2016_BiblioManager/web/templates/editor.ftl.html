@@ -8,28 +8,7 @@
             </div>
         </div>
         
-         <div class="section section-pageEditor-allert">
-            <#if editorUpdated??>    
-            <div class="row margin-top-20">
-                <div class="col-xs-12">
-                    <div class="alert alert-success alert-dismissible fadeIn animated">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Modifica avvenuta con successo.
-                    </div>
-                </div>
-            </div>
-            </#if>
-            <#if editorAdded??>    
-            <div class="row margin-top-20">
-                <div class="col-xs-12">
-                    <div class="alert alert-success alert-dismissible fadeIn animated">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Inserimento avvenuto con successo.
-                    </div>
-                </div>
-            </div>
-            </#if>
-        </div>
+        <#include "/commons/notifyMessage.ftl.html">
         
         <div class="section section-pageEditor-insertEditor">
             <div class="row">
@@ -85,6 +64,7 @@
                                     </td>
                                     <td>
                                         <a href="editor?editorId=${item.key}&currentEditor=${item.name}#anchor" class="aItemCustom bold">Modifica</a>
+                                        <a href="editor?editorToDelete=${item.key}" class="aItemCustom bold">Elimina</a>
                                     </td>
                                 </tr>
                             </#list>
@@ -143,6 +123,11 @@
                                 <input name="editorId" value="${editorId!''?html}" type="hidden"/>
                                 <input id="updateEditorName" class="form-control" name="editorName" value="${currentEditor!''?html}" placeholder="Modifica l'editore" />
                             </div>
+                            <#if errorUpdateEditorName??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorUpdateEditorName?html}
+                            </div>
+                            </#if>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">

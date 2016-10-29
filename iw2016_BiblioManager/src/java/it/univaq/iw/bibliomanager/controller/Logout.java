@@ -19,6 +19,14 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class Logout extends BiblioManagerBaseController {
 
+    /**
+     * Elimina la sessione e reindirizza alla pagina di login
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException
+     * @throws DataLayerException 
+     */
     private void action_logout(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, DataLayerException {
         SecurityLayer.disposeSession(request);
         action_default(request, response);
@@ -45,15 +53,4 @@ public class Logout extends BiblioManagerBaseController {
             action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }
-
 }

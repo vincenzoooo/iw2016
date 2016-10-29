@@ -33,18 +33,22 @@ public interface Source {
     String getDescription();
 
     void setDescription(String description);
-    
+
     boolean getCover();
-    
+
     void setCover(boolean cover);
 
     boolean getDownload();
-    
-    void setDownload(boolean download);
-    
-    Publication getPublication() throws DataLayerException;
 
-    void setPublication(Publication publication);
+    void setDownload(boolean download);
+
+    int getPublicationKey();
+
+    void setPublicationKey(int publication_key);
 
     void copyFrom(Source source) throws DataLayerException;
+    
+    void setDirty(boolean dirty);
+
+    boolean isDirty();
 }

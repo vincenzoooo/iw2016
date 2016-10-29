@@ -34,7 +34,7 @@ public interface History {
     int getPublicationKey();
 
     void setPublicationKey(int publication_key);
-    
+
     String getPublicationTitle();
 
     void setPublicationTitle(String publication_key);
@@ -44,4 +44,8 @@ public interface History {
     void setUser(User user);
 
     void copyFrom(History history) throws DataLayerException;
+    
+    void setDirty(boolean dirty);
+
+    boolean isDirty();
 }

@@ -20,6 +20,7 @@ public class SectionImpl implements Section {
     private int number;
     private String title;
     private int chapter_key;
+    private boolean dirty;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public SectionImpl(BiblioManagerDataLayer ownerDataLayer) {
@@ -28,6 +29,7 @@ public class SectionImpl implements Section {
         this.number = 0;
         this.title = "";
         chapter_key = 0;
+        dirty = false;
     }
 
     @Override
@@ -71,10 +73,21 @@ public class SectionImpl implements Section {
     }
 
     @Override
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    @Override
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    @Override
     public void copyFrom(Section section) throws DataLayerException {
         key = section.getKey();
         number = section.getNumber();
         title = section.getTitle();
         chapter_key = section.getChapterKey();
+        dirty = false;
     }
 }

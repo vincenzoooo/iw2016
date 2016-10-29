@@ -25,8 +25,13 @@ import java.util.Map;
  */
 public class Register extends BiblioManagerBaseController {
 
-    private void action_register(HttpServletRequest request, HttpServletResponse response)
-    {
+    /**
+     * Verifica e salva i dati di un nuovo utente
+     *
+     * @param request
+     * @param response
+     */
+    private void action_register(HttpServletRequest request, HttpServletResponse response) {
         try {
             Map<String, String> params = new HashMap<String, String>();
             params.put("name", Utils.checkString(request.getParameter("name")));
@@ -59,68 +64,81 @@ public class Register extends BiblioManagerBaseController {
         }
     }
 
+    /**
+     * Validatore dei dati
+     *
+     * @param params
+     * @param request
+     * @param response
+     * @return
+     */
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = super.validator(params, request, response);
-        if(!error){
-        User user = null;
-        try {
-            String password = params.get("password");
-            String rePassword = params.get("re-password");
-            String email = params.get("email");
-            String reEmail = params.get("re-email");
-            if (params.get("name") == null) {
-                request.setAttribute("errorName", "Nome non valorizzato");
-                error = true;
+        if (!error) {
+            User user = null;
+            try {
+                String password = params.get("password");
+                String rePassword = params.get("re-password");
+                String email = params.get("email");
+                String reEmail = params.get("re-email");
+                if (params.get("name") == null) {
+                    request.setAttribute("errorName", "Nome non valorizzato");
+                    error = true;
+                }
+                if (params.get("surname") == null) {
+                    request.setAttribute("errorSurname", "Cognome non valorizzato");
+                    error = true;
+                }
+                if (password == null || rePassword == null) {
+                    request.setAttribute("errorPassword", "Password o Repassword non valorizzato");
+                    error = true;
+                } else if (!password.equals(rePassword)) {
+                    request.setAttribute("errorPassword", "I campi Password e Repassword non sono uguali");
+                    error = true;
+                }
+                if (email == null || reEmail == null) {
+                    request.setAttribute("errorEmail", "Email non valorizzata");
+                    error = true;
+                } else if (!email.equals(reEmail)) {
+                    request.setAttribute("errorEmail", "I campi email e Reemail non sono uguali");
+                    error = true;
+                } else {
+                    user = getDataLayer().getUser(email);
+                }
+                if (params.get("privacy") == null) {
+                    request.setAttribute("errorPrivacy", "Bisogna accettare i termini di legge sulla privacy");
+                    error = true;
+                }
+                if (!Utils.checkEmail(email)) {
+                    request.setAttribute("errorEmail", "L'Email inserita non è valida");
+                    error = true;
+                }
+                if (user != null) {
+                    request.setAttribute("errorEmail", "Questa email è già registrata");
+                    error = true;
+                }
+            } catch (DataLayerException ex) {
+                action_error(request, response, "Data layer exception: " + ex.getMessage(), 503);
             }
-            if (params.get("surname") == null) {
-                request.setAttribute("errorSurname", "Cognome non valorizzato");
-                error = true;
-            }
-
-            if (password == null || rePassword == null) {
-                request.setAttribute("errorPassword", "Password o Repassword non valorizzato");
-                error = true;
-            } else if (!password.equals(rePassword)) {
-                request.setAttribute("errorPassword", "I campi Password e Repassword non sono uguali");
-                error = true;
-            }
-
-            if (email == null || reEmail == null) {
-                request.setAttribute("errorEmail", "Email non valorizzata");
-                error = true;
-            } else if (!email.equals(reEmail)) {
-                request.setAttribute("errorEmail", "I campi email e Reemail non sono uguali");
-                error = true;
-            } else {
-                user = getDataLayer().getUser(email);
-            }
-            if (params.get("privacy") == null) {
-                request.setAttribute("errorPrivacy", "Bisogna accettare i termini di legge sulla privacy");
-                error = true;
-            }
-            if (!Utils.checkEmail(email)) {
-                request.setAttribute("errorEmail", "L'Email inserita non è valida");
-                error = true;
-            }
-            if (user != null) {
-                request.setAttribute("errorEmail", "Questa email è già registrata");
-                error = true;
-            }
-        } catch (DataLayerException ex) {
-            action_error(request, response,"Data layer exception: " + ex.getMessage(), 503);;
-        }
         }
         return error;
     }
 
+    /**
+     * Compila il template di default da restituire a video
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException 
+     */
     @Override
     protected void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         request.setAttribute("page_title", "Register");
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("registration.ftl.html", request, response);
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -141,16 +159,5 @@ public class Register extends BiblioManagerBaseController {
         } catch (IOException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
-
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
     }
 }

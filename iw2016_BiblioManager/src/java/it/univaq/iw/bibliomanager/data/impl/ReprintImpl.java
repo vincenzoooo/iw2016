@@ -21,6 +21,7 @@ public class ReprintImpl implements Reprint {
     private int number;
     private Date date;
     private int publication_key;
+    private boolean dirty;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public ReprintImpl(BiblioManagerDataLayer ownerDataLayer) {
@@ -28,6 +29,7 @@ public class ReprintImpl implements Reprint {
         key = 0;
         number = 0;
         date = null;
+        dirty = false;
     }
 
     @Override
@@ -71,10 +73,21 @@ public class ReprintImpl implements Reprint {
     }
 
     @Override
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    @Override
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    @Override
     public void copyFrom(Reprint reprint) throws DataLayerException {
         key = reprint.getKey();
         date = reprint.getDate();
         number = reprint.getNumber();
         publication_key = reprint.getPublicationKey();
+        dirty = false;
     }
 }

@@ -19,7 +19,7 @@ public class AuthorImpl implements Author {
     private int key;
     private String name;
     private String surname;
-
+    private boolean dirty;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public AuthorImpl(BiblioManagerDataLayer ownerDataLayer) {
@@ -27,6 +27,7 @@ public class AuthorImpl implements Author {
         this.key = 0;
         this.name = "";
         this.surname = "";
+        dirty = false;
     }
 
     @Override
@@ -60,9 +61,20 @@ public class AuthorImpl implements Author {
     }
 
     @Override
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    @Override
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    @Override
     public void copyFrom(Author author) throws DataLayerException {
         key = author.getKey();
         name = author.getName();
         surname = author.getSurname();
+        dirty = false;
     }
 }

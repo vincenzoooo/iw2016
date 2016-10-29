@@ -18,12 +18,14 @@ public class EditorImpl implements Editor {
 
     private int key;
     private String name;
+    private boolean dirty;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public EditorImpl(BiblioManagerDataLayer ownerDataLayer) {
         this.ownerDataLayer = ownerDataLayer;
         key = 0;
         name = "";
+        dirty = false;
     }
 
     @Override
@@ -47,8 +49,19 @@ public class EditorImpl implements Editor {
     }
 
     @Override
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    @Override
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    @Override
     public void copyFrom(Editor editor) throws DataLayerException {
         key = editor.getKey();
         name = editor.getName();
+        dirty = false;
     }
 }

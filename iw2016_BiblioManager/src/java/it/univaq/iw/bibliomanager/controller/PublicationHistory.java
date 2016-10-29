@@ -25,9 +25,20 @@ import javax.servlet.http.HttpSession;
  */
 public class PublicationHistory extends BiblioManagerBaseController {
 
+    /**
+     * Pagine
+     */
     private final Map<Integer, String> pages = new HashMap<>();
+    /**
+     * Opzioni di paginazione
+     */
     private final Map<String, Integer> options = new HashMap<>();
     
+    /**
+     * Compila i template da restituire a video
+     * @param request
+     * @param response 
+     */
     private void action_view(HttpServletRequest request, HttpServletResponse response){
         try {
             TemplateResult res = new TemplateResult(getServletContext());
@@ -80,15 +91,5 @@ public class PublicationHistory extends BiblioManagerBaseController {
         } catch (DataLayerException | IOException | ServletException ex) {
             action_error(request, response, "Error" + ex.getMessage(), 501);
         }
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
     }
 }

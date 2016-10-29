@@ -27,4 +27,8 @@ public interface Author {
     void setSurname(String surname);
 
     void copyFrom(Author author) throws DataLayerException;
+    
+    void setDirty(boolean dirty);
+
+    boolean isDirty();
 }

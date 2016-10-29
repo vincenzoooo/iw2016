@@ -27,13 +27,39 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeEditor extends BiblioManagerBaseController {
 
+    private final String updateMessage = "Modifica avvenuta con successo.";
+    private final String addMessage = "Inserimento avvenuto con successo.";
+    private final String deleteMessage = "Editore eliminato con successo.";
+    private final String errorDeleteMessage = "Non è possibile eliminare l'editore. È collegato ad almeno una pubblicazione.";
+    /**
+     * Pubblicazione
+     */
     private int publicationId;
+    /**
+     * Url da cui proviene la richiesta
+     */
     private String url;
+    /**
+     * Editore
+     */
     private int editorId;
+    /**
+     * Dati dell'editore che si vuole aggiornare
+     */
     private String currentEditor;
+    /**
+     * Pagine
+     */
     private final Map<Integer, String> pages = new HashMap<>();
+    /**
+     * Configurazione per la paginazione
+     */
     private final Map<String, Integer> options = new HashMap<>();
-    
+    /**
+     * Verifica e salva un nuovo editore
+     * @param request
+     * @param response 
+     */
     private void action_composeEditor(HttpServletRequest request, HttpServletResponse response) {
         try {
             Editor editor = getDataLayer().createEditor();
@@ -42,7 +68,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
             if (!validator(params, request, response)) {
                 editor.setName(params.get("editorName"));
                 getDataLayer().storeEditor(editor);
-                request.setAttribute("editorAdded", 1);
+                action_createNotifyMessage(request, response, SUCCESS, addMessage, true);
                 Publication publication = getDataLayer().getPublication(publicationId);
                 publication.setEditor(editor);
                 getDataLayer().storePublication(publication);
@@ -51,16 +77,23 @@ public class ComposeEditor extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare l'editore: " + ex.getMessage(), 510);
         }
     }
-
+/**
+ * Verifica e salva le modifica di un editore
+ * @param request
+ * @param response 
+ */
     private void action_updateEditor(HttpServletRequest request, HttpServletResponse response) {
         try {
             Editor editor = getDataLayer().getEditor(editorId);
             Map<String, String> params = new HashMap<String, String>();
-            params.put("editorName", Utils.checkString(request.getParameter("editorName")));
+            params.put("updateEditorName", Utils.checkString(request.getParameter("editorName")));
             if (!validator(params, request, response)) {
-                editor.setName(params.get("editorName"));
+                if(!editor.getName().equals(params.get("updateEditorName"))){
+                    editor.setName(params.get("updateEditorName"));
+                    editor.setDirty(true);
+                }
                 getDataLayer().storeEditor(editor);
-                request.setAttribute("editorUpdated", 1);
+                action_createNotifyMessage(request, response, SUCCESS, updateMessage, true);
                 request.setAttribute("saveResult", "Salvataggio effettuato con successo");
                 editorId = 0;
             }
@@ -68,7 +101,33 @@ public class ComposeEditor extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare l'editore: " + ex.getMessage(), 510);
         }
     }
-
+    /**
+     * Delete the specified Editor
+     *
+     * @param request
+     * @param response
+     * @throws DataLayerException
+     */
+    private void action_deleteEditor(HttpServletRequest request, HttpServletResponse response)
+            throws DataLayerException {
+        int deleted = 0;
+        Editor editor = getDataLayer().getEditor((int) request.getAttribute("editorToDelete"));
+        deleted = getDataLayer().deleteEditor(editor);
+        if(deleted == 0){
+            action_createNotifyMessage(request, response, ERROR, errorDeleteMessage, true);
+        }
+        else{
+            action_createNotifyMessage(request, response, SUCCESS, deleteMessage, true);
+        }
+    }
+/**
+ * Compila i template da restituire a video
+ * @param request
+ * @param response
+ * @throws ServletException
+ * @throws IOException
+ * @throws DataLayerException 
+ */
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Gestione Editore");
         TemplateResult res = new TemplateResult(getServletContext());
@@ -107,9 +166,13 @@ public class ComposeEditor extends BiblioManagerBaseController {
                 if(request.getAttribute("url") != null){
                     url = (String) request.getAttribute("url");
                 }
-                if (request.getParameter("editorId") != null) {
+                if (editorId == 0 && request.getParameter("editorId") != null) {
                     currentEditor = request.getParameter("currentEditor");
                     editorId = Integer.parseInt(request.getParameter("editorId"));
+                }
+                if (request.getParameter("editorToDelete") != null) {
+                    request.setAttribute("editorToDelete", Integer.parseInt(request.getParameter("editorToDelete")));
+                    action_deleteEditor(request, response);
                 }
                 if (request.getParameter("submitEditor") != null){
                     if(editorId == 0) {

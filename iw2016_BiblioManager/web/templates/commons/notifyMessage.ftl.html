@@ -1,0 +1,12 @@
+ <#if haveNotify??>
+    <div class="section"> 
+        <div class="row ${notifyMargin!''?html}">
+            <div class="col-xs-12">
+                <div class="alert ${notifyClass?html} alert-dismissible fadeIn animated">
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    ${notifyMessage}
+                </div>
+            </div>
+        </div> 
+    </div>
+</#if>

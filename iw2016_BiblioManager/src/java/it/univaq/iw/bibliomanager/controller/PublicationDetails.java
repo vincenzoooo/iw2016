@@ -25,6 +25,11 @@ import javax.servlet.http.HttpSession;
  */
 public class PublicationDetails extends BiblioManagerBaseController {
 
+    /**
+     * Compila i template da restituire a video
+     * @param request
+     * @param response 
+     */
     private void action_view(HttpServletRequest request, HttpServletResponse response)
     {
         try {
@@ -52,17 +57,29 @@ public class PublicationDetails extends BiblioManagerBaseController {
         }
     }
 
+    /**
+     * Compila la lista delle recensioni
+     * @param request
+     * @param response
+     * @throws DataLayerException 
+     */
     private void action_viewReviews(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         List<Review> reviews = getDataLayer().getReviews(Integer.parseInt(request.getParameter("publicationId")),0,0);
         request.setAttribute("reviews", reviews);
     }
-    
+    /**
+     * Verifica e aggiunge il consiglio di un utente
+     * @param request
+     * @param response
+     * @throws DataLayerException 
+     */
     private void action_like(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         HttpSession session = SecurityLayer.checkSession(request);
         boolean liked = getDataLayer().getUsersLike(Integer.parseInt(request.getParameter("publicationId")), (int) session.getAttribute("userId"));
         if(!liked){
             Publication publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("publicationId")));
             publication.setLike(1);
+            publication.setDirty(true);
             getDataLayer().storePublication(publication);
             getDataLayer().storeLike(Integer.parseInt(request.getParameter("publicationId")), (int) session.getAttribute("userId"));
         }
@@ -94,15 +111,5 @@ public class PublicationDetails extends BiblioManagerBaseController {
         } catch (DataLayerException | IOException | NumberFormatException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
     }
 }

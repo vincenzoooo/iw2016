@@ -164,15 +164,15 @@ public class PublicationImpl implements Publication {
     }
 
     @Override
-    public Timestamp getTimestamp(){
+    public Timestamp getTimestamp() {
         return timestamp;
     }
-    
+
     @Override
-    public void setTimestamp(Timestamp timestamp){
+    public void setTimestamp(Timestamp timestamp) {
         this.timestamp = timestamp;
     }
-    
+
     @Override
     public Editor getEditor() throws DataLayerException {
         return editor;
@@ -213,7 +213,7 @@ public class PublicationImpl implements Publication {
     @Override
     public List<Author> getAuthors() throws DataLayerException {
         if (authors == null) {
-            authors = ownerDataLayer.getAuthors(0,0);
+            authors = ownerDataLayer.getAuthors(0, 0);
         }
         return authors;
     }
@@ -226,7 +226,7 @@ public class PublicationImpl implements Publication {
     @Override
     public List<Source> getSources() throws DataLayerException {
         if (sources == null) {
-            sources = ownerDataLayer.getPublicationSources(key,0,0);
+            sources = ownerDataLayer.getPublicationSources(key, 0, 0);
         }
         return sources;
     }
@@ -252,7 +252,7 @@ public class PublicationImpl implements Publication {
     @Override
     public List<Reprint> getReprints() throws DataLayerException {
         if (reprints == null) {
-            reprints = ownerDataLayer.getReprints(key,0,0);
+            reprints = ownerDataLayer.getReprints(key, 0, 0);
         }
         return reprints;
     }

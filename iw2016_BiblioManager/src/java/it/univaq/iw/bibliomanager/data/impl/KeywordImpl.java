@@ -18,12 +18,14 @@ public class KeywordImpl implements Keyword {
 
     private int key;
     private String name;
+    private boolean dirty;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public KeywordImpl(BiblioManagerDataLayer ownerDataLayer) {
         this.ownerDataLayer = ownerDataLayer;
         key = 0;
         name = "";
+        dirty = false;
     }
 
     @Override
@@ -47,8 +49,19 @@ public class KeywordImpl implements Keyword {
     }
 
     @Override
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    @Override
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    @Override
     public void copyFrom(Keyword keyword) throws DataLayerException {
         key = keyword.getKey();
         name = keyword.getName();
+        dirty = false;
     }
 }

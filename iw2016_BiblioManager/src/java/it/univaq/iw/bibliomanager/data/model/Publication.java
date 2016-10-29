@@ -64,9 +64,9 @@ public interface Publication {
     boolean getIncomplete();
 
     void setIncomplete(boolean incomplete);
-    
+
     Timestamp getTimestamp();
-    
+
     void setTimestamp(Timestamp timestamp);
 
     List<Keyword> getKeywords() throws DataLayerException;
@@ -84,7 +84,7 @@ public interface Publication {
     List<Reprint> getReprints() throws DataLayerException;
 
     void setReprints(List<Reprint> reprints);
-    
+
     List<Review> getReviews() throws DataLayerException;
 
     void setReviews(List<Review> reviews);

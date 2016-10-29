@@ -28,39 +28,76 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeKeyword extends BiblioManagerBaseController {
 
-    private int publicationId;
-    private String url;
-    private int keywordId;
-    private String currentKeyword;
-    private final Map<Integer, String> pages = new HashMap<>();
-    private final Map<String, Integer> options = new HashMap<>();
+    private final String updateMessage = "Modifica avvenuta con successo.";
+    private final String addMessage = "Inserimento avvenuto con successo.";
+    private final String linkMessage = "Collegamento con la pubblicazione avvenuto con successo.";
+    private final String deleteMessage = "Keyword eliminata con successo.";
+    private final String errorDeleteMessage = "Non è possibile eliminare la keyword. È collegata ad almeno una pubblicazione.";
     
+    /**
+     * Pubblicazione
+     */
+    private int publicationId;
+    /**
+     * Url da cui proviene la richiesta
+     */
+    private String url;
+    /**
+     * Keyword
+     */
+    private int keywordId;
+    /**
+     * Dati della keyword corrente che si vuole aggiornare
+     */
+    private String currentKeyword;
+    /**
+     * Pagine
+     */
+    private final Map<Integer, String> pages = new HashMap<>();
+    /**
+     * Configurazione per la paginazione
+     */
+    private final Map<String, Integer> options = new HashMap<>();
+    /**
+     * Verifica e salva una nuova keyword
+     * @param request
+     * @param response
+     * @throws DataLayerException 
+     */
     private void action_composeKeyword(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
         try {
             Keyword keyword = getDataLayer().createKeyword();
             Map<String, String> params = new HashMap<String, String>();
-            params.put("keyName", Utils.checkString(request.getParameter("keyName")));
+            params.put("keywordName", Utils.checkString(request.getParameter("keywordName")));
             if (!validator(params, request, response)) {
-                keyword.setName(params.get("keyName"));
+                keyword.setName(params.get("keywordName"));
                 getDataLayer().storeKeyword(keyword);
-                request.setAttribute("keywordAdded", 1);
+                action_createNotifyMessage(request, response, SUCCESS, addMessage, true);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la parola chiave: " + ex.getMessage(), 510);
         }
     }
-
+/**
+ * Verifica e salva le modifiche di una keyword
+ * @param request
+ * @param response
+ * @throws DataLayerException 
+ */
     private void action_updateKeyword(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
         try {
             Keyword keyword = getDataLayer().getKeyword(keywordId);
             Map<String, String> params = new HashMap<String, String>();
-            params.put("keyName", Utils.checkString(request.getParameter("keyName")));
+            params.put("updateKeywordName", Utils.checkString(request.getParameter("keywordName")));
             if (!validator(params, request, response)) {
-                keyword.setName(params.get("keyName"));
+                if(!keyword.getName().equals(params.get("updateKeywordName"))){
+                    keyword.setName(params.get("updateKeywordName"));
+                    keyword.setDirty(true);
+                }
                 getDataLayer().storeKeyword(keyword);
-                request.setAttribute("keywordUpdated", 1);
+                action_createNotifyMessage(request, response, SUCCESS, updateMessage, true);
                 request.setAttribute("saveResult", "Salvataggio effettuato con successo");
                 keywordId = 0;
             }
@@ -68,16 +105,47 @@ public class ComposeKeyword extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage(), 510);
         }
     }
-
+    /**
+     * Delete the specified Keyword
+     *
+     * @param request
+     * @param response
+     * @throws DataLayerException
+     */
+    private void action_deleteKeyword(HttpServletRequest request, HttpServletResponse response)
+            throws DataLayerException {
+        int deleted = 0;
+        Keyword keyword = getDataLayer().getKeyword((int) request.getAttribute("keywordToDelete"));
+        deleted = getDataLayer().deleteKeyword(keyword);
+        if(deleted == 0){
+            action_createNotifyMessage(request, response, ERROR, errorDeleteMessage, true);
+        }
+        else{
+            action_createNotifyMessage(request, response, SUCCESS, deleteMessage, true);
+        }
+    }
+/**
+ * Collega una o piu' keyword con una pubblicazione
+ * @param request
+ * @param response
+ * @throws DataLayerException 
+ */
     private void action_LinkKeyword(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         List<String> values = new ArrayList<String>(Arrays.asList(request.getParameterValues("keywordSelected")));
         getDataLayer().deletePublicationHasKeyword(publicationId);
         for (String value : values) {
             getDataLayer().storePublicationHasKeyword(Integer.parseInt(value), publicationId);
-            request.setAttribute("keywordConnected", 1);
+            action_createNotifyMessage(request, response, SUCCESS, linkMessage, true);
         }
     }
-
+/**
+ * Compila i template da restituire a video
+ * @param request
+ * @param response
+ * @throws ServletException
+ * @throws IOException
+ * @throws DataLayerException 
+ */
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Gestione Parole Chiave");
         TemplateResult res = new TemplateResult(getServletContext());
@@ -119,9 +187,13 @@ public class ComposeKeyword extends BiblioManagerBaseController {
                 if(request.getAttribute("url") != null){
                     url = (String) request.getAttribute("url");
                 }
-                if (request.getParameter("keywordId") != null) {
+                if (keywordId == 0 && request.getParameter("keywordId") != null) {
                     currentKeyword = request.getParameter("currentKeyword");
                     keywordId = Integer.parseInt(request.getParameter("keywordId"));
+                }
+                if (request.getParameter("keywordToDelete") != null) {
+                    request.setAttribute("keywordToDelete", Integer.parseInt(request.getParameter("keywordToDelete")));
+                    action_deleteKeyword(request, response);
                 }
                 if (request.getParameter("submitKeyword") != null){
                     if(keywordId == 0) {
@@ -153,15 +225,4 @@ public class ComposeKeyword extends BiblioManagerBaseController {
             action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }
-
 }

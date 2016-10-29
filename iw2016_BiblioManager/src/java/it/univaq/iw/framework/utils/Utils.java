@@ -9,9 +9,7 @@ package it.univaq.iw.framework.utils;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
 import java.util.Map;
-import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -45,14 +43,27 @@ public class Utils {
         return var == null || var.trim().isEmpty();
     }
 
-    public static String getArrayParameter(Map<String, String> list, String paramName){
+    /**
+     * Recupera un parametro da un Map altrimenti restituisce null
+     *
+     * @param list
+     * @param paramName
+     * @return
+     */
+    public static String getArrayParameter(Map<String, String> list, String paramName) {
         String result = null;
-        if(list != null && !isNullOrEmpty(paramName) && !list.isEmpty() && list.containsKey(paramName)){
+        if (list != null && !isNullOrEmpty(paramName) && !list.isEmpty() && list.containsKey(paramName)) {
             result = list.get(paramName);
         }
         return result;
     }
-    
+
+    /**
+     * Verifica se una stringa è un numero
+     *
+     * @param str
+     * @return
+     */
     public static boolean isNumeric(String str) {
         try {
             double d = Double.parseDouble(str);
@@ -61,12 +72,17 @@ public class Utils {
         }
         return true;
     }
-    
-    public static boolean isDate(String str)
-    {
+
+    /**
+     * Verifica se la stringa passata è una data valida del formato dd-mm-yyyy
+     *
+     * @param str
+     * @return
+     */
+    public static boolean isDate(String str) {
         return str.matches("[0-9]{2}-[0-9]{2}-[0-9]{4}");  //match a number with optional '-' and decimal.
     }
-    
+
     /**
      * Verifica la correttezza dell'email
      *
@@ -83,52 +99,8 @@ public class Utils {
         return matcher.find();
     }
 
-    /**
-     * Cripta le password
-     *
-     * @param password
-     * @return password codificata
-     * @throws NoSuchAlgorithmException
-     */
-    public static String encryptPassword(String password) throws NoSuchAlgorithmException {
-        byte[] salt = getSalt();
-        return get_SHA_256_SecurePassword(password, salt);
-    }
-
-    /**
-     * Esegue la criptazione della password
-     *
-     * @param passwordToHash
-     * @param salt
-     * @return
-     * @throws NoSuchAlgorithmException
-     */
-    private static String get_SHA_256_SecurePassword(String passwordToHash, byte[] salt) throws NoSuchAlgorithmException {
-        String generatedPassword = null;
-        MessageDigest md = MessageDigest.getInstance("SHA-256");
-        md.update(salt);
-        byte[] bytes = md.digest(passwordToHash.getBytes());
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < bytes.length; i++) {
-            sb.append(Integer.toString((bytes[i] & 0xff) + 0x100, 16).substring(1));
-        }
-        generatedPassword = sb.toString();
-        return generatedPassword;
-    }
-
-    /**
-     *
-     * @return @throws NoSuchAlgorithmException
-     */
-    private static byte[] getSalt() throws NoSuchAlgorithmException {
-        SecureRandom sr = SecureRandom.getInstance("SHA1PRNG");
-        byte[] salt = new byte[16];
-        sr.nextBytes(salt);
-        return salt;
-    }
-
     private static String convertToHex(byte[] data) {
-        StringBuffer buf = new StringBuffer();
+        StringBuilder buf = new StringBuilder();
         for (int i = 0; i < data.length; i++) {
             int halfbyte = (data[i] >>> 4) & 0x0F;
             int two_halfs = 0;
@@ -156,9 +128,8 @@ public class Utils {
             throws NoSuchAlgorithmException, UnsupportedEncodingException {
         MessageDigest md;
         md = MessageDigest.getInstance("SHA-1");
-        byte[] sha1hash = new byte[40];
         md.update(text.getBytes("iso-8859-1"), 0, text.length());
-        sha1hash = md.digest();
+        byte[] sha1hash = md.digest();
         return convertToHex(sha1hash);
     }
 }

@@ -23,4 +23,8 @@ public interface Editor {
     void setName(String name);
 
     void copyFrom(Editor editor) throws DataLayerException;
+    
+    void setDirty(boolean dirty);
+
+    boolean isDirty();
 }

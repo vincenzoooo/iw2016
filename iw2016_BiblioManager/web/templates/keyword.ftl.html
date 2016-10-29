@@ -8,38 +8,7 @@
             </div>
         </div>
         
-        <div class="section section-pageKeyword-allert">
-            <#if keywordUpdated??>    
-            <div class="row margin-top-20">
-                <div class="col-xs-12">
-                    <div class="alert alert-success alert-dismissible fadeIn animated">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Modifica avvenuta con successo.
-                    </div>
-                </div>
-            </div>
-            </#if>
-            <#if keywordAdded??>    
-            <div class="row margin-top-20">
-                <div class="col-xs-12">
-                    <div class="alert alert-success alert-dismissible fadeIn animated">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Inserimento avvenuto con successo.
-                    </div>
-                </div>
-            </div>
-            </#if>
-            <#if keywordConnected??>    
-            <div class="row margin-top-20">
-                <div class="col-xs-12">
-                    <div class="alert alert-success alert-dismissible fadeIn animated">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Collegamento con la pubblicazione avvenuto con successo.
-                    </div>
-                </div>
-            </div>
-            </#if>
-        </div>
+        <#include "/commons/notifyMessage.ftl.html">
             
         <div class="section section-pageKeyword-insertKeyword">
             <div class="row">
@@ -49,7 +18,7 @@
                         <div class="form-group">
                             <label for="inputKeywordName" class="col-sm-2 control-label bold">Nome</label>
                             <div class="col-sm-6">
-                                <input id="inputKeywordName" class="form-control" name="keyName" placeholder="Inserisci la parola chiave" />
+                                <input id="inputKeywordName" class="form-control" name="keywordName" placeholder="Inserisci la parola chiave" />
                             </div>
                             <#if errorKeywordName??>
                             <div class="error col-sm-offset-2 col-sm-10">
@@ -98,6 +67,7 @@
                                     </td>
                                     <td>
                                         <a href="keyword?keywordId=${item.key}&currentKeyword=${item.name}#anchor" class="aItemCustom bold">Modifica</a>
+                                        <a href="keyword?keywordToDelete=${item.key}" class="aItemCustom bold">Elimina</a>
                                     </td>
                                     <td>
                                         <input title="Seleziona per collegare alla pubblicazione" type="checkbox" class="form-control" name="keywordSelected" value="${item.key}" <#list publicationKeywords as item1><#if (item.key == item1.key)>checked="checked"</#if></#list>/>
@@ -165,8 +135,13 @@
                             <label for="updateKeywordName" class="col-sm-2 control-label bold">Nome</label>
                             <div class="col-sm-6">
                                 <input name="keywordId" value="${keywordId!''?html}" type="hidden"/>
-                                <input id="updateKeywordName" class="form-control" name="keyName" value="${currentKeyword!''?html}" placeholder="Modifica la parola chiave" />
+                                <input id="updateKeywordName" class="form-control" name="keywordName" value="${currentKeyword!''?html}" placeholder="Modifica la parola chiave" />
                             </div>
+                            <#if errorUpdateKeywordName??>
+                            <div class="error col-sm-offset-2 col-sm-10">
+                                ${errorUpdateKeywordName?html}
+                            </div>
+                            </#if>
                         </div>
                         <div class="form-group">
                             <div class="col-sm-offset-2 col-sm-10">

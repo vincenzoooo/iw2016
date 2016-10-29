@@ -32,4 +32,8 @@ public interface Section {
 
     //--
     void copyFrom(Section element) throws DataLayerException;
+    
+    void setDirty(boolean dirty);
+
+    boolean isDirty();
 }

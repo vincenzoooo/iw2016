@@ -69,7 +69,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     private PreparedStatement sUserLike, iUserLike, dUserLike;
     private PreparedStatement sFilters, iFilters, dFilters;
     private PreparedStatement dLikeByPublication;
-    
+
     public BiblioManagerDataLayerMysqlImpl(DataSource datasource) throws SQLException, NamingException {
         super(datasource);
     }
@@ -142,15 +142,15 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.dKeyword = connection.prepareStatement("DELETE FROM iw2016.keyword WHERE idkeyword = ? AND (SELECT COUNT(*) FROM pubblicazione_has_keyword WHERE keyword_idkeyword = ?) = 0");
             this.sChapters = connection.prepareStatement("SELECT * FROM iw2016.capitolo WHERE pubblicazione = ? ORDER BY numero");
             this.sChapterById = connection.prepareStatement("SELECT * FROM iw2016.capitolo WHERE idcapitolo = ?");
-            this.uChapter = connection.prepareStatement("UPDATE iw2016.capitolo SET numero = ?, titolo = ?, pubblicazione = ? WHERE idcapitolo = ?"); 
+            this.uChapter = connection.prepareStatement("UPDATE iw2016.capitolo SET numero = ?, titolo = ?, pubblicazione = ? WHERE idcapitolo = ?");
             this.iChapter = connection.prepareStatement("INSERT INTO iw2016.capitolo (numero,titolo,pubblicazione) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
-            this.dChapter = connection.prepareStatement("DELETE FROM iw2016.capitolo WHERE idcapitolo = ?");
+            this.dChapter = connection.prepareStatement("DELETE FROM iw2016.capitolo WHERE idcapitolo = ? AND (SELECT COUNT(*) FROM sezione WHERE capitolo = ?) = 0");
             this.dChapterByPublication = connection.prepareStatement("DELETE FROM iw2016.capitolo WHERE pubblicazione = ?");
             this.sSections = connection.prepareStatement("SELECT * FROM iw2016.sezione WHERE capitolo = ? ORDER BY numero");
             this.sSectionById = connection.prepareStatement("SELECT * FROM iw2016.sezione WHERE idsezione = ?");
             this.uSection = connection.prepareStatement("UPDATE iw2016.sezione SET numero = ?, titolo = ?, capitolo = ? WHERE idsezione = ?");
-            this.iSection = connection.prepareStatement("INSERT INTO iw2016.sezione (numero, titolo, capitolo) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS); 
-            this.dSection = connection.prepareStatement("DELETE FROM iw2016.sezione WHERE idsezione = ?"); 
+            this.iSection = connection.prepareStatement("INSERT INTO iw2016.sezione (numero, titolo, capitolo) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
+            this.dSection = connection.prepareStatement("DELETE FROM iw2016.sezione WHERE idsezione = ?");
             this.dSectionByChapter = connection.prepareStatement("DELETE FROM iw2016.sezione WHERE capitolo = ?");
             this.iPublicationHasAuthor = connection.prepareStatement("INSERT INTO iw2016.autore_has_pubblicazione(autore_idautore,pubblicazione_idpubblicazione) VALUES (?,?)");
             this.dPublicationHasAuthor = connection.prepareStatement("DELETE FROM iw2016.autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ?");
@@ -159,7 +159,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.dAuthorFromPublication = connection.prepareStatement("DELETE FROM iw2016.autore_has_pubblicazione WHERE pubblicazione_idpubblicazione = ? AND autore_idautore = ?");
             this.dKeywordFromPublication = connection.prepareStatement("DELETE FROM iw2016.pubblicazione_has_keyword WHERE pubblicazione_idpubblicazione = ? AND keyword_idkeyword = ?");
             this.sUserLike = connection.prepareStatement("SELECT * FROM iw2016.consigli_utente WHERE pubblicazione_idpubblicazione = ? AND utente_idutente = ?");
-            this.iUserLike = connection.prepareStatement("INSERT INTO iw2016.consigli_utente (pubblicazione_idpubblicazione, utente_idutente) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS); 
+            this.iUserLike = connection.prepareStatement("INSERT INTO iw2016.consigli_utente (pubblicazione_idpubblicazione, utente_idutente) VALUES (?, ?)", Statement.RETURN_GENERATED_KEYS);
             this.dUserLike = connection.prepareStatement("DELETE FROM iw2016.consigli_utente WHERE pubblicazione_idpubblicazione = ?");
             this.sFilters = connection.prepareStatement("SELECT * FROM iw2016.filtri WHERE idfiltri = ?");
             this.iFilters = connection.prepareStatement("INSERT INTO iw2016.filtri (isbn, titolo, autore, editore, anno_inizio, anno_fine, keyword, lingua, download, utente, timestamp) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", Statement.RETURN_GENERATED_KEYS);
@@ -239,11 +239,11 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             publication.setPageNumber(rs.getInt("n_pagine"));
             publication.setEditor(getEditor(rs.getInt("editore")));
             publication.setAuthor(getPublicationAuthors(rs.getInt("idpubblicazione")));
-            publication.setSources(getPublicationSources(rs.getInt("idpubblicazione"),0,0));
+            publication.setSources(getPublicationSources(rs.getInt("idpubblicazione"), 0, 0));
             publication.setKeywords(getPublicationKeywords(rs.getInt("idpubblicazione")));
-            publication.setReprints(getReprints(rs.getInt("idpubblicazione"),0,0));
+            publication.setReprints(getReprints(rs.getInt("idpubblicazione"), 0, 0));
             publication.setIndex(getChapters(rs.getInt("idpubblicazione")));
-            publication.setReviews(getReviews(rs.getInt("idpubblicazione"),0,0));
+            publication.setReviews(getReviews(rs.getInt("idpubblicazione"), 0, 0));
             publication.setIncomplete(rs.getBoolean("incompleta"));
             publication.setTimestamp(rs.getTimestamp("timestamp"));
             return publication;
@@ -305,6 +305,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             source.setFormat(rs.getString("formato"));
             source.setDescription(rs.getString("descrizione"));
             source.setCover(rs.getBoolean("copertina"));
+            source.setPublicationKey(rs.getInt("pubblicazione"));
             return source;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
@@ -350,13 +351,13 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
         }
     }
-    
+
     @Override
     public Chapter createChapter() {
         return new ChapterImpl(this);
     }
-    
-    public Chapter createChapter(ResultSet rs)  throws DataLayerException {
+
+    public Chapter createChapter(ResultSet rs) throws DataLayerException {
         try {
             ChapterImpl chapter = new ChapterImpl(this);
             chapter.setKey(rs.getInt("idcapitolo"));
@@ -369,13 +370,13 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             throw new DataLayerException("Unable to create chapter object form ResultSet", ex);
         }
     }
-    
+
     @Override
     public Section createSection() {
         return new SectionImpl(this);
     }
-    
-    public Section createSection(ResultSet rs) throws DataLayerException{
+
+    public Section createSection(ResultSet rs) throws DataLayerException {
         try {
             SectionImpl section = new SectionImpl(this);
             section.setKey(rs.getInt("idsezione"));
@@ -387,6 +388,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             throw new DataLayerException("Unable to create section object form ResultSet", ex);
         }
     }
+
     @Override
     public Author getAuthor(int author_key) throws DataLayerException {
         Author result = null;
@@ -417,10 +419,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet rs = null;
         try {
             String query = "SELECT * FROM iw2016.autore ORDER BY cognome, nome";
-            if(limit > 0){
+            if (limit > 0) {
                 query += " LIMIT 10 ";
             }
-            if(offset > 0){
+            if (offset > 0) {
                 query += "OFFSET " + offset;
             }
             sAuthors = connection.prepareStatement(query);
@@ -441,7 +443,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
+
     @Override
     public List<Author> getAuthorsByName(String name) throws DataLayerException {
         List<Author> result = new ArrayList();
@@ -496,10 +498,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet rs = null;
         try {
             String query = "SELECT * FROM iw2016.editore ORDER BY nome";
-            if(limit > 0){
+            if (limit > 0) {
                 query += " LIMIT 10 ";
             }
-            if(offset > 0){
+            if (offset > 0) {
                 query += "OFFSET " + offset;
             }
             sEditors = connection.prepareStatement(query);
@@ -575,10 +577,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet rs = null;
         try {
             String query = "SELECT * FROM iw2016.keyword ORDER BY nome";
-            if(limit > 0){
+            if (limit > 0) {
                 query += " LIMIT 10 ";
             }
-            if(offset > 0){
+            if (offset > 0) {
                 query += "OFFSET " + offset;
             }
             sKeywords = connection.prepareStatement(query);
@@ -647,7 +649,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
+
     @Override
     public Publication getPublicationByISBN(String isbn) throws DataLayerException {
         Publication result = null;
@@ -671,7 +673,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
+
     @Override
     public List<Publication> getPublications() throws DataLayerException {
         List<Publication> result = new ArrayList();
@@ -694,56 +696,53 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
-    
 
     @Override
-    public List<Publication> getPublicationsByFilters(Map<String,String> filters) throws DataLayerException {
+    public List<Publication> getPublicationsByFilters(Map<String, String> filters) throws DataLayerException {
         List<Publication> result = new ArrayList();
         ResultSet rs = null;
         try {
-            String query = "SELECT p.idpubblicazione FROM pubblicazione p LEFT JOIN ristampa r ON r.pubblicazione = p.idpubblicazione LEFT JOIN editore e ON e.ideditore = p.editore " + 
-                    "LEFT JOIN autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN autore a ON a.idautore = ap.autore_idautore " + 
-                    "LEFT JOIN sorgente sr ON sr.pubblicazione = p.idpubblicazione LEFT JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword " +
-                    "LEFT JOIN storico st ON st.pubblicazione = p.idpubblicazione LEFT JOIN utente u ON u.idutente = st.utente WHERE p.incompleta = 0 ";
-            for (Map.Entry<String, String> entry : filters.entrySet())
-            {
-                if(entry.getKey().equals("isbn") && entry.getValue() != null){
-                    query += " AND p.isbn LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
+            String query = "SELECT p.idpubblicazione FROM pubblicazione p LEFT JOIN ristampa r ON r.pubblicazione = p.idpubblicazione LEFT JOIN editore e ON e.ideditore = p.editore "
+                    + "LEFT JOIN autore_has_pubblicazione ap ON ap.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN autore a ON a.idautore = ap.autore_idautore "
+                    + "LEFT JOIN sorgente sr ON sr.pubblicazione = p.idpubblicazione LEFT JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword "
+                    + "LEFT JOIN storico st ON st.pubblicazione = p.idpubblicazione LEFT JOIN utente u ON u.idutente = st.utente WHERE p.incompleta = 0 ";
+            for (Map.Entry<String, String> entry : filters.entrySet()) {
+                if (entry.getKey().equals("isbn") && entry.getValue() != null) {
+                    query += " AND p.isbn LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
-                if(entry.getKey().equals("titolo") && entry.getValue() != null){
-                    query += " AND p.titolo LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
+                if (entry.getKey().equals("titolo") && entry.getValue() != null) {
+                    query += " AND p.titolo LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
-                if(entry.getKey().equals("autore") && entry.getValue() != null){
-                    query += " AND concat(a.nome, ' ',a.cognome) LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
+                if (entry.getKey().equals("autore") && entry.getValue() != null) {
+                    query += " AND concat(a.nome, ' ',a.cognome) LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
-                if(entry.getKey().equals("editore") && entry.getValue() != null){
-                    query += " AND e.nome LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
+                if (entry.getKey().equals("editore") && entry.getValue() != null) {
+                    query += " AND e.nome LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
-                if(entry.getKey().equals("keyword") && entry.getValue() != null){
-                    query += " AND k.nome LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
+                if (entry.getKey().equals("keyword") && entry.getValue() != null) {
+                    query += " AND k.nome LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
-                if(entry.getKey().equals("lingua") && entry.getValue() != null){
-                    query += " AND p.lingua LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
+                if (entry.getKey().equals("lingua") && entry.getValue() != null) {
+                    query += " AND p.lingua LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
-                if(entry.getKey().equals("anno_inizio") && entry.getValue() != null){
-                    query += " AND p.data_pubblicazione >= '"+SecurityLayer.addSlashes(entry.getValue())+"' ";
+                if (entry.getKey().equals("anno_inizio") && entry.getValue() != null) {
+                    query += " AND p.data_pubblicazione >= '" + SecurityLayer.addSlashes(entry.getValue()) + "' ";
                 }
-                if(entry.getKey().equals("anno_fine") && entry.getValue() != null){
-                    query += " AND p.data_pubblicazione < '"+SecurityLayer.addSlashes(entry.getValue())+"' ";
+                if (entry.getKey().equals("anno_fine") && entry.getValue() != null) {
+                    query += " AND p.data_pubblicazione < '" + SecurityLayer.addSlashes(entry.getValue()) + "' ";
                 }
-                if(entry.getKey().equals("download") && entry.getValue() != null){
+                if (entry.getKey().equals("download") && entry.getValue() != null) {
                     query += " AND sr.download = 1 ";
                 }
-                if(entry.getKey().equals("utente") && entry.getValue() != null){
-                    query += " AND CONCAT(u.nome, ' ',u.cognome) LIKE '%"+SecurityLayer.addSlashes(entry.getValue())+"%' ";
+                if (entry.getKey().equals("utente") && entry.getValue() != null) {
+                    query += " AND CONCAT(u.nome, ' ',u.cognome) LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
             }
             query += "GROUP BY p.idpubblicazione ORDER BY " + SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "order_by")) + " " + SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "order_mode"));
-            if(!Utils.isNullOrEmpty(Utils.getArrayParameter(filters, "limit"))){
+            if (!Utils.isNullOrEmpty(Utils.getArrayParameter(filters, "limit"))) {
                 query += " LIMIT 5 ";
             }
-            if(!Utils.isNullOrEmpty(Utils.getArrayParameter(filters, "offset")) && !"0".equals(Utils.getArrayParameter(filters, "offset"))){
+            if (!Utils.isNullOrEmpty(Utils.getArrayParameter(filters, "offset")) && !"0".equals(Utils.getArrayParameter(filters, "offset"))) {
                 query += "OFFSET " + Utils.getArrayParameter(filters, "offset");
             }
             sPublicationsByFilters = connection.prepareStatement(query);
@@ -795,10 +794,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet rs = null;
         try {
             String query = "SELECT * FROM iw2016.sorgente WHERE pubblicazione = ?";
-            if(limit > 0){
+            if (limit > 0) {
                 query += " LIMIT 10 ";
             }
-            if(offset > 0){
+            if (offset > 0) {
                 query += "OFFSET " + offset;
             }
             sSourceByPublication = connection.prepareStatement(query);
@@ -932,10 +931,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet rs = null;
         try {
             String query = "SELECT * FROM iw2016.recensione WHERE pubblicazione = ? ORDER BY data_recensione DESC";
-            if(limit > 0){
+            if (limit > 0) {
                 query += " LIMIT 7 ";
             }
-            if(offset > 0){
+            if (offset > 0) {
                 query += "OFFSET " + offset;
             }
             sReviewsByPublication = connection.prepareStatement(query);
@@ -957,7 +956,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
+
     @Override
     public int getCountReview(int publication_key) throws DataLayerException {
         int result = 0;
@@ -966,7 +965,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             cReview.setInt(1, publication_key);
             rs = cReview.executeQuery();
             if (rs.next()) {
-                result = rs.getInt("contatore") ;
+                result = rs.getInt("contatore");
             }
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to count review", ex);
@@ -981,7 +980,6 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-
 
     @Override
     public List<Review> getLastReviews(int publication_key, int limit) throws DataLayerException {
@@ -1007,7 +1005,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-            
+
     @Override
     public Reprint getReprint(int reprint_key) throws DataLayerException {
         Reprint result = null;
@@ -1038,10 +1036,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet rs = null;
         try {
             String query = "SELECT * FROM iw2016.ristampa WHERE pubblicazione = ?";
-            if(limit > 0){
+            if (limit > 0) {
                 query += " LIMIT 10 ";
             }
-            if(offset > 0){
+            if (offset > 0) {
                 query += "OFFSET " + offset;
             }
             sReprintsByPublication = connection.prepareStatement(query);
@@ -1190,10 +1188,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet rs = null;
         try {
             String query = "SELECT * FROM iw2016.storico WHERE pubblicazione = ?";
-            if(limit > 0){
+            if (limit > 0) {
                 query += " LIMIT 10 ";
             }
-            if(offset > 0){
+            if (offset > 0) {
                 query += "OFFSET " + offset;
             }
             sHistoriesByPublication = connection.prepareStatement(query);
@@ -1216,7 +1214,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-   
+
     @Override
     public User getUser(int user_key) throws DataLayerException {
         User result = null;
@@ -1312,7 +1310,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
+
     @Override
     public List<User> getUsers(String filter) throws DataLayerException {
         List<User> result = new ArrayList();
@@ -1363,7 +1361,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
+
     @Override
     public List<User> getUsersPassive(String filter) throws DataLayerException {
         List<User> result = new ArrayList();
@@ -1389,7 +1387,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
+
     @Override
     public boolean getUsersLike(int publication_key, int user_key) throws DataLayerException {
         ResultSet rs = null;
@@ -1414,7 +1412,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return liked;
     }
-    
+
     @Override
     public Chapter getChapter(int chapter_key) throws DataLayerException {
         Chapter result = null;
@@ -1511,7 +1509,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
+
     @Override
     public void storeAuthor(Author author) throws DataLayerException {
         ResultSet keys = null;
@@ -1520,9 +1518,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             if (author.getKey() > 0) { //update
                 //non facciamo nulla se l'oggetto non ha subito modifiche
                 //do not store the object if it was not modified
-//                if (!article.isDirty()) {
-//                    return;
-//                }
+                if (!author.isDirty()) {
+                    return;
+                }
                 uAuthor.setString(1, author.getName());
                 uAuthor.setString(2, author.getSurname());
                 uAuthor.setInt(3, key);
@@ -1563,12 +1561,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             if (editor.getKey() > 0) { //update
                 //non facciamo nulla se l'oggetto non ha subito modifiche
                 //do not store the object if it was not modified
-//                if (!article.isDirty()) {
-//                    return;
-//                }
+                if (!editor.isDirty()) {
+                    return;
+                }
                 uEditor.setString(1, editor.getName());
                 uEditor.setInt(2, key);
-                
+
                 uEditor.executeUpdate();
             } else { //insert
                 iEditor.setString(1, editor.getName());
@@ -1604,9 +1602,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             if (keyword.getKey() > 0) { //update
                 //non facciamo nulla se l'oggetto non ha subito modifiche
                 //do not store the object if it was not modified
-//                if (!article.isDirty()) {
-//                    return;
-//                }
+                if (!keyword.isDirty()) {
+                    return;
+                }
                 uKeyword.setString(1, keyword.getName());
                 uKeyword.setInt(2, key);
 
@@ -1646,9 +1644,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             if (publication.getKey() > 0) { //update
                 //non facciamo nulla se l'oggetto non ha subito modifiche
                 //do not store the object if it was not modified
-//                if (!article.isDirty()) {
-//                    return;
-//                }
+                if (!publication.isDirty()) {
+                    return;
+                }
                 uPublication.setString(1, publication.getTitle());
                 uPublication.setString(2, publication.getDescription());
                 uPublication.setInt(3, publication.getEditor().getKey());
@@ -1662,49 +1660,46 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uPublication.setInt(11, key);
 
                 uPublication.executeUpdate();
-            } else { //insert
-                if(publication.getEditor().getKey() == 0){
-                    iPublicationNoEditor.setString(1, publication.getTitle());
-                    iPublicationNoEditor.setString(2, publication.getDescription());
-                    iPublicationNoEditor.setInt(3, publication.getLike());
-                    iPublicationNoEditor.setString(4, publication.getIsbn());
-                    iPublicationNoEditor.setInt(5, publication.getPageNumber());
-                    iPublicationNoEditor.setString(6, publication.getLanguage());
-                    iPublicationNoEditor.setDate(7, publication.getPublicationDate());
-                    iPublicationNoEditor.setBoolean(8, publication.getIncomplete());
-                    iPublicationNoEditor.setTimestamp(9, publication.getTimestamp());
-                    if (iPublicationNoEditor.executeUpdate() == 1) {
-                        keys = iPublicationNoEditor.getGeneratedKeys();
-                        if (keys.next()) {
-                            key = keys.getInt(1);
-                        }
+            } else //insert
+            if (publication.getEditor().getKey() == 0) {
+                iPublicationNoEditor.setString(1, publication.getTitle());
+                iPublicationNoEditor.setString(2, publication.getDescription());
+                iPublicationNoEditor.setInt(3, publication.getLike());
+                iPublicationNoEditor.setString(4, publication.getIsbn());
+                iPublicationNoEditor.setInt(5, publication.getPageNumber());
+                iPublicationNoEditor.setString(6, publication.getLanguage());
+                iPublicationNoEditor.setDate(7, publication.getPublicationDate());
+                iPublicationNoEditor.setBoolean(8, publication.getIncomplete());
+                iPublicationNoEditor.setTimestamp(9, publication.getTimestamp());
+                if (iPublicationNoEditor.executeUpdate() == 1) {
+                    keys = iPublicationNoEditor.getGeneratedKeys();
+                    if (keys.next()) {
+                        key = keys.getInt(1);
                     }
                 }
-                else{
-                    iPublication.setString(1, publication.getTitle());
-                    iPublication.setString(2, publication.getDescription());
-                    iPublication.setInt(3, publication.getEditor().getKey());
-                    iPublication.setInt(4, publication.getLike());
-                    iPublication.setString(5, publication.getIsbn());
-                    iPublication.setInt(6, publication.getPageNumber());
-                    iPublication.setString(7, publication.getLanguage());
-                    iPublication.setDate(8, publication.getPublicationDate());
-                    iPublication.setBoolean(9, publication.getIncomplete());
-                    iPublication.setTimestamp(10, publication.getTimestamp());
+            } else {
+                iPublication.setString(1, publication.getTitle());
+                iPublication.setString(2, publication.getDescription());
+                iPublication.setInt(3, publication.getEditor().getKey());
+                iPublication.setInt(4, publication.getLike());
+                iPublication.setString(5, publication.getIsbn());
+                iPublication.setInt(6, publication.getPageNumber());
+                iPublication.setString(7, publication.getLanguage());
+                iPublication.setDate(8, publication.getPublicationDate());
+                iPublication.setBoolean(9, publication.getIncomplete());
+                iPublication.setTimestamp(10, publication.getTimestamp());
 
-                    if (iPublication.executeUpdate() == 1) {
-                        keys = iPublication.getGeneratedKeys();
-                        if (keys.next()) {
-                            key = keys.getInt(1);
-                        }
+                if (iPublication.executeUpdate() == 1) {
+                    keys = iPublication.getGeneratedKeys();
+                    if (keys.next()) {
+                        key = keys.getInt(1);
                     }
                 }
             }
             if (key > 0) {
-                if(!publication.getIncomplete()){
+                if (!publication.getIncomplete()) {
                     publication.copyFrom(getPublication(key));
-                }
-                else{
+                } else {
                     publication.copyFrom(getPublication(key));
                 }
             }
@@ -1729,9 +1724,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             if (review.getKey() > 0) { //update
                 //non facciamo nulla se l'oggetto non ha subito modifiche
                 //do not store the object if it was not modified
-//                if (!article.isDirty()) {
-//                    return;
-//                }
+                if (!review.isDirty()) {
+                    return;
+                }
                 uReview.setString(1, review.getText());
                 uReview.setBoolean(2, review.getStatus());
                 uReview.setTimestamp(3, review.getReviewDate());
@@ -1747,7 +1742,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 iReview.setTimestamp(3, review.getReviewDate());
                 iReview.setInt(4, review.getAuthor().getKey());
                 iReview.setInt(5, review.getPublicationKey());
-                
+
                 if (iReview.executeUpdate() == 1) {
                     keys = iReview.getGeneratedKeys();
                     if (keys.next()) {
@@ -1779,9 +1774,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             if (reprint.getKey() > 0) { //update
                 //non facciamo nulla se l'oggetto non ha subito modifiche
                 //do not store the object if it was not modified
-//                if (!article.isDirty()) {
-//                    return;
-//                }
+                if (!reprint.isDirty()) {
+                    return;
+                }
                 uReprint.setInt(1, reprint.getNumber());
                 uReprint.setDate(2, reprint.getDate());
                 uReprint.setInt(3, reprint.getPublicationKey());
@@ -1824,16 +1819,16 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             if (source.getKey() > 0) { //update
                 //non facciamo nulla se l'oggetto non ha subito modifiche
                 //do not store the object if it was not modified
-//                if (!article.isDirty()) {
-//                    return;
-//                }
+                if (!source.isDirty()) {
+                    return;
+                }
                 uSource.setString(1, source.getType());
                 uSource.setString(2, source.getUri());
                 uSource.setString(3, source.getFormat());
                 uSource.setString(4, source.getDescription());
                 uSource.setBoolean(5, source.getCover());
                 uSource.setBoolean(6, source.getDownload());
-                uSource.setInt(7, source.getPublication().getKey());
+                uSource.setInt(7, source.getPublicationKey());
                 uSource.setInt(8, key);
 
                 uSource.executeUpdate();
@@ -1844,7 +1839,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 iSource.setString(4, source.getDescription());
                 iSource.setBoolean(5, source.getCover());
                 iSource.setBoolean(6, source.getDownload());
-                iSource.setInt(7, source.getPublication().getKey());
+                iSource.setInt(7, source.getPublicationKey());
 
                 if (iSource.executeUpdate() == 1) {
                     keys = iSource.getGeneratedKeys();
@@ -1877,9 +1872,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             if (historia.getKey() > 0) { //update
                 //non facciamo nulla se l'oggetto non ha subito modifiche
                 //do not store the object if it was not modified
-//                if (!article.isDirty()) {
-//                    return;
-//                }
+                if (!historia.isDirty()) {
+                    return;
+                }
                 uHistory.setString(1, historia.getEntry());
                 uHistory.setInt(2, historia.getType());
                 uHistory.setTimestamp(3, historia.getDate());
@@ -1926,9 +1921,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             if (user.getKey() > 0) { //update
                 //non facciamo nulla se l'oggetto non ha subito modifiche
                 //do not store the object if it was not modified
-//                if (!article.isDirty()) {
-//                    return;
-//                }
+                if (!user.isDirty()) {
+                    return;
+                }
                 uUser.setString(1, user.getName());
                 uUser.setString(2, user.getSurname());
                 uUser.setString(3, user.getPassword());
@@ -1969,15 +1964,15 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
     @Override
     public void storeChapter(Chapter chapter) throws DataLayerException {
-       ResultSet keys = null;
+        ResultSet keys = null;
         int key = chapter.getKey();
         try {
             if (chapter.getKey() > 0) { //update
                 //non facciamo nulla se l'oggetto non ha subito modifiche
                 //do not store the object if it was not modified
-//                if (!article.isDirty()) {
-//                    return;
-//                }
+                if (!chapter.isDirty()) {
+                    return;
+                }
                 uChapter.setInt(1, chapter.getNumber());
                 uChapter.setString(2, chapter.getTitle());
                 uChapter.setInt(3, chapter.getPublicationKey());
@@ -2020,9 +2015,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             if (section.getKey() > 0) { //update
                 //non facciamo nulla se l'oggetto non ha subito modifiche
                 //do not store the object if it was not modified
-//                if (!article.isDirty()) {
-//                    return;
-//                }
+                if (!section.isDirty()) {
+                    return;
+                }
                 uSection.setInt(1, section.getNumber());
                 uSection.setString(2, section.getTitle());
                 uSection.setInt(3, section.getChapterKey());
@@ -2033,7 +2028,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 iSection.setInt(1, section.getNumber());
                 iSection.setString(2, section.getTitle());
                 iSection.setInt(3, section.getChapterKey());
-                
+
                 if (iSection.executeUpdate() == 1) {
                     keys = iSection.getGeneratedKeys();
                     if (keys.next()) {
@@ -2063,7 +2058,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             iPublicationHasAuthor.setInt(1, idAuthor);
             iPublicationHasAuthor.setInt(2, idPublication);
-            
+
             iPublicationHasAuthor.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot relate author with publication", ex);
@@ -2083,7 +2078,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet res = null;
         try {
             dPublicationHasAuthor.setInt(1, idPublication);
-            
+
             dPublicationHasAuthor.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete author relation", ex);
@@ -2097,7 +2092,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             }
         }
     }
-    
+
     @Override
     public void deleteAuthorFromPublication(int idPublication, int idAuthor) throws DataLayerException {
         ResultSet res = null;
@@ -2117,14 +2112,14 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             }
         }
     }
-    
+
     @Override
     public void storePublicationHasKeyword(int idKeyword, int idPublication) throws DataLayerException {
         ResultSet res = null;
         try {
             iPublicationHasKeyword.setInt(1, idPublication);
             iPublicationHasKeyword.setInt(2, idKeyword);
-            
+
             iPublicationHasKeyword.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot relate key with publication", ex);
@@ -2144,7 +2139,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet res = null;
         try {
             dPublicationHasKeyword.setInt(1, idPublication);
-            
+
             dPublicationHasKeyword.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete key relation", ex);
@@ -2158,7 +2153,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             }
         }
     }
-    
+
     @Override
     public void deleteKeywordFromPublication(int idPublication, int idKeyword) throws DataLayerException {
         ResultSet res = null;
@@ -2178,14 +2173,16 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             }
         }
     }
-    
+
     @Override
-    public void deleteAuthor(Author author) throws DataLayerException {
+    public int deleteAuthor(Author author) throws DataLayerException {
         ResultSet res = null;
+        int rs = 0;
         try {
             dAuthor.setInt(1, author.getKey());
             dAuthor.setInt(2, author.getKey());
-            dAuthor.executeUpdate();
+            rs = dAuthor.executeUpdate();
+            
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete author", ex);
         } finally {
@@ -2197,15 +2194,17 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 //
             }
         }
+        return rs;
     }
 
     @Override
-    public void deleteEditor(Editor editor) throws DataLayerException {
+    public int deleteEditor(Editor editor) throws DataLayerException {
         ResultSet res = null;
+        int rs = 0;
         try {
             dEditor.setInt(1, editor.getKey());
             dEditor.setInt(2, editor.getKey());
-            dEditor.executeUpdate();
+            rs = dEditor.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete editor", ex);
         } finally {
@@ -2217,15 +2216,17 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 //
             }
         }
+        return rs;
     }
 
     @Override
-    public void deleteKeyword(Keyword keyword) throws DataLayerException {
+    public int deleteKeyword(Keyword keyword) throws DataLayerException {
         ResultSet res = null;
+        int rs = 0;
         try {
             dKeyword.setInt(1, keyword.getKey());
             dKeyword.setInt(2, keyword.getKey());
-            dKeyword.executeUpdate();
+            rs = dKeyword.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete keyword", ex);
         } finally {
@@ -2237,14 +2238,15 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 //
             }
         }
+        return rs;
     }
 
     @Override
     public void deletePublication(Publication publication) throws DataLayerException {
         ResultSet res = null;
         try {
-            if(publication.getIndex() != null){
-                for(Chapter chapter : publication.getIndex()){
+            if (publication.getIndex() != null) {
+                for (Chapter chapter : publication.getIndex()) {
                     dSectionByChapter.setInt(1, chapter.getKey());
                     dSectionByChapter.executeUpdate();
                 }
@@ -2284,8 +2286,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             res = sIncompletePublications.executeQuery();
             while (res.next()) {
                 List<Chapter> chap = getChapters(res.getInt("idpubblicazione"));
-                if(chap != null){
-                    for(Chapter chapter : chap){
+                if (chap != null) {
+                    for (Chapter chapter : chap) {
                         dSectionByChapter.setInt(1, chapter.getKey());
                         dSectionByChapter.executeUpdate();
                     }
@@ -2326,7 +2328,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet res = null;
         try {
             dReview.setInt(1, review.getKey());
-            
+
             dReview.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete review", ex);
@@ -2346,7 +2348,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet res = null;
         try {
             dReprint.setInt(1, reprint.getKey());
-            
+
             dReprint.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete reprint", ex);
@@ -2366,7 +2368,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet res = null;
         try {
             dSource.setInt(1, source.getKey());
-            
+
             dSource.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete source", ex);
@@ -2382,12 +2384,13 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
     }
 
     @Override
-    public void deleteChapter(Chapter chapter) throws DataLayerException {
+    public int deleteChapter(Chapter chapter) throws DataLayerException {
         ResultSet res = null;
+        int rs = 0;
         try {
             dChapter.setInt(1, chapter.getKey());
-            
-            dChapter.executeUpdate();
+            dChapter.setInt(2, chapter.getKey());
+            rs = dChapter.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete chapter", ex);
         } finally {
@@ -2399,6 +2402,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 //
             }
         }
+        return rs;
     }
 
     @Override
@@ -2406,7 +2410,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet res = null;
         try {
             dSection.setInt(1, section.getKey());
-            
+
             dSection.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete section", ex);
@@ -2426,7 +2430,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet res = null;
         try {
             dHistory.setInt(1, history.getKey());
-            
+
             dHistory.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete history", ex);
@@ -2440,14 +2444,14 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             }
         }
     }
-    
+
     @Override
     public void storeLike(int publication_key, int user_key) throws DataLayerException {
         ResultSet res = null;
         try {
             iUserLike.setInt(1, publication_key);
             iUserLike.setInt(2, user_key);
-            
+
             iUserLike.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot relate user with publication", ex);
@@ -2467,7 +2471,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet res = null;
         try {
             dUserLike.setInt(1, idPublication);
-            
+
             dUserLike.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete like", ex);
@@ -2487,26 +2491,26 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         ResultSet keys = null;
         int key = 0;
         try {
-             //insert
-              Calendar calendar = Calendar.getInstance();
+            //insert
+            Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.HOUR, 1);
-                iFilters.setString(1, Utils.getArrayParameter(filters, "isbn"));
-                iFilters.setString(2, Utils.getArrayParameter(filters, "titolo"));
-                iFilters.setString(3, Utils.getArrayParameter(filters, "autore"));
-                iFilters.setString(4, Utils.getArrayParameter(filters, "editore"));
-                iFilters.setString(5, Utils.getArrayParameter(filters, "anno_inizio"));
-                iFilters.setString(6, Utils.getArrayParameter(filters, "anno_fine"));
-                iFilters.setString(7, Utils.getArrayParameter(filters, "keyword"));
-                iFilters.setString(8, Utils.getArrayParameter(filters, "lingua"));
-                iFilters.setString(9, Utils.getArrayParameter(filters, "download"));
-                iFilters.setString(10, Utils.getArrayParameter(filters, "utente"));
-                iFilters.setTimestamp(11, new java.sql.Timestamp(calendar.getTime().getTime()));
-                if (iFilters.executeUpdate() == 1) {
-                    keys = iFilters.getGeneratedKeys();
-                    if (keys.next()) {
-                        key = keys.getInt(1);
-                    }
+            iFilters.setString(1, Utils.getArrayParameter(filters, "isbn"));
+            iFilters.setString(2, Utils.getArrayParameter(filters, "titolo"));
+            iFilters.setString(3, Utils.getArrayParameter(filters, "autore"));
+            iFilters.setString(4, Utils.getArrayParameter(filters, "editore"));
+            iFilters.setString(5, Utils.getArrayParameter(filters, "anno_inizio"));
+            iFilters.setString(6, Utils.getArrayParameter(filters, "anno_fine"));
+            iFilters.setString(7, Utils.getArrayParameter(filters, "keyword"));
+            iFilters.setString(8, Utils.getArrayParameter(filters, "lingua"));
+            iFilters.setString(9, Utils.getArrayParameter(filters, "download"));
+            iFilters.setString(10, Utils.getArrayParameter(filters, "utente"));
+            iFilters.setTimestamp(11, new java.sql.Timestamp(calendar.getTime().getTime()));
+            if (iFilters.executeUpdate() == 1) {
+                keys = iFilters.getGeneratedKeys();
+                if (keys.next()) {
+                    key = keys.getInt(1);
                 }
+            }
             return key;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to store filters", ex);
@@ -2528,7 +2532,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             Calendar time = Calendar.getInstance();
             dFilters.setTimestamp(1, new java.sql.Timestamp(time.getTimeInMillis()));
-            
+
             dFilters.executeUpdate();
         } catch (SQLException ex) {
             throw new DataLayerException("Cannot delete filters", ex);
@@ -2576,6 +2580,5 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         }
         return result;
     }
-    
-    
+
 }

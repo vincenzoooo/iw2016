@@ -29,13 +29,41 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeReprint extends BiblioManagerBaseController {
 
-    private int publicationId;
-    private String url;
-    private int reprintId;
-    private Reprint currentReprint;
-    private final Map<Integer, String> pages = new HashMap<>();
-    private final Map<String, Integer> options = new HashMap<>();
+    private final String updateMessage = "Modifica avvenuta con successo.";
+    private final String addMessage = "Inserimento avvenuto con successo.";
+    private final String deleteMessage = "Ristampa eliminata con successo.";
     
+    /**
+     * Pubblicazione
+     */
+    private int publicationId;
+    /**
+     * Url da cui proviene la richiesta
+     */
+    private String url;
+    /**
+     * Ristampa
+     */
+    private int reprintId;
+    /**
+     * Dati della ristampa corrente che si vuole aggiornare
+     */
+    private Reprint currentReprint;
+    /**
+     * Pagine
+     */
+    private final Map<Integer, String> pages = new HashMap<>();
+    /**
+     * Opzioni per la paginazione
+     */
+    private final Map<String, Integer> options = new HashMap<>();
+    /**
+     * Verifica e salva una nuova ristampa
+     * @param request
+     * @param response
+     * @throws NumberFormatException
+     * @throws ParseException 
+     */
     private void action_composeReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
         try {
             Reprint reprint = getDataLayer().createReprint();
@@ -50,50 +78,100 @@ public class ComposeReprint extends BiblioManagerBaseController {
                 reprint.setDate(sqlDate);
                 reprint.setPublicationKey(publicationId);
                 getDataLayer().storeReprint(reprint);
-                request.setAttribute("reprintAdded",1);
+                action_createNotifyMessage(request, response, SUCCESS, addMessage, true);
             }
         } catch (NumberFormatException | ParseException | DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la ristampa: " + ex.getMessage(), 510);
         }
     }
-
+/**
+ * Verifica e salva le modifiche di una recensione
+ * @param request
+ * @param response
+ * @throws NumberFormatException
+ * @throws ParseException 
+ */
     private void action_updateReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
         try {
-            Reprint reprint = getDataLayer().getReprint(reprintId);
             Map<String, String> params = new HashMap<String, String>();
-            params.put("reprintNumber", Utils.checkString(request.getParameter("reprintNumber")));
-            params.put("reprintDate", Utils.checkString(request.getParameter("reprintDate")));
+            params.put("updateReprintNumber", Utils.checkString(request.getParameter("reprintNumber")));
+            params.put("updateReprintDate", Utils.checkString(request.getParameter("reprintDate")));
             if (!validator(params, request, response)) {
-                reprint.setNumber(Integer.parseInt(params.get("reprintNumber")));
+                if(currentReprint.getNumber() != Integer.parseInt(params.get("updateReprintNumber"))){
+                    currentReprint.setNumber(Integer.parseInt(params.get("updateReprintNumber")));
+                    currentReprint.setDirty(true);
+                }
                 DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
-                java.util.Date date = format.parse(params.get("reprintDate"));
+                java.util.Date date = format.parse(params.get("updateReprintDate"));
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-                reprint.setDate(sqlDate);
-                getDataLayer().storeReprint(reprint);
-                request.setAttribute("reprintUpdated",1);
+                if(!currentReprint.getDate().equals(sqlDate)){
+                    currentReprint.setDate(sqlDate);
+                    currentReprint.setDirty(true);
+                }
+                getDataLayer().storeReprint(currentReprint);
                 reprintId = 0;
+                action_createNotifyMessage(request, response, SUCCESS, updateMessage, true);
             }
         } catch (NumberFormatException | ParseException | DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la ristampa:: " + ex.getMessage(), 510);
         }
     }
 
+    /**
+     * Delete the specified Reprint
+     *
+     * @param request
+     * @param response
+     * @throws DataLayerException
+     */
+    private void action_deleteReprint(HttpServletRequest request, HttpServletResponse response)
+            throws DataLayerException {
+        Reprint reprint = getDataLayer().getReprint((int) request.getAttribute("reprintToDelete"));
+        getDataLayer().deleteReprint(reprint);
+        action_createNotifyMessage(request, response, SUCCESS, deleteMessage, true);
+    }
+    /**
+     * Validatore dei dati
+     * @param params
+     * @param request
+     * @param response
+     * @return 
+     */
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = super.validator(params, request, response);
         if (!error) {
-                if (!Utils.isNumeric(params.get("reprintNumber"))) {
-                    request.setAttribute("errorReprintNumber", "Non è un numero valido");
-                    error = true;
+                if(params.get("reprintNumber") != null){
+                    if (!Utils.isNumeric(params.get("reprintNumber"))) {
+                        request.setAttribute("errorReprintNumber", "Non è un numero valido");
+                        error = true;
+                    }
+                    if (!Utils.isDate(params.get("reprintDate"))) {
+                        request.setAttribute("errorReprintDate", "Non è una data valida, si aspetta il formato dd-mm-yyyy");
+                        error = true;
+                    }
                 }
-                if (!Utils.isDate(params.get("reprintDate"))) {
-                    request.setAttribute("errorReprintDate", "Non è una data valida, si aspetta il formato dd-mm-yyyy");
-                    error = true;
+                else{
+                    if (!Utils.isNumeric(params.get("updateReprintNumber"))) {
+                        request.setAttribute("errorUpdateReprintNumber", "Non è un numero valido");
+                        error = true;
+                    }
+                    if (!Utils.isDate(params.get("updateUpdateReprintDate"))) {
+                        request.setAttribute("errorReprintDate", "Non è una data valida, si aspetta il formato dd-mm-yyyy");
+                        error = true;
+                    }
                 }
         }
         return error;
     }
-    
+    /**
+     * Compila i template da restituire a video
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     * @throws DataLayerException 
+     */
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Gestione Ristampa");
         TemplateResult res = new TemplateResult(getServletContext());
@@ -136,6 +214,10 @@ public class ComposeReprint extends BiblioManagerBaseController {
                     reprintId = Integer.parseInt(request.getParameter("reprintId"));
                     currentReprint = getDataLayer().getReprint(reprintId);
                 }
+                if (request.getParameter("reprintToDelete") != null) {
+                    request.setAttribute("reprintToDelete", Integer.parseInt(request.getParameter("reprintToDelete")));
+                    action_deleteReprint(request, response);
+                }
                 if (request.getParameter("submitReprint") != null){
                     if(reprintId == 0) {
                         action_composeReprint(request, response);
@@ -162,17 +244,5 @@ public class ComposeReprint extends BiblioManagerBaseController {
         } catch (DataLayerException | IOException | NumberFormatException | ParseException | ServletException ex) {
             action_error(request, response, "Errore: " + ex.getMessage(), 501);
         }
-
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }
-
 }

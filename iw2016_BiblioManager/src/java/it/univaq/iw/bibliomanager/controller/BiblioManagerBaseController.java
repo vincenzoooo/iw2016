@@ -26,9 +26,13 @@ import javax.sql.DataSource;
  * @author Vincenzo Lanzieri, Angelo Iezzi
  */
 public abstract class BiblioManagerBaseController extends HttpServlet {
-
+    
+    protected final String SUCCESS = "success";
+    protected final String WARNING = "warning";
+    protected final String ERROR = "error";
+    
     private BiblioManagerDataLayer datalayer;
-
+    
     protected abstract void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException;
 
     private void processBaseRequest(HttpServletRequest request, HttpServletResponse response) {
@@ -59,13 +63,6 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
                     Logger.getLogger(BiblioManagerBaseController.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            /*
-            try {
-                datalayer.destroy();
-            } catch (DataLayerException ex) {
-                Logger.getLogger(BiblioManagerBaseController.class.getName()).log(Level.SEVERE, null, ex);
-            }
-             */
         }
     }
 
@@ -136,7 +133,7 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         for (Map.Entry<String, String> entry : params.entrySet()) {
             if (entry.getValue() == null || entry.getValue().equals("")) {
                 String fieldName = Character.toUpperCase(entry.getKey().charAt(0)) + entry.getKey().substring(1);
-                request.setAttribute("error" + fieldName, "Campo non  valorizzato");
+                request.setAttribute("error" + fieldName, "Il campo non può essere vuoto");
                 error = true;
             }
             else{
@@ -318,6 +315,37 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         options.put("end", end);
     }
     
+    /**
+     * Create notify message to show
+     * @param request
+     * @param response
+     * @param notifyType
+     * @param notifyMessage 
+     */
+    protected void action_createNotifyMessage(HttpServletRequest request, HttpServletResponse response, String notifyType, String notifyMessage, boolean margin){
+        switch(notifyType){
+            case SUCCESS:
+                request.setAttribute("notifyClass", "alert-success");
+                break;
+            case ERROR:
+                request.setAttribute("notifyClass", "alert-danger");
+                break;
+            case WARNING:
+                request.setAttribute("notifyClass", "alert-warning");
+                break;
+            default:
+                return;
+        }
+        request.setAttribute("haveNotify", true);
+        request.setAttribute("notifyMessage", notifyMessage);
+        if(margin){
+            request.setAttribute("notifyMargin", "margin-top-20");
+        }
+    }
+    /**
+     * Get the data layer
+     * @return 
+     */
     public BiblioManagerDataLayer getDataLayer() {
         return datalayer;
     }

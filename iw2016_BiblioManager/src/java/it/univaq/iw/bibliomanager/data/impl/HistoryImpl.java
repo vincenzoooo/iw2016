@@ -26,6 +26,7 @@ public class HistoryImpl implements History {
     private String publication_title;
     private int user_key;
     private User user;
+    private boolean dirty;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public HistoryImpl(BiblioManagerDataLayer ownerDataLayer) {
@@ -37,6 +38,7 @@ public class HistoryImpl implements History {
         publication_key = 0;
         user_key = 0;
         user = null;
+        dirty = false;
     }
 
     @Override
@@ -80,7 +82,7 @@ public class HistoryImpl implements History {
     }
 
     @Override
-    public int getPublicationKey(){
+    public int getPublicationKey() {
         return publication_key;
     }
 
@@ -96,9 +98,8 @@ public class HistoryImpl implements History {
 
     @Override
     public void setPublicationTitle(String publication_key) {
-       this.publication_title = publication_key; 
+        this.publication_title = publication_key;
     }
- 
 
     @Override
     public User getUser() throws DataLayerException {
@@ -114,6 +115,16 @@ public class HistoryImpl implements History {
     }
 
     @Override
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    @Override
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    @Override
     public void copyFrom(History history) throws DataLayerException {
         key = history.getKey();
         entry = history.getEntry();
@@ -121,5 +132,6 @@ public class HistoryImpl implements History {
         date = history.getDate();
         publication_key = history.getPublicationKey();
         user_key = history.getUser().getKey();
+        dirty = false;
     }
 }

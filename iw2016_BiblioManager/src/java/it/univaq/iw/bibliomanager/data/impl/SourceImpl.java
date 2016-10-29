@@ -8,7 +8,6 @@ package it.univaq.iw.bibliomanager.data.impl;
 
 import it.univaq.iw.bibliomanager.data.model.BiblioManagerDataLayer;
 import it.univaq.iw.framework.data.DataLayerException;
-import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.bibliomanager.data.model.Source;
 
 /**
@@ -25,7 +24,7 @@ public class SourceImpl implements Source {
     private boolean cover;
     private boolean download;
     private int publication_key;
-    private Publication publication;
+    private boolean dirty;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public SourceImpl(BiblioManagerDataLayer ownerDataLayer) {
@@ -35,10 +34,10 @@ public class SourceImpl implements Source {
         uri = "";
         format = "";
         publication_key = 0;
-        publication = null;
         description = "";
         cover = false;
         download = false;
+        dirty = false;
     }
 
     @Override
@@ -92,36 +91,43 @@ public class SourceImpl implements Source {
     }
 
     @Override
-    public boolean getCover(){
+    public boolean getCover() {
         return cover;
-    }
-    
-    @Override
-    public void setCover(boolean cover){
-        this.cover = cover;
-    }
-    
-    @Override
-    public boolean getDownload(){
-        return download;
-    }
-    
-    @Override
-    public void setDownload(boolean download){
-        this.download = download;
-    }
-    
-    @Override
-    public Publication getPublication() throws DataLayerException {
-        if (publication == null && publication_key > 0) {
-            publication = ownerDataLayer.getPublication(publication_key);
-        }
-        return publication;
     }
 
     @Override
-    public void setPublication(Publication publication) {
-        this.publication = publication;
+    public void setCover(boolean cover) {
+        this.cover = cover;
+    }
+
+    @Override
+    public boolean getDownload() {
+        return download;
+    }
+
+    @Override
+    public void setDownload(boolean download) {
+        this.download = download;
+    }
+
+    @Override
+    public int getPublicationKey() {
+        return publication_key;
+    }
+
+    @Override
+    public void setPublicationKey(int publication_key) {
+        this.publication_key = publication_key;
+    }
+
+    @Override
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    @Override
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
     }
 
     @Override
@@ -131,5 +137,6 @@ public class SourceImpl implements Source {
         format = source.getFormat();
         uri = source.getUri();
         type = source.getType();
+        dirty = false;
     }
 }

@@ -43,4 +43,8 @@ public interface User {
     void setUtente(User user);
 
     void copyFrom(User user) throws DataLayerException;
+    
+    void setDirty(boolean dirty);
+
+    boolean isDirty();
 }

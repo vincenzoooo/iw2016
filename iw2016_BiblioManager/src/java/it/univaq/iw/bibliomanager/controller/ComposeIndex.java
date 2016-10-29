@@ -27,11 +27,34 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeIndex extends BiblioManagerBaseController {
 
+    private final String updateChapterMessage = "Capitolo modificato con successo.";
+    private final String updateSectionMessage = "Sezione modificata con successo.";
+    private final String addChapterMessage = "Inserimento del capitolo avvenuto con successo.";
+    private final String addSectionMessage = "Inserimento della sezione avvenuto con successo.";
+    private final String deleteChapterMessage = "Capitolo eliminato con successo.";
+    private final String errorDeleteChapterMessage = "Non è possibile eliminare il capitolo. Ha almeno una sezione.";
+    private final String deleteSectionMessage = "Sezione eliminata con successo.";
+    /**
+     * Pubblicazione
+     */
     private int publicationId;
+    /**
+     * Url da cui proviene la richiesta
+     */
     private String url;
+    /**
+     * Capitolo
+     */
     private int chapterId;
+    /**
+     * Sezione
+     */
     private int sectorId;
-    
+    /**
+     * Verifica e salva un nuovo capitolo
+     * @param request
+     * @param response 
+     */
     private void action_composeChapter(HttpServletRequest request, HttpServletResponse response) {
         try {
             Chapter chapter = getDataLayer().createChapter();
@@ -43,13 +66,17 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 chapter.setTitle(params.get("chapterTitle"));
                 chapter.setPublicationKey(publicationId);
                 getDataLayer().storeChapter(chapter);
-                request.setAttribute("chapterAdded",1);
+                action_createNotifyMessage(request, response, SUCCESS, addChapterMessage, true);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare il capitolo: " + ex.getMessage(), 510);
         }
     }
-
+/**
+ * Verifica e salva el modifiche di un capitolo
+ * @param request
+ * @param response 
+ */
     private void action_updateChapter(HttpServletRequest request, HttpServletResponse response) {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
@@ -58,17 +85,27 @@ public class ComposeIndex extends BiblioManagerBaseController {
             params.put("chapterTitle", Utils.checkString(request.getParameter("chapterTitle")));
             params.put("chapterNumber", Utils.checkString(request.getParameter("chapterNumber")));
             if (!validator(params, request, response)) {
-                chapter.setNumber(Integer.parseInt(params.get("chapterNumber")));
-                chapter.setTitle(params.get("chapterTitle"));
+                if(chapter.getNumber() != Integer.parseInt(params.get("chapterNumber"))){
+                    chapter.setNumber(Integer.parseInt(params.get("chapterNumber")));
+                    chapter.setDirty(true);
+                }
+                if(!chapter.getTitle().equals(params.get("chapterTitle"))){
+                    chapter.setTitle(params.get("chapterTitle"));
+                    chapter.setDirty(true);
+                }
                 getDataLayer().storeChapter(chapter);
-                request.setAttribute("chapterUpdated",1);
+                action_createNotifyMessage(request, response, SUCCESS, updateChapterMessage, true);
                 chapterId = 0;
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare il capitolo: " + ex.getMessage(), 510);
         }
     }
-
+/**
+ * Verifica e salva una nuova sezione
+ * @param request
+ * @param response 
+ */
     private void action_composeSection(HttpServletRequest request, HttpServletResponse response) {
         try {
             Section section = getDataLayer().createSection();
@@ -81,13 +118,17 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 section.setTitle(params.get("sectionTitle"));
                 section.setChapterKey(Integer.parseInt(params.get("chapter")));
                 getDataLayer().storeSection(section);
-                request.setAttribute("sectionUpdated",1);
+                action_createNotifyMessage(request, response, SUCCESS, addSectionMessage, true);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare il sezione: " + ex.getMessage(), 510);
         }
     }
-
+/**
+ * Verifica e salva le modifiche di una sezione
+ * @param request
+ * @param response 
+ */
     private void action_updateSection(HttpServletRequest request, HttpServletResponse response) {
         try {
             Section section = getDataLayer().getSection(sectorId);
@@ -96,17 +137,33 @@ public class ComposeIndex extends BiblioManagerBaseController {
             params.put("sectionTitle", Utils.checkString(request.getParameter("sectionTitle")));
             params.put("sectionNumber", Utils.checkString(request.getParameter("sectionNumber")));
             if (!validator(params, request, response)) {
-                section.setNumber(Integer.parseInt(params.get("sectionNumber")));
-                section.setTitle(params.get("sectionTitle"));
-                section.setChapterKey(Integer.parseInt(params.get("chapter")));
+                if(section.getNumber() != Integer.parseInt(params.get("sectionNumber"))){
+                    section.setNumber(Integer.parseInt(params.get("sectionNumber")));
+                    section.setDirty(true);
+                }
+                if(!section.getTitle().equals(params.get("sectionTitle"))){
+                    section.setTitle(params.get("sectionTitle"));
+                    section.setDirty(true);
+                }
+                if(section.getChapterKey() != Integer.parseInt(params.get("chapter"))){
+                    section.setChapterKey(Integer.parseInt(params.get("chapter")));
+                    section.setDirty(true);
+                }
                 getDataLayer().storeSection(section);
                 sectorId = 0;
+                action_createNotifyMessage(request, response, SUCCESS, updateSectionMessage, true);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare il sezione: " + ex.getMessage(), 510);
         }
     }
-
+/**
+ * Validatore dei dati
+ * @param params
+ * @param request
+ * @param response
+ * @return 
+ */
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = super.validator(params, request, response);
@@ -145,7 +202,12 @@ public class ComposeIndex extends BiblioManagerBaseController {
         }
         return error;
     }
-
+/**
+ * Elimina un capitolo specificato
+ * @param request
+ * @param response
+ * @throws DataLayerException 
+ */
     private void action_deleteChapter(HttpServletRequest request, HttpServletResponse response) throws DataLayerException{
         Chapter chapter = getDataLayer().getChapter((int)request.getAttribute("idChapter"));
         if(chapter.getSections().size()>0){
@@ -153,14 +215,33 @@ public class ComposeIndex extends BiblioManagerBaseController {
                 request.setAttribute("idSection", section.getKey());
             }
         }
-        getDataLayer().deleteChapter(chapter);
+        int deleted = getDataLayer().deleteChapter(chapter);
+        if(deleted == 0){
+            action_createNotifyMessage(request, response, ERROR, errorDeleteChapterMessage, true);
+        }
+        else{
+            action_createNotifyMessage(request, response, SUCCESS, deleteChapterMessage, true);
+        }
     }
-    
+  /**
+   * Elimina una sezione specificata
+   * @param request
+   * @param response
+   * @throws DataLayerException 
+   */  
     private void action_deleteSection(HttpServletRequest request, HttpServletResponse response) throws DataLayerException{
         Section section = getDataLayer().getSection((int)request.getAttribute("idSection"));
         getDataLayer().deleteSection(section);
+        action_createNotifyMessage(request, response, SUCCESS, deleteSectionMessage, true);
     }
-    
+    /**
+     * Compila i template da restituire a video
+     * @param request
+     * @param response
+     * @throws ServletException
+     * @throws IOException
+     * @throws DataLayerException 
+     */
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Gestione Indice");
         TemplateResult res = new TemplateResult(getServletContext());
@@ -229,15 +310,5 @@ public class ComposeIndex extends BiblioManagerBaseController {
         } catch (DataLayerException | IOException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
     }
 }

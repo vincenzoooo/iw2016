@@ -23,6 +23,7 @@ public class ChapterImpl implements Chapter {
     private String title;
     private int publication_key;
     private List<Section> sections;
+    private boolean dirty;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public ChapterImpl(BiblioManagerDataLayer ownerDataLayer) {
@@ -32,6 +33,7 @@ public class ChapterImpl implements Chapter {
         this.title = "";
         publication_key = 0;
         sections = null;
+        dirty = false;
     }
 
     @Override
@@ -85,10 +87,21 @@ public class ChapterImpl implements Chapter {
     }
 
     @Override
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    @Override
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    @Override
     public void copyFrom(Chapter chapter) throws DataLayerException {
         key = chapter.getKey();
         number = chapter.getNumber();
         title = chapter.getTitle();
         publication_key = chapter.getPublicationKey();
+        dirty = false;
     }
 }

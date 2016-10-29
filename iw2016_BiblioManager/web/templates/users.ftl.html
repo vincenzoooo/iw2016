@@ -46,29 +46,7 @@
             </div>
         </div>
         
-        <div class="section section-homePage-allert"> 
-            <#if userUpgraded??>
-            <div class="row margin-top-20">
-                <div class="col-xs-12">
-                    <div class="alert alert-success alert-dismissible animated fadeIn">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Utente <a href="profile?userId=${userUpgraded.key}" class="alert-link">${strip_slashes(userUpgraded.surname?html)?capitalize}&nbsp;${strip_slashes(userUpgraded.name?html)?capitalize}</a> promosso con successo.
-                    </div>
-                </div>
-            </div>
-            </#if>
-            
-            <#if userDowngraded??>
-            <div class="row margin-top-20">
-                <div class="col-xs-12">
-                    <div class="alert alert-danger alert-dismissible animate fadeIn">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Utente <a href="profile?userId=${userDowngraded.key}" class="alert-link">${strip_slashes(userDowngraded.surname?html)?capitalize}&nbsp;${strip_slashes(userDowngraded.name?html)?capitalize}</a> degradato con successo.
-                    </div>
-                </div>
-            </div>
-            </#if>
-        </div>
+        <#include "/commons/notifyMessage.ftl.html">
  
         <div class="section section-pageCommunity-legend"> 
             <div class="row">

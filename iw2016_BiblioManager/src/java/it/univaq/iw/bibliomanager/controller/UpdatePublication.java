@@ -32,9 +32,21 @@ import java.text.SimpleDateFormat;
  */
 public class UpdatePublication extends BiblioManagerBaseController {
 
+    private final String updateMessage = "Pubblicazione modificata con successo.";
+    /**
+     * Id della pubblicazione corrente
+     */
     private int publicationId;
+    /**
+     * Url da passare alle singole risorse
+     */
     private final String url = "managePublication";
 
+    /**
+     * Verifica e salva le modifiche apportate alla pubblicazione
+     * @param request
+     * @param response 
+     */
     private void action_updatePublication(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (publicationId > 0) {
@@ -48,22 +60,46 @@ public class UpdatePublication extends BiblioManagerBaseController {
                 params.put("publicationPages", Utils.checkString(request.getParameter("publicationPages")));
                 params.put("editors", request.getParameter("editors"));
                 if (!validator(params, request, response)) {
-                    publication.setTitle(params.get("publicationTitle"));
-                    publication.setDescription(params.get("publicationDescription"));
-                    publication.setLanguage(params.get("publicationLanguage"));
+                    if(!publication.getTitle().equals(params.get("publicationTitle"))){
+                        publication.setTitle(params.get("publicationTitle"));
+                        publication.setDirty(true);
+                    }
+                    if(!publication.getDescription().equals(params.get("publicationDescription"))){
+                        publication.setDescription(params.get("publicationDescription"));
+                        publication.setDirty(true);
+                    }
+                    if(!publication.getLanguage().equals(params.get("publicationLanguage"))){
+                        publication.setLanguage(params.get("publicationLanguage"));
+                        publication.setDirty(true);
+                    }
                     DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
                     java.util.Date date = df.parse(params.get("publicationDate"));
                     java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-                    publication.setPublicationDate(sqlDate);
-                    publication.setIsbn(params.get("publicationIsbn"));
-                    publication.setPageNumber(Integer.parseInt(params.get("publicationPages")));
-                    publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editors"))));
-                    publication.setIncomplete(false);
+                    if(!publication.getPublicationDate().equals(sqlDate)){
+                        publication.setPublicationDate(sqlDate);
+                        publication.setDirty(true);
+                    }
+                    if(!publication.getIsbn().equals(params.get("publicationIsbn"))){
+                        publication.setIsbn(params.get("publicationIsbn"));
+                        publication.setDirty(true);
+                    }
+                    if(publication.getPageNumber() != Integer.parseInt(params.get("publicationPages"))){
+                        publication.setPageNumber(Integer.parseInt(params.get("publicationPages")));
+                        publication.setDirty(true);
+                    }
+                    if(publication.getEditor().getKey() != Integer.parseInt(params.get("editors"))){
+                        publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editors"))));
+                        publication.setDirty(true);
+                    }
+                    if(publication.getIncomplete()){
+                        publication.setIncomplete(false);
+                        publication.setDirty(true);
+                    }
                     getDataLayer().storePublication(publication);
                     this.action_updateHistory(request, response);
                     request.setAttribute("publicationId", publication.getKey());
                     publicationId = 0;
-                    request.setAttribute("publicationUpdated", 1);
+                    action_createNotifyMessage(request, response, SUCCESS, updateMessage, true);
                     action_redirect(request, response, "/details");
                 }
             }
@@ -72,6 +108,12 @@ public class UpdatePublication extends BiblioManagerBaseController {
         }
     }
 
+    /**
+     * Aggiunge una voce di modifica allo storico
+     * @param request
+     * @param response
+     * @throws DataLayerException 
+     */
     private void action_updateHistory(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         HttpSession session = SecurityLayer.checkSession(request);
         User user = getDataLayer().getUser((int) session.getAttribute("userId"));
@@ -84,6 +126,13 @@ public class UpdatePublication extends BiblioManagerBaseController {
         getDataLayer().storeHistory(history);
     }
 
+    /**
+     * Validatore dei dati
+     * @param params
+     * @param request
+     * @param response
+     * @return 
+     */
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = super.validator(params, request, response);
@@ -113,16 +162,36 @@ public class UpdatePublication extends BiblioManagerBaseController {
         return error;
     }
 
+    /**
+     * Elimina la relazione tra un autore e la pubblicazione corrente
+     * @param request
+     * @param response
+     * @throws DataLayerException 
+     */
     private void action_unlinkAuthor(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
         getDataLayer().deleteAuthorFromPublication(publicationId, Integer.parseInt(request.getParameter("unlinkAuthor")));
     }
 
+    /**
+     * Elimina la relazione tra una keyword e la pubblicazione corrente
+     * @param request
+     * @param response
+     * @throws DataLayerException 
+     */
     private void action_unlinkKeyword(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
         getDataLayer().deleteKeywordFromPublication(publicationId, Integer.parseInt(request.getParameter("unlinkKeyword")));
     }
 
+    /**
+     * Elimina la pubblicazione corrente
+     * @param request
+     * @param response
+     * @throws DataLayerException
+     * @throws ServletException
+     * @throws IOException 
+     */
     private void action_deletePublication(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException, ServletException, IOException {
         Publication publication = getDataLayer().getPublication(publicationId);
@@ -130,6 +199,14 @@ public class UpdatePublication extends BiblioManagerBaseController {
         action_redirect(request, response, "/catalog");
     }
 
+    /**
+     * Redireziona verso l'url specificata
+     * @param request
+     * @param response
+     * @param url
+     * @throws ServletException
+     * @throws IOException 
+     */
     @Override
     protected void action_redirect(HttpServletRequest request, HttpServletResponse response, String url) throws ServletException, IOException {
         request.setAttribute("publicationId", publicationId);
@@ -138,6 +215,11 @@ public class UpdatePublication extends BiblioManagerBaseController {
 
     }
 
+    /**
+     * Compila i template da restituire a video
+     * @param request
+     * @param response 
+     */
     private void action_view(HttpServletRequest request, HttpServletResponse response) {
         try {
             List<Editor> editors = getDataLayer().getEditors(0,0);
@@ -216,15 +298,4 @@ public class UpdatePublication extends BiblioManagerBaseController {
             action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }
-
 }

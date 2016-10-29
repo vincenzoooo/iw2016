@@ -211,10 +211,6 @@
     <welcome-file-list>
         <welcome-file>home</welcome-file>
     </welcome-file-list>
-    <error-page>
-        <error-code>404</error-code>
-        <location>/pageNotFound</location>
-    </error-page>
     <resource-ref>
         <res-ref-name>jdbc/iw2016</res-ref-name>
         <res-type>javax.sql.DataSource</res-type>

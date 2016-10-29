@@ -44,4 +44,8 @@ public interface Review {
     void setHistory(History archive);
 
     void copyFrom(Review review) throws DataLayerException;
+    
+    void setDirty(boolean dirty);
+
+    boolean isDirty();
 }

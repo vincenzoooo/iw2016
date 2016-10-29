@@ -28,6 +28,7 @@ public class ReviewImpl implements Review {
     private int user_key;
     private User author;
     private int publication_key;
+    private boolean dirty;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public ReviewImpl(BiblioManagerDataLayer ownerDataLayer) {
@@ -41,6 +42,7 @@ public class ReviewImpl implements Review {
         user_key = 0;
         author = null;
         publication_key = 0;
+        dirty = false;
     }
 
     @Override
@@ -120,6 +122,16 @@ public class ReviewImpl implements Review {
     }
 
     @Override
+    public boolean isDirty() {
+        return dirty;
+    }
+
+    @Override
+    public void setDirty(boolean dirty) {
+        this.dirty = dirty;
+    }
+
+    @Override
     public void copyFrom(Review review) throws DataLayerException {
         key = review.getKey();
         history = review.getHistory();
@@ -127,8 +139,9 @@ public class ReviewImpl implements Review {
         status = review.getStatus();
         text = review.getText();
         user_key = review.getAuthor().getKey();
-        if(review.getHistory() != null){
+        if (review.getHistory() != null) {
             history_key = review.getHistory().getKey();
         }
+        dirty = false;
     }
 }

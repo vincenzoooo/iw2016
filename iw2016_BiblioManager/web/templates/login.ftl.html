@@ -9,17 +9,10 @@
                 </div>
             </div>
         </div>
+        
+        <#include "/commons/notifyMessage.ftl.html">
+        
         <div class="section section-pageLogin-allert"> 
-            <#if !isLogin?? && !noOperation??>
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="alert alert-warning alert-dismissible fadeIn animated">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Per poter usufruire dei servizi del portale bisogna accedere!!! Nel caso non si ha un account cliccate su "Registrati" per crearne uno.
-                    </div>
-                </div>
-            </div>
-            </#if>
             <#if resetted??>
             <div class="row">
                 <div class="col-xs-12">
@@ -87,12 +80,6 @@
                             </div>
                         </div>
                     </form>
-                   
-<!--                    <#if errorLogin??>
-                    <div class="error">
-                        ${errorLogin?html}
-                    </div>
-                    </#if>-->
                 </div>
             </div>
         </div>

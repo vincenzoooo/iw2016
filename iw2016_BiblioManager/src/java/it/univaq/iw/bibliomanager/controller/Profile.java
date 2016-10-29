@@ -30,46 +30,64 @@ import java.util.Map;
  */
 public class Profile extends BiblioManagerBaseController {
 
+    private final String updateMessage = "Modifica del profilo avvenuta con successo.";
+    /**
+     * Compila i template da restituire a video
+     * @param request
+     * @param response
+     * @throws DataLayerException
+     * @throws ServletException
+     * @throws IOException 
+     */
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException {
         try {
             request.setAttribute("page_title", "Profile");
             HttpSession session = SecurityLayer.checkSession(request);
-            int userKey;
-            if (request.getParameter("userId") != null) {
-                userKey = Integer.parseInt(request.getParameter("userId"));
-                request.setAttribute("displaynone", "display:none");
-            } else {
-                userKey = (int) session.getAttribute("userId");
-            }
-            User user = getDataLayer().getUser(userKey);
-            List<Publication> publications = new ArrayList();
-            List<History> histories = getDataLayer().getHistoriesByUser(user.getKey());
-            for (History history : histories) {
-                //Type 0 == Insert
-                if (history.getType() == 0) {
-                    publications.add(getDataLayer().getPublication(history.getPublicationKey()));
-                }
-                history.setPublicationTitle(getDataLayer().getPublication(history.getPublicationKey()).getTitle());
-            }
-            if (!publications.isEmpty()) {
-                request.setAttribute("publications", publications);
-            }
-            request.setAttribute("user", user);
-            request.setAttribute("userActions", histories);
             TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("profile.ftl.html", request, response);
+            if(request.getAttribute("update") != null && (boolean) request.getAttribute("update")){
+                User user = getDataLayer().getUser((int) session.getAttribute("userId"));
+                request.setAttribute("user", user);
+                res.activate("manageProfile.ftl.html", request, response);
+            }
+            else{
+                int userKey;
+                if (request.getParameter("userId") != null) {
+                    userKey = Integer.parseInt(request.getParameter("userId"));
+                    request.setAttribute("displaynone", "display:none");
+                } else {
+                    userKey = (int) session.getAttribute("userId");
+                }
+                User user = getDataLayer().getUser(userKey);
+                List<Publication> publications = new ArrayList();
+                List<History> histories = getDataLayer().getHistoriesByUser(user.getKey());
+                for (History history : histories) {
+                    //Type 0 == Insert
+                    if (history.getType() == 0) {
+                        publications.add(getDataLayer().getPublication(history.getPublicationKey()));
+                    }
+                    history.setPublicationTitle(getDataLayer().getPublication(history.getPublicationKey()).getTitle());
+                }
+                if (!publications.isEmpty()) {
+                    request.setAttribute("publications", publications);
+                }
+                request.setAttribute("user", user);
+                request.setAttribute("userActions", histories);
+                res.activate("profile.ftl.html", request, response);
+            }
         } catch (DataLayerException | ServletException ex) {
             action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
         }
     }
 
-    private void action_updateProfile(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException{
-        HttpSession session = SecurityLayer.checkSession(request);
-        User user = getDataLayer().getUser((int) session.getAttribute("userId"));
-        request.setAttribute("user", user);
-        TemplateResult res = new TemplateResult(getServletContext());
-        res.activate("manageProfile.ftl.html", request, response);
-    }
+    /**
+     * Verifica e salva le modifiche dei dati utente
+     * @param request
+     * @param response
+     * @throws DataLayerException
+     * @throws ServletException
+     * @throws IOException
+     * @throws NoSuchAlgorithmException 
+     */
     private void action_save(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException, NoSuchAlgorithmException {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
@@ -81,24 +99,42 @@ public class Profile extends BiblioManagerBaseController {
             params.put("surname", Utils.checkString(request.getParameter("surname")));
             params.put("email", Utils.checkString(request.getParameter("email")));
             if (!validator(params, request, response)) {
-                user.setName(params.get("name"));
-                user.setSurname(params.get("surname"));
-                user.setEmail(params.get("email"));
+                if(!user.getName().equals(params.get("name"))){
+                    user.setName(params.get("name"));
+                    user.setDirty(true);
+                }
+                if(!user.getSurname().equals(params.get("surname"))){
+                    user.setSurname(params.get("surname"));
+                    user.setDirty(true);
+                }
+                if(!user.getEmail().equals(params.get("email"))){
+                    user.setEmail(params.get("email"));
+                    user.setDirty(true);
+                }
                 if(!Utils.isNullOrEmpty(password)){
                     password = Utils.SHA1(password);
                     user.setPassword(password);
+                    user.setDirty(true);
                 }
                 getDataLayer().storeUser(user);
-                request.setAttribute("userUpdated", 1);
                 request.setAttribute("user", user);
+                action_createNotifyMessage(request, response, SUCCESS, updateMessage, true);
             } else {
-                action_updateProfile(request, response);
+                request.setAttribute("update", true);
+                action_view(request, response);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Error: " + ex.getMessage(), 510);
         }
     }
 
+    /**
+     * Validatore dei dati
+     * @param params
+     * @param request
+     * @param response
+     * @return 
+     */
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = super.validator(params, request, response);
@@ -124,7 +160,14 @@ public class Profile extends BiblioManagerBaseController {
         }
         return error;
     }
-
+/**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     */
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException {
         try {
@@ -135,7 +178,7 @@ public class Profile extends BiblioManagerBaseController {
                     action_save(request, response);
                 }
                 if(request.getParameter("update") != null){
-                    action_updateProfile(request, response);
+                    request.setAttribute("update", true);
                 }
                 action_view(request, response);
             } else {
@@ -145,5 +188,4 @@ public class Profile extends BiblioManagerBaseController {
             action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
-
 }

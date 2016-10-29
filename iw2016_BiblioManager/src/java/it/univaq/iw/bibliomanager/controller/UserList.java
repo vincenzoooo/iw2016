@@ -16,8 +16,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import it.univaq.iw.bibliomanager.data.model.User;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -25,9 +23,18 @@ import java.util.logging.Logger;
  */
 public class UserList extends BiblioManagerBaseController {
 
-    private void action_view(HttpServletRequest request, HttpServletResponse response)
-    {
-        try{
+    private final String userUpgradeMessage = "Utente <a href=\"profile?userId=${userUpgraded.key}\" class=\"alert-link\">%s %s</a> promosso con successo.";
+    private final String userDowngradeMessage = "Utente <a href=\"profile?userId=${userUpgraded.key}\" class=\"alert-link\">%s %s</a> promosso con successo.";
+    
+    private int operationType;
+    private int userId;
+    /**
+     * Compila i template da restituire a video
+     * @param request
+     * @param response 
+     */
+    private void action_view(HttpServletRequest request, HttpServletResponse response) {
+        try {
             String filter = "%";
             if (request.getParameter("filter") != null) {
                 filter = request.getParameter("filter") + "%";
@@ -44,11 +51,14 @@ public class UserList extends BiblioManagerBaseController {
         } catch (ServletException | IOException | DataLayerException ex) {
             action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
         }
-        
     }
 
-    private void action_upgrade(HttpServletRequest request, HttpServletResponse response)
-    {
+    /**
+     * Promuove un utente passivo in utente attivo
+     * @param request
+     * @param response 
+     */
+    private void action_upgrade(HttpServletRequest request, HttpServletResponse response) {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
@@ -57,19 +67,23 @@ public class UserList extends BiblioManagerBaseController {
                     User user = getDataLayer().getUser(Integer.parseInt(request.getParameter("user")));
                     if (user.getState() == 2) {
                         user.setState(1);
+                        user.setDirty(true);
                         getDataLayer().storeUser(user);
-                        request.setAttribute("userUpgraded", user);
-                        action_redirect(request, response, "/community");
+                        action_createNotifyMessage(request, response, SUCCESS, String.format(userUpgradeMessage, user.getName(), user.getSurname()), true);
                     }
                 }
             }
-        } catch (DataLayerException | NumberFormatException | IOException | ServletException ex) {
+        } catch (DataLayerException | NumberFormatException ex) {
             action_error(request, response, "Error while upgrading an user: " + ex.getMessage(), 510);
         }
     }
 
-    private void action_downgrade(HttpServletRequest request, HttpServletResponse response)
-    {
+    /**
+     * Degrada un utente attivo in utente passivo
+     * @param request
+     * @param response 
+     */
+    private void action_downgrade(HttpServletRequest request, HttpServletResponse response) {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
@@ -78,13 +92,13 @@ public class UserList extends BiblioManagerBaseController {
                     User user = getDataLayer().getUser(Integer.parseInt(request.getParameter("user")));
                     if (user.getState() == 1) {
                         user.setState(2);
+                        user.setDirty(true);
                         getDataLayer().storeUser(user);
-                        request.setAttribute("userDowngraded", user);
-                        action_redirect(request, response, "/community");
+                        action_createNotifyMessage(request, response, ERROR, String.format(userDowngradeMessage, user.getName(), user.getSurname()), true);
                     }
                 }
             }
-        } catch (DataLayerException | NumberFormatException | IOException | ServletException ex) {
+        } catch (DataLayerException | NumberFormatException ex) {
             action_error(request, response, "Error while downgrading an user: " + ex.getMessage(), 510);
         }
     }
@@ -121,15 +135,4 @@ public class UserList extends BiblioManagerBaseController {
             action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }
-
 }

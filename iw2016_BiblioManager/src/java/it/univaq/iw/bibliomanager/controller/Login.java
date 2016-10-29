@@ -25,6 +25,18 @@ import java.util.Map;
  */
 public class Login extends BiblioManagerBaseController {
 
+    private final String noActionMessage = "Per poter usufruire dei servizi del portale bisogna accedere!!! Nel caso non si ha un account cliccate su \"Registrati\" per crearne uno.";
+    private final String userLoggedMessage = "Login effettuato con successo.";
+    
+    /**
+     * Verifica i dati utente e crea la sessione
+     * @param request
+     * @param response
+     * @throws IOException
+     * @throws ServletException
+     * @throws NoSuchAlgorithmException
+     * @throws DataLayerException 
+     */
     private void action_login(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, NoSuchAlgorithmException, DataLayerException {
         try {
@@ -39,6 +51,7 @@ public class Login extends BiblioManagerBaseController {
                     request.setAttribute("page_title", "Benvenuto");
                     request.setAttribute("user", user);
                     request.setAttribute("logged", 1);
+                    action_createNotifyMessage(request, response, SUCCESS, userLoggedMessage, true);
                     action_redirect(request, response, "/home");
                 } else {
                     request.setAttribute("errorLogin", "Credenziali errate, si invita a riprovare o ad iscriversi");
@@ -52,6 +65,13 @@ public class Login extends BiblioManagerBaseController {
         }
     }
 
+    /**
+     * Validatore dei dati
+     * @param params
+     * @param request
+     * @param response
+     * @return 
+     */
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = super.validator(params, request, response);
@@ -64,6 +84,11 @@ public class Login extends BiblioManagerBaseController {
         return error;
     }
 
+    /**
+     * Compila i template da restituire a video
+     * @param request
+     * @param response 
+     */
     private void action_view(HttpServletRequest request, HttpServletResponse response)
     {
         try {
@@ -88,25 +113,12 @@ public class Login extends BiblioManagerBaseController {
         try {
             if (request.getParameter("submitLogin") != null && SecurityLayer.checkSession(request) == null) {
                 action_login(request, response);
-                action_view(request, response);
-                
             } else {
-                request.setAttribute("isLogin", 1);
+                action_createNotifyMessage(request, response, WARNING, noActionMessage, false);
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | NoSuchAlgorithmException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
-
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Servlet di gestione del login";
     }
 }

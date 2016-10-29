@@ -22,8 +22,8 @@ public class UserImpl implements User {
     private String password;
     private String email;
     private int state;
-    private int user_key;
     private User user;
+    private boolean isDirty;
     protected BiblioManagerDataLayer ownerDataLayer;
 
     public UserImpl(BiblioManagerDataLayer ownerDataLayer) {
@@ -34,8 +34,8 @@ public class UserImpl implements User {
         password = "";
         email = "";
         state = 2;
-        user_key = 0;
         user = null;
+        isDirty = false;
     }
 
     @Override
@@ -100,15 +100,22 @@ public class UserImpl implements User {
 
     @Override
     public User getUtente() throws DataLayerException {
-        if (user == null && user_key > 0) {
-            user = ownerDataLayer.getUser(user_key);
-        }
         return user;
     }
 
     @Override
     public void setUtente(User user) {
         this.user = user;
+    }
+
+    @Override
+    public boolean isDirty() {
+        return isDirty;
+    }
+
+    @Override
+    public void setDirty(boolean isDirty) {
+        this.isDirty = isDirty;
     }
 
     @Override
@@ -119,5 +126,6 @@ public class UserImpl implements User {
         password = user.getPassword();
         state = user.getState();
         surname = user.getSurname();
+        isDirty = false;
     }
 }

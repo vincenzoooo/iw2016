@@ -37,4 +37,8 @@ public interface Chapter {
 
     //--
     void copyFrom(Chapter element) throws DataLayerException;
+    
+    void setDirty(boolean dirty);
+
+    boolean isDirty();
 }

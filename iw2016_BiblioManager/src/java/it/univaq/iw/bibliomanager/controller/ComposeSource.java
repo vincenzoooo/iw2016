@@ -26,18 +26,40 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeSource extends BiblioManagerBaseController {
 
+    private final String updateMessage = "Modifica avvenuta con successo.";
+    private final String addMessage = "Inserimento avvenuto con successo.";
+    private final String deleteMessage = "Risorsa eliminata con successo.";
+    /**
+     * Pubblicazione
+     */
     private int publicationId;
+    /**
+     * Url da cui proviene la richiesta
+     */
     private String url;
+    /**
+     * Sorgente
+     */
     private int sourceId;
-    private String currentTypeSource;
-    private String currentUriSource;
-    private String currentFormatSource;
-    private String currentDescriptionSource;
-    private Boolean currentCoverSource;
-    private Boolean currentDownloadSource;
+    /**
+     * Dati della risorsa corrente che si vuole aggiornare
+     */
+    private Source currentSource;
+    /**
+     * Pagine
+     */
     private final Map<Integer, String> pages = new HashMap<>();
+    /**
+     * Opzioni per la paginazione
+     */
     private final Map<String, Integer> options = new HashMap<>();
     
+    /**
+     * Verifica e salva una nuova risorsa
+     * @param request
+     * @param response
+     * @throws DataLayerException 
+     */
     private void action_composeSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
             Source source = getDataLayer().createSource();
@@ -61,18 +83,22 @@ public class ComposeSource extends BiblioManagerBaseController {
                 source.setDescription(params.get("sourceDescription"));
                 source.setCover(isCover);
                 source.setDownload(isDownload);
-                source.setPublication(getDataLayer().getPublication(publicationId));
+                source.setPublicationKey(publicationId);
                 getDataLayer().storeSource(source);
-                request.setAttribute("sourceAdded",1);
+                action_createNotifyMessage(request, response, SUCCESS, addMessage, true);
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage(), 510);
         }
     }
-
+/**
+ * Verifica e salva le modifiche di una risorsa
+ * @param request
+ * @param response
+ * @throws DataLayerException 
+ */
     private void action_updateSource(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
-            Source source = getDataLayer().getSource(sourceId);
             boolean isCover = false;
             if(request.getParameter("sourceCover") != null){
                 isCover = true;
@@ -82,27 +108,68 @@ public class ComposeSource extends BiblioManagerBaseController {
                 isDownload = true;
             }
             Map<String, String> params = new HashMap<String, String>();
-            params.put("sourceType", Utils.checkString(request.getParameter("sourceType")));
-            params.put("sourceUri", Utils.checkString(request.getParameter("sourceUri")));
-            params.put("sourceFormat", Utils.checkString(request.getParameter("sourceFormat")));
-            params.put("sourceDescription", Utils.checkString(request.getParameter("sourceDescription")));
+            params.put("updateSourceType", Utils.checkString(request.getParameter("sourceType")));
+            params.put("updateSourceUri", Utils.checkString(request.getParameter("sourceUri")));
+            params.put("updateSourceFormat", Utils.checkString(request.getParameter("sourceFormat")));
+            params.put("updateSourceDescription", Utils.checkString(request.getParameter("sourceDescription")));
             if (!validator(params, request, response)) {
-                source.setType(params.get("sourceType"));
-                source.setUri(params.get("sourceUri"));
-                source.setFormat(params.get("sourceFormat"));
-                source.setDescription(params.get("sourceDescription"));
-                source.setCover(isCover);
-                source.setDownload(isDownload);
-                source.setPublication(getDataLayer().getPublication(publicationId));
-                getDataLayer().storeSource(source);
-                request.setAttribute("sourceUpdated",1);
+                if(!currentSource.getType().equals(params.get("updateSourceType"))){
+                    currentSource.setType(params.get("updateSourceType"));
+                    currentSource.setDirty(true);
+                }
+                if(!currentSource.getUri().equals(params.get("updateSourceUri"))){
+                    currentSource.setUri(params.get("updateSourceUri"));
+                    currentSource.setDirty(true);
+                }
+                if(!currentSource.getFormat().equals(params.get("updateSourceFormat"))){
+                    currentSource.setFormat(params.get("updateSourceFormat"));
+                    currentSource.setDirty(true);
+                }
+                if(!currentSource.getDescription().equals(params.get("updateSourceDescription"))){
+                    currentSource.setDescription(params.get("updateSourceDescription"));
+                    currentSource.setDirty(true);
+                }
+                if(currentSource.getCover() != isCover){
+                    currentSource.setCover(isCover);
+                    currentSource.setDirty(true);
+                }
+                if(currentSource.getDownload() != isDownload){
+                    currentSource.setDownload(isDownload);
+                    currentSource.setDirty(true);
+                }
+                if(publicationId != currentSource.getPublicationKey()){
+                    currentSource.setPublicationKey(publicationId);
+                    currentSource.setDirty(true);
+                }
+                getDataLayer().storeSource(currentSource);
+                action_createNotifyMessage(request, response, SUCCESS, updateMessage, true);
                 sourceId = 0;
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la risorsa: " + ex.getMessage(), 510);
         }
     }
-
+    /**
+     * Delete the specified Source
+     *
+     * @param request
+     * @param response
+     * @throws DataLayerException
+     */
+    private void action_deleteSource(HttpServletRequest request, HttpServletResponse response)
+            throws DataLayerException {
+        Source source = getDataLayer().getSource((int) request.getAttribute("sourceToDelete"));
+        getDataLayer().deleteSource(source);
+        action_createNotifyMessage(request, response, SUCCESS, deleteMessage, true);
+    }
+/**
+ * Compila i template da restituire a video
+ * @param request
+ * @param response
+ * @throws ServletException
+ * @throws IOException
+ * @throws DataLayerException 
+ */
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Gestione Sorgenti");
         TemplateResult res = new TemplateResult(getServletContext());
@@ -117,12 +184,12 @@ public class ComposeSource extends BiblioManagerBaseController {
         request.setAttribute("url", url);
         request.setAttribute("sourceId", sourceId);
         if(sourceId != 0){
-            request.setAttribute("currentDescriptionSource", currentDescriptionSource);
-            request.setAttribute("currentFormatSource", currentFormatSource);
-            request.setAttribute("currentTypeSource", currentTypeSource);
-            request.setAttribute("currentUriSource", currentUriSource);
-            request.setAttribute("currentCoverSource", currentCoverSource);
-            request.setAttribute("currentDownloadSource", currentDownloadSource);
+            request.setAttribute("currentDescriptionSource", currentSource.getDescription());
+            request.setAttribute("currentFormatSource", currentSource.getFormat());
+            request.setAttribute("currentTypeSource", currentSource.getType());
+            request.setAttribute("currentUriSource", currentSource.getUri());
+            request.setAttribute("currentCoverSource", currentSource.getCover());
+            request.setAttribute("currentDownloadSource", currentSource.getDownload());
         }
         res.activate("source.ftl.html", request, response);
     }
@@ -148,18 +215,13 @@ public class ComposeSource extends BiblioManagerBaseController {
                 if(request.getAttribute("url") != null){
                     url = (String) request.getAttribute("url");
                 }
-                if (request.getParameter("sourceId") != null) {
-                    currentTypeSource = request.getParameter("currentTypeSource");
-                    currentUriSource = request.getParameter("currentUriSource");
-                    currentFormatSource = request.getParameter("currentFormatSource");
-                    currentDescriptionSource = request.getParameter("currentDescriptionSource");
-                    if(request.getParameter("currentCoverSource") != null){
-                        currentCoverSource = 1==Integer.parseInt(request.getParameter("currentCoverSource"));
-                    }
-                    if(request.getParameter("currentDownloadSource") != null){
-                        currentDownloadSource = 1==Integer.parseInt(request.getParameter("currentDownloadSource"));
-                    }
+                if (sourceId == 0 && request.getParameter("sourceId") != null) {
                     sourceId = Integer.parseInt(request.getParameter("sourceId"));
+                    currentSource = getDataLayer().getSource(sourceId);
+                }
+                if (request.getParameter("sourceToDelete") != null) {
+                    request.setAttribute("sourceToDelete", Integer.parseInt(request.getParameter("sourceToDelete")));
+                    action_deleteSource(request, response);
                 }
                 if (request.getParameter("submitSource") != null){
                     if(sourceId == 0) {
@@ -188,15 +250,4 @@ public class ComposeSource extends BiblioManagerBaseController {
             action_error(request, response, "Errore: " + ex.getMessage(), 501);
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }
-
 }

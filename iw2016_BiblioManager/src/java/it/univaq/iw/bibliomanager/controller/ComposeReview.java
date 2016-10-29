@@ -28,9 +28,21 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeReview extends BiblioManagerBaseController {
 
+    private final String acceptedReviewMessage = "Recensione approvata.";
+    private final String refuseReviewMessage = "Recensione rigettata.";
+    /**
+     * Pagine
+     */
     private final Map<Integer, String> pages = new HashMap<>();
+    /**
+     * Opzioni per la paginazione
+     */
     private final Map<String, Integer> options = new HashMap<>();
-    
+    /**
+     * Compila i template da restituire a video
+     * @param request
+     * @param response 
+     */
     private void action_view(HttpServletRequest request, HttpServletResponse response){
         try {
             request.setAttribute("page_title", "Gestione Recensioni");
@@ -49,7 +61,12 @@ public class ComposeReview extends BiblioManagerBaseController {
             action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
         }
     }
-    
+    /**
+     * Verifica e salva una nuove recensione
+     * @param request
+     * @param response
+     * @throws DataLayerException 
+     */
     private void action_composeReview(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
             Review review = getDataLayer().createReview();
@@ -69,7 +86,12 @@ public class ComposeReview extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare la recensione: " + ex.getMessage(), 510);
         }
     }
-
+/**
+ * Modera una recensione
+ * @param request
+ * @param response
+ * @throws DataLayerException 
+ */
     private void action_confirmReview(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
             if (request.getParameter("reviewId") != null && request.getParameter("publicationId") != null) {
@@ -79,8 +101,9 @@ public class ComposeReview extends BiblioManagerBaseController {
                     History history = this.action_composeHistory(request, response, "Recensione approvata");
                     review.setHistory(history);
                     review.setStatus(true);
-                    request.setAttribute("reviewApproved", 1);
+                    review.setDirty(true);
                     getDataLayer().storeReview(review);
+                    action_createNotifyMessage(request, response, SUCCESS, acceptedReviewMessage, true);
                 }
             } else {
                 //TODO
@@ -90,15 +113,20 @@ public class ComposeReview extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare la recensione: " + ex.getMessage(), 510);
         }
     }
-
+/**
+ * Rifiuta una recensione
+ * @param request
+ * @param response
+ * @throws DataLayerException 
+ */
     private void action_rejectReview(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
             if (request.getParameter("reviewId") != null && request.getParameter("publicationId") != null) {
                 Review review = getDataLayer().getReview(Integer.parseInt(request.getParameter("reviewId")));
                 HttpSession session = SecurityLayer.checkSession(request);
                 if (review.getAuthor().getKey() != (int) session.getAttribute("userId")) {
-                    request.setAttribute("reviewRejected", 1);
                     getDataLayer().deleteReview(review);
+                    action_createNotifyMessage(request, response, ERROR, refuseReviewMessage, true);
                 }
             } else {
                 //TODO
@@ -108,7 +136,14 @@ public class ComposeReview extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare la recensione: " + ex.getMessage(), 510);
         }
     }
-
+/**
+ * Aggiunge allo storico la moderazione di una recensione
+ * @param request
+ * @param response
+ * @param result
+ * @return
+ * @throws DataLayerException 
+ */
     private History action_composeHistory(HttpServletRequest request, HttpServletResponse response, String result) throws DataLayerException {
         HttpSession session = SecurityLayer.checkSession(request);
         User user = getDataLayer().getUser((int) session.getAttribute("userId"));
@@ -166,15 +201,4 @@ public class ComposeReview extends BiblioManagerBaseController {
             action_error(request, response, "Errore: " + ex.getMessage(), 501);
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }
-
 }

@@ -7,28 +7,8 @@
                 </div>
             </div>
         </div>
-        <div class="section section-pageSource-allert">
-            <#if sourceUpdated??>    
-            <div class="row margin-top-20">
-                <div class="col-xs-12">
-                    <div class="alert alert-success alert-dismissible fadeIn animated">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Modifica avvenuta con successo.
-                    </div>
-                </div>
-            </div>
-            </#if>
-            <#if sourceAdded??>    
-            <div class="row margin-top-20">
-                <div class="col-xs-12">
-                    <div class="alert alert-success alert-dismissible fadeIn animated">
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        Inserimento avvenuto con successo.
-                    </div>
-                </div>
-            </div>
-            </#if>
-        </div>
+        
+        <#include "/commons/notifyMessage.ftl.html">
         
         <div class="section section-pageSource-insertSource">
             <div class="row">
@@ -40,9 +20,9 @@
                             <div class="col-sm-6">
                                 <input id="inputSourceType" class="form-control" name="sourceType" placeholder="Inserisci il tipo" />
                             </div>
-                            <#if errorType??>
+                            <#if errorSourceType??>
                             <div class="error col-sm-offset-2 col-sm-10">
-                                ${errorType?html}
+                                ${errorSourceType?html}
                             </div>
                             </#if>
                         </div>
@@ -52,9 +32,9 @@
                             <div class="col-sm-6">
                                 <input id="inputSourceUri" class="form-control" name="sourceUri" placeholder="Inserisci indirizzo risorsa" />
                             </div>
-                            <#if errorUri??>
+                            <#if errorSourceUri??>
                             <div class="error col-sm-offset-2 col-sm-10">
-                                ${errorUri?html}
+                                ${errorSourceUri?html}
                             </div>
                             </#if>
                         </div>
@@ -64,9 +44,9 @@
                             <div class="col-sm-6">
                                 <input id="inputSourceFormat" class="form-control" name="sourceFormat" placeholder="Inserisci il formato" />
                             </div>
-                            <#if errorFormat??>
+                            <#if errorSourceFormat??>
                             <div class="error col-sm-offset-2 col-sm-10">
-                                ${errorFormat?html}
+                                ${errorSourceFormat?html}
                             </div>
                             </#if>
                         </div>
@@ -76,9 +56,9 @@
                             <div class="col-sm-6">
                                 <textarea id="inputSourceDescription" class="form-control" name="sourceDescription" rows="4" placeholder="Inserisci una descrizione"></textarea>
                             </div>
-                            <#if errorDescription??>
+                            <#if errorSourceDescription??>
                             <div class="error col-sm-offset-2 col-sm-10">    
-                                ${errorDescription?html}    
+                                ${errorSourceDescription?html}    
                             </div>
                             </#if>
                         </div>
@@ -149,7 +129,8 @@
                                         ${strip_slashes(item.description)!"''"?html}
                                     </td>
                                     <td>
-                                        <a href="source?sourceId=${item.key}&currentTypeSource=${item.type}&currentUriSource=${item.uri}&currentFormatSource=${item.format}&currentDescriptionSource=${item.description}&currentCoverSource=${item.cover?then(1, 0)}&currentDownloadSource=${item.download?then(1, 0)}#anchor" class="aItemCustom bold">Modifica</a>
+                                        <a href="source?sourceId=${item.key}#anchor" class="aItemCustom bold">Modifica</a>
+                                        <a href="source?sourceToDelete=${item.key}" class="aItemCustom bold">Elimina</a>
                                     </td>
                                 </tr>
                                 </#list>
@@ -209,24 +190,44 @@
                                 <input name="sourceId" value="${sourceId!''?html}" type="hidden"/>
                                 <input id="updateSourceType" class="form-control" name="sourceType" value="${currentTypeSource!''?html}" placeholder="Modifica il tipo" />
                             </div>
+                            <#if errorUpdateSourceType??>
+                            <div class="error col-sm-offset-2 col-sm-10">    
+                                ${errorUpdateSourceType?html}    
+                            </div>
+                            </#if>
                         </div>
                         <div class="form-group">
                             <label for="updateSourceUri" class="col-sm-2 control-label bold">Indirizzo risorsa</label>
                             <div class="col-sm-6">
                                 <input id="updateSourceUri" class="form-control" name="sourceUri" value="${currentUriSource!''?html}" placeholder="Modifica l'uri" />
                             </div>
+                            <#if errorUpdateSourceUri??>
+                            <div class="error col-sm-offset-2 col-sm-10">    
+                                ${errorUpdateSourceUri?html}    
+                            </div>
+                            </#if>
                         </div>
                         <div class="form-group">
                             <label for="updateSourceFormat" class="col-sm-2 control-label bold">Formato</label>
                             <div class="col-sm-6">
                                 <input id="updateSourceFormat" class="form-control" name="sourceFormat" value="${currentFormatSource!''?html}" placeholder="Modifica il formato" />
                             </div>
+                            <#if errorUpdateSourceFormat??>
+                            <div class="error col-sm-offset-2 col-sm-10">    
+                                ${errorUpdateSourceFormat?html}    
+                            </div>
+                            </#if>
                         </div>
                         <div class="form-group">
                             <label for="updateSourceDescription" class="col-sm-2 control-label bold">Descrizione</label>
                             <div class="col-sm-6">
                                 <input id="updateSourceDescription" class="form-control" name="sourceDescription" value="${currentDescriptionSource!''?html}" placeholder="Modifica la descrizione" />
                             </div>
+                            <#if errorUpdateSourceDescription??>
+                            <div class="error col-sm-offset-2 col-sm-10">    
+                                ${errorUpdateSourceDescription?html}    
+                            </div>
+                            </#if>
                         </div>
                         <div class="form-group">
                             <label for="updateSourceCover" class="col-sm-2 control-label bold">Copertina</label>

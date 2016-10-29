@@ -32,4 +32,8 @@ public interface Reprint {
     void setPublicationKey(int publication);
 
     void copyFrom(Reprint reprint) throws DataLayerException;
+    
+    void setDirty(boolean dirty);
+
+    boolean isDirty();
 }

@@ -17,6 +17,10 @@ import java.util.Map;
 
 public class DataModelFillerImpl implements DataModelFiller {
 
+    /**
+     * Compila il menu della navbar presente nella struttura di base delle pagine
+     * @param datamodel 
+     */
     @Override
     public void fillDataModel(Map datamodel) {
         List<Map> menuitems = new ArrayList();
@@ -44,5 +48,4 @@ public class DataModelFillerImpl implements DataModelFiller {
         menuitem.put("link", "community");
         menuitems.add(menuitem);
     }
-
 }

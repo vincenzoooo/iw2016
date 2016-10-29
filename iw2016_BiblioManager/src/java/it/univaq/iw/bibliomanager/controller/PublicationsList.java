@@ -10,7 +10,6 @@ import it.univaq.iw.bibliomanager.data.model.Publication;
 import it.univaq.iw.framework.data.DataLayerException;
 import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
-import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
@@ -26,13 +25,36 @@ import javax.servlet.http.HttpSession;
  */
 public class PublicationsList extends BiblioManagerBaseController {
 
+    /**
+     * Codifica dei campi per l'ordinamento delle pubblicazioni
+     */
     private final String[] orderField = new String[]{"titolo", "e.nome", "a.cognome", "data_pubblicazione", "n_consigli"};
+    /**
+     * Codifica del tipo di ordinamento (ascendente o discendente) 
+     */
     private final String[] orderType = new String[]{"ASC", "DESC"};
+    /**
+     * Filtri di ricerca
+     */
     private Map<String, String> filters = new HashMap<>();
+    /**
+     * Indica se si proviene da una ricerca
+     */
     private boolean isResearch = false;
+    /**
+     * Pagine da visualizzare
+     */
     private final Map<Integer, String> pages = new HashMap<>();
+    /**
+     * Opzioni per la paginazione
+     */
     private final Map<String, Integer> options = new HashMap<>();
     
+    /**
+     * Elaborazione della lista di pubblicazioni
+     * @param request
+     * @param response 
+     */
     private void action_list(HttpServletRequest request, HttpServletResponse response) {
         try {
             if (request.getAttribute("isResearch") != null && request.getAttribute("filter") != null) {
@@ -63,7 +85,13 @@ public class PublicationsList extends BiblioManagerBaseController {
             action_error(request, response, "Unable to get the publications: " + ex.getMessage(), 502);
         }
     }
-            
+
+    /**
+     * Compila i template da visualizzare a video
+     * @param request
+     * @param response
+     * @throws DataLayerException 
+     */
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
@@ -116,15 +144,5 @@ public class PublicationsList extends BiblioManagerBaseController {
         } catch (DataLayerException | IOException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage(), 501);
         }
-    }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
     }
 }
