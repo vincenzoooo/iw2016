@@ -12,7 +12,8 @@
             </div>
         </div>
         <div class="section section-pageCatalog-tools margin-bot-30"> 
-            <#if !isResearch>
+            <#if isResearch>
+            <#else>
             <div class="row">
                 <div class="col-sm-9">
                     <form class="form-inline" method="post" action="catalog">
@@ -149,7 +150,7 @@
                  </#if>
             <#else>
             <div>Nessuna pubblicazione da visualizzare </div>
-            </#if>
+            </#if>  
         </div>
     </div>
 </div>
