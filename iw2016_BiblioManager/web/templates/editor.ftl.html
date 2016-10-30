@@ -51,7 +51,7 @@
                                 <th>
                                     Editore
                                 </th>
-                                <th class="col-edit">
+                                <th class="col-edit center">
                                     Gestisci
                                 </th>
                             </tr>
@@ -63,7 +63,7 @@
                                         ${strip_slashes(item.name)!"''"?html}
                                     </td>
                                     <td>
-                                        <a href="editor?editorId=${item.key}&currentEditor=${item.name}#anchor" class="aItemCustom bold">Modifica</a>
+                                        <a href="editor?editorId=${item.key}&currentEditor=${item.name}#anchor" class="aItemCustom bold padding-custom">Modifica</a>
                                         <a href="editor?editorToDelete=${item.key}" class="aItemCustom bold">Elimina</a>
                                     </td>
                                 </tr>

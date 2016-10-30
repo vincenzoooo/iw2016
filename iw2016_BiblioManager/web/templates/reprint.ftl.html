@@ -59,13 +59,13 @@
                         <table id="allReprints" class="table table-responsive table-striped">
                             <thead>
                                 <tr>
-                                    <th>
+                                    <th class="col-edit-right">
                                         Numero
                                     </th>
                                     <th>
                                         Data
                                     </th>
-                                    <th class="col-edit">
+                                    <th class="col-edit center">
                                         Gestisci
                                     </th>
                                 </tr>
@@ -79,7 +79,7 @@
                                     <td class="hidden-xs">
                                         ${strip_slashes(item.date)!"''"?html}
                                     <td>
-                                        <a href="reprint?reprintId=${item.key}&currentNumberReprint=${item.number}&currentDateReprint=${item.date}#anchor" class="aItemCustom bold">Modifica</a>
+                                        <a href="reprint?reprintId=${item.key}&currentNumberReprint=${item.number}&currentDateReprint=${item.date}#anchor" class="aItemCustom bold padding-custom">Modifica</a>
                                         <a href="reprint?reprintToDelete=${item.key}" class="aItemCustom bold">Elimina</a>
                                     </td>
                                 </tr>

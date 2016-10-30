@@ -801,6 +801,10 @@ header .navbar-header-menu {
     border-color: #F1F1F1;
 }
 
+.padding-custom{
+    padding-right: 50px;
+}
+
 /**
  * 4.1 Catalog
  * -----------------------------------------------------------------------------
@@ -810,9 +814,14 @@ header .navbar-header-menu {
     width: 100px;
 }
 
-.col-edit{
+.col-edit-right{
     width: 120px;
 }
+
+.col-edit{
+    width: 200px;
+}
+
 
 .fa-custom{
     font-size: 1.5em!important;
@@ -1291,6 +1300,10 @@ label.error, span.error {
     .logo{
         width:50%;
         top:2%;
+    }
+    
+    .padding-custom{
+        padding-right: 30px;
     }
 }
 

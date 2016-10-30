@@ -58,7 +58,7 @@
                     <h3 class=""> Lista degli autori</h3>
                     <form method="post" action="author" id="formSelectedAuthor" class="form-horizontal">     
                         <#if (authors?? && authors?size>0)>
-                        <table id="allAuthors" class="table-responsive table-hover table pippo">
+                        <table id="allAuthors" class="table-responsive table-hover table">
                             <thead>
                                 <tr>
                                     <th>
@@ -67,7 +67,7 @@
                                     <th>
                                         Cognome
                                     </th>
-                                    <th class="col-edit">
+                                    <th class="col-edit center">
                                         Gestisci
                                     </th>
                                     <th class="col-selection">
@@ -85,7 +85,7 @@
                                             ${strip_slashes(item.surname)!"''"?html}
                                         </td>
                                         <td>
-                                            <a href="author?authorId=${item.key}&currentNameAuthor=${item.name}&currentSurnameAuthor=${item.surname}#anchor" class="aItemCustom bold">Modifica</a>
+                                            <a href="author?authorId=${item.key}&currentNameAuthor=${item.name}&currentSurnameAuthor=${item.surname}#anchor" class="aItemCustom bold padding-custom">Modifica</a>
                                             <a href="author?authorToDelete=${item.key}" class="aItemCustom bold">Elimina</a>
                                         </td>
                                         <td>
