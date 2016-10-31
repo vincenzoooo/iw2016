@@ -26,7 +26,7 @@ import java.util.Map;
 public class Register extends BiblioManagerBaseController {
 
     /**
-     * Verifica e salva i dati di un nuovo utente
+     * Verify and save a new User
      *
      * @param request
      * @param response
@@ -65,7 +65,7 @@ public class Register extends BiblioManagerBaseController {
     }
 
     /**
-     * Validatore dei dati
+     * Data validator
      *
      * @param params
      * @param request
@@ -126,11 +126,12 @@ public class Register extends BiblioManagerBaseController {
     }
 
     /**
-     * Compila il template di default da restituire a video
+     * Compile the template for display it
+     *
      * @param request
      * @param response
      * @throws IOException
-     * @throws ServletException 
+     * @throws ServletException
      */
     @Override
     protected void action_default(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {

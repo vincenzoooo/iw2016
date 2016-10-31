@@ -25,17 +25,21 @@ import java.util.Map;
  */
 public class Login extends BiblioManagerBaseController {
 
+    /**
+     * Notify messages
+     */
     private final String noActionMessage = "Per poter usufruire dei servizi del portale bisogna accedere!!! Nel caso non si ha un account cliccate su \"Registrati\" per crearne uno.";
     private final String userLoggedMessage = "Login effettuato con successo.";
-    
+
     /**
-     * Verifica i dati utente e crea la sessione
+     * Verify the user data and create a new session
+     *
      * @param request
      * @param response
      * @throws IOException
      * @throws ServletException
      * @throws NoSuchAlgorithmException
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     private void action_login(HttpServletRequest request, HttpServletResponse response)
             throws IOException, ServletException, NoSuchAlgorithmException, DataLayerException {
@@ -58,7 +62,7 @@ public class Login extends BiblioManagerBaseController {
                     action_default(request, response);
                 }
             } else {
-                
+
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel trovare l'utente: " + ex.getMessage(), 502);
@@ -66,16 +70,17 @@ public class Login extends BiblioManagerBaseController {
     }
 
     /**
-     * Validatore dei dati
+     * Data Validator
+     *
      * @param params
      * @param request
      * @param response
-     * @return 
+     * @return
      */
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = super.validator(params, request, response);
-        if(!error){
+        if (!error) {
             if (!Utils.checkEmail(params.get("email"))) {
                 request.setAttribute("errorEmail", "L'Email non è nel formato corretto");
                 error = true;
@@ -84,21 +89,6 @@ public class Login extends BiblioManagerBaseController {
         return error;
     }
 
-    /**
-     * Compila i template da restituire a video
-     * @param request
-     * @param response 
-     */
-    private void action_view(HttpServletRequest request, HttpServletResponse response)
-    {
-        try {
-            TemplateResult res = new TemplateResult(getServletContext());
-            res.activate("login.ftl.html", request, response);
-        } catch (ServletException | IOException ex) {
-            action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
-        }
-    }
-    
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.

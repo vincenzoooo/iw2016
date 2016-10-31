@@ -27,6 +27,9 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeIndex extends BiblioManagerBaseController {
 
+    /**
+     * Notify messages
+     */
     private final String updateChapterMessage = "Capitolo modificato con successo.";
     private final String updateSectionMessage = "Sezione modificata con successo.";
     private final String addChapterMessage = "Inserimento del capitolo avvenuto con successo.";
@@ -35,25 +38,27 @@ public class ComposeIndex extends BiblioManagerBaseController {
     private final String errorDeleteChapterMessage = "Non è possibile eliminare il capitolo. Ha almeno una sezione.";
     private final String deleteSectionMessage = "Sezione eliminata con successo.";
     /**
-     * Pubblicazione
+     * ID of publication request
      */
     private int publicationId;
     /**
-     * Url da cui proviene la richiesta
+     * Url from which the request came
      */
     private String url;
     /**
-     * Capitolo
+     * ID of current Chapter if any
      */
     private int chapterId;
     /**
-     * Sezione
+     * ID of current Section if any
      */
     private int sectorId;
+
     /**
-     * Verifica e salva un nuovo capitolo
+     * Verify and save a new Chapter
+     *
      * @param request
-     * @param response 
+     * @param response
      */
     private void action_composeChapter(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -72,11 +77,13 @@ public class ComposeIndex extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare il capitolo: " + ex.getMessage(), 510);
         }
     }
-/**
- * Verifica e salva el modifiche di un capitolo
- * @param request
- * @param response 
- */
+
+    /**
+     * Verify and update a Chapter
+     *
+     * @param request
+     * @param response
+     */
     private void action_updateChapter(HttpServletRequest request, HttpServletResponse response) {
         try {
             HttpSession session = SecurityLayer.checkSession(request);
@@ -85,11 +92,11 @@ public class ComposeIndex extends BiblioManagerBaseController {
             params.put("chapterTitle", Utils.checkString(request.getParameter("chapterTitle")));
             params.put("chapterNumber", Utils.checkString(request.getParameter("chapterNumber")));
             if (!validator(params, request, response)) {
-                if(chapter.getNumber() != Integer.parseInt(params.get("chapterNumber"))){
+                if (chapter.getNumber() != Integer.parseInt(params.get("chapterNumber"))) {
                     chapter.setNumber(Integer.parseInt(params.get("chapterNumber")));
                     chapter.setDirty(true);
                 }
-                if(!chapter.getTitle().equals(params.get("chapterTitle"))){
+                if (!chapter.getTitle().equals(params.get("chapterTitle"))) {
                     chapter.setTitle(params.get("chapterTitle"));
                     chapter.setDirty(true);
                 }
@@ -101,11 +108,13 @@ public class ComposeIndex extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare il capitolo: " + ex.getMessage(), 510);
         }
     }
-/**
- * Verifica e salva una nuova sezione
- * @param request
- * @param response 
- */
+
+    /**
+     * Verify and save a new Section
+     *
+     * @param request
+     * @param response
+     */
     private void action_composeSection(HttpServletRequest request, HttpServletResponse response) {
         try {
             Section section = getDataLayer().createSection();
@@ -124,11 +133,13 @@ public class ComposeIndex extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare il sezione: " + ex.getMessage(), 510);
         }
     }
-/**
- * Verifica e salva le modifiche di una sezione
- * @param request
- * @param response 
- */
+
+    /**
+     * Verify and update a Section
+     *
+     * @param request
+     * @param response
+     */
     private void action_updateSection(HttpServletRequest request, HttpServletResponse response) {
         try {
             Section section = getDataLayer().getSection(sectorId);
@@ -137,15 +148,15 @@ public class ComposeIndex extends BiblioManagerBaseController {
             params.put("sectionTitle", Utils.checkString(request.getParameter("sectionTitle")));
             params.put("sectionNumber", Utils.checkString(request.getParameter("sectionNumber")));
             if (!validator(params, request, response)) {
-                if(section.getNumber() != Integer.parseInt(params.get("sectionNumber"))){
+                if (section.getNumber() != Integer.parseInt(params.get("sectionNumber"))) {
                     section.setNumber(Integer.parseInt(params.get("sectionNumber")));
                     section.setDirty(true);
                 }
-                if(!section.getTitle().equals(params.get("sectionTitle"))){
+                if (!section.getTitle().equals(params.get("sectionTitle"))) {
                     section.setTitle(params.get("sectionTitle"));
                     section.setDirty(true);
                 }
-                if(section.getChapterKey() != Integer.parseInt(params.get("chapter"))){
+                if (section.getChapterKey() != Integer.parseInt(params.get("chapter"))) {
                     section.setChapterKey(Integer.parseInt(params.get("chapter")));
                     section.setDirty(true);
                 }
@@ -157,13 +168,15 @@ public class ComposeIndex extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare il sezione: " + ex.getMessage(), 510);
         }
     }
-/**
- * Validatore dei dati
- * @param params
- * @param request
- * @param response
- * @return 
- */
+
+    /**
+     * Data validator
+     *
+     * @param params
+     * @param request
+     * @param response
+     * @return
+     */
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = super.validator(params, request, response);
@@ -202,45 +215,50 @@ public class ComposeIndex extends BiblioManagerBaseController {
         }
         return error;
     }
-/**
- * Elimina un capitolo specificato
- * @param request
- * @param response
- * @throws DataLayerException 
- */
-    private void action_deleteChapter(HttpServletRequest request, HttpServletResponse response) throws DataLayerException{
-        Chapter chapter = getDataLayer().getChapter((int)request.getAttribute("idChapter"));
-        if(chapter.getSections().size()>0){
+
+    /**
+     * Delete a specified Chapter
+     *
+     * @param request
+     * @param response
+     * @throws DataLayerException
+     */
+    private void action_deleteChapter(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
+        Chapter chapter = getDataLayer().getChapter((int) request.getAttribute("idChapter"));
+        if (chapter.getSections().size() > 0) {
             for (Section section : chapter.getSections()) {
                 request.setAttribute("idSection", section.getKey());
             }
         }
         int deleted = getDataLayer().deleteChapter(chapter);
-        if(deleted == 0){
+        if (deleted == 0) {
             action_createNotifyMessage(request, response, ERROR, errorDeleteChapterMessage, true);
-        }
-        else{
+        } else {
             action_createNotifyMessage(request, response, SUCCESS, deleteChapterMessage, true);
         }
     }
-  /**
-   * Elimina una sezione specificata
-   * @param request
-   * @param response
-   * @throws DataLayerException 
-   */  
-    private void action_deleteSection(HttpServletRequest request, HttpServletResponse response) throws DataLayerException{
-        Section section = getDataLayer().getSection((int)request.getAttribute("idSection"));
+
+    /**
+     * Delete a specified Section
+     *
+     * @param request
+     * @param response
+     * @throws DataLayerException
+     */
+    private void action_deleteSection(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
+        Section section = getDataLayer().getSection((int) request.getAttribute("idSection"));
         getDataLayer().deleteSection(section);
         action_createNotifyMessage(request, response, SUCCESS, deleteSectionMessage, true);
     }
+
     /**
-     * Compila i template da restituire a video
+     * Compile the template for display it
+     *
      * @param request
      * @param response
      * @throws ServletException
      * @throws IOException
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Gestione Indice");
@@ -251,7 +269,7 @@ public class ComposeIndex extends BiblioManagerBaseController {
         request.setAttribute("chapters", chapters);
         res.activate("index.ftl.html", request, response);
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -267,39 +285,37 @@ public class ComposeIndex extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
-                if(request.getAttribute("publicationId") != null){
+                if (request.getAttribute("publicationId") != null) {
                     publicationId = (int) request.getAttribute("publicationId");
                 }
-                if(request.getAttribute("url") != null){
+                if (request.getAttribute("url") != null) {
                     url = (String) request.getAttribute("url");
                 }
-                if (request.getParameter("chapterId") != null){
+                if (request.getParameter("chapterId") != null) {
                     chapterId = Integer.parseInt(request.getParameter("chapterId"));
                 }
-                if (request.getParameter("sectionId") != null){
+                if (request.getParameter("sectionId") != null) {
                     sectorId = Integer.parseInt(request.getParameter("sectionId"));
                 }
                 if (request.getParameter("submitChapter") != null) {
-                    if(chapterId == 0){
-                    action_composeChapter(request, response);
-                    }
-                    else{
+                    if (chapterId == 0) {
+                        action_composeChapter(request, response);
+                    } else {
                         action_updateChapter(request, response);
                     }
                 }
                 if (request.getParameter("submitSection") != null) {
-                    if(sectorId == 0){
-                    action_composeSection(request, response);
-                    }
-                    else{
+                    if (sectorId == 0) {
+                        action_composeSection(request, response);
+                    } else {
                         action_updateSection(request, response);
                     }
                 }
-                if(request.getParameter("idChapter") != null){
+                if (request.getParameter("idChapter") != null) {
                     request.setAttribute("idChapter", Integer.parseInt(request.getParameter("idChapter")));
                     action_deleteChapter(request, response);
                 }
-                if(request.getParameter("idSection") != null){
+                if (request.getParameter("idSection") != null) {
                     request.setAttribute("idSection", Integer.parseInt(request.getParameter("idSection")));
                     action_deleteSection(request, response);
                 }

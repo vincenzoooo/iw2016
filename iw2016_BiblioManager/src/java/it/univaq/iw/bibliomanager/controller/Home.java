@@ -25,12 +25,13 @@ import javax.servlet.http.HttpSession;
 public class Home extends BiblioManagerBaseController {
 
     /**
-     * Compila i template da restituire a video
+     * Compile the template for display it
+     *
      * @param request
      * @param response
      * @throws IOException
      * @throws ServletException
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, DataLayerException {
         request.setAttribute("page_title", "Homepage");
@@ -44,7 +45,7 @@ public class Home extends BiblioManagerBaseController {
         request.setAttribute("activeUsers", activeUsers);
         res.activate("home.ftl.html", request, response);
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.

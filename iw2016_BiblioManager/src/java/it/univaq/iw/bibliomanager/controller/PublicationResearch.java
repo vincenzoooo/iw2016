@@ -27,11 +27,12 @@ import javax.servlet.http.HttpSession;
 public class PublicationResearch extends BiblioManagerBaseController {
 
     /**
-     * Verifica e salva i campi da usare come filtri di ricerca
+     * Verify and save Publication's research filters
+     *
      * @param request
      * @param response
      * @throws IOException
-     * @throws ServletException 
+     * @throws ServletException
      */
     private void action_research(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         try {
@@ -97,9 +98,10 @@ public class PublicationResearch extends BiblioManagerBaseController {
     }
 
     /**
-     * Compila i template da restituire a video
+     * Compile the template for display it
+     *
      * @param request
-     * @param response 
+     * @param response
      */
     private void action_view(HttpServletRequest request, HttpServletResponse response) {
         try {

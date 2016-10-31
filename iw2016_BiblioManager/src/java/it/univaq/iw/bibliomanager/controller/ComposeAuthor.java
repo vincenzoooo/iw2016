@@ -28,6 +28,9 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeAuthor extends BiblioManagerBaseController {
 
+    /**
+     * Notify messages
+     */
     private final String updateMessage = "Modifica avvenuta con successo.";
     private final String addMessage = "Inserimento avvenuto con successo.";
     private final String linkMessage = "Collegamento con la pubblicazione avvenuto con successo.";
@@ -124,10 +127,9 @@ public class ComposeAuthor extends BiblioManagerBaseController {
             throws DataLayerException {
         Author author = getDataLayer().getAuthor((int) request.getAttribute("authorToDelete"));
         int deleted = getDataLayer().deleteAuthor(author);
-        if(deleted == 0){
+        if (deleted == 0) {
             action_createNotifyMessage(request, response, ERROR, errorDeleteMessage, true);
-        }
-        else{
+        } else {
             action_createNotifyMessage(request, response, SUCCESS, deleteMessage, true);
         }
     }

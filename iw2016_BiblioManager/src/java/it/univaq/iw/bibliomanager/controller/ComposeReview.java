@@ -28,32 +28,37 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeReview extends BiblioManagerBaseController {
 
+    /**
+     * Notify messages
+     */
     private final String acceptedReviewMessage = "Recensione approvata.";
     private final String refuseReviewMessage = "Recensione rigettata.";
     /**
-     * Pagine
+     * Pages
      */
     private final Map<Integer, String> pages = new HashMap<>();
     /**
-     * Opzioni per la paginazione
+     * Configuration for pagination purpose
      */
     private final Map<String, Integer> options = new HashMap<>();
+
     /**
-     * Compila i template da restituire a video
+     * Compile the template for display it
+     *
      * @param request
-     * @param response 
+     * @param response
      */
-    private void action_view(HttpServletRequest request, HttpServletResponse response){
+    private void action_view(HttpServletRequest request, HttpServletResponse response) {
         try {
             request.setAttribute("page_title", "Gestione Recensioni");
             TemplateResult res = new TemplateResult(getServletContext());
             int publicationKey = Integer.parseInt(request.getParameter("publicationId"));
             List<Review> reviews = getDataLayer().getReviews(publicationKey, options.get("limit"), options.get("offset"));
-            
+
             request.setAttribute("totElements", getDataLayer().getReviews(publicationKey, 0, 0).size());
             request.setAttribute("paginationUrl", "reprint");
             pagination(request, response, pages, options);
-        
+
             request.setAttribute("reviews", reviews);
             request.setAttribute("publicationId", publicationKey);
             res.activate("review.ftl.html", request, response);
@@ -61,11 +66,13 @@ public class ComposeReview extends BiblioManagerBaseController {
             action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
         }
     }
+
     /**
-     * Verifica e salva una nuove recensione
+     * Verify and save a new Review
+     *
      * @param request
      * @param response
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     private void action_composeReview(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
@@ -86,12 +93,14 @@ public class ComposeReview extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare la recensione: " + ex.getMessage(), 510);
         }
     }
-/**
- * Modera una recensione
- * @param request
- * @param response
- * @throws DataLayerException 
- */
+
+    /**
+     * Moderate a Review
+     *
+     * @param request
+     * @param response
+     * @throws DataLayerException
+     */
     private void action_confirmReview(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
             if (request.getParameter("reviewId") != null && request.getParameter("publicationId") != null) {
@@ -106,19 +115,20 @@ public class ComposeReview extends BiblioManagerBaseController {
                     action_createNotifyMessage(request, response, SUCCESS, acceptedReviewMessage, true);
                 }
             } else {
-                //TODO
                 request.setAttribute("error", "Recensione non valida");
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la recensione: " + ex.getMessage(), 510);
         }
     }
-/**
- * Rifiuta una recensione
- * @param request
- * @param response
- * @throws DataLayerException 
- */
+
+    /**
+     * Reject a Review
+     *
+     * @param request
+     * @param response
+     * @throws DataLayerException
+     */
     private void action_rejectReview(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
             if (request.getParameter("reviewId") != null && request.getParameter("publicationId") != null) {
@@ -129,21 +139,22 @@ public class ComposeReview extends BiblioManagerBaseController {
                     action_createNotifyMessage(request, response, ERROR, refuseReviewMessage, true);
                 }
             } else {
-                //TODO
                 request.setAttribute("error", "Recensione non valida");
             }
         } catch (DataLayerException ex) {
             action_error(request, response, "Errore nel salvare la recensione: " + ex.getMessage(), 510);
         }
     }
-/**
- * Aggiunge allo storico la moderazione di una recensione
- * @param request
- * @param response
- * @param result
- * @return
- * @throws DataLayerException 
- */
+
+    /**
+     * Save a new record to the History
+     *
+     * @param request
+     * @param response
+     * @param result
+     * @return
+     * @throws DataLayerException
+     */
     private History action_composeHistory(HttpServletRequest request, HttpServletResponse response, String result) throws DataLayerException {
         HttpSession session = SecurityLayer.checkSession(request);
         User user = getDataLayer().getUser((int) session.getAttribute("userId"));
@@ -182,16 +193,15 @@ public class ComposeReview extends BiblioManagerBaseController {
                         action_rejectReview(request, response);
                     }
                 }
-                if (request.getParameter("offset") != null){
-                   options.put("offset", Integer.parseInt(request.getParameter("offset")));
-                }
-                else{
-                   pages.clear();
-                   options.put("limit", 7);
-                   options.put("offset", 0);
-                   options.put("slice", 10);
-                   options.put("start", 0);
-                   options.put("end", 10);
+                if (request.getParameter("offset") != null) {
+                    options.put("offset", Integer.parseInt(request.getParameter("offset")));
+                } else {
+                    pages.clear();
+                    options.put("limit", 7);
+                    options.put("offset", 0);
+                    options.put("slice", 10);
+                    options.put("start", 0);
+                    options.put("end", 10);
                 }
                 action_view(request, response);
             } else {

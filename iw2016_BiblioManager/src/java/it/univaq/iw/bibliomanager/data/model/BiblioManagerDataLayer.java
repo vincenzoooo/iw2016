@@ -18,84 +18,84 @@ import java.util.Map;
 public interface BiblioManagerDataLayer extends DataLayer {
 
     /**
-     * Crea un nuovo autore
+     * Create a new Author
      *
      * @return Nuovo autore
      */
     Author createAuthor();
 
     /**
-     * Crea un nuovo editore
+     * Create a new Editor
      *
      * @return Nuovo editore
      */
     Editor createEditor();
 
     /**
-     * Crea una nuova keyword
+     * Create a new Keyword
      *
      * @return Nuova keyword
      */
     Keyword createKeyword();
 
     /**
-     * Crea una nuova pubblicazione
+     * Create a new Publication
      *
      * @return Nuova pubblicazione
      */
     Publication createPublication();
 
     /**
-     * Crea una nuova recensione
+     * Create a new Revision
      *
      * @return Nuova recensione
      */
     Review createReview();
 
     /**
-     * Crea una nuova ristampa
+     * Create a new Review
      *
      * @return Nuova ristampa
      */
     Reprint createReprint();
 
     /**
-     * Crea una nuova risorsa
+     * Create a new Resource
      *
      * @return Nuova risorsa
      */
     Source createSource();
 
     /**
-     * Crea un nuovo storico
+     * Create a new History
      *
      * @return Nuovo storico
      */
     History createHistory();
 
     /**
-     * Crea un nuovo utente
+     * Create a new User
      *
      * @return Nuovo utente
      */
     User createUser();
 
     /**
-     * Crea un nuovo capitolo
+     * Create a new Chapter
      *
      * @return Nuovo capitolo
      */
     Chapter createChapter();
 
     /**
-     * Crea una nuova sezione
+     * Create a new Section
      *
      * @return Nuova sezione
      */
     Section createSection();
 
     /**
-     * Restituisce i dati l'autore a partire dal suo id
+     * Get an Author by ID
      *
      * @param author_key
      * @return
@@ -104,7 +104,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     Author getAuthor(int author_key) throws DataLayerException;
 
     /**
-     * Restituisce una lista di autori presenti nel database
+     * Get an Author list
      *
      * @param limit
      * @param offset
@@ -114,7 +114,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Author> getAuthors(int limit, int offset) throws DataLayerException;
 
     /**
-     * Restituisce tutti gli autori di una pubblicazione
+     * Get all Publication's Authors
      *
      * @param publication_key
      * @return
@@ -123,7 +123,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Author> getPublicationAuthors(int publication_key) throws DataLayerException;
 
     /**
-     * Restituisce gli autori in base al loro nome
+     * Get Authors by name
      *
      * @param name
      * @return
@@ -132,7 +132,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Author> getAuthorsByName(String name) throws DataLayerException;
 
     /**
-     * Restituisce i dati dell'editore a partire dal suo id
+     * Get an Editor by ID
      *
      * @param editor_key
      * @return
@@ -141,7 +141,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     Editor getEditor(int editor_key) throws DataLayerException;
 
     /**
-     * Restituisce una lista di editori
+     * Get an Editors list
      *
      * @param limit
      * @param offset
@@ -151,7 +151,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Editor> getEditors(int limit, int offset) throws DataLayerException;
 
     /**
-     * Restituisce gli editori con un dato nome
+     * Get Editors by name
      *
      * @param name
      * @return
@@ -160,7 +160,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Editor> getEditorsByName(String name) throws DataLayerException;
 
     /**
-     * Restituisce i dati di una keyword dal suo id
+     * Get a Keyword by ID
      *
      * @param keyword_key
      * @return
@@ -169,7 +169,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     Keyword getKeyword(int keyword_key) throws DataLayerException;
 
     /**
-     * Restituisce una lista di keyword
+     * Get a Keywords list
      *
      * @param limit
      * @param offset
@@ -179,7 +179,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Keyword> getKeywords(int limit, int offset) throws DataLayerException;
 
     /**
-     * Restituisce tutte le parole chiave di una data pubblicazione
+     * Get all Publication's Keywords
      *
      * @param publication_key
      * @return
@@ -188,7 +188,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Keyword> getPublicationKeywords(int publication_key) throws DataLayerException;
 
     /**
-     * Restituisce i dati di una pubblicazione a partire dal suo id
+     * Get a Publication by ID
      *
      * @param publication_key
      * @return
@@ -197,7 +197,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     Publication getPublication(int publication_key) throws DataLayerException;
 
     /**
-     * Restituisce i dati di una pubblicazione a partire dal suo codice ISBN
+     * Get a Publication by ISBN
      *
      * @param isbn
      * @return
@@ -206,7 +206,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     Publication getPublicationByISBN(String isbn) throws DataLayerException;
 
     /**
-     * Restituisce tutte le pubblicazioni
+     * Get all Publications
      *
      * @return
      * @throws DataLayerException
@@ -214,7 +214,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Publication> getPublications() throws DataLayerException;
 
     /**
-     * Restituisce le pubblicazioni in ordine di data di inserimento
+     * Get the last inserted Publication
      *
      * @return
      * @throws DataLayerException
@@ -222,7 +222,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Publication> getLastInsertedPublication() throws DataLayerException;
 
     /**
-     * Restituisce le pubblicazioni in ordine di data di modifica
+     * Get the last modified Publication
      *
      * @return
      * @throws DataLayerException
@@ -230,8 +230,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Publication> getLastModifiedPublication() throws DataLayerException;
 
     /**
-     * Restituisce tutte le pubblicazioni che rispettano i filtri passati in
-     * input
+     * Get a Publication's filter
      *
      * @param filters
      * @return
@@ -240,7 +239,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Publication> getPublicationsByFilters(Map<String, String> filters) throws DataLayerException;
 
     /**
-     * Restituisce i dati di una recensione in base al suo id
+     * Get a Review by ID
      *
      * @param review_key
      * @return
@@ -249,7 +248,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     Review getReview(int review_key) throws DataLayerException;
 
     /**
-     * Restituisce una lista di recensioni di una data pubblicazione
+     * Get a Reviews list by Publication
      *
      * @param publication_key
      * @param limit
@@ -260,7 +259,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Review> getReviews(int publication_key, int limit, int offset) throws DataLayerException;
 
     /**
-     * Restituisce le ultime recensioni inserite
+     * Get the last Review
      *
      * @param publication_key
      * @param limit
@@ -270,7 +269,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Review> getLastReviews(int publication_key, int limit) throws DataLayerException;
 
     /**
-     * Restituisce i dati di una ristampa a partire dal suo id
+     * Get a Review by ID
      *
      * @param reprint_key
      * @return
@@ -279,7 +278,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     Reprint getReprint(int reprint_key) throws DataLayerException;
 
     /**
-     * Restituisce una lista di ristampe
+     * Get a Review list
      *
      * @param publication_key
      * @param limit
@@ -290,7 +289,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Reprint> getReprints(int publication_key, int limit, int offset) throws DataLayerException;
 
     /**
-     * Restituisce i dati di una risorsa a partire dal suo id
+     * Get a Source by ID
      *
      * @param source_key
      * @return
@@ -299,7 +298,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     Source getSource(int source_key) throws DataLayerException;
 
     /**
-     * Restituisce tutte le risorse
+     * Get all Source
      *
      * @return
      * @throws DataLayerException
@@ -307,7 +306,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Source> getSources() throws DataLayerException;
 
     /**
-     * Restituisce tutte le risorse di una data pubblicazione
+     * Get a list Source by Publication
      *
      * @param publication_key
      * @param limit
@@ -318,7 +317,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Source> getPublicationSources(int publication_key, int limit, int offset) throws DataLayerException;
 
     /**
-     * Restituisce i dati di uno storico a partire dal suo id
+     * Get an History by ID
      *
      * @param historia_key
      * @return
@@ -327,7 +326,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     History getHistory(int historia_key) throws DataLayerException;
 
     /**
-     * Restituisce tutti gli storici
+     * Get a list of History
      *
      * @return
      * @throws DataLayerException
@@ -335,7 +334,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<History> getHistories() throws DataLayerException;
 
     /**
-     * Restituisce la lista degli storici in cui ha partecipato un dato utente
+     * Get an Historys list by User
      *
      * @param user_key
      * @return
@@ -344,7 +343,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<History> getHistoriesByUser(int user_key) throws DataLayerException;
 
     /**
-     * Restituisce la lista degli storici di una data pubblicazione
+     * Get an Historys list by Publication
      *
      * @param publication_key
      * @param limit
@@ -355,7 +354,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<History> getHistoriesByPublication(int publication_key, int limit, int offset) throws DataLayerException;
 
     /**
-     * Restituisce i dati di un utente a partire dal suo id
+     * Get an User by ID
      *
      * @param user_key
      * @return
@@ -364,7 +363,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     User getUser(int user_key) throws DataLayerException;
 
     /**
-     * Restituisce i dati di un utente a partire dalla sua email
+     * Get an User by email
      *
      * @param email
      * @return
@@ -373,7 +372,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     User getUser(String email) throws DataLayerException;
 
     /**
-     * Restituisce i dati di un utente a partire dall'email e password
+     * Get an User by email and password
      *
      * @param email
      * @param password
@@ -383,7 +382,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     User getUser(String email, String password) throws DataLayerException;
 
     /**
-     * Restituisce i dati dell'utente amministratore del sistema
+     * Get the Admin
      *
      * @return
      * @throws DataLayerException
@@ -391,7 +390,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     User getUserAdministrator() throws DataLayerException;
 
     /**
-     * Restituisce la lista degli utenti che rispettano il filtro passato
+     * Get an User list by filter
      *
      * @param filter
      * @return
@@ -400,7 +399,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<User> getUsers(String filter) throws DataLayerException;
 
     /**
-     * Restituisce la lista degli utenti attivi che rispettano il filtro passato
+     * Get an active User list by filter
      *
      * @param filter
      * @return
@@ -409,8 +408,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<User> getUsersActive(String filter) throws DataLayerException;
 
     /**
-     * Restituisce la lista degli utenti passivi che rispettano il filtro
-     * passato
+     * Get a passive User list by filter passato
      *
      * @param filter
      * @return
@@ -419,8 +417,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<User> getUsersPassive(String filter) throws DataLayerException;
 
     /**
-     * Restituisce la lista degli utenti attivi che hanno effettuato piu'
-     * operazioni
+     * Get the most active Users
      *
      * @return
      * @throws DataLayerException
@@ -428,7 +425,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<User> getMoreActiveUsers() throws DataLayerException;
 
     /**
-     * Restituisce i dati di un capitolo a partire dal suo id
+     * Get a Chapter by ID
      *
      * @param chapter_key
      * @return
@@ -437,7 +434,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     Chapter getChapter(int chapter_key) throws DataLayerException;
 
     /**
-     * Restituisce i dati di una sezione a partire dal suo id
+     * Get a Section by ID
      *
      * @param section_key
      * @return
@@ -446,7 +443,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     Section getSection(int section_key) throws DataLayerException;
 
     /**
-     * Restituisce i capitoli di una data pubblicazione
+     * Get all Chapters of a Publication
      *
      * @param publication_key
      * @return
@@ -455,7 +452,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Chapter> getChapters(int publication_key) throws DataLayerException;
 
     /**
-     * Restituisce le sezioni di un dato capitolo
+     * Get all Sections of a Chapter
      *
      * @param chapter_key
      * @return
@@ -464,7 +461,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     List<Section> getSections(int chapter_key) throws DataLayerException;
 
     /**
-     * Verifica se un utente ha gia' consigliato una pubblicazione
+     * Verify if a User liked a Publication
      *
      * @param publication_key
      * @param user_key
@@ -474,7 +471,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     boolean getUsersLike(int publication_key, int user_key) throws DataLayerException;
 
     /**
-     * Salva un autore
+     * Save an Author
      *
      * @param author
      * @throws DataLayerException
@@ -482,7 +479,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeAuthor(Author author) throws DataLayerException;
 
     /**
-     * salva un editore
+     * Save an Editor
      *
      * @param editor
      * @throws DataLayerException
@@ -490,7 +487,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeEditor(Editor editor) throws DataLayerException;
 
     /**
-     * Salva una keyword
+     * Save a Keyword
      *
      * @param keyword
      * @throws DataLayerException
@@ -498,7 +495,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeKeyword(Keyword keyword) throws DataLayerException;
 
     /**
-     * Salva una pubblicazione
+     * Save a Publication
      *
      * @param publication
      * @throws DataLayerException
@@ -506,7 +503,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storePublication(Publication publication) throws DataLayerException;
 
     /**
-     * Salva una recensione
+     * Save a Review
      *
      * @param review
      * @throws DataLayerException
@@ -514,7 +511,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeReview(Review review) throws DataLayerException;
 
     /**
-     * Salva una ristampa
+     * Save a Reprint
      *
      * @param reprint
      * @throws DataLayerException
@@ -522,7 +519,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeReprint(Reprint reprint) throws DataLayerException;
 
     /**
-     * Salva una risorsa
+     * Save a Source
      *
      * @param source
      * @throws DataLayerException
@@ -530,7 +527,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeSource(Source source) throws DataLayerException;
 
     /**
-     * Salva uno storico
+     * Save a History
      *
      * @param historia
      * @throws DataLayerException
@@ -538,7 +535,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeHistory(History historia) throws DataLayerException;
 
     /**
-     * Salva un utente
+     * Save a User
      *
      * @param user
      * @throws DataLayerException
@@ -546,7 +543,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeUser(User user) throws DataLayerException;
 
     /**
-     * Salva un capitolo
+     * Save a Chapter
      *
      * @param chapter
      * @throws DataLayerException
@@ -554,7 +551,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeChapter(Chapter chapter) throws DataLayerException;
 
     /**
-     * Salva una sezione
+     * Save a Section
      *
      * @param section
      * @throws DataLayerException
@@ -562,7 +559,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeSection(Section section) throws DataLayerException;
 
     /**
-     * Salva un consiglio utente
+     * Save an User Like
      *
      * @param publication_key
      * @param user_key
@@ -571,16 +568,16 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storeLike(int publication_key, int user_key) throws DataLayerException;
 
     /**
-     * Elimina un autore
-     * 
+     * Delete an Author
+     *
      * @param author
      * @return
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     int deleteAuthor(Author author) throws DataLayerException;
 
     /**
-     * Elimina un editore
+     * Delete an Editor
      *
      * @param editor
      * @return
@@ -589,7 +586,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     int deleteEditor(Editor editor) throws DataLayerException;
 
     /**
-     * Elimina una keyword
+     * Delete a Keyword
      *
      * @param keyword
      * @return
@@ -598,7 +595,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     int deleteKeyword(Keyword keyword) throws DataLayerException;
 
     /**
-     * Elimina una pubblicazione
+     * Delete a Publication
      *
      * @param publication
      * @throws DataLayerException
@@ -606,14 +603,14 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deletePublication(Publication publication) throws DataLayerException;
 
     /**
-     * Elimina una pubblicazione incompleta
+     * Delete an incomplete Publication
      *
      * @throws DataLayerException
      */
     void deleteIncompletePublication() throws DataLayerException;
 
     /**
-     * Elimina una recensione
+     * Delete a Review
      *
      * @param review
      * @throws DataLayerException
@@ -621,7 +618,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deleteReview(Review review) throws DataLayerException;
 
     /**
-     * Elimina una ristampa
+     * Delete a Review
      *
      * @param reprint
      * @throws DataLayerException
@@ -629,7 +626,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deleteReprint(Reprint reprint) throws DataLayerException;
 
     /**
-     * Elimina una risorsa
+     * Delete a Source
      *
      * @param source
      * @throws DataLayerException
@@ -637,7 +634,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deleteSource(Source source) throws DataLayerException;
 
     /**
-     * Elimina un capitolo
+     * Delete a Chapter
      *
      * @param chapter
      * @return
@@ -646,7 +643,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     int deleteChapter(Chapter chapter) throws DataLayerException;
 
     /**
-     * Elimina una sezione
+     * Delete a Section
      *
      * @param section
      * @throws DataLayerException
@@ -654,7 +651,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deleteSection(Section section) throws DataLayerException;
 
     /**
-     * Elimina uno storico
+     * Delete a History
      *
      * @param history
      * @throws DataLayerException
@@ -662,7 +659,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deleteHistory(History history) throws DataLayerException;
 
     /**
-     * Salva la relazione tra una pubblicazione e un autore
+     * Save a link between an Author and a Publication
      *
      * @param idAuthor
      * @param idPublication
@@ -671,7 +668,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storePublicationHasAuthor(int idAuthor, int idPublication) throws DataLayerException;
 
     /**
-     * Elimina tutte le relazioni di una pubblicazione con gli autori
+     * Delete all relations between a Publication and the Authors
      *
      * @param idPublication
      * @throws DataLayerException
@@ -679,7 +676,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deletePublicationHasAuthor(int idPublication) throws DataLayerException;
 
     /**
-     * Salva la relazione tra una pubblicazione e una keyword
+     * Save a relation between a Keyword and a Publication
      *
      * @param idKeyword
      * @param idPublication
@@ -688,7 +685,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void storePublicationHasKeyword(int idKeyword, int idPublication) throws DataLayerException;
 
     /**
-     * Elimina tutte le relazioni di una pubblicazione con le keyword
+     * Delete all relations between a Publication and the Keywords
      *
      * @param idPublication
      * @throws DataLayerException
@@ -696,7 +693,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deletePublicationHasKeyword(int idPublication) throws DataLayerException;
 
     /**
-     * Elimina una relazione tra un autore e una pubblicazione
+     * Delete a link between an Author and a Publication
      *
      * @param idPublication
      * @param idAuthor
@@ -705,7 +702,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deleteAuthorFromPublication(int idPublication, int idAuthor) throws DataLayerException;
 
     /**
-     * Elimina una relazione tra una keyword e una pubblicazione
+     * Delete a link between a Keyword and a Publication
      *
      * @param idPublication
      * @param idKeyword
@@ -714,7 +711,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deleteKeywordFromPublication(int idPublication, int idKeyword) throws DataLayerException;
 
     /**
-     * Elimina tutti i consigli di una pubblicazione
+     * Delete all likes from a Publication
      *
      * @param idPublication
      * @throws DataLayerException
@@ -722,7 +719,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     void deletePublicationLike(int idPublication) throws DataLayerException;
 
     /**
-     * Salva i filtri di una ricerca
+     * Save a research filter
      *
      * @param filters
      * @return
@@ -731,14 +728,14 @@ public interface BiblioManagerDataLayer extends DataLayer {
     int storeFilters(Map<String, String> filters) throws DataLayerException;
 
     /**
-     * Elimina i filtri di ricerca già usati
+     * Delete the used filters
      *
      * @throws DataLayerException
      */
     void deleteFilters() throws DataLayerException;
 
     /**
-     * Restituisce i filtri a partire dal suo id
+     * Get a filter by ID
      *
      * @param filter_key
      * @return
@@ -747,7 +744,7 @@ public interface BiblioManagerDataLayer extends DataLayer {
     Map<String, String> getFilters(int filter_key) throws DataLayerException;
 
     /**
-     * Restituisce il numero di recensioni di una data pubblicazione
+     * Get the number of Reviews of a Publication
      *
      * @param publication_key
      * @return

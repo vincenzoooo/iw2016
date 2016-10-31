@@ -23,15 +23,17 @@ import it.univaq.iw.bibliomanager.data.model.User;
  */
 public class UserList extends BiblioManagerBaseController {
 
+    /**
+     * Notify messages
+     */
     private final String userUpgradeMessage = "Utente <a href=\"profile?userId=${userUpgraded.key}\" class=\"alert-link\">%s %s</a> promosso con successo.";
     private final String userDowngradeMessage = "Utente <a href=\"profile?userId=${userUpgraded.key}\" class=\"alert-link\">%s %s</a> promosso con successo.";
-    
-    private int operationType;
-    private int userId;
+
     /**
-     * Compila i template da restituire a video
+     * Compile the template for display it
+     *
      * @param request
-     * @param response 
+     * @param response
      */
     private void action_view(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -54,9 +56,10 @@ public class UserList extends BiblioManagerBaseController {
     }
 
     /**
-     * Promuove un utente passivo in utente attivo
+     * Promote a passive user to active
+     *
      * @param request
-     * @param response 
+     * @param response
      */
     private void action_upgrade(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -79,9 +82,10 @@ public class UserList extends BiblioManagerBaseController {
     }
 
     /**
-     * Degrada un utente attivo in utente passivo
+     * Downgradee an active user to passive
+     *
      * @param request
-     * @param response 
+     * @param response
      */
     private void action_downgrade(HttpServletRequest request, HttpServletResponse response) {
         try {

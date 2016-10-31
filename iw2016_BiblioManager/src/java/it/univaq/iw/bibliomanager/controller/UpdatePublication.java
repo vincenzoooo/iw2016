@@ -32,20 +32,24 @@ import java.text.SimpleDateFormat;
  */
 public class UpdatePublication extends BiblioManagerBaseController {
 
+    /**
+     * Notify messages
+     */
     private final String updateMessage = "Pubblicazione modificata con successo.";
     /**
-     * Id della pubblicazione corrente
+     * ID of publication
      */
     private int publicationId;
     /**
-     * Url da passare alle singole risorse
+     * Url from which the request came
      */
     private final String url = "managePublication";
 
     /**
-     * Verifica e salva le modifiche apportate alla pubblicazione
+     * Verify and update a Publication
+     *
      * @param request
-     * @param response 
+     * @param response
      */
     private void action_updatePublication(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -60,38 +64,38 @@ public class UpdatePublication extends BiblioManagerBaseController {
                 params.put("publicationPages", Utils.checkString(request.getParameter("publicationPages")));
                 params.put("editors", request.getParameter("editors"));
                 if (!validator(params, request, response)) {
-                    if(!publication.getTitle().equals(params.get("publicationTitle"))){
+                    if (!publication.getTitle().equals(params.get("publicationTitle"))) {
                         publication.setTitle(params.get("publicationTitle"));
                         publication.setDirty(true);
                     }
-                    if(!publication.getDescription().equals(params.get("publicationDescription"))){
+                    if (!publication.getDescription().equals(params.get("publicationDescription"))) {
                         publication.setDescription(params.get("publicationDescription"));
                         publication.setDirty(true);
                     }
-                    if(!publication.getLanguage().equals(params.get("publicationLanguage"))){
+                    if (!publication.getLanguage().equals(params.get("publicationLanguage"))) {
                         publication.setLanguage(params.get("publicationLanguage"));
                         publication.setDirty(true);
                     }
                     DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
                     java.util.Date date = df.parse(params.get("publicationDate"));
                     java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-                    if(!publication.getPublicationDate().equals(sqlDate)){
+                    if (!publication.getPublicationDate().equals(sqlDate)) {
                         publication.setPublicationDate(sqlDate);
                         publication.setDirty(true);
                     }
-                    if(!publication.getIsbn().equals(params.get("publicationIsbn"))){
+                    if (!publication.getIsbn().equals(params.get("publicationIsbn"))) {
                         publication.setIsbn(params.get("publicationIsbn"));
                         publication.setDirty(true);
                     }
-                    if(publication.getPageNumber() != Integer.parseInt(params.get("publicationPages"))){
+                    if (publication.getPageNumber() != Integer.parseInt(params.get("publicationPages"))) {
                         publication.setPageNumber(Integer.parseInt(params.get("publicationPages")));
                         publication.setDirty(true);
                     }
-                    if(publication.getEditor().getKey() != Integer.parseInt(params.get("editors"))){
+                    if (publication.getEditor().getKey() != Integer.parseInt(params.get("editors"))) {
                         publication.setEditor(getDataLayer().getEditor(Integer.parseInt(params.get("editors"))));
                         publication.setDirty(true);
                     }
-                    if(publication.getIncomplete()){
+                    if (publication.getIncomplete()) {
                         publication.setIncomplete(false);
                         publication.setDirty(true);
                     }
@@ -109,10 +113,11 @@ public class UpdatePublication extends BiblioManagerBaseController {
     }
 
     /**
-     * Aggiunge una voce di modifica allo storico
+     * Add a new record to the History
+     *
      * @param request
      * @param response
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     private void action_updateHistory(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         HttpSession session = SecurityLayer.checkSession(request);
@@ -127,11 +132,12 @@ public class UpdatePublication extends BiblioManagerBaseController {
     }
 
     /**
-     * Validatore dei dati
+     * Data validator
+     *
      * @param params
      * @param request
      * @param response
-     * @return 
+     * @return
      */
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
@@ -163,10 +169,11 @@ public class UpdatePublication extends BiblioManagerBaseController {
     }
 
     /**
-     * Elimina la relazione tra un autore e la pubblicazione corrente
+     * Delete a link between an Author and the current Publication
+     *
      * @param request
      * @param response
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     private void action_unlinkAuthor(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
@@ -174,10 +181,11 @@ public class UpdatePublication extends BiblioManagerBaseController {
     }
 
     /**
-     * Elimina la relazione tra una keyword e la pubblicazione corrente
+     * Delete a link between an Keyword and the current Publication
+     *
      * @param request
      * @param response
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     private void action_unlinkKeyword(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException {
@@ -185,12 +193,13 @@ public class UpdatePublication extends BiblioManagerBaseController {
     }
 
     /**
-     * Elimina la pubblicazione corrente
+     * Delete the current Publication
+     *
      * @param request
      * @param response
      * @throws DataLayerException
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private void action_deletePublication(HttpServletRequest request, HttpServletResponse response)
             throws DataLayerException, ServletException, IOException {
@@ -200,12 +209,13 @@ public class UpdatePublication extends BiblioManagerBaseController {
     }
 
     /**
-     * Redireziona verso l'url specificata
+     * Redirect to the specified url
+     *
      * @param request
      * @param response
      * @param url
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     @Override
     protected void action_redirect(HttpServletRequest request, HttpServletResponse response, String url) throws ServletException, IOException {
@@ -216,13 +226,14 @@ public class UpdatePublication extends BiblioManagerBaseController {
     }
 
     /**
-     * Compila i template da restituire a video
+     * Compile the template for display it
+     *
      * @param request
-     * @param response 
+     * @param response
      */
     private void action_view(HttpServletRequest request, HttpServletResponse response) {
         try {
-            List<Editor> editors = getDataLayer().getEditors(0,0);
+            List<Editor> editors = getDataLayer().getEditors(0, 0);
             Publication publication = getDataLayer().getPublication(publicationId);
             request.setAttribute("publication", publication);
             request.setAttribute("editors", editors);

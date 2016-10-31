@@ -29,40 +29,45 @@ import javax.servlet.http.HttpSession;
  */
 public class ComposeReprint extends BiblioManagerBaseController {
 
+    /**
+     * Notify messages
+     */
     private final String updateMessage = "Modifica avvenuta con successo.";
     private final String addMessage = "Inserimento avvenuto con successo.";
     private final String deleteMessage = "Ristampa eliminata con successo.";
-    
+
     /**
-     * Pubblicazione
+     * ID of publication request
      */
     private int publicationId;
     /**
-     * Url da cui proviene la richiesta
+     * Url from which the request came
      */
     private String url;
     /**
-     * Ristampa
+     * ID of current Reprint if any
      */
     private int reprintId;
     /**
-     * Dati della ristampa corrente che si vuole aggiornare
+     * Current date of the current Reprint
      */
     private Reprint currentReprint;
     /**
-     * Pagine
+     * Pages
      */
     private final Map<Integer, String> pages = new HashMap<>();
     /**
-     * Opzioni per la paginazione
+     * Configuration for pagination purpose
      */
     private final Map<String, Integer> options = new HashMap<>();
+
     /**
-     * Verifica e salva una nuova ristampa
+     * Verify and save a new Reprint
+     *
      * @param request
      * @param response
      * @throws NumberFormatException
-     * @throws ParseException 
+     * @throws ParseException
      */
     private void action_composeReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
         try {
@@ -84,27 +89,29 @@ public class ComposeReprint extends BiblioManagerBaseController {
             action_error(request, response, "Errore nel salvare la ristampa: " + ex.getMessage(), 510);
         }
     }
-/**
- * Verifica e salva le modifiche di una recensione
- * @param request
- * @param response
- * @throws NumberFormatException
- * @throws ParseException 
- */
+
+    /**
+     * Verify and update a Reprint
+     *
+     * @param request
+     * @param response
+     * @throws NumberFormatException
+     * @throws ParseException
+     */
     private void action_updateReprint(HttpServletRequest request, HttpServletResponse response) throws NumberFormatException, ParseException {
         try {
             Map<String, String> params = new HashMap<String, String>();
             params.put("updateReprintNumber", Utils.checkString(request.getParameter("reprintNumber")));
             params.put("updateReprintDate", Utils.checkString(request.getParameter("reprintDate")));
             if (!validator(params, request, response)) {
-                if(currentReprint.getNumber() != Integer.parseInt(params.get("updateReprintNumber"))){
+                if (currentReprint.getNumber() != Integer.parseInt(params.get("updateReprintNumber"))) {
                     currentReprint.setNumber(Integer.parseInt(params.get("updateReprintNumber")));
                     currentReprint.setDirty(true);
                 }
                 DateFormat format = new SimpleDateFormat("dd-MM-yyyy");
                 java.util.Date date = format.parse(params.get("updateReprintDate"));
                 java.sql.Date sqlDate = new java.sql.Date(date.getTime());
-                if(!currentReprint.getDate().equals(sqlDate)){
+                if (!currentReprint.getDate().equals(sqlDate)) {
                     currentReprint.setDate(sqlDate);
                     currentReprint.setDirty(true);
                 }
@@ -130,57 +137,60 @@ public class ComposeReprint extends BiblioManagerBaseController {
         getDataLayer().deleteReprint(reprint);
         action_createNotifyMessage(request, response, SUCCESS, deleteMessage, true);
     }
+
     /**
-     * Validatore dei dati
+     * Data validator
+     *
      * @param params
      * @param request
      * @param response
-     * @return 
+     * @return
      */
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = super.validator(params, request, response);
         if (!error) {
-                if(params.get("reprintNumber") != null){
-                    if (!Utils.isNumeric(params.get("reprintNumber"))) {
-                        request.setAttribute("errorReprintNumber", "Non è un numero valido");
-                        error = true;
-                    }
-                    if (!Utils.isDate(params.get("reprintDate"))) {
-                        request.setAttribute("errorReprintDate", "Non è una data valida, si aspetta il formato dd-mm-yyyy");
-                        error = true;
-                    }
+            if (params.get("reprintNumber") != null) {
+                if (!Utils.isNumeric(params.get("reprintNumber"))) {
+                    request.setAttribute("errorReprintNumber", "Non è un numero valido");
+                    error = true;
                 }
-                else{
-                    if (!Utils.isNumeric(params.get("updateReprintNumber"))) {
-                        request.setAttribute("errorUpdateReprintNumber", "Non è un numero valido");
-                        error = true;
-                    }
-                    if (!Utils.isDate(params.get("updateUpdateReprintDate"))) {
-                        request.setAttribute("errorReprintDate", "Non è una data valida, si aspetta il formato dd-mm-yyyy");
-                        error = true;
-                    }
+                if (!Utils.isDate(params.get("reprintDate"))) {
+                    request.setAttribute("errorReprintDate", "Non è una data valida, si aspetta il formato dd-mm-yyyy");
+                    error = true;
                 }
+            } else {
+                if (!Utils.isNumeric(params.get("updateReprintNumber"))) {
+                    request.setAttribute("errorUpdateReprintNumber", "Non è un numero valido");
+                    error = true;
+                }
+                if (!Utils.isDate(params.get("updateUpdateReprintDate"))) {
+                    request.setAttribute("errorReprintDate", "Non è una data valida, si aspetta il formato dd-mm-yyyy");
+                    error = true;
+                }
+            }
         }
         return error;
     }
+
     /**
-     * Compila i template da restituire a video
+     * Compile the template for display it
+     *
      * @param request
      * @param response
      * @throws ServletException
      * @throws IOException
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         request.setAttribute("page_title", "Gestione Ristampa");
         TemplateResult res = new TemplateResult(getServletContext());
         List<Reprint> reprints = getDataLayer().getReprints(publicationId, options.get("limit"), options.get("offset"));
-        
+
         request.setAttribute("totElements", getDataLayer().getReprints(publicationId, 0, 0).size());
         request.setAttribute("paginationUrl", "reprint");
         pagination(request, response, pages, options);
-        
+
         request.setAttribute("reprints", reprints);
         request.setAttribute("publicationId", publicationId);
         request.setAttribute("url", url);
@@ -188,7 +198,7 @@ public class ComposeReprint extends BiblioManagerBaseController {
         request.setAttribute("reprint", currentReprint);
         res.activate("reprint.ftl.html", request, response);
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -204,10 +214,10 @@ public class ComposeReprint extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
-                if(request.getAttribute("publicationId") != null){
+                if (request.getAttribute("publicationId") != null) {
                     publicationId = (int) request.getAttribute("publicationId");
                 }
-                if(request.getAttribute("url") != null){
+                if (request.getAttribute("url") != null) {
                     url = (String) request.getAttribute("url");
                 }
                 if (request.getParameter("reprintId") != null) {
@@ -218,24 +228,22 @@ public class ComposeReprint extends BiblioManagerBaseController {
                     request.setAttribute("reprintToDelete", Integer.parseInt(request.getParameter("reprintToDelete")));
                     action_deleteReprint(request, response);
                 }
-                if (request.getParameter("submitReprint") != null){
-                    if(reprintId == 0) {
+                if (request.getParameter("submitReprint") != null) {
+                    if (reprintId == 0) {
                         action_composeReprint(request, response);
-                    }
-                    else{
+                    } else {
                         action_updateReprint(request, response);
                     }
                 }
-                if (request.getParameter("offset") != null){
-                   options.put("offset", Integer.parseInt(request.getParameter("offset")));
-                }
-                else{
-                   pages.clear();
-                   options.put("limit", 10);
-                   options.put("offset", 0);
-                   options.put("slice", 10);
-                   options.put("start", 0);
-                   options.put("end", 10);
+                if (request.getParameter("offset") != null) {
+                    options.put("offset", Integer.parseInt(request.getParameter("offset")));
+                } else {
+                    pages.clear();
+                    options.put("limit", 10);
+                    options.put("offset", 0);
+                    options.put("slice", 10);
+                    options.put("start", 0);
+                    options.put("end", 10);
                 }
                 action_view(request, response);
             } else {

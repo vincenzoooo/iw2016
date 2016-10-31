@@ -20,12 +20,13 @@ import javax.servlet.http.HttpServletResponse;
 public class Logout extends BiblioManagerBaseController {
 
     /**
-     * Elimina la sessione e reindirizza alla pagina di login
+     * Delete the session and redirect to the Login page
+     *
      * @param request
      * @param response
      * @throws IOException
      * @throws ServletException
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     private void action_logout(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException, DataLayerException {
         SecurityLayer.disposeSession(request);

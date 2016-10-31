@@ -26,34 +26,35 @@ import javax.servlet.http.HttpSession;
 public class PublicationsList extends BiblioManagerBaseController {
 
     /**
-     * Codifica dei campi per l'ordinamento delle pubblicazioni
+     * Sort fields
      */
     private final String[] orderField = new String[]{"titolo", "e.nome", "a.cognome", "data_pubblicazione", "n_consigli"};
     /**
-     * Codifica del tipo di ordinamento (ascendente o discendente) 
+     * Sort types
      */
     private final String[] orderType = new String[]{"ASC", "DESC"};
     /**
-     * Filtri di ricerca
+     * Research filters
      */
     private Map<String, String> filters = new HashMap<>();
     /**
-     * Indica se si proviene da una ricerca
+     * Define a research result
      */
     private boolean isResearch = false;
     /**
-     * Pagine da visualizzare
+     * Pages
      */
     private final Map<Integer, String> pages = new HashMap<>();
     /**
-     * Opzioni per la paginazione
+     * Configuration for pagination purpose
      */
     private final Map<String, Integer> options = new HashMap<>();
-    
+
     /**
-     * Elaborazione della lista di pubblicazioni
+     * Get the Publication's list
+     *
      * @param request
-     * @param response 
+     * @param response
      */
     private void action_list(HttpServletRequest request, HttpServletResponse response) {
         try {
@@ -61,8 +62,7 @@ public class PublicationsList extends BiblioManagerBaseController {
                 isResearch = Boolean.parseBoolean(request.getAttribute("isResearch").toString());
                 request.setAttribute("filter", request.getAttribute("filter"));
                 filters = getDataLayer().getFilters(Integer.parseInt(request.getAttribute("filter").toString()));
-            }
-            else{
+            } else {
                 isResearch = false;
                 filters = new HashMap<>();
             }
@@ -87,19 +87,20 @@ public class PublicationsList extends BiblioManagerBaseController {
     }
 
     /**
-     * Compila i template da visualizzare a video
+     * Compile the template for display it
+     *
      * @param request
      * @param response
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
-            
+
             request.setAttribute("totElements", getDataLayer().getPublicationsByFilters(filters).size());
             request.setAttribute("paginationUrl", "catalog");
             pagination(request, response, pages, options);
-            
+
             res.activate("catalog.ftl.html", request, response);
         } catch (ServletException | IOException ex) {
             action_error(request, response, "Error build the template: " + ex.getMessage(), 511);
@@ -126,16 +127,15 @@ public class PublicationsList extends BiblioManagerBaseController {
                     request.setAttribute("isResearch", request.getParameter("isResearch"));
                     request.setAttribute("filter", request.getParameter("filter"));
                 }
-                if (request.getParameter("offset") != null){
-                   options.put("offset", Integer.parseInt(request.getParameter("offset")));
-                }
-                else{
-                   pages.clear();
-                   options.put("limit", 5);
-                   options.put("offset", 0);
-                   options.put("slice", 10);
-                   options.put("start", 0);
-                   options.put("end", 10);
+                if (request.getParameter("offset") != null) {
+                    options.put("offset", Integer.parseInt(request.getParameter("offset")));
+                } else {
+                    pages.clear();
+                    options.put("limit", 5);
+                    options.put("offset", 0);
+                    options.put("slice", 10);
+                    options.put("start", 0);
+                    options.put("end", 10);
                 }
                 action_list(request, response);
             } else {

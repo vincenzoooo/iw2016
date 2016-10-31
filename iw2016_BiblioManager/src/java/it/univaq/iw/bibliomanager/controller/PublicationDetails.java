@@ -26,12 +26,12 @@ import javax.servlet.http.HttpSession;
 public class PublicationDetails extends BiblioManagerBaseController {
 
     /**
-     * Compila i template da restituire a video
+     * Compile the template for display it
+     *
      * @param request
-     * @param response 
+     * @param response
      */
-    private void action_view(HttpServletRequest request, HttpServletResponse response)
-    {
+    private void action_view(HttpServletRequest request, HttpServletResponse response) {
         try {
             TemplateResult res = new TemplateResult(getServletContext());
             HttpSession session = SecurityLayer.checkSession(request);
@@ -58,25 +58,28 @@ public class PublicationDetails extends BiblioManagerBaseController {
     }
 
     /**
-     * Compila la lista delle recensioni
+     * Get all Publication's reviews
+     *
      * @param request
      * @param response
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     private void action_viewReviews(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
-        List<Review> reviews = getDataLayer().getReviews(Integer.parseInt(request.getParameter("publicationId")),0,0);
+        List<Review> reviews = getDataLayer().getReviews(Integer.parseInt(request.getParameter("publicationId")), 0, 0);
         request.setAttribute("reviews", reviews);
     }
+
     /**
-     * Verifica e aggiunge il consiglio di un utente
+     * Verify and add a User like
+     *
      * @param request
      * @param response
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     private void action_like(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         HttpSession session = SecurityLayer.checkSession(request);
         boolean liked = getDataLayer().getUsersLike(Integer.parseInt(request.getParameter("publicationId")), (int) session.getAttribute("userId"));
-        if(!liked){
+        if (!liked) {
             Publication publication = getDataLayer().getPublication(Integer.parseInt(request.getParameter("publicationId")));
             publication.setLike(1);
             publication.setDirty(true);
@@ -84,7 +87,7 @@ public class PublicationDetails extends BiblioManagerBaseController {
             getDataLayer().storeLike(Integer.parseInt(request.getParameter("publicationId")), (int) session.getAttribute("userId"));
         }
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -101,7 +104,7 @@ public class PublicationDetails extends BiblioManagerBaseController {
             HttpSession session = SecurityLayer.checkSession(request);
             if (session != null) {
                 currentUser(request, response, session);
-                if(request.getParameter("like") != null){
+                if (request.getParameter("like") != null) {
                     action_like(request, response);
                 }
                 action_view(request, response);

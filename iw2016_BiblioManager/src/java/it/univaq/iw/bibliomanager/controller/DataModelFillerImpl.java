@@ -18,7 +18,7 @@ import java.util.Map;
 public class DataModelFillerImpl implements DataModelFiller {
 
     /**
-     * Compila il menu della navbar presente nella struttura di base delle pagine
+     * Compile the navbar menu of the base navbar
      * @param datamodel 
      */
     @Override

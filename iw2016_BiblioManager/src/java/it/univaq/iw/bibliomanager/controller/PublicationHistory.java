@@ -26,16 +26,16 @@ import javax.servlet.http.HttpSession;
 public class PublicationHistory extends BiblioManagerBaseController {
 
     /**
-     * Pagine
+     * Pages
      */
     private final Map<Integer, String> pages = new HashMap<>();
     /**
-     * Opzioni di paginazione
+     * Configuration for pagination purpose
      */
     private final Map<String, Integer> options = new HashMap<>();
     
     /**
-     * Compila i template da restituire a video
+     * Compile the template for display it
      * @param request
      * @param response 
      */

@@ -30,26 +30,30 @@ import java.util.Map;
  */
 public class Profile extends BiblioManagerBaseController {
 
-    private final String updateMessage = "Modifica del profilo avvenuta con successo.";
     /**
-     * Compila i template da restituire a video
+     * Notify messages
+     */
+    private final String updateMessage = "Modifica del profilo avvenuta con successo.";
+
+    /**
+     * Compile the template for display it
+     *
      * @param request
      * @param response
      * @throws DataLayerException
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
     private void action_view(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException {
         try {
             request.setAttribute("page_title", "Profile");
             HttpSession session = SecurityLayer.checkSession(request);
             TemplateResult res = new TemplateResult(getServletContext());
-            if(request.getAttribute("update") != null && (boolean) request.getAttribute("update")){
+            if (request.getAttribute("update") != null && (boolean) request.getAttribute("update")) {
                 User user = getDataLayer().getUser((int) session.getAttribute("userId"));
                 request.setAttribute("user", user);
                 res.activate("manageProfile.ftl.html", request, response);
-            }
-            else{
+            } else {
                 int userKey;
                 if (request.getParameter("userId") != null) {
                     userKey = Integer.parseInt(request.getParameter("userId"));
@@ -80,13 +84,14 @@ public class Profile extends BiblioManagerBaseController {
     }
 
     /**
-     * Verifica e salva le modifiche dei dati utente
+     * Verify and update User data
+     *
      * @param request
      * @param response
      * @throws DataLayerException
      * @throws ServletException
      * @throws IOException
-     * @throws NoSuchAlgorithmException 
+     * @throws NoSuchAlgorithmException
      */
     private void action_save(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException, NoSuchAlgorithmException {
         try {
@@ -99,19 +104,19 @@ public class Profile extends BiblioManagerBaseController {
             params.put("surname", Utils.checkString(request.getParameter("surname")));
             params.put("email", Utils.checkString(request.getParameter("email")));
             if (!validator(params, request, response)) {
-                if(!user.getName().equals(params.get("name"))){
+                if (!user.getName().equals(params.get("name"))) {
                     user.setName(params.get("name"));
                     user.setDirty(true);
                 }
-                if(!user.getSurname().equals(params.get("surname"))){
+                if (!user.getSurname().equals(params.get("surname"))) {
                     user.setSurname(params.get("surname"));
                     user.setDirty(true);
                 }
-                if(!user.getEmail().equals(params.get("email"))){
+                if (!user.getEmail().equals(params.get("email"))) {
                     user.setEmail(params.get("email"));
                     user.setDirty(true);
                 }
-                if(!Utils.isNullOrEmpty(password)){
+                if (!Utils.isNullOrEmpty(password)) {
                     password = Utils.SHA1(password);
                     user.setPassword(password);
                     user.setDirty(true);
@@ -129,11 +134,12 @@ public class Profile extends BiblioManagerBaseController {
     }
 
     /**
-     * Validatore dei dati
+     * Data validator
+     *
      * @param params
      * @param request
      * @param response
-     * @return 
+     * @return
      */
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
@@ -141,26 +147,27 @@ public class Profile extends BiblioManagerBaseController {
         if (!error) {
             String password = Utils.checkString(request.getParameter("password"));
             String repassword = Utils.checkString(request.getParameter("re-password"));
-            if(password != null && repassword == null){
+            if (password != null && repassword == null) {
                 request.setAttribute("errorPassword", "Ripetere la password");
                 error = true;
             }
-            if(password == null && repassword != null){
+            if (password == null && repassword != null) {
                 request.setAttribute("errorPassword", "Inserire password valida");
                 error = true;
             }
-            if(password != null && repassword != null && !password.equals(repassword)){
+            if (password != null && repassword != null && !password.equals(repassword)) {
                 request.setAttribute("errorPassword", "Le password non corrispondono");
                 error = true;
             }
-            if(!Utils.checkEmail(params.get("email"))){
+            if (!Utils.checkEmail(params.get("email"))) {
                 request.setAttribute("errorEmail", "email non valida");
                 error = true;
             }
         }
         return error;
     }
-/**
+
+    /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
      *
@@ -177,7 +184,7 @@ public class Profile extends BiblioManagerBaseController {
                 if (request.getParameter("submitData") != null) {
                     action_save(request, response);
                 }
-                if(request.getParameter("update") != null){
+                if (request.getParameter("update") != null) {
                     request.setAttribute("update", true);
                 }
                 action_view(request, response);

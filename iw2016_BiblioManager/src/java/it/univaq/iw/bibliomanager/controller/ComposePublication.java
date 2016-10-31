@@ -35,23 +35,27 @@ import java.util.List;
  */
 public class ComposePublication extends BiblioManagerBaseController {
 
+    /**
+     * Notify messages
+     */
     private final String addMessage = "Pubblicazione inserita con successo.";
     /**
-     * Pubblicazione
+     * ID of publication request
      */
     private int publicationId;
     /**
-     * Url da passare alle singole risorse
+     * Url to pass to a source
      */
     private final String url = "publication";
-    
+
     /**
-     * Verifica e salva una nuova pubblicazione
+     * Verify and save a new Publication
+     *
      * @param request
      * @param response
      * @throws ServletException
      * @throws IOException
-     * @throws DataLayerException 
+     * @throws DataLayerException
      */
     private void action_composePublication(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
         try {
@@ -84,20 +88,21 @@ public class ComposePublication extends BiblioManagerBaseController {
                 this.action_composeHistory(request, response);
                 publicationId = publication.getKey();
                 action_createNotifyMessage(request, response, SUCCESS, addMessage, true);
-            }
-            else{
+            } else {
                 request.setAttribute("redirect", false);
             }
         } catch (DataLayerException | ParseException ex) {
             action_error(request, response, "Errore nel salvare i dati: " + ex.getMessage(), 510);
         }
     }
-/**
- * Salva una nuova voce nello storico
- * @param request
- * @param response
- * @throws DataLayerException 
- */
+
+    /**
+     * Save a new record in the History
+     *
+     * @param request
+     * @param response
+     * @throws DataLayerException
+     */
     private void action_composeHistory(HttpServletRequest request, HttpServletResponse response) throws DataLayerException {
         HttpSession session = SecurityLayer.checkSession(request);
         User user = getDataLayer().getUser((int) session.getAttribute("userId"));
@@ -109,13 +114,15 @@ public class ComposePublication extends BiblioManagerBaseController {
         history.setDate(new java.sql.Timestamp(System.currentTimeMillis()));
         getDataLayer().storeHistory(history);
     }
-/**
- * Validatore dei dati
- * @param params
- * @param request
- * @param response
- * @return 
- */
+
+    /**
+     * Data validator
+     *
+     * @param params
+     * @param request
+     * @param response
+     * @return
+     */
     @Override
     protected boolean validator(Map<String, String> params, HttpServletRequest request, HttpServletResponse response) {
         boolean error = super.validator(params, request, response);
@@ -144,17 +151,19 @@ public class ComposePublication extends BiblioManagerBaseController {
         }
         return error;
     }
-/**
- * Salva i dati inseriti parzialmente nella form e passare alla pagina della risorsa specificata
- * @param request
- * @param response
- * @param url
- * @param publication
- * @throws DataLayerException
- * @throws ServletException
- * @throws IOException
- * @throws ParseException 
- */
+
+    /**
+     * Save data partially the data of the publication
+     *
+     * @param request
+     * @param response
+     * @param url
+     * @param publication
+     * @throws DataLayerException
+     * @throws ServletException
+     * @throws IOException
+     * @throws ParseException
+     */
     private void action_savePartially(HttpServletRequest request, HttpServletResponse response, String url, Publication publication) throws DataLayerException, ServletException, IOException, ParseException {
         if (publication == null) {
             publication = getDataLayer().createPublication();
@@ -192,8 +201,7 @@ public class ComposePublication extends BiblioManagerBaseController {
             if (request.getParameter("editors") != null && !request.getParameter("editors").isEmpty()) {
                 Editor editor = getDataLayer().getEditor(Integer.parseInt(request.getParameter("editors")));
                 publication.setEditor(editor);
-            }
-            else{
+            } else {
                 Editor editor = getDataLayer().createEditor();
                 publication.setEditor(editor);
             }
@@ -204,45 +212,51 @@ public class ComposePublication extends BiblioManagerBaseController {
             request.setAttribute("publicationId", publicationId);
             request.setAttribute("url", this.url);
         }
-        request.setAttribute("publicationPartial",1);
+        request.setAttribute("publicationPartial", 1);
         action_redirect(request, response, url);
     }
-/**
- * Elimina la relazione tra un autore e la pubblicazione corrente
- * @param request
- * @param response
- * @param session
- * @throws DataLayerException 
- */
-    private void action_unlinkAuthor (HttpServletRequest request, HttpServletResponse response, HttpSession session)
+
+    /**
+     * Delete a link from an Author and the current Publication
+     *
+     * @param request
+     * @param response
+     * @param session
+     * @throws DataLayerException
+     */
+    private void action_unlinkAuthor(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws DataLayerException {
         getDataLayer().deleteAuthorFromPublication(publicationId, Integer.parseInt(request.getParameter("unlinkAuthor")));
     }
-/**
- * Elimina la relazione tra una keyword e la pubblicazione corrente
- * @param request
- * @param response
- * @param session
- * @throws DataLayerException 
- */
-    private void action_unlinkKeyword (HttpServletRequest request, HttpServletResponse response, HttpSession session)
+
+    /**
+     * Delete a link from an Keyword and the current Publication
+     *
+     * @param request
+     * @param response
+     * @param session
+     * @throws DataLayerException
+     */
+    private void action_unlinkKeyword(HttpServletRequest request, HttpServletResponse response, HttpSession session)
             throws DataLayerException {
         getDataLayer().deleteKeywordFromPublication(publicationId, Integer.parseInt(request.getParameter("unlinkAuthor")));
     }
+
     /**
-     * Compila i template da restituire a video
+     * Compile the template for display it
+     *
      * @param request
      * @param response
      * @throws DataLayerException
      * @throws ServletException
-     * @throws IOException 
+     * @throws IOException
      */
-    private void action_view (HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException{
+    private void action_view(HttpServletRequest request, HttpServletResponse response) throws DataLayerException, ServletException, IOException {
         Publication publication = getDataLayer().getPublication(publicationId);
         if (publication != null && publication.getIncomplete()) {
             List<Author> authors = getDataLayer().getPublicationAuthors(publicationId);
             List<Keyword> keywords = getDataLayer().getPublicationKeywords(publicationId);
-            List<Source> sources = getDataLayer().getPublicationSources(publicationId,0,0);
+            List<Source> sources = getDataLayer().getPublicationSources(publicationId, 0, 0);
             request.setAttribute("authors", authors);
             request.setAttribute("keywords", keywords);
             request.setAttribute("sources", sources);
@@ -259,7 +273,7 @@ public class ComposePublication extends BiblioManagerBaseController {
         TemplateResult res = new TemplateResult(getServletContext());
         res.activate("publication.ftl.html", request, response);
     }
-    
+
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -276,7 +290,7 @@ public class ComposePublication extends BiblioManagerBaseController {
             if (session != null) {
                 currentUser(request, response, session);
                 request.setAttribute("page_title", "Nuova Pubblicazione");
-                List<Editor> editors = getDataLayer().getEditors(0,0);
+                List<Editor> editors = getDataLayer().getEditors(0, 0);
 
                 request.setAttribute("authors", "");
                 request.setAttribute("editors", editors);
@@ -290,13 +304,13 @@ public class ComposePublication extends BiblioManagerBaseController {
                 if (request.getParameter("submitPublication") != null) {
                     action_composePublication(request, response);
                     boolean redirect = true;
-                    if(request.getAttribute("redirect") != null){
-                        redirect = (boolean)request.getAttribute("redirect");
+                    if (request.getAttribute("redirect") != null) {
+                        redirect = (boolean) request.getAttribute("redirect");
                     }
-                    if(redirect && publicationId > 0){
+                    if (redirect && publicationId > 0) {
                         String detailUrl = "/details?publicationId=" + publicationId;
                         publicationId = 0;
-                         request.setAttribute("publicationAdded", 1);
+                        request.setAttribute("publicationAdded", 1);
                         action_redirect(request, response, detailUrl);
                     }
                 }
