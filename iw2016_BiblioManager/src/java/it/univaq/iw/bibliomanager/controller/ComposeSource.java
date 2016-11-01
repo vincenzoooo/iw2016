@@ -224,7 +224,7 @@ public class ComposeSource extends BiblioManagerBaseController {
                 if (request.getAttribute("url") != null) {
                     url = (String) request.getAttribute("url");
                 }
-                if (sourceId == 0 && request.getParameter("sourceId") != null) {
+                if (request.getParameter("sourceId") != null && sourceId != Integer.parseInt(request.getParameter("sourceId"))) {
                     sourceId = Integer.parseInt(request.getParameter("sourceId"));
                     currentSource = getDataLayer().getSource(sourceId);
                 }

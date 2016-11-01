@@ -205,7 +205,7 @@ public class ComposeAuthor extends BiblioManagerBaseController {
                     url = (String) request.getAttribute("url");
                 }
                 currentUser(request, response, session);
-                if (authorId == 0 && request.getParameter("authorId") != null) {
+                if (request.getParameter("authorId") != null && authorId != Integer.parseInt(request.getParameter("authorId"))) {
                     currentNameAuthor = request.getParameter("currentNameAuthor");
                     currentSurnameAuthor = request.getParameter("currentSurnameAuthor");
                     authorId = Integer.parseInt(request.getParameter("authorId"));

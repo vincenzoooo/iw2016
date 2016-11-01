@@ -29,22 +29,11 @@ public class PageNotFound extends BiblioManagerBaseController {
     @Override
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException {
-        
+
         try {
             response.sendRedirect("status?pageNotFound");
         } catch (IOException ex) {
             Logger.getLogger(PageNotFound.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
 }

@@ -175,7 +175,7 @@ public class ComposeEditor extends BiblioManagerBaseController {
                 if (request.getAttribute("url") != null) {
                     url = (String) request.getAttribute("url");
                 }
-                if (editorId == 0 && request.getParameter("editorId") != null) {
+                if (request.getParameter("editorId") != null && editorId != Integer.parseInt(request.getParameter("editorId"))) {
                     currentEditor = request.getParameter("currentEditor");
                     editorId = Integer.parseInt(request.getParameter("editorId"));
                 }

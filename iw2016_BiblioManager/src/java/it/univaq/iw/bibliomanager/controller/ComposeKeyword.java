@@ -198,7 +198,7 @@ public class ComposeKeyword extends BiblioManagerBaseController {
                 if (request.getAttribute("url") != null) {
                     url = (String) request.getAttribute("url");
                 }
-                if (keywordId == 0 && request.getParameter("keywordId") != null) {
+                if (request.getParameter("keywordId") != null && keywordId != Integer.parseInt(request.getParameter("keywordId"))) {
                     currentKeyword = request.getParameter("currentKeyword");
                     keywordId = Integer.parseInt(request.getParameter("keywordId"));
                 }
