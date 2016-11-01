@@ -8,7 +8,6 @@
 var pageHeight = $(window).height();
 var pageWidth = $(window).width();
 
-
 function dimentionScreen() {
     if( pageWidth > 768 ) {	
         var valore= pageHeight-220;
@@ -16,4 +15,14 @@ function dimentionScreen() {
     }
 }
 
-dimentionScreen();
+dimentionScreen(); 
+
+//MENU SCROLL TO
+function scroll_to(div){
+    $('html, body').animate({
+        scrollTop: $(div).offset().top	
+    },1000);
+}
+
+    
+

@@ -805,6 +805,11 @@ header .navbar-header-menu {
     padding-right: 50px;
 }
 
+.myscroll {
+    cursor: pointer;
+}
+
+
 /**
  * 4.1 Catalog
  * -----------------------------------------------------------------------------
