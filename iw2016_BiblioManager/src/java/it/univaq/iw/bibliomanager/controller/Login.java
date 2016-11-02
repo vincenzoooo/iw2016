@@ -18,6 +18,7 @@ import it.univaq.iw.bibliomanager.data.model.User;
 import it.univaq.iw.framework.result.TemplateResult;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpSession;
 
 /**
  *
