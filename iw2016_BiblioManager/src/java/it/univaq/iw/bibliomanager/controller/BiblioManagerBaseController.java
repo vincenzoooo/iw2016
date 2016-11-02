@@ -31,8 +31,6 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
     protected final String WARNING = "warning";
     protected final String ERROR = "error";
     
-    private final String noActionMessage = "Per poter usufruire dei servizi del portale bisogna accedere!!! Nel caso non si ha un account cliccate su \"Registrati\" per crearne uno.";
-    
     private BiblioManagerDataLayer datalayer;
     
     protected abstract void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException;
