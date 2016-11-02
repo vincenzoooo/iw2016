@@ -7,11 +7,6 @@
 
 $(document).ready(function() {
     
-    if(document.getElementById("editComponent")!=null) {
-        $('html, body').animate({
-        scrollTop: $(".scollTo").offset().top	
-        },1000); 
-    }
     //MENU SCROLL TO
     function scroll_to(div){
         $('html, body').animate({

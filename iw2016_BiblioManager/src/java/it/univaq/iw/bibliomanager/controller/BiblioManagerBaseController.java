@@ -31,6 +31,8 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
     protected final String WARNING = "warning";
     protected final String ERROR = "error";
     
+    private final String noActionMessage = "Per poter usufruire dei servizi del portale bisogna accedere!!! Nel caso non si ha un account cliccate su \"Registrati\" per crearne uno.";
+    
     private BiblioManagerDataLayer datalayer;
     
     protected abstract void processRequest(HttpServletRequest request, HttpServletResponse response) throws ServletException;
@@ -105,6 +107,7 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
         request.setAttribute("page_title", "Login to Biblio");
         getDataLayer().deleteIncompletePublication();
         TemplateResult res = new TemplateResult(getServletContext());
+        action_createNotifyMessage(request, response, WARNING, noActionMessage, false);
         res.activate("login.ftl.html", request, response);
     }
 

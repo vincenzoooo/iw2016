@@ -178,8 +178,10 @@
                                 <#list publication.sources as item>
                                     <#if item.type.equals("immagine")>
                                     <div class="col-sm-4 col-xs-12">
-                                        <a class="thumbnail" href="${strip_slashes(item.uri)}" title="A grandezza naturale" target="_blank"><img src="${strip_slashes(item.uri)?html}" alt="immagine galleria"/>
-                                            <div class="no-img hidden-xs anima"><img src="${strip_slashes(item.uri)?html}" class="img-responsive" alt="immagine galleria"/><br/>
+                                        <a class="thumbnail" href="${strip_slashes(item.uri)}" title="A grandezza naturale" target="_blank">
+                                            <img src="${strip_slashes(item.uri)?html}" alt="immagine galleria"/>
+                                            <div class="no-img hidden-xs anima">
+                                                <img src="${strip_slashes(item.uri)?html}" class="img-responsive" alt="immagine galleria"/><br/>
                                                 <span class="padding-left-5">${strip_slashes(item.description)?html}</span>
                                             </div>
                                         </a>

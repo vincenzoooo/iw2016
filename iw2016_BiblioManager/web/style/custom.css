@@ -948,6 +948,7 @@ header .navbar-header-menu {
 
 .thumbnail img{
     margin: 0 5px 5px 0;
+    width:100%;
 }
 
 .thumbnail:hover{
@@ -972,6 +973,7 @@ header .navbar-header-menu {
 .thumbnail div img{ 
     border-width: 0;
     padding: 2px;
+    width: 100%;
 }
 
 .thumbnail:hover div{ 

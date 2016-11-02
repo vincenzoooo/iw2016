@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import it.univaq.iw.bibliomanager.data.model.User;
 import java.util.HashMap;
 import java.util.Map;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -28,7 +29,6 @@ public class Login extends BiblioManagerBaseController {
     /**
      * Notify messages
      */
-    private final String noActionMessage = "Per poter usufruire dei servizi del portale bisogna accedere!!! Nel caso non si ha un account cliccate su \"Registrati\" per crearne uno.";
     private final String userLoggedMessage = "Login effettuato con successo.";
 
     /**
@@ -104,7 +104,6 @@ public class Login extends BiblioManagerBaseController {
             if (request.getParameter("submitLogin") != null && SecurityLayer.checkSession(request) == null) {
                 action_login(request, response);
             } else {
-                action_createNotifyMessage(request, response, WARNING, noActionMessage, false);
                 action_default(request, response);
             }
         } catch (DataLayerException | IOException | NoSuchAlgorithmException | ServletException ex) {
