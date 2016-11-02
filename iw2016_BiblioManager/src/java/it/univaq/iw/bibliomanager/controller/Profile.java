@@ -105,11 +105,11 @@ public class Profile extends BiblioManagerBaseController {
             params.put("email", Utils.checkString(request.getParameter("email")));
             if (!validator(params, request, response)) {
                 if (!user.getName().equals(params.get("name"))) {
-                    user.setName(params.get("name"));
+                    user.setName(params.get("name").replaceAll("'", ""));
                     user.setDirty(true);
                 }
                 if (!user.getSurname().equals(params.get("surname"))) {
-                    user.setSurname(params.get("surname"));
+                    user.setSurname(params.get("surname").replaceAll("'", ""));
                     user.setDirty(true);
                 }
                 if (!user.getEmail().equals(params.get("email"))) {
