@@ -1263,23 +1263,7 @@ label.error, span.error {
 /**
  * 9.0 Media Queries
  * -----------------------------------------------------------------------------
- */
-
-@media screen and (max-width: 400px) {}
-@media screen and (min-width: 401px) {}
-@media screen and (min-width: 594px) {}
-@media screen and (max-width: 785px) {}
-@media screen and (min-width: 673px) {}
-@media screen and (min-width: 783px) {}
-@media screen and (min-width: 810px) {}
-@media screen and (min-width: 846px) {}
-@media screen and (min-width: 1008px) {}
-@media screen and (min-width: 1040px) {}
-@media screen and (min-width: 1080px) {}
-@media screen and (min-width: 1110px) {}
-@media screen and (min-width: 1218px) {}
-@media screen and (min-width: 1260px) {}
-                                    
+ */                                    
 
 @media (max-width: 400px) {
     .logo{
@@ -1406,8 +1390,3 @@ label.error, span.error {
     }
 }
 
-
-
-@media only screen and (min-width: 960px){}
-@media only screen and (min-width: 768px) and (max-width: 959px){}
-@media only screen and (max-width: 767px) {}
