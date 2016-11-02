@@ -84,8 +84,8 @@
                                         <td>
                                             ${strip_slashes(item.surname)!"''"?html}
                                         </td>
-                                        <td>
-                                            <a href="author?authorId=${item.key}&currentNameAuthor=${item.name}&currentSurnameAuthor=${item.surname}#anchor" onclick="scroll_to('.scrollTo');return false;" class="aItemCustom bold padding-custom">Modifica</a>
+                                        <td class="prova">
+                                            <a href="author?authorId=${item.key}&currentNameAuthor=${item.name}&currentSurnameAuthor=${item.surname}#anchor" class="aItemCustom bold padding-custom">Modifica</a>
                                             <a href="author?authorToDelete=${item.key}" class="aItemCustom bold">Elimina</a>
                                         </td>
                                         <td>
@@ -146,8 +146,8 @@
         </div>
         
         <#if (authorId>0)>
-        <a name="anchor" class="scollTo"></a>
-        <div class="section section-pageAuthor-editAuthor margin-bot-50">
+        <a name="anchor" id="scrolla_qui"></a>
+        <div id="editComponent" class="section section-pageAuthor-editAuthor margin-bot-50">
              <div class="row">
                 <div class="col-lg-12">
                     <h3 class=""> Modifica autore</h3>
