@@ -7,7 +7,6 @@
 package it.univaq.iw.bibliomanager.controller;
 
 import it.univaq.iw.framework.data.DataLayerException;
-import it.univaq.iw.framework.result.TemplateResult;
 import it.univaq.iw.framework.security.SecurityLayer;
 import it.univaq.iw.framework.utils.Utils;
 import java.io.IOException;
@@ -16,6 +15,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import it.univaq.iw.bibliomanager.data.model.User;
+import it.univaq.iw.framework.result.TemplateResult;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -59,7 +59,7 @@ public class Login extends BiblioManagerBaseController {
                     action_redirect(request, response, "/home");
                 } else {
                     request.setAttribute("errorLogin", "Credenziali errate, si invita a riprovare o ad iscriversi");
-                    action_default(request, response);
+                    action_view(request, response);
                 }
             } else {
 
@@ -89,6 +89,11 @@ public class Login extends BiblioManagerBaseController {
         return error;
     }
 
+    protected void action_view(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException, DataLayerException {
+        request.setAttribute("page_title", "Login to Biblio");
+        TemplateResult res = new TemplateResult(getServletContext());
+        res.activate("login.ftl.html", request, response);
+    }
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -105,7 +110,7 @@ public class Login extends BiblioManagerBaseController {
                 action_login(request, response);
             } else {
                 action_createNotifyMessage(request, response, WARNING, noActionMessage, false);
-                action_default(request, response);
+                action_view(request, response);
             }
         } catch (DataLayerException | IOException | NoSuchAlgorithmException | ServletException ex) {
             action_error(request, response, "Error: " + ex.getMessage(), 501);

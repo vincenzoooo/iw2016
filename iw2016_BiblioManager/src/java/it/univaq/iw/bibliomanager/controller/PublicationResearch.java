@@ -42,20 +42,32 @@ public class PublicationResearch extends BiblioManagerBaseController {
                 noAction(isbn, request, response);
                 filters.put("isbn", isbn);
             }
+            else{
+                filters.put("isbn", "");
+            }
             String title = request.getParameter("publicationTitle");
             if (!Utils.isNullOrEmpty(title)) {
                 noAction(title, request, response);
                 filters.put("titolo", title);
+            }
+            else{
+                filters.put("titolo", "");
             }
             String authorName = request.getParameter("publicationAuthor");
             if (!Utils.isNullOrEmpty(authorName)) {
                 noAction(authorName, request, response);
                 filters.put("autore", authorName);
             }
+            else{
+                filters.put("autore", "");
+            }
             String editorName = request.getParameter("publicationEditor");
             if (!Utils.isNullOrEmpty(editorName)) {
                 noAction(editorName, request, response);
                 filters.put("editore", editorName);
+            }
+            else{
+                filters.put("editore", "");
             }
             String date = request.getParameter("publicationYear");
             if (!Utils.isNullOrEmpty(date)) {
@@ -73,18 +85,30 @@ public class PublicationResearch extends BiblioManagerBaseController {
                 noAction(keyword, request, response);
                 filters.put("keyword", keyword);
             }
+            else{
+                filters.put("keyword", "");
+            }
             String language = request.getParameter("publicationLanguage");
             if (!Utils.isNullOrEmpty(language)) {
                 noAction(language, request, response);
                 filters.put("lingua", language);
+            }
+            else{
+                filters.put("lingua", "");
             }
             String download = request.getParameter("download");
             if (!Utils.isNullOrEmpty(download)) {
                 noAction(download, request, response);
                 filters.put("download", "download");
             }
+            else{
+                filters.put("download", "");
+            }
             if (request.getAttribute("publicationUser") != null) {
                 filters.put("utente", request.getAttribute("publicationUser").toString());
+            }
+            else{
+                filters.put("utente", "");
             }
             filters.put("order_by", "titolo");
             filters.put("order_mode", "ASC");

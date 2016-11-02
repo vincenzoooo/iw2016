@@ -83,7 +83,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             this.sUserByEmail = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE email = ?");
             this.sUserByEmailPassword = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE email = ? AND password = ?");
             this.sUserById = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE idutente = ?");
-            this.sUserByNumberOfPublications = connection.prepareStatement("SELECT utente, COUNT(*) AS operazioni FROM storico JOIN utente ON idutente = utente GROUP BY utente HAVING operazioni > 1 ORDER BY operazioni");
+            this.sUserByNumberOfPublications = connection.prepareStatement("SELECT utente, COUNT(*) AS operazioni FROM storico WHERE tipo = 0 GROUP BY utente HAVING operazioni > 0 ORDER BY operazioni");
             this.sUserAdministrator = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE stato = 0 ORDER BY cognome");
             this.sUsersByStatus = connection.prepareStatement("SELECT * FROM iw2016.utente WHERE cognome LIKE ? AND stato = ? ORDER BY cognome");
             this.uUser = connection.prepareStatement("UPDATE iw2016.utente SET nome = ?, cognome = ?, password = ?, email = ?, stato = ? WHERE idutente = ?");
@@ -707,34 +707,34 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                     + "LEFT JOIN sorgente sr ON sr.pubblicazione = p.idpubblicazione LEFT JOIN pubblicazione_has_keyword pk ON pk.pubblicazione_idpubblicazione = p.idpubblicazione LEFT JOIN keyword k ON k.idkeyword = pk.keyword_idkeyword "
                     + "LEFT JOIN storico st ON st.pubblicazione = p.idpubblicazione LEFT JOIN utente u ON u.idutente = st.utente WHERE p.incompleta = 0 ";
             for (Map.Entry<String, String> entry : filters.entrySet()) {
-                if (entry.getKey().equals("isbn") && entry.getValue() != null) {
+                if (entry.getKey().equals("isbn") && !entry.getValue().isEmpty()) {
                     query += " AND p.isbn LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
-                if (entry.getKey().equals("titolo") && entry.getValue() != null) {
+                if (entry.getKey().equals("titolo") && !entry.getValue().isEmpty()) {
                     query += " AND p.titolo LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
-                if (entry.getKey().equals("autore") && entry.getValue() != null) {
+                if (entry.getKey().equals("autore") && !entry.getValue().isEmpty()) {
                     query += " AND concat(a.nome, ' ',a.cognome) LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
-                if (entry.getKey().equals("editore") && entry.getValue() != null) {
+                if (entry.getKey().equals("editore") && !entry.getValue().isEmpty()) {
                     query += " AND e.nome LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
-                if (entry.getKey().equals("keyword") && entry.getValue() != null) {
+                if (entry.getKey().equals("keyword") && !entry.getValue().isEmpty()) {
                     query += " AND k.nome LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
-                if (entry.getKey().equals("lingua") && entry.getValue() != null) {
+                if (entry.getKey().equals("lingua") && !entry.getValue().isEmpty()) {
                     query += " AND p.lingua LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
-                if (entry.getKey().equals("anno_inizio") && entry.getValue() != null) {
+                if (entry.getKey().equals("anno_inizio") && !entry.getValue().isEmpty()) {
                     query += " AND p.data_pubblicazione >= '" + SecurityLayer.addSlashes(entry.getValue()) + "' ";
                 }
-                if (entry.getKey().equals("anno_fine") && entry.getValue() != null) {
+                if (entry.getKey().equals("anno_fine") && !entry.getValue().isEmpty()) {
                     query += " AND p.data_pubblicazione < '" + SecurityLayer.addSlashes(entry.getValue()) + "' ";
                 }
-                if (entry.getKey().equals("download") && entry.getValue() != null) {
+                if (entry.getKey().equals("download") && !entry.getValue().isEmpty()) {
                     query += " AND sr.download = 1 ";
                 }
-                if (entry.getKey().equals("utente") && entry.getValue() != null) {
+                if (entry.getKey().equals("utente") && !entry.getValue().isEmpty()) {
                     query += " AND CONCAT(u.nome, ' ',u.cognome) LIKE '%" + SecurityLayer.addSlashes(entry.getValue()) + "%' ";
                 }
             }
@@ -2261,6 +2261,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             dReviewByPublication.executeUpdate();
             dHistoryByPublication.setInt(1, publication.getKey());
             dHistoryByPublication.executeUpdate();
+            dLikeByPublication.setInt(1, publication.getKey());
+            dLikeByPublication.execute();
             deletePublicationHasAuthor(publication.getKey());
             deletePublicationHasKeyword(publication.getKey());
             dPublication.setInt(1, publication.getKey());

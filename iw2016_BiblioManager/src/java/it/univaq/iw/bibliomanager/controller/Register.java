@@ -43,8 +43,8 @@ public class Register extends BiblioManagerBaseController {
             params.put("privacy", Utils.checkString(request.getParameter("privacy")));
             if (!validator(params, request, response)) {
                 User newUser = getDataLayer().createUser();
-                newUser.setName(params.get("name"));
-                newUser.setSurname(params.get("surname"));
+                newUser.setName(params.get("name").replaceAll("(')", ""));
+                newUser.setSurname(params.get("surname").replaceAll("(')", ""));
                 newUser.setPassword(Utils.SHA1(params.get("password")));
                 newUser.setEmail(params.get("email"));
                 getDataLayer().storeUser(newUser);
