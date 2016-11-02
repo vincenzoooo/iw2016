@@ -6,6 +6,7 @@
  */
 package it.univaq.iw.framework.utils;
 
+import it.univaq.iw.framework.security.SecurityLayer;
 import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -27,7 +28,6 @@ public class Utils {
      */
     public static String checkString(String string) {
         if (!isNullOrEmpty(string)) {
-            //string = string.toLowerCase();
             string = string.trim();
         }
         return string;

@@ -180,8 +180,8 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             AuthorImpl author = new AuthorImpl(this);
             author.setKey(rs.getInt("idautore"));
-            author.setName(rs.getString("nome"));
-            author.setSurname(rs.getString("cognome"));
+            author.setName(SecurityLayer.stripSlashes(rs.getString("nome")));
+            author.setSurname(SecurityLayer.stripSlashes(rs.getString("cognome")));
             return author;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
@@ -197,7 +197,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             EditorImpl editor = new EditorImpl(this);
             editor.setKey(rs.getInt("ideditore"));
-            editor.setName(rs.getString("nome"));
+            editor.setName(SecurityLayer.stripSlashes(rs.getString("nome")));
             return editor;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
@@ -213,7 +213,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             KeywordImpl keyword = new KeywordImpl(this);
             keyword.setKey(rs.getInt("idkeyword"));
-            keyword.setName(rs.getString("nome"));
+            keyword.setName(SecurityLayer.stripSlashes(rs.getString("nome")));
             return keyword;
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to create user object form ResultSet", ex);
@@ -229,12 +229,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             PublicationImpl publication = new PublicationImpl(this);
             publication.setKey(rs.getInt("idpubblicazione"));
-            publication.setTitle(rs.getString("titolo"));
-            publication.setDescription(rs.getString("descrizione"));
+            publication.setTitle(SecurityLayer.stripSlashes(rs.getString("titolo")));
+            publication.setDescription(SecurityLayer.stripSlashes(rs.getString("descrizione")));
             publication.setEditor(getEditor(rs.getInt("editore")));
             publication.setLike(rs.getInt("n_consigli"));
-            publication.setIsbn(rs.getString("isbn"));
-            publication.setLanguage(rs.getString("lingua"));
+            publication.setIsbn(SecurityLayer.stripSlashes(rs.getString("isbn")));
+            publication.setLanguage(SecurityLayer.stripSlashes(rs.getString("lingua")));
             publication.setPublicationDate(rs.getDate("data_pubblicazione"));
             publication.setPageNumber(rs.getInt("n_pagine"));
             publication.setEditor(getEditor(rs.getInt("editore")));
@@ -261,7 +261,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             ReviewImpl review = new ReviewImpl(this);
             review.setKey(rs.getInt("idrecensione"));
-            review.setText(rs.getString("testo"));
+            review.setText(SecurityLayer.stripSlashes(rs.getString("testo")));
             review.setStatus(rs.getBoolean("moderata"));
             review.setReviewDate(rs.getTimestamp("data_recensione"));
             review.setAuthor(getUser(rs.getInt("utente_autore")));
@@ -300,10 +300,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             SourceImpl source = new SourceImpl(this);
             source.setKey(rs.getInt("idsorgente"));
-            source.setType(rs.getString("tipo"));
-            source.setUri(rs.getString("URI"));
-            source.setFormat(rs.getString("formato"));
-            source.setDescription(rs.getString("descrizione"));
+            source.setType(SecurityLayer.stripSlashes(rs.getString("tipo")));
+            source.setUri(SecurityLayer.stripSlashes(rs.getString("URI")));
+            source.setFormat(SecurityLayer.stripSlashes(rs.getString("formato")));
+            source.setDescription(SecurityLayer.stripSlashes(rs.getString("descrizione")));
             source.setCover(rs.getBoolean("copertina"));
             source.setPublicationKey(rs.getInt("pubblicazione"));
             return source;
@@ -321,7 +321,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             HistoryImpl history = new HistoryImpl(this);
             history.setKey(rs.getInt("idstorico"));
-            history.setEntry(rs.getString("entry"));
+            history.setEntry(SecurityLayer.stripSlashes(rs.getString("entry")));
             history.setType(rs.getInt("tipo"));
             history.setDate(rs.getTimestamp("data_operazione"));
             history.setPublicationKey(rs.getInt("pubblicazione"));
@@ -341,9 +341,9 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         try {
             UserImpl user = new UserImpl(this);
             user.setKey(rs.getInt("idutente"));
-            user.setName(rs.getString("nome"));
-            user.setSurname(rs.getString("cognome"));
-            user.setEmail(rs.getString("email"));
+            user.setName(SecurityLayer.stripSlashes(rs.getString("nome")));
+            user.setSurname(SecurityLayer.stripSlashes(rs.getString("cognome")));
+            user.setEmail(SecurityLayer.stripSlashes(rs.getString("email")));
             user.setState(rs.getInt("stato"));
             user.setPassword(rs.getString("password"));
             return user;
@@ -362,7 +362,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             ChapterImpl chapter = new ChapterImpl(this);
             chapter.setKey(rs.getInt("idcapitolo"));
             chapter.setNumber(rs.getInt("numero"));
-            chapter.setTitle(rs.getString("titolo"));
+            chapter.setTitle(SecurityLayer.stripSlashes(rs.getString("titolo")));
             chapter.setPublicationKey(rs.getInt("pubblicazione"));
             chapter.setSections(getSections(rs.getInt("idcapitolo")));
             return chapter;
@@ -381,7 +381,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             SectionImpl section = new SectionImpl(this);
             section.setKey(rs.getInt("idsezione"));
             section.setNumber(rs.getInt("numero"));
-            section.setTitle(rs.getString("titolo"));
+            section.setTitle(SecurityLayer.stripSlashes(rs.getString("titolo")));
             section.setChapterKey(rs.getInt("capitolo"));
             return section;
         } catch (SQLException ex) {
@@ -655,7 +655,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         Publication result = null;
         ResultSet rs = null;
         try {
-            sPublicationsByISBN.setString(1, isbn);
+            sPublicationsByISBN.setString(1, SecurityLayer.addSlashes(isbn));
             rs = sPublicationsByISBN.executeQuery();
             if (rs.next()) {
                 result = createPublication(rs);
@@ -1244,7 +1244,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         User result = null;
         ResultSet rs = null;
         try {
-            sUserByEmail.setString(1, email);
+            sUserByEmail.setString(1, SecurityLayer.addSlashes(email));
             rs = sUserByEmail.executeQuery();
             if (rs.next()) {
                 result = createUser(rs);
@@ -1268,7 +1268,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         User result = null;
         ResultSet rs = null;
         try {
-            sUserByEmailPassword.setString(1, email);
+            sUserByEmailPassword.setString(1, SecurityLayer.addSlashes(email));
             sUserByEmailPassword.setString(2, password);
             rs = sUserByEmailPassword.executeQuery();
             if (rs.next()) {
@@ -1341,7 +1341,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         List<User> result = new ArrayList();
         ResultSet rs = null;
         try {
-            sUsersByStatus.setString(1, filter);
+            sUsersByStatus.setString(1, SecurityLayer.addSlashes(filter));
             sUsersByStatus.setInt(2, 1);
             rs = sUsersByStatus.executeQuery();
             while (rs.next()) {
@@ -1367,7 +1367,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
         List<User> result = new ArrayList();
         ResultSet rs = null;
         try {
-            sUsers.setString(1, filter);
+            sUsers.setString(1, SecurityLayer.addSlashes(filter));
             sUsersByStatus.setInt(2, 2);
             rs = sUsersByStatus.executeQuery();
             while (rs.next()) {
@@ -1521,14 +1521,14 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 if (!author.isDirty()) {
                     return;
                 }
-                uAuthor.setString(1, author.getName());
-                uAuthor.setString(2, author.getSurname());
+                uAuthor.setString(1, SecurityLayer.addSlashes(author.getName()));
+                uAuthor.setString(2, SecurityLayer.addSlashes(author.getSurname()));
                 uAuthor.setInt(3, key);
 
                 uAuthor.executeUpdate();
             } else { //insert
-                iAuthor.setString(1, author.getName());
-                iAuthor.setString(2, author.getSurname());
+                iAuthor.setString(1, SecurityLayer.addSlashes(author.getName()));
+                iAuthor.setString(2, SecurityLayer.addSlashes(author.getSurname()));
 
                 if (iAuthor.executeUpdate() == 1) {
                     keys = iAuthor.getGeneratedKeys();
@@ -1564,12 +1564,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 if (!editor.isDirty()) {
                     return;
                 }
-                uEditor.setString(1, editor.getName());
+                uEditor.setString(1, SecurityLayer.addSlashes(editor.getName()));
                 uEditor.setInt(2, key);
 
                 uEditor.executeUpdate();
             } else { //insert
-                iEditor.setString(1, editor.getName());
+                iEditor.setString(1, SecurityLayer.addSlashes(editor.getName()));
 
                 if (iEditor.executeUpdate() == 1) {
                     keys = iEditor.getGeneratedKeys();
@@ -1605,12 +1605,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 if (!keyword.isDirty()) {
                     return;
                 }
-                uKeyword.setString(1, keyword.getName());
+                uKeyword.setString(1, SecurityLayer.addSlashes(keyword.getName()));
                 uKeyword.setInt(2, key);
 
                 uKeyword.executeUpdate();
             } else { //insert
-                iKeyword.setString(1, keyword.getName());
+                iKeyword.setString(1, SecurityLayer.addSlashes(keyword.getName()));
 
                 if (iKeyword.executeUpdate() == 1) {
                     keys = iKeyword.getGeneratedKeys();
@@ -1647,13 +1647,13 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 if (!publication.isDirty()) {
                     return;
                 }
-                uPublication.setString(1, publication.getTitle());
-                uPublication.setString(2, publication.getDescription());
+                uPublication.setString(1, SecurityLayer.addSlashes(publication.getTitle()));
+                uPublication.setString(2, SecurityLayer.addSlashes(publication.getDescription()));
                 uPublication.setInt(3, publication.getEditor().getKey());
                 uPublication.setInt(4, publication.getLike());
-                uPublication.setString(5, publication.getIsbn());
+                uPublication.setString(5, SecurityLayer.addSlashes(publication.getIsbn()));
                 uPublication.setInt(6, publication.getPageNumber());
-                uPublication.setString(7, publication.getLanguage());
+                uPublication.setString(7, SecurityLayer.addSlashes(publication.getLanguage()));
                 uPublication.setDate(8, publication.getPublicationDate());
                 uPublication.setBoolean(9, publication.getIncomplete());
                 uPublication.setTimestamp(10, publication.getTimestamp());
@@ -1662,12 +1662,12 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 uPublication.executeUpdate();
             } else //insert
             if (publication.getEditor().getKey() == 0) {
-                iPublicationNoEditor.setString(1, publication.getTitle());
-                iPublicationNoEditor.setString(2, publication.getDescription());
+                iPublicationNoEditor.setString(1, SecurityLayer.addSlashes(publication.getTitle()));
+                iPublicationNoEditor.setString(2, SecurityLayer.addSlashes(publication.getDescription()));
                 iPublicationNoEditor.setInt(3, publication.getLike());
-                iPublicationNoEditor.setString(4, publication.getIsbn());
+                iPublicationNoEditor.setString(4, SecurityLayer.addSlashes(publication.getIsbn()));
                 iPublicationNoEditor.setInt(5, publication.getPageNumber());
-                iPublicationNoEditor.setString(6, publication.getLanguage());
+                iPublicationNoEditor.setString(6, SecurityLayer.addSlashes(publication.getLanguage()));
                 iPublicationNoEditor.setDate(7, publication.getPublicationDate());
                 iPublicationNoEditor.setBoolean(8, publication.getIncomplete());
                 iPublicationNoEditor.setTimestamp(9, publication.getTimestamp());
@@ -1678,13 +1678,13 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                     }
                 }
             } else {
-                iPublication.setString(1, publication.getTitle());
-                iPublication.setString(2, publication.getDescription());
+                iPublication.setString(1, SecurityLayer.addSlashes(publication.getTitle()));
+                iPublication.setString(2, SecurityLayer.addSlashes(publication.getDescription()));
                 iPublication.setInt(3, publication.getEditor().getKey());
                 iPublication.setInt(4, publication.getLike());
-                iPublication.setString(5, publication.getIsbn());
+                iPublication.setString(5, SecurityLayer.addSlashes(publication.getIsbn()));
                 iPublication.setInt(6, publication.getPageNumber());
-                iPublication.setString(7, publication.getLanguage());
+                iPublication.setString(7, SecurityLayer.addSlashes(publication.getLanguage()));
                 iPublication.setDate(8, publication.getPublicationDate());
                 iPublication.setBoolean(9, publication.getIncomplete());
                 iPublication.setTimestamp(10, publication.getTimestamp());
@@ -1727,7 +1727,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 if (!review.isDirty()) {
                     return;
                 }
-                uReview.setString(1, review.getText());
+                uReview.setString(1, SecurityLayer.addSlashes(review.getText()));
                 uReview.setBoolean(2, review.getStatus());
                 uReview.setTimestamp(3, review.getReviewDate());
                 uReview.setInt(4, review.getAuthor().getKey());
@@ -1737,7 +1737,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
                 uReview.executeUpdate();
             } else { //insert
-                iReview.setString(1, review.getText());
+                iReview.setString(1, SecurityLayer.addSlashes(review.getText()));
                 iReview.setBoolean(2, review.getStatus());
                 iReview.setTimestamp(3, review.getReviewDate());
                 iReview.setInt(4, review.getAuthor().getKey());
@@ -1822,10 +1822,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 if (!source.isDirty()) {
                     return;
                 }
-                uSource.setString(1, source.getType());
-                uSource.setString(2, source.getUri());
-                uSource.setString(3, source.getFormat());
-                uSource.setString(4, source.getDescription());
+                uSource.setString(1, SecurityLayer.addSlashes(source.getType()));
+                uSource.setString(2, SecurityLayer.addSlashes(source.getUri()));
+                uSource.setString(3, SecurityLayer.addSlashes(source.getFormat()));
+                uSource.setString(4, SecurityLayer.addSlashes(source.getDescription()));
                 uSource.setBoolean(5, source.getCover());
                 uSource.setBoolean(6, source.getDownload());
                 uSource.setInt(7, source.getPublicationKey());
@@ -1833,10 +1833,10 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
                 uSource.executeUpdate();
             } else { //insert
-                iSource.setString(1, source.getType());
-                iSource.setString(2, source.getUri());
-                iSource.setString(3, source.getFormat());
-                iSource.setString(4, source.getDescription());
+                iSource.setString(1, SecurityLayer.addSlashes(source.getType()));
+                iSource.setString(2, SecurityLayer.addSlashes(source.getUri()));
+                iSource.setString(3, SecurityLayer.addSlashes(source.getFormat()));
+                iSource.setString(4, SecurityLayer.addSlashes(source.getDescription()));
                 iSource.setBoolean(5, source.getCover());
                 iSource.setBoolean(6, source.getDownload());
                 iSource.setInt(7, source.getPublicationKey());
@@ -1875,7 +1875,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 if (!historia.isDirty()) {
                     return;
                 }
-                uHistory.setString(1, historia.getEntry());
+                uHistory.setString(1, SecurityLayer.addSlashes(historia.getEntry()));
                 uHistory.setInt(2, historia.getType());
                 uHistory.setTimestamp(3, historia.getDate());
                 uHistory.setInt(4, historia.getPublicationKey());
@@ -1884,7 +1884,7 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
 
                 uHistory.executeUpdate();
             } else { //insert
-                iHistory.setString(1, historia.getEntry());
+                iHistory.setString(1, SecurityLayer.addSlashes(historia.getEntry()));
                 iHistory.setInt(2, historia.getType());
                 iHistory.setTimestamp(3, historia.getDate());
                 iHistory.setInt(4, historia.getPublicationKey());
@@ -1924,19 +1924,19 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                 if (!user.isDirty()) {
                     return;
                 }
-                uUser.setString(1, user.getName());
-                uUser.setString(2, user.getSurname());
-                uUser.setString(3, user.getPassword());
-                uUser.setString(4, user.getEmail());
+                uUser.setString(1, SecurityLayer.addSlashes(user.getName()));
+                uUser.setString(2, SecurityLayer.addSlashes(user.getSurname()));
+                uUser.setString(3, SecurityLayer.addSlashes(user.getPassword()));
+                uUser.setString(4, SecurityLayer.addSlashes(user.getEmail()));
                 uUser.setInt(5, user.getState());
                 uUser.setInt(6, key);
 
                 uUser.executeUpdate();
             } else { //insert
-                iUser.setString(1, user.getName());
-                iUser.setString(2, user.getSurname());
-                iUser.setString(3, user.getPassword());
-                iUser.setString(4, user.getEmail());
+                iUser.setString(1, SecurityLayer.addSlashes(user.getName()));
+                iUser.setString(2, SecurityLayer.addSlashes(user.getSurname()));
+                iUser.setString(3, SecurityLayer.addSlashes(user.getPassword()));
+                iUser.setString(4, SecurityLayer.addSlashes(user.getEmail()));
                 iUser.setInt(5, user.getState());
 
                 if (iUser.executeUpdate() == 1) {
@@ -1974,14 +1974,14 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                     return;
                 }
                 uChapter.setInt(1, chapter.getNumber());
-                uChapter.setString(2, chapter.getTitle());
+                uChapter.setString(2, SecurityLayer.addSlashes(chapter.getTitle()));
                 uChapter.setInt(3, chapter.getPublicationKey());
                 uChapter.setInt(4, chapter.getKey());
 
                 uChapter.executeUpdate();
             } else { //insert
                 iChapter.setInt(1, chapter.getNumber());
-                iChapter.setString(2, chapter.getTitle());
+                iChapter.setString(2, SecurityLayer.addSlashes(chapter.getTitle()));
                 iChapter.setInt(3, chapter.getPublicationKey());
 
                 if (iChapter.executeUpdate() == 1) {
@@ -2019,14 +2019,14 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
                     return;
                 }
                 uSection.setInt(1, section.getNumber());
-                uSection.setString(2, section.getTitle());
+                uSection.setString(2, SecurityLayer.addSlashes(section.getTitle()));
                 uSection.setInt(3, section.getChapterKey());
                 uSection.setInt(4, section.getKey());
 
                 uSection.executeUpdate();
             } else { //insert
                 iSection.setInt(1, section.getNumber());
-                iSection.setString(2, section.getTitle());
+                iSection.setString(2, SecurityLayer.addSlashes(section.getTitle()));
                 iSection.setInt(3, section.getChapterKey());
 
                 if (iSection.executeUpdate() == 1) {
@@ -2494,16 +2494,16 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             //insert
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.HOUR, 1);
-            iFilters.setString(1, Utils.getArrayParameter(filters, "isbn"));
-            iFilters.setString(2, Utils.getArrayParameter(filters, "titolo"));
-            iFilters.setString(3, Utils.getArrayParameter(filters, "autore"));
-            iFilters.setString(4, Utils.getArrayParameter(filters, "editore"));
-            iFilters.setString(5, Utils.getArrayParameter(filters, "anno_inizio"));
-            iFilters.setString(6, Utils.getArrayParameter(filters, "anno_fine"));
-            iFilters.setString(7, Utils.getArrayParameter(filters, "keyword"));
-            iFilters.setString(8, Utils.getArrayParameter(filters, "lingua"));
-            iFilters.setString(9, Utils.getArrayParameter(filters, "download"));
-            iFilters.setString(10, Utils.getArrayParameter(filters, "utente"));
+            iFilters.setString(1, SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "isbn")));
+            iFilters.setString(2, SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "titolo")));
+            iFilters.setString(3, SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "autore")));
+            iFilters.setString(4, SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "editore")));
+            iFilters.setString(5, SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "anno_inizio")));
+            iFilters.setString(6, SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "anno_fine")));
+            iFilters.setString(7, SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "keyword")));
+            iFilters.setString(8, SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "lingua")));
+            iFilters.setString(9, SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "download")));
+            iFilters.setString(10, SecurityLayer.addSlashes(Utils.getArrayParameter(filters, "utente")));
             iFilters.setTimestamp(11, new java.sql.Timestamp(calendar.getTime().getTime()));
             if (iFilters.executeUpdate() == 1) {
                 keys = iFilters.getGeneratedKeys();
@@ -2556,16 +2556,16 @@ public class BiblioManagerDataLayerMysqlImpl extends DataLayerMysqlImpl implemen
             sFilters.setInt(1, filter_key);
             rs = sFilters.executeQuery();
             if (rs.next()) {
-                result.put("isbn", rs.getString("isbn"));
-                result.put("titolo", rs.getString("titolo"));
-                result.put("autore", rs.getString("autore"));
-                result.put("editore", rs.getString("editore"));
-                result.put("anno_inizio", rs.getString("anno_inizio"));
-                result.put("anno_fine", rs.getString("anno_fine"));
-                result.put("keyword", rs.getString("keyword"));
-                result.put("lingua", rs.getString("lingua"));
-                result.put("download", rs.getString("download"));
-                result.put("utente", rs.getString("utente"));
+                result.put("isbn", SecurityLayer.stripSlashes(rs.getString("isbn")));
+                result.put("titolo", SecurityLayer.stripSlashes(rs.getString("titolo")));
+                result.put("autore", SecurityLayer.stripSlashes(rs.getString("autore")));
+                result.put("editore", SecurityLayer.stripSlashes(rs.getString("editore")));
+                result.put("anno_inizio", SecurityLayer.stripSlashes(rs.getString("anno_inizio")));
+                result.put("anno_fine", SecurityLayer.stripSlashes(rs.getString("anno_fine")));
+                result.put("keyword", SecurityLayer.stripSlashes(rs.getString("keyword")));
+                result.put("lingua", SecurityLayer.stripSlashes(rs.getString("lingua")));
+                result.put("download", SecurityLayer.stripSlashes(rs.getString("download")));
+                result.put("utente", SecurityLayer.stripSlashes(rs.getString("utente")));
             }
         } catch (SQLException ex) {
             throw new DataLayerException("Unable to load filters", ex);

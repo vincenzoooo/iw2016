@@ -138,7 +138,7 @@ public abstract class BiblioManagerBaseController extends HttpServlet {
             }
             else{
                 noAction(entry.getValue(), request, response);
-                entry.setValue(SecurityLayer.addSlashes(entry.getValue()));
+                entry.setValue(entry.getValue());
             }
         }
         return error;
